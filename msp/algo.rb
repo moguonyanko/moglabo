@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 
 #
-# = Kouichi's algorithm library
+# = moguonyanko's algorithm library
 #
 
 #

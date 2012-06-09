@@ -1,4 +1,4 @@
-;;;2012 Kouichi Yamada
+;;;2012 moguonyanko
 ;;;Practice coding CommonLisp and Mathematics.
 
 (defun sum (lst)

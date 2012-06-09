@@ -1,5 +1,5 @@
 /**
- * 2012 Kouichi Yamada 
+ * 2012 moguonyanko 
  * Training of Logical programing
  * Reference: 
  * Naoyuki Tamura, Information Science and Technology Center, Kobe University

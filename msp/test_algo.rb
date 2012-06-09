@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 
 require 'test/unit'
-require './ksp_algo'
+require './algo'
 
 class TestPrimeNumber < Test::Unit::TestCase
 	def setup
