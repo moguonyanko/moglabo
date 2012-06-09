@@ -1,4 +1,4 @@
-;;;2012/03/19 K.Y.
+;;;2012/03/19 moguonyanko
 ;;;This program to implove my programing skill.
 ;;;Reference:
 ;;;Structure and Interpretation of Computer Programs (2nd Edition)
