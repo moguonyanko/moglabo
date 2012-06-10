@@ -92,7 +92,7 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000002">bin_search</a>&nbsp;&nbsp;
+      <a href="#M000006">bin_search</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -114,11 +114,11 @@
     <div id="methods">
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000002" class="method-detail">
-        <a name="M000002"></a>
+      <div id="method-M000006" class="method-detail">
+        <a name="M000006"></a>
 
         <div class="method-heading">
-          <a href="#M000002" class="method-signature">
+          <a href="#M000006" class="method-signature">
           <span class="method-name">bin_search</span><span class="method-args">(target)</span>
           </a>
         </div>
@@ -133,31 +133,31 @@ Binary search method.
 </dd>
 </dl>
           <p><a class="source-toggle" href="#"
-            onclick="toggleCode('M000002-source');return false;">[Source]</a></p>
-          <div class="method-source-code" id="M000002-source">
+            onclick="toggleCode('M000006-source');return false;">[Source]</a></p>
+          <div class="method-source-code" id="M000006-source">
 <pre>
-    <span class="ruby-comment cmt"># File algo.rb, line 47</span>
-47:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">bin_search</span>(<span class="ruby-identifier">target</span>)
-48:                 <span class="ruby-identifier">err</span> = <span class="ruby-value">-1</span>
-49:                 <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">err</span> <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span>
-50:         
-51:                 <span class="ruby-identifier">left</span>, <span class="ruby-identifier">right</span> = <span class="ruby-value">0</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">length</span>
-52:         
-53:                 <span class="ruby-identifier">mid</span> = <span class="ruby-value">0</span>
-54:                 <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">left</span><span class="ruby-operator">+</span><span class="ruby-value">1</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">right</span>
-55:                         <span class="ruby-identifier">mid</span> = <span class="ruby-identifier">left</span> <span class="ruby-operator">+</span> (<span class="ruby-identifier">right</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">left</span>) <span class="ruby-operator">/</span> <span class="ruby-value">2</span>
-56:                         
-57:                         <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">mid</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">target</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">self</span>[<span class="ruby-identifier">mid</span>]
-58:                 
-59:                         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">target</span> <span class="ruby-operator">&lt;</span> <span class="ruby-keyword kw">self</span>[<span class="ruby-identifier">mid</span>]
-60:                                 <span class="ruby-identifier">right</span> = <span class="ruby-identifier">mid</span>
-61:                         <span class="ruby-keyword kw">else</span>
-62:                                 <span class="ruby-identifier">left</span> = <span class="ruby-identifier">mid</span>
-63:                         <span class="ruby-keyword kw">end</span>
-64:                 <span class="ruby-keyword kw">end</span>
-65:                 
-66:                 <span class="ruby-operator">-</span><span class="ruby-identifier">err</span><span class="ruby-operator">-</span><span class="ruby-identifier">mid</span>
-67:         <span class="ruby-keyword kw">end</span>
+    <span class="ruby-comment cmt"># File algo.rb, line 50</span>
+50:         <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">bin_search</span>(<span class="ruby-identifier">target</span>)
+51:                 <span class="ruby-identifier">err</span> = <span class="ruby-value">-1</span>
+52:                 <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">err</span> <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span>
+53:         
+54:                 <span class="ruby-identifier">left</span>, <span class="ruby-identifier">right</span> = <span class="ruby-value">0</span>, <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">length</span>
+55:         
+56:                 <span class="ruby-identifier">mid</span> = <span class="ruby-value">0</span>
+57:                 <span class="ruby-keyword kw">while</span> <span class="ruby-identifier">left</span><span class="ruby-operator">+</span><span class="ruby-value">1</span> <span class="ruby-operator">&lt;</span> <span class="ruby-identifier">right</span>
+58:                         <span class="ruby-identifier">mid</span> = <span class="ruby-identifier">left</span> <span class="ruby-operator">+</span> (<span class="ruby-identifier">right</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">left</span>) <span class="ruby-operator">/</span> <span class="ruby-value">2</span>
+59:                         
+60:                         <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">mid</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">target</span> <span class="ruby-operator">==</span> <span class="ruby-keyword kw">self</span>[<span class="ruby-identifier">mid</span>]
+61:                 
+62:                         <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">target</span> <span class="ruby-operator">&lt;</span> <span class="ruby-keyword kw">self</span>[<span class="ruby-identifier">mid</span>]
+63:                                 <span class="ruby-identifier">right</span> = <span class="ruby-identifier">mid</span>
+64:                         <span class="ruby-keyword kw">else</span>
+65:                                 <span class="ruby-identifier">left</span> = <span class="ruby-identifier">mid</span>
+66:                         <span class="ruby-keyword kw">end</span>
+67:                 <span class="ruby-keyword kw">end</span>
+68:                 
+69:                 <span class="ruby-operator">-</span><span class="ruby-identifier">err</span><span class="ruby-operator">-</span><span class="ruby-identifier">mid</span>
+70:         <span class="ruby-keyword kw">end</span>
 </pre>
           </div>
         </div>

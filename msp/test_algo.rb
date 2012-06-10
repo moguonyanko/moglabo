@@ -32,3 +32,29 @@ class TestSearch < Test::Unit::TestCase
 		assert_equal res, @sol 
 	end
 end
+
+class TestHeap < Test::Unit::TestCase
+	def setup
+		@sample = [1,2,3,4,5]
+	end
+	
+	def test_push
+		heap = Heap.new @sample.length
+		@sample.each {|n| heap.push n }
+		
+		assert_equal @sample, heap.values
+	end
+	
+	def test_pop
+		heap = Heap.new @sample.length
+		@sample.reverse.each {|n| heap.push n }
+		#puts heap
+		
+		results = []
+		@sample.length.times {|n| results.push heap.pop }
+		
+		assert_equal @sample, results
+	end
+end
+
+

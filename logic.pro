@@ -2,7 +2,8 @@
  * 2012 moguonyanko 
  * Training of Logical programing
  * Reference: 
- * Naoyuki Tamura, Information Science and Technology Center, Kobe University
+ * 		Information Science and Technology Center, Kobe University:Naoyuki Tamura
+ *		PROLOG PROGRAMMING FOR ARTIFICIAL INTELLIGENCE:I.Bratoko
  **/
 
 /* The distinction of sex predicates. */

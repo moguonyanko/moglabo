@@ -2,10 +2,16 @@
 # -*- encoding: utf-8 -*-
 
 #
-# 20120521 KouichiYamada
-# Studying metaprograming.
-# Reference: Metaprograming Ruby
+# 20120521 moguonyanko
+# Exam training source code
+# Reference: 
+#		Metaprograming Ruby
+#		Ruby公式資格教科書
 #
+
+require 'thread'
+
+module MetaPrograming
 
 class Greeting
 	def initialize(text)
@@ -140,10 +146,61 @@ module ConstTest
 	end
 end
 
-puts ConstTest::TESTTEST
-puts ConstTest::HOGEHOGE
+end
+
+#
+#	Multi thread test
+#
+
+module MultiThreadTest
+	@counter = 0	
+	@mtx = Mutex.new
+	
+	def self.mtxtest
+		local = @counter
+		sleep 1
+		@counter = local + 1
+		print "#{@counter}, "
+	end
+	
+	def main
+		t1 = Thread.new do
+			5.times do
+				@mtx.lock
+				begin
+					mtxtest
+				ensure
+					@mtx.unlock
+				end
+			end
+		end
+		
+		t2 = Thread.new do
+			5.times do
+				@mtx.lock
+				begin
+					mtxtest
+				ensure
+					@mtx.unlock
+				end
+			end
+		end
+
+		t1.join
+		t2.join
+		
+		puts #newline
+	end
+	
+	module_function :main
+	
+end
+
+MultiThreadTest.main
 
 =begin
+puts ConstTest::TESTTEST
+puts ConstTest::HOGEHOGE
 obj = MyClass5.new
 obj.write
 puts obj.read
