@@ -4,7 +4,7 @@
 require 'test/unit'
 require './math'
 
-class TestElementMul < Test::Unit::TestCase
+class TestElementCalc < Test::Unit::TestCase
 	def setup;	end
 
 	def test_defaultmul
@@ -34,5 +34,23 @@ class TestElementMul < Test::Unit::TestCase
 		res = x/y
 		assert_equal res, Rational(1/2)
 	end
+end
+
+class TestLinear < Test::Unit::TestCase
+	require 'matrix'
+	
+	def test_sweep_out
+		a,b,c = [1,4,7],[-2,-5,-8],[3,6,10]
+		left = Matrix.columns([a,b,c])
+		d = [6,12,21]
+		right = Matrix.columns([d])
+		
+		result = Linear.sweep_out(left, right)
+		x = [1,2,3]
+		checker = Matrix.columns([x])
+		
+		assert_equal checker, result
+	end	
+
 end
 
