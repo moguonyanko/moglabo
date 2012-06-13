@@ -127,9 +127,16 @@ module Linear
 			end
 			
 			#TODO: row swap
+=begin			
 			tmp = 	left.row(i)
 			left.row(i) = 	left.row(pivot)
 			left.row(pivot) = tmp
+=end			
+			tmp =	left.to_a
+			print tmp
+			tmp[i] = left.row(pivot).to_a
+			tmp[pivot] = left.row(i).to_a
+			left = Matrix.columns(tmp)
 			
 			return Matrix.columns([]) if left[i,i].abs < 1e-8
 			
