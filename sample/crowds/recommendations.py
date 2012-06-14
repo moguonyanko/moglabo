@@ -1,6 +1,11 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+#
+# Referense:
+# 	集合知プログラミング:O'REILLY
+#
+
 import math
 
 #Similarity sample dictionary
