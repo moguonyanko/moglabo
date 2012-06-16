@@ -4,8 +4,8 @@
 import unittest
 import math
 
-import statistics as ts
-import util as ym
+import moglabo.pychalle.statistics as ts
+import moglabo.pychalle.util as ym
 
 class TestMeanValue(unittest.TestCase):
 	samples = [5,8,10,11,12]
@@ -499,5 +499,6 @@ class TestBayes(unittest.TestCase):
 	
 #Entry point
 if __name__ == '__main__':
+	print(__file__)
 	unittest.main()
 

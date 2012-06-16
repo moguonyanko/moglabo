@@ -5,7 +5,7 @@ import random
 import math
 import queue as qu
 
-import util as ut
+import moglabo.pychalle.util as ut
 
 def fib(number):
 	'''
@@ -384,7 +384,7 @@ class Philosopher():
 
 class UnionFindTree():
 	'''
-	Union find tree
+	Union find tree.
 	'''
 	def __init__(self, elenum):
 		'''
@@ -426,6 +426,76 @@ class UnionFindTree():
 		'''
 		return self.find(a) == self.find(b)
 
+class Heap():
+	'''
+	Heap data structure class.
+	'''
+	error_message = "Requested value is out of bounds."
+	
+	def __init__(self, size=0, values=[]):
+		'''
+		Init heap with heap size and values.
+		'''
+		if len(values) > 0:
+			self.values = values
+		else:
+			self.values = ut.makelist(size)
+		
+		self.pos = 0
+		
+	def __len__(self):
+		'''
+		Heap length return.
+		'''
+		return len(self.values)
+	
+	def push(self, value):
+		'''
+		Push to heap.
+		'''
+		if len(self.values) <= self.pos: 
+			raise ValueError(self.error_message)
+		
+		i = self.pos
+		self.pos += 1
+		
+		while i > 0:
+			idx = int((i-1)/2)
+			if self.values[idx] <= value:	break
+			
+			self.values[i] = self.values[idx]
+			i = idx
+		
+		self.values[i] = value
+		
+	def pop(self):
+		'''
+		Pop from heap.
+		'''
+		if self.pos <= 0:	
+			raise ValueError(self.error_message)
+		
+		ret = self.values[0]
+		
+		self.pos -= 1
+		x = self.values[self.pos]
+		
+		i = 0
+		while i*2+1 < self.pos:
+			l = i*2+1;r = i*2+2
+			
+			if r < self.pos and self.values[r] < self.values[l]:
+				l = r
+				
+			if self.values[l] >= x:	break 
+				
+			self.values[i] = self.values[l]
+			i = l
+		
+		self.values[i] = x
+		
+		return ret
+		
 #Entry point
 if __name__ == '__main__':
 	print("algorithm module load")

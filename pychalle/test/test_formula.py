@@ -4,7 +4,7 @@
 import math
 import unittest
 
-import formula as fm
+import moglabo.pychalle.formula as fm
 
 class TestFormula(unittest.TestCase):
 	'''
@@ -23,5 +23,6 @@ class TestFormula(unittest.TestCase):
 
 #Entry point
 if __name__ == '__main__':
+	print(__file__)
 	unittest.main()
 

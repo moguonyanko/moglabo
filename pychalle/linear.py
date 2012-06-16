@@ -5,7 +5,7 @@ import numbers
 import math
 
 #My module import
-import util as ym
+import moglabo.pychalle.util as ym
 
 class Vector():
 	'''

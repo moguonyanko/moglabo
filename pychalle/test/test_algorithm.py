@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-import algorithm as al
+
+import moglabo.pychalle.algorithm as al
 
 class TestSearch(unittest.TestCase):
 	'''
@@ -155,7 +156,7 @@ class TestMultiProcess(unittest.TestCase):
 		waiter = al.Waiter(forknum=5)	
 		pass
 		
-class UnionFindTreeTest(unittest.TestCase):
+class TestUnionFindTree(unittest.TestCase):
 	'''
 	Test class for union find tree.
 	'''
@@ -168,7 +169,39 @@ class UnionFindTreeTest(unittest.TestCase):
 	
 	def test_same(self):
 		pass
+		
+class TestHeap(unittest.TestCase):
+	'''
+	Test class for Heap class.
+	'''
 	
+	sample = [1,2,3,4,5]
+	
+	def test_push(self):
+		'''
+		Test push method.
+		'''
+		heap = al.Heap(size=len(self.sample))
+		for value in self.sample:
+			heap.push(value)
+		
+		res = heap.values
+		
+		self.assertEqual(res, self.sample)
+		
+	def test_pop(self):
+		'''
+		Test pop method.
+		'''
+		heap = al.Heap(len(self.sample))
+		for value in self.sample[::-1]:
+			heap.push(value)
+		
+		res = [heap.pop() for i in range(len(heap))]
+			
+		self.assertEqual(res, self.sample)
+		
 if __name__ == '__main__':
+	print(__file__)
 	unittest.main()
 

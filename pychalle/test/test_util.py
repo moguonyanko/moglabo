@@ -5,7 +5,7 @@ import random
 import unittest
 import math
 
-import util as ym
+import moglabo.pychalle.util as ym
 
 class TestFlatten(unittest.TestCase):
 	sample_flatten = [[1,2,3],[4,5,6],["a",[400,500,600],"b"],[7,8,9]]
@@ -257,5 +257,6 @@ class TestIterationMethodTest(unittest.TestCase):
 
 #Entry point
 if __name__ == '__main__':
+	print(__file__)
 	unittest.main()
 

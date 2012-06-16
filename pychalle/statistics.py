@@ -4,9 +4,9 @@
 import unittest
 import math
 
-import const_statistics as cs
-import util as ym
-import linear as lr
+import moglabo.pychalle.const_statistics as cs
+import moglabo.pychalle.util as ym
+import moglabo.pychalle.linear as lr
 
 def mean(samples, mode="arith"):
 	'''

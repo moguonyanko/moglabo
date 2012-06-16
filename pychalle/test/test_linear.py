@@ -5,7 +5,7 @@ import unittest
 import math
 
 #My module import
-import linear as gm
+import moglabo.pychalle.linear as gm
 
 class TestVector(unittest.TestCase):
 	
@@ -629,5 +629,6 @@ class TestTranspose(unittest.TestCase):
 	
 #Entry point
 if __name__ == '__main__':
+	print(__file__)
 	unittest.main()
 

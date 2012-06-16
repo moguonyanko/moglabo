@@ -1,29 +1,17 @@
-.. . documentation master file, created by
-   sphinx-quickstart on Fri Jun 15 02:13:49 2012.
+.. moglabo documentation master file, created by
+   sphinx-quickstart on Sun Jun 17 02:31:02 2012.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to .'s documentation!
-=============================
+Welcome to moglabo's documentation!
+===================================
 
 Contents:
 
 .. toctree::
    :maxdepth: 4
 
-   algorithm
-   calculus
-   const_statistics
-   formula
-   linear
-   statistics
-   test_algorithm
-   test_calculus
-   test_formula
-   test_linear
-   test_statistics
-   test_util
-   util
+   moglabo
 
 
 Indices and tables

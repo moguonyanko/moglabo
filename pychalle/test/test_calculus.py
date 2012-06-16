@@ -4,7 +4,7 @@
 import math
 import unittest
 
-import calculus as cl
+import moglabo.pychalle.calculus as cl
 
 class TestSimpson(unittest.TestCase):
 	'''
@@ -46,5 +46,6 @@ class TestDifferentiate(unittest.TestCase):
 
 #Entry point
 if __name__ == '__main__':
+	print(__file__)
 	unittest.main()
 

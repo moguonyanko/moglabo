@@ -1,7 +1,6 @@
 #!/bin/sh
 
-PYTHONPATH=${PYTHONPATH}:`pwd`/
-#PYTHONPATH=${PYTHONPATH}:~/src/
+PYTHONPATH=${PYTHONPATH}:~/src/
 export PYTHONPATH
 
 #echo $PYTHONPATH
