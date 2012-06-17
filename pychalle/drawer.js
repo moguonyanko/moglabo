@@ -11,19 +11,9 @@
 		win.console&&console.log(obj);
 	}
 				
+	//TODO: Not need now. 
 	function load_by_name(type){
-		var prefix = "Mog",
-		shape_types = {
-			point : prefix+"Point",
-			polygon : prefix+"Polygon"
-		};
-					
-		var shape_data = win[shape_types[type]];
-		
-		return shape_data;
-	}
-				
-	function load(url, Constructor){
+		/*	
 		var sc = doc.createElement("script");
 		sc.onload = function(e){
 			var shapetype = url.split(".")[0],
@@ -35,6 +25,47 @@
 		};
 		sc.src = url;
 		doc.body.insertBefore(sc, cvs);
+		*/
+	
+		var prefix = "Mog",
+		shape_types = {
+			point : prefix+"Point",
+			polygon : prefix+"Polygon"
+		};
+					
+		var shape_data = win[shape_types[type]];
+		
+		return shape_data;
+	}
+	
+	function load(target, Constructor){
+		var xhr = new XMLHttpRequest(),
+		url = "http://localhost:8000/cgi-bin/service.py?";
+		
+		xhr.overrideMimeType("application/json; charset=UTF-8");
+		url += "type="+target;
+		
+		xhr.open("GET", url, true);
+		xhr.onreadystatechange = function(e){
+			if(this.readyState == 4) {
+				if(this.status == 200 || this.status == 201) {
+			 		var restxt = this.responseText,
+			 		data = JSON.parse(restxt);
+					if(data){
+						var shape = new Constructor(data);
+						shape.draw();
+					}
+				}else{
+					throw new Error("Geometry calculate request error!");
+		    }
+			}
+		};
+		
+		xhr.send(null);	
+	}
+	
+	function Pen(path, style){
+		/* TODO:implement */
 	}
 				
 	function Point(ps){
@@ -93,8 +124,8 @@
 			return;
 		}
 		ctx = cvs.getContext("2d");				
-		load("point.js", Point);
-		load("polygon.js", Polygon);
+		load("testpoint", Point);
+		load("testpolygon", Polygon);
 	}
 	
 	win.onload = init;

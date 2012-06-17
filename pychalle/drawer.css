@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+canvas {
+	position: relative;
+	border: solid 1px black;
+	width: 600px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
