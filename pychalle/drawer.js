@@ -11,33 +11,6 @@
 		win.console&&console.log(obj);
 	}
 				
-	//TODO: Not need now. 
-	function load_by_name(type){
-		/*	
-		var sc = doc.createElement("script");
-		sc.onload = function(e){
-			var shapetype = url.split(".")[0],
-			target = load_by_name(shapetype);
-			if(target.data){
-				var shape = new Constructor(target.data);
-				shape.draw();
-			}
-		};
-		sc.src = url;
-		doc.body.insertBefore(sc, cvs);
-		*/
-	
-		var prefix = "Mog",
-		shape_types = {
-			point : prefix+"Point",
-			polygon : prefix+"Polygon"
-		};
-					
-		var shape_data = win[shape_types[type]];
-		
-		return shape_data;
-	}
-	
 	function load(target, Constructor){
 		var xhr = new XMLHttpRequest(),
 		url = "http://localhost:8000/cgi-bin/service.py?";
@@ -52,8 +25,10 @@
 			 		var restxt = this.responseText,
 			 		data = JSON.parse(restxt);
 					if(data){
-						var shape = new Constructor(data);
-						shape.draw();
+						for(var i = 0, len = data.length; i<len; i++){
+							var shape = new Constructor(data[i]);
+							shape.draw(); /* TODO: Not draw here. */
+						}
 					}
 				}else{
 					throw new Error("Geometry calculate request error!");
@@ -68,17 +43,13 @@
 		/* TODO:implement */
 	}
 				
-	function Point(ps){
+	function Point(p){
 		Point.prototype.draw = function(){
 			ctx.beginPath();
 			var radius = 5,
 			endang = Math.PI*2;
 						
-			for(var i = 0, lim = ps.length; i<lim; i++){
-				var p = ps[i];
-				ctx.arc(p[0], p[1], radius, 0, endang, false);
-			}
-						
+			ctx.arc(p[0], p[1], radius, 0, endang, false);
 			ctx.fill();						
 		};
 	}

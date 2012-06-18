@@ -483,6 +483,13 @@ def transpose(mat):
 		
 	return Matrix(newrows)
 
+def sweep_out(mat):
+	'''
+	Solution of simultanious linear equations 
+	by sweep out method.
+	'''
+	pass
+
 #Entry point
 if __name__ == '__main__':
 	print("traingeom module load")

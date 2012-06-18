@@ -626,6 +626,16 @@ class TestTranspose(unittest.TestCase):
 		chkm = gm.Matrix([cv1,cv2,cv3])
 		
 		self.assertEqual(resm, chkm)
+
+class TestSweepOut(unittest.TestCase):
+	'''
+	Test class for sweep out function.
+	'''
+	def test_sweep_out(self):
+		'''
+		Test function of sweep out.
+		'''
+		pass
 	
 #Entry point
 if __name__ == '__main__':

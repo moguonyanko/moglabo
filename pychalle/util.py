@@ -253,5 +253,5 @@ def newton_raphson(root, start, repeat):
 
 #Entry point
 if __name__ == '__main__':
-	print("ymtools module load")
+	print("util module load")
 
