@@ -581,15 +581,15 @@
 	(let ((nume (+ (tan a) (tan b))))
 		(/ nume (- 1 (* (tan a) (tan b))))))
 		
-		
+(define (simpson fn x0 x1 num)
+	;Simpson rule. TODO:implement now.
+	(let ((h 0.0) (sum 0.0) (x 0.0) (i 0))
+		(set! h (- x1 x0))
+		(if (> num 0) 
+			)))
 
 
 
-
-
-
-																		
- 
 
 
 
