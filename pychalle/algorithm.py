@@ -496,6 +496,60 @@ class Heap():
 		
 		return ret
 		
+def binary_search(target, samples):
+	'''
+	binary search by recursive
+	'''
+	#TODO:Inner value unfound, maximum recursion.
+	if target > max(samples) or target < min(samples):
+		raise LookupError("Not found target value.")
+		
+	def rec_search(left, right):
+		if left >= right:
+			raise LookupError("Not found target value.")
+		pivot = math.floor((left+right)/2)
+		if target == samples[pivot]:
+			return pivot
+		elif target > samples[pivot]:
+			return rec_search(pivot, right)
+		elif target < samples[pivot]:
+			return rec_search(left, pivot)
+	
+	return rec_search(0, len(samples)-1)
+	
+def normal_binary_search(target, samples):
+	'''
+	normal binary search
+	'''
+	if target > max(samples) or target < min(samples):
+		raise LookupError("Requested value is out of range.")
+		
+	left = 0
+	right = len(samples)-1
+	while left <= right:
+		middle = math.floor((left+right)/2)
+		if target == samples[middle]:
+			return middle
+		elif target < samples[middle]: 
+			right = middle
+		elif samples[middle] < target:
+			left = middle
+	
+	raise LookupError("Not found target value.")		
+	
+def gcd(a, b):
+	'''
+	Calculate gcd.
+	'''
+	#TODO:If a or b is negative, value is undefined.
+	if b == 0:
+		return a
+	else:
+		x = abs(a)%abs(b)
+		if (not (a<0 and b<0)) and (a<0 or b<0):
+			x *= -1
+		return gcd(b, x)	
+		
 #Entry point
 if __name__ == '__main__':
 	print("algorithm module load")

@@ -4,8 +4,8 @@
 import numbers
 import math
 
-#My module import
-import moglabo.pychalle.util as ym
+import moglabo.pychalle.util as ut
+import moglabo.pychalle.algorithm as al
 
 class Vector():
 	'''
@@ -306,7 +306,7 @@ class Matrix():
 			for erow in E.rows:
 				tmp = veccols+[erow.cols]
 				formuras = list(zip(*tmp))
-				eqs = ym.sleq(formuras)
+				eqs = ut.sleq(formuras)
 				eqvecs.append(Vector(eqs))
 			
 			return Matrix(eqvecs)
@@ -386,9 +386,9 @@ class Matrix():
 		
 def einheit(dim):
 	'''make identity matrix'''
-	rows = ym.makeformatlist(dim, None)
+	rows = ut.makeformatlist(dim, None)
 	for i in range(dim):
-		row = ym.makeformatlist(dim, 0)
+		row = ut.makeformatlist(dim, 0)
 		row[i] = 1
 		rows[i] = Vector(row)
 	return Matrix(rows)
@@ -453,7 +453,7 @@ def gcdreduct(a, b):
 	coefficient reduction
 	'''
 	#TODO: gcd function number mark destroy.
-	gcdval = abs(ym.gcd(a, b))
+	gcdval = abs(al.gcd(a, b))
 	if gcdval != 1:
 		a /= gcdval
 		b /= gcdval
@@ -476,7 +476,7 @@ def __eigen_2dim(mat):
 
 	formula[2] = det(mat)
 	
-	egs = ym.quadeq(formula)
+	egs = ut.quadeq(formula)
 	
 	res = {}
 	for eg in egs:

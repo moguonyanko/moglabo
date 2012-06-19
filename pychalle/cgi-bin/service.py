@@ -3,7 +3,8 @@
 
 import cgi
 
-import moglabo.pychalle.linear as lr
+import moglabo.pychalle.util as ut
+import moglabo.pychalle.geometry as gm
 
 def get_test_points():
 	'''
@@ -43,12 +44,9 @@ def testprint():
 	'''
 	Test print for checking cgi and loading module.
 	'''
-	v1 = lr.Vector([1,0,1])
-	v2 = lr.Vector([0,2,0])
-	v3 = lr.Vector([-1,0,1])
-	m1 = lr.Matrix([v1,v2,v3])
+	testdata = ut.makelist(10)
 	
-	return str(m1)
+	return str(testdata)
 
 def get_calc_func(typekey):
 	CALC_TYPES = {

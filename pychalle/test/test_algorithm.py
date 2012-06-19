@@ -201,6 +201,39 @@ class TestHeap(unittest.TestCase):
 			
 		self.assertEqual(res, self.sample)
 		
+class TestBinarySearch(unittest.TestCase):
+	'''
+	Binary search test class.
+	'''
+	def test_binary_search(self):
+		'''
+		binary search test function
+		'''
+		sample = [1,2,3,4,6,7,8,9]
+		target_idx1 = al.binary_search(7, sample)
+		self.assertEqual(target_idx1, 5)
+		target_idx2 = al.binary_search(2, sample)
+		self.assertEqual(target_idx2, 1)
+		target_idx3 = al.binary_search(4, sample)
+		self.assertEqual(target_idx3, 3)
+		
+		self.assertRaises(LookupError, al.binary_search, 100, sample)
+		
+#inner value unfound, maximum recursion.		
+#		target_idx5 = al.binary_search(5, sample)
+#		self.assertEqual(target_idx5, -1)		
+
+class TestGCD(unittest.TestCase):
+	'''
+	GCD test class.
+	'''
+	def test_gcd(self):
+		'''
+		test function for gcd.
+		'''
+		res = al.gcd(206, 40)
+		self.assertEqual(res, 2)
+		
 if __name__ == '__main__':
 	print(__file__)
 	unittest.main()

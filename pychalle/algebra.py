@@ -81,7 +81,7 @@ def gcd(a, b):
 			x *= -1
 		return gcd(b, x)
 	
-	def discriminant(formula):
+def discriminant(formula):
 	'''
 	discriminant of quadratic equation
 	return real root number
@@ -89,7 +89,7 @@ def gcd(a, b):
 	a = formula[0]
 	b = formula[1]
 	c = formula[2]
-	
+
 	return b**2-4*a*c
 
 def quadeq(formula):
