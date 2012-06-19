@@ -9,12 +9,12 @@ import moglabo.pychalle.util as ym
 
 class Vector():
 	'''
-	Vector class \
+	Vector class 
 	This class will be used Matrix.
 	'''
 	
 	'''
-	a significant figure \
+	a significant figure 
 	suitably value set
 	'''
 	SIGNIFICANT_FIGURE = 4
@@ -26,9 +26,27 @@ class Vector():
 		'''
 		self.cols = cols
 		
+	def __len__(self):
+		'''
+		Vector elements length return.
+		'''
+		return len(self.cols)
+		
+	def __getitem__(self, index):
+		'''
+		Get vector component by numeric index.
+		'''
+		return self.cols[index]
+
+	def __setitem__(self, index, value):
+		'''
+		Set vector component by numeric index.
+		'''
+		self.cols[index] = value
+		
 	def __common_mul_operate(self, target, org):
 		'''
-		common multiplication operation \
+		common multiplication operation 
 		if argument is numbers.Real, scalar multiplication.
 		elif Vector, dot multiplication.
 		'''
@@ -45,27 +63,37 @@ class Vector():
 			raise ValueError("Argument need to be numbers.Real or Vector.")
 	
 	def __add__(self, target):
-		'''addition vector'''
+		'''
+		addition vector
+		'''
 		cmps = zip(self.cols, target.cols)
 		ps = [a+b for a,b in cmps]
 		return Vector(ps)
 		
 	def __sub__(self, target):
-		'''subtract vector'''
+		'''
+		subtract vector
+		'''
 		cmps = zip(self.cols, target.cols)
 		ps = [a-b for a,b in cmps]
 		return Vector(ps)
 		
 	def __mul__(self, target):
-		'''multiplication vector for left side vector'''
+		'''
+		multiplication vector for left side vector
+		'''
 		return self.__common_mul_operate(target, self)
 
 	def __rmul__(self, target):
-		'''multiplication vector for right side vector'''
+		'''
+		multiplication vector for right side vector
+		'''
 		return self.__common_mul_operate(target, self)
 		
 	def __eq__(self, target):
-		'''if point value equal, vectors are equal'''
+		'''
+		if point value equal, vectors are equal
+		'''
 		cmps = zip(self.cols, target.cols)
 		sg = self.SIGNIFICANT_FIGURE
 		for a,b in cmps:
@@ -74,11 +102,15 @@ class Vector():
 		return True
 		
 	def __str__(self):
-		'''point value return'''
+		'''
+		point value return
+		'''
 		return str(self.cols)
 
 	def __sizecheck(self):
-		'''dimention size check'''
+		'''
+		dimention size check
+		'''
 		if len(self.cols) != 2:
 			raise ValueError("Sorry, now required 2 dimention vector.")
 
@@ -149,10 +181,28 @@ class Matrix():
 	'''
 	def __init__(self, rows):
 		'''
-		initialize matrix
-		row vector receive.
+		Initialize matrix by received row vector.
 		'''
 		self.rows = rows
+		
+	def __setitem__(self, row_column, value):
+		'''
+		Set value to matrix by row column tuple.
+		'''
+		self.rows[row_column[0]][row_column[1]] = value
+		
+	def __getitem__(self, row_column):
+		'''
+		Get value from matrix by row column tuple.
+		If row_column is tuple, return element. 
+		If row_column is int, return row of vector. 
+		'''
+		if isinstance(row_column, tuple):
+			return self.rows[row_column[0]][row_column[1]]
+		elif isinstance(row_column, int):
+			return self.rows[row_column]
+		else:
+			raise ValueError("Invarid index recieved.")
 		
 	def __add__(self, target):
 		'''matrix addition'''
@@ -319,6 +369,21 @@ class Matrix():
 					
 		return True
 		
+	def __len__(self):
+		'''
+		Matrix row length return.
+		'''
+		return len(self.rows)
+		
+	def swap(self, i, j):
+		'''
+		Swap rows for indexes.
+		Not create new matrix.
+		'''
+		tmp = self[i]
+		self[i] = self[j]
+		self[j] = tmp
+		
 def einheit(dim):
 	'''make identity matrix'''
 	rows = ym.makeformatlist(dim, None)
@@ -483,13 +548,47 @@ def transpose(mat):
 		
 	return Matrix(newrows)
 
-def sweep_out(mat):
+def sweep_out(leftm, rightv):
 	'''
 	Solution of simultanious linear equations 
 	by sweep out method.
+	Take account of pivot.
 	'''
-	pass
-
+	#TODO: implement on the way.
+	eps = 1E-8
+	msize = len(leftm)
+	newvs = leftm.rows + [rightv]
+	
+	mat = Matrix(newvs)
+	
+	for i in range(msize):
+		pivot = i
+		j = i
+		while j < msize:
+			if abs(mat[(j,i)]) > abs(mat[(pivot,i)]):
+				pivot = j
+			j += 1
+	
+		mat.swap(i, pivot)
+		
+		if abs(mat[(i,i)]) < eps:
+			return Vector([])
+	
+		k = i+1
+		while k <= msize:
+			mat[(i,k)] /= mat[(i,i)]
+			k += 1
+			
+		for idx in range(msize):
+			if i != idx:
+				l = i+1
+				while l <= msize:
+					mat[(idx,l)] -= 	mat[(idx,i)]*mat[(i,l)]
+					
+		i += 1
+		
+	return mat[msize-1]
+	
 #Entry point
 if __name__ == '__main__':
 	print("traingeom module load")

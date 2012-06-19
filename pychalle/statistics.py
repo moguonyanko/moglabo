@@ -5,7 +5,7 @@ import unittest
 import math
 
 import moglabo.pychalle.const_statistics as cs
-import moglabo.pychalle.util as ym
+import moglabo.pychalle.util as ut
 import moglabo.pychalle.linear as lr
 
 def mean(samples, mode="arith"):
@@ -265,7 +265,7 @@ def t_test_inter(xs, ys):
 
 def anova(groups):
 	'''analysis of variance'''
-	alls = ym.flatten(groups)
+	alls = ut.flatten(groups)
 	aldsq = sqsum(alls)
 	allm = mean(alls)
 	
@@ -294,8 +294,8 @@ def anovam(g1, g2):
 	g2a = g2[0]
 	g2b = g2[1]
 	
-	g1data = ym.flatten(g1)
-	g2data = ym.flatten(g2)
+	g1data = ut.flatten(g1)
+	g2data = ut.flatten(g2)
 	alldata = g1data+g2data
 	allmean = mean(alldata)
 	g1mean = mean(g1data)
@@ -534,7 +534,7 @@ def multiple_regression_analysis(x1s, x2s, ys):
 	'''
 	Multiple regression analysis.
 	'''
-	ones = ym.makelist(len(x1s), 1)
+	ones = ut.makelist(len(x1s), 1)
 	
 	vecs1 = [lr.Vector([x1,x2,one]) for x1,x2,one in zip(x1s,x2s,ones)]
 	mat1 = lr.Matrix(vecs1)
