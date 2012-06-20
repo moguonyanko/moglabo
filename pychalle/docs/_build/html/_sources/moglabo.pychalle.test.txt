@@ -1,6 +1,14 @@
 test Package
 ============
 
+:mod:`test_algebra` Module
+--------------------------
+
+.. automodule:: moglabo.pychalle.test.test_algebra
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`test_algorithm` Module
 ----------------------------
 
@@ -17,10 +25,10 @@ test Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`test_formula` Module
---------------------------
+:mod:`test_geometry` Module
+---------------------------
 
-.. automodule:: moglabo.pychalle.test.test_formula
+.. automodule:: moglabo.pychalle.test.test_geometry
     :members:
     :undoc-members:
     :show-inheritance:

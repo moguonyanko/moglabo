@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # moglabo documentation build configuration file, created by
-# sphinx-quickstart on Sun Jun 17 02:31:02 2012.
+# sphinx-quickstart on Thu Jun 21 03:26:19 2012.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #

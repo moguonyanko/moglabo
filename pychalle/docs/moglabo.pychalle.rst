@@ -1,6 +1,14 @@
 pychalle Package
 ================
 
+:mod:`algebra` Module
+---------------------
+
+.. automodule:: moglabo.pychalle.algebra
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`algorithm` Module
 -----------------------
 
@@ -25,10 +33,10 @@ pychalle Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`formula` Module
----------------------
+:mod:`geometry` Module
+----------------------
 
-.. automodule:: moglabo.pychalle.formula
+.. automodule:: moglabo.pychalle.geometry
     :members:
     :undoc-members:
     :show-inheritance:
@@ -37,6 +45,14 @@ pychalle Package
 --------------------
 
 .. automodule:: moglabo.pychalle.linear
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`server` Module
+--------------------
+
+.. automodule:: moglabo.pychalle.server
     :members:
     :undoc-members:
     :show-inheritance:
