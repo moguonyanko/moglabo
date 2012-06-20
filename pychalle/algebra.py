@@ -164,6 +164,14 @@ def sleq(formulas):
 	
 	return equations
 	
+def zeta(exp):
+	'''
+	Riemann's zeta function.
+	exp: denominator exponent
+	'''
+	#TODO: Endress stream implement?
+	pass
+	
 if __name__ == '__main__':
 	print("algebra module load")
 

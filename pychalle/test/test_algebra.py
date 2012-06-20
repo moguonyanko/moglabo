@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+import math
 
 import moglabo.pychalle.algebra as ag
 
@@ -144,6 +145,17 @@ class TestFormula(unittest.TestCase):
 		res = a+b
 		
 		self.assertEqual(res.calc(), 13)
+
+class TestProgression(unittest.TestCase):
+	'''
+	Progression test class.
+	'''
+	def test_zeta(self):
+		'''
+		Zeta function test.
+		'''
+		res = ag.zeta(2)		
+		self.assertEqual(res, math.pi**2/6)
 
 if __name__ == '__main__':
 	print(__file__)
