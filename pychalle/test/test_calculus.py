@@ -6,7 +6,7 @@ import unittest
 
 import moglabo.pychalle.calculus as cl
 
-class TestSimpson(unittest.TestCase):
+class TestIntegral(unittest.TestCase):
 	'''
 	Simpson method test class.
 	'''
@@ -22,6 +22,20 @@ class TestSimpson(unittest.TestCase):
 		res = cl.simpson(fn1, 0, 1, largenum)
 		
 		self.assertEqual(round(res), 3)
+		
+	def test_trapezoid(self):
+		'''
+		Test integral by trapezoid.
+		'''
+		def testfunc(x):
+			return x**2+1.0
+			
+		res = cl.trapezoid(0,1,10,testfunc)
+		self.assertEqual(round(res, 5), 1.33500)
+		res = cl.trapezoid(0,1,50,testfunc)
+		self.assertEqual(round(res, 5), 1.33340)
+		res = cl.trapezoid(0,1,100,testfunc)
+		self.assertEqual(round(res, 5), 1.33335)
 
 class TestDifferentiate(unittest.TestCase):
 	'''

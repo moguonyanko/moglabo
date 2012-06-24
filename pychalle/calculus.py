@@ -26,6 +26,23 @@ def differentiate(fn, x, dx):
 	But an error to some extent.
 	'''
 	return (fn(x+dx)-fn(x))/dx
+	
+def trapezoid(upper, lower, divnum, func):
+	'''
+	Integral caluclation by trapezoid approximation.
+	'''
+	deltax = (lower-upper)/divnum
+	x = upper
+	s = 0.0
+	
+	for i in range(divnum-1):
+		x = x+deltax
+		y = func(x)
+		s += y
+	
+	s = deltax * ((func(upper)+func(lower))/2.0+s)
+	
+	return s
 
 #Entry point
 if __name__ == '__main__':
