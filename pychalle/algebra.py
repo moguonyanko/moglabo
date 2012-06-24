@@ -169,7 +169,7 @@ def zeta(exp):
 	Riemann's zeta function.
 	exp: denominator exponent
 	'''
-	#TODO: Endress stream implement?
+	#TODO: Infinity stream implement?
 	pass
 	
 if __name__ == '__main__':
