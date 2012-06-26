@@ -179,6 +179,8 @@ class Matrix():
 	Matrix class \
 	This is used to express linear mapping.
 	'''
+	invalid_index_message = "Invarid index recieved."
+	
 	def __init__(self, rows):
 		'''
 		Initialize matrix by received row vector.
@@ -189,7 +191,12 @@ class Matrix():
 		'''
 		Set value to matrix by row column tuple.
 		'''
-		self.rows[row_column[0]][row_column[1]] = value
+		if isinstance(row_column, tuple):
+			self.rows[row_column[0]][row_column[1]] = value
+		elif isinstance(row_column, int):
+			self.rows[row_column] = value
+		else:
+			raise ValueError(self.invalid_index_message)
 		
 	def __getitem__(self, row_column):
 		'''
@@ -202,7 +209,7 @@ class Matrix():
 		elif isinstance(row_column, int):
 			return self.rows[row_column]
 		else:
-			raise ValueError("Invarid index recieved.")
+			raise ValueError(self.invalid_index_message)
 		
 	def __add__(self, target):
 		'''matrix addition'''
@@ -378,11 +385,19 @@ class Matrix():
 	def swap(self, i, j):
 		'''
 		Swap rows for indexes.
-		Not create new matrix.
 		'''
-		tmp = self[i]
-		self[i] = self[j]
-		self[j] = tmp
+		cols = [v.cols for v in self]
+		cols = list(zip(*cols))
+
+		#Swap matrix rows.		
+		tmp = cols[i]
+		cols[i] = cols[j]
+		cols[j] = tmp
+		
+		idx = 0
+		for col in cols:
+			self[idx] = Vector(col)
+			idx += 1
 		
 def einheit(dim):
 	'''make identity matrix'''
@@ -561,7 +576,8 @@ def sweep_out(leftm, rightv):
 	
 	mat = Matrix(newvs)
 	
-	for i in range(msize):
+	i = 1
+	while i < msize:
 		pivot = i
 		j = i
 		while j < msize:

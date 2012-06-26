@@ -344,6 +344,24 @@ class TestMatrix(unittest.TestCase):
 		self.assertEqual(res1, True)
 		self.assertEqual(res2, True)
 		self.assertEqual(res3, False)
+		
+	def test_swap(self):
+		'''
+		Test matrix row swap.
+		'''
+		v1 = lr.Vector([2,0,3])
+		v2 = lr.Vector([0,1,0])
+		v3 = lr.Vector([4,0,2])
+		m1 = lr.Matrix([v1,v2,v3])
+
+		m1.swap(0,2)
+		
+		v4 = lr.Vector([3,0,2])
+		v5 = lr.Vector([0,1,0])
+		v6 = lr.Vector([2,0,4])
+		m2 = lr.Matrix([v4,v5,v6])
+		
+		self.assertEqual(m1, m2)		
 				
 class TestDetMatrix(unittest.TestCase):
 	'''
@@ -748,7 +766,7 @@ class TestSweepOut(unittest.TestCase):
 		self.assertEqual(resv, chkv)
 		'''
 		pass
-		
+			
 #Entry point
 if __name__ == '__main__':
 	print(__file__)
