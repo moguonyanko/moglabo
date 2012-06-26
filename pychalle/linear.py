@@ -394,10 +394,8 @@ class Matrix():
 		cols[i] = cols[j]
 		cols[j] = tmp
 		
-		idx = 0
-		for col in cols:
-			self[idx] = Vector(col)
-			idx += 1
+		self[i] = Vector(cols[i])
+		self[j] = Vector(cols[j])
 		
 def einheit(dim):
 	'''make identity matrix'''
