@@ -382,20 +382,26 @@ class Matrix():
 		'''
 		return len(self.rows)
 		
-	def swap(self, i, j):
+	def swap(self, i, j, target="row"):
 		'''
 		Swap rows for indexes.
 		'''
-		cols = [v.cols for v in self]
-		cols = list(zip(*cols))
+		if target == "row":
+			rows = [v.cols for v in self]
+			rows = list(zip(*rows))
 
-		#Swap matrix rows.		
-		tmp = cols[i]
-		cols[i] = cols[j]
-		cols[j] = tmp
-		
-		self[i] = Vector(cols[i])
-		self[j] = Vector(cols[j])
+			#Swap matrix rows.		
+			tmp = rows[i]
+			rows[i] = rows[j]
+			rows[j] = tmp
+			#TODO: Is need Vector create?
+			self[i] = Vector(rows[i])
+			self[j] = Vector(rows[j])
+		else: 
+			#Swap matrix columns.
+			tmp = self[i]
+			self[i] = self[j]
+			self[j] = tmp
 		
 def einheit(dim):
 	'''make identity matrix'''
@@ -573,6 +579,7 @@ def sweep_out(leftm, rightv):
 	newvs = leftm.rows + [rightv]
 	
 	mat = Matrix(newvs)
+	print(mat)
 	
 	i = 1
 	while i < msize:
@@ -583,14 +590,14 @@ def sweep_out(leftm, rightv):
 				pivot = j
 			j += 1
 	
-		mat.swap(i, pivot)
-		
 		if abs(mat[(i,i)]) < eps:
-			return Vector([])
+			return Vector([]) #singular
+
+		mat.swap(i, pivot)
 	
 		k = i+1
-		while k <= msize:
-			mat[(i,k)] /= mat[(i,i)]
+		while k < msize:
+			mat[(i,k)] /= mat[(i,i)] #TODO:ERROR
 			k += 1
 			
 		for idx in range(msize):

@@ -347,14 +347,14 @@ class TestMatrix(unittest.TestCase):
 		
 	def test_swap(self):
 		'''
-		Test matrix row swap.
+		Test matrix swap.
 		'''
 		v1 = lr.Vector([2,0,3])
 		v2 = lr.Vector([0,1,0])
 		v3 = lr.Vector([4,0,2])
 		m1 = lr.Matrix([v1,v2,v3])
 
-		m1.swap(0,2)
+		m1.swap(0,2)	#row swap
 		
 		v4 = lr.Vector([3,0,2])
 		v5 = lr.Vector([0,1,0])
@@ -362,6 +362,15 @@ class TestMatrix(unittest.TestCase):
 		m2 = lr.Matrix([v4,v5,v6])
 		
 		self.assertEqual(m1, m2)		
+
+		m1.swap(0,2,"column")	#column swap
+		
+		v4 = lr.Vector([2,0,4])
+		v5 = lr.Vector([0,1,0])
+		v6 = lr.Vector([3,0,2])
+		m3 = lr.Matrix([v4,v5,v6])
+	
+		self.assertEqual(m1, m3)
 				
 class TestDetMatrix(unittest.TestCase):
 	'''
@@ -751,7 +760,6 @@ class TestSweepOut(unittest.TestCase):
 		Test function of sweep out.
 		'''
 		#TODO: implement on the way.
-		'''
 		v1 = lr.Vector([1,4,7])
 		v2 = lr.Vector([-2,-5,-7])
 		v3 = lr.Vector([3,6,10])
@@ -764,8 +772,6 @@ class TestSweepOut(unittest.TestCase):
 		chkv = lr.Vector([1,2,3])
 		
 		self.assertEqual(resv, chkv)
-		'''
-		pass
 			
 #Entry point
 if __name__ == '__main__':
