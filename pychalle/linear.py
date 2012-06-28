@@ -402,6 +402,20 @@ class Matrix():
 			tmp = self[i]
 			self[i] = self[j]
 			self[j] = tmp
+			
+	def det(self):
+		'''
+		Matrix determinent calculate.
+		'''
+		#TODO: more than 3 dimention matrix
+		pass
+		
+	def decompose(self):
+		'''
+		Matrix decompose.
+		Default method is LU decomposition.
+		'''
+		pass	
 		
 def einheit(dim):
 	'''make identity matrix'''
@@ -448,9 +462,9 @@ def det(mat):
 	else:
 		pass
 
-def lu_discompose(mat):
+def lu_decompose(mat):
 	'''
-	LU-discomposition
+	LU-decomposition
 	'''
 	pass
 	
@@ -555,7 +569,7 @@ def spectral_decompose(mat):
 	'''
 	diag = diagonalize(mat)
 	matdim = mat.dim()
-	return [diag.rows[i].cols[i] for i in range(matdim[0])]
+	return [diag[(i,i)] for i in range(matdim[0])]
 	
 def transpose(mat):
 	'''
