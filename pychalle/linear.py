@@ -402,20 +402,6 @@ class Matrix():
 			tmp = self[i]
 			self[i] = self[j]
 			self[j] = tmp
-			
-	def det(self):
-		'''
-		Matrix determinent calculate.
-		'''
-		#TODO: more than 3 dimention matrix
-		pass
-		
-	def decompose(self):
-		'''
-		Matrix decompose.
-		Default method is LU decomposition.
-		'''
-		pass	
 		
 def einheit(dim):
 	'''make identity matrix'''
