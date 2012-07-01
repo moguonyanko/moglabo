@@ -354,7 +354,7 @@ class TestMatrix(unittest.TestCase):
 		v3 = lr.Vector([4,0,2])
 		m1 = lr.Matrix([v1,v2,v3])
 
-		m1.swap(0,2)	#row swap
+		m1.swap(0,2)	#column swap
 		
 		v4 = lr.Vector([3,0,2])
 		v5 = lr.Vector([0,1,0])
@@ -363,7 +363,7 @@ class TestMatrix(unittest.TestCase):
 		
 		self.assertEqual(m1, m2)		
 
-		m1.swap(0,2,"column")	#column swap
+		m1.swap(0,2,"row")	#row swap
 		
 		v4 = lr.Vector([2,0,4])
 		v5 = lr.Vector([0,1,0])
@@ -463,30 +463,30 @@ class TestLUDecompose(unittest.TestCase):
 		L and U each equal check.
 		'''
 		#TODO:implement now.
-		'''
-		v1 = lr.Vector([1,1,1])
-		v2 = lr.Vector([1,2,3])
-		v3 = lr.Vector([1,3,6])
-		m1 = lr.Matrix([v1,v2,v3])
+		v1 = lr.Vector([8,2,6,7])
+		v2 = lr.Vector([16,7,17,22])
+		v3 = lr.Vector([24,12,32,46])
+		v4 = lr.Vector([32,17,59,105])
+		m1 = lr.Matrix([v1,v2,v3,v4])
 		
 		res = lr.lu_decompose(m1)
 		ml = res[0]
 		mu = res[1]
 		
-		chkv1 = lr.Vector([1,-1,1])
-		chkv2 = lr.Vector([0,1,-2])
-		chkv3 = lr.Vector([0,0,1])
-		chkml = lr.Matrix([chkv1,chkv2,chkv3])		
+		chkv1 = lr.Vector([8,2,6,7])
+		chkv2 = lr.Vector([0,3,5,8])
+		chkv3 = lr.Vector([0,0,4,9])
+		chkv4 = lr.Vector([0,0,0,8])
+		chkml = lr.Matrix([chkv1,chkv2,chkv3,chkv4])		
 		
-		chkv4 = lr.Vector([1,0,0])
-		chkv5 = lr.Vector([1,1,0])
-		chkv6 = lr.Vector([1,2,1])
-		chkmu = lr.Matrix([chkv4,chkv5,chkv6])		
+		chkv5 = lr.Vector([1,0,0,0])
+		chkv6 = lr.Vector([2,1,0,0])
+		chkv7 = lr.Vector([3,2,1,0])
+		chkv8 = lr.Vector([4,3,5,1])
+		chkml = lr.Matrix([chkv5,chkv6,chkv7,chkv8])		
 
-		#self.assertEqual(ml, chkml)
-		#self.assertEqual(mu, chkmu)
-		'''
-		pass
+		self.assertEqual(ml, chkml)
+		self.assertEqual(mu, chkmu)
 
 class TestBaseExchange(unittest.TestCase):
 	'''
@@ -780,4 +780,3 @@ class TestSweepOut(unittest.TestCase):
 if __name__ == '__main__':
 	print(__file__)
 	unittest.main()
-

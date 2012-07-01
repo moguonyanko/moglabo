@@ -382,23 +382,30 @@ class Matrix():
 		'''
 		return len(self.rows)
 		
-	def swap(self, i, j, target="row"):
+	def getcolumns(self):
+		'''
+		Return matrix elements by columns form.
+		'''
+		rows = [v.cols for v in self]
+		
+		return list(zip(*rows))
+		
+	def swap(self, i, j, target="column"):
 		'''
 		Swap rows for indexes.
 		'''
-		if target == "row":
-			rows = [v.cols for v in self]
-			rows = list(zip(*rows))
+		if target == "column":
+			cols = self.getcolumns()
 
-			#Swap matrix rows.		
-			tmp = rows[i]
-			rows[i] = rows[j]
-			rows[j] = tmp
+			#Swap matrix columns.		
+			tmp = cols[i]
+			cols[i] = cols[j]
+			cols[j] = tmp
 			#TODO: Is need Vector create?
-			self[i] = Vector(rows[i])
-			self[j] = Vector(rows[j])
+			self[i] = Vector(cols[i])
+			self[j] = Vector(cols[j])
 		else: 
-			#Swap matrix columns.
+			#Swap matrix rows.
 			tmp = self[i]
 			self[i] = self[j]
 			self[j] = tmp
@@ -452,7 +459,42 @@ def lu_decompose(mat):
 	'''
 	LU-decomposition
 	'''
-	pass
+	cols = mat.getcolumns()
+	msize = len(cols)
+	for i in range(msize-1):
+		j = i+1
+		while j < msize:
+			cols[j*msize+i] /= cols[i*msize+i]
+			j += 1
+			k = i+1
+			while k < msize:
+				cols[j*msize+k] -= cols[j+msize+i]*cols[i*msize+k]
+				k += 1
+	
+	rows = list(*zip(cols))
+	
+	lvs = []
+	for l in range(len(rows)):
+		lvs.append(rows[l])
+		for ll in range(l):
+			lvs[ll] = 0
+			
+	lvecs = [Vector(vs) for vs in lvs]
+
+	uvs = []
+	for u in range(len(rows)):
+		uvs.append(rows[u])
+		uu = u
+		while uu < msize:
+			if uu == u:
+				uvs[uu] = 1
+			else:
+				uvs[uu] = 0
+			uu += 1
+
+	uvecs = [Vector(vs) for vs in uvs]
+	
+	return (Matrix(lvecs), Matrix(uvecs))
 	
 def base_exchange(matSrc, matDist):
 	'''
