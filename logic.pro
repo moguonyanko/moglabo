@@ -1,6 +1,6 @@
 /**
  * 2012 moguonyanko 
- * Training of Logical programing
+ * Training of logical programing
  * Reference: 
  * 		Information Science and Technology Center, Kobe University:Naoyuki Tamura
  *		PROLOG PROGRAMMING FOR ARTIFICIAL INTELLIGENCE:I.Bratoko

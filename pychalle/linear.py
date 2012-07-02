@@ -459,6 +459,7 @@ def lu_decompose(mat):
 	'''
 	LU-decomposition
 	'''
+	#TODO:implement on the way
 	cols = mat.getcolumns()
 	msize = len(cols)
 	for i in range(msize-1):

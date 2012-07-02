@@ -1,18 +1,19 @@
-;;;2012/06/22 moguonyanko
-;;;Practice coding CommonLisp to 
-;;;train abstraction and study math.
-;;;Reference:
-;;;		ANSI Common Lisp
-;;;			Paul Graham
-;;;		On Lisp
-;;;			Paul Graham
-;;;		Paradigms of Artifical Intelligence Programing:Case Studies in Common Lisp
-;;;			Peter Norvig
-;;;		Introduction to FORTRAN 90, Second Edition
-;;;			Larry Nyhoff, Sanford Leestma
-;;;
+;;; 2012/06/22 moguonyanko
+;;; Training of abstract programing
+;;; Reference:
+;;;	 ANSI Common Lisp
+;;;	  Paul Graham
+;;;	 On Lisp
+;;;	  Paul Graham
+;;;	 Paradigms of Artifical Intelligence Programing:
+;;;	 Case Studies in Common Lisp
+;;;	  Peter Norvig
+;;;	 Introduction to FORTRAN 90, Second Edition
+;;;	  Larry Nyhoff, Sanford Leestma
 
 (defun sum (lst)
+	;Calculate sum
+	;lst: calculate target list
 	(labels ((_sum (_lst acc)
 					 (if (null (car _lst))
 						 acc
