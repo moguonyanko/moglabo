@@ -10,6 +10,8 @@
 ;;;	  Peter Norvig
 ;;;	 Introduction to FORTRAN 90, Second Edition
 ;;;	  Larry Nyhoff, Sanford Leestma
+;;;	 Structure and Interpretation of Computer Programs -- 2nd ed
+;;;	  Harold Abelson and Gerald Jay Sussman,with Julie Sussman
 
 (defun sum (lst)
 	;Calculate sum
@@ -37,6 +39,4 @@
 	;Vector class
 	;elements : Retained numbers.
 	(elements))
-
-
 
