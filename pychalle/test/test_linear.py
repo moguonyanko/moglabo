@@ -371,7 +371,7 @@ class TestMatrix(unittest.TestCase):
 		m3 = lr.Matrix([v4,v5,v6])
 	
 		self.assertEqual(m1, m3)
-				
+						
 class TestDetMatrix(unittest.TestCase):
 	'''
 	Test matrix determinent class.
@@ -634,7 +634,19 @@ class TestEigen(unittest.TestCase):
 		chkm1 = lr.Matrix([chkv1,chkv2])
 		
 		self.assertEqual(res, chkm1)
+	
+	def test_trace(self):
+		'''
+		Test trace calculate function
+		'''
+		v1 = lr.Vector([4,5])
+		v2 = lr.Vector([-1,-2])
+		matA = lr.Matrix([v1,v2])
 		
+		res = lr.trace(matA)
+		
+		self.assertEqual(res, 2)
+	
 class TestTranspose(unittest.TestCase):
 	'''
 	Matrix transpose test class.

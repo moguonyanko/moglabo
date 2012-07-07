@@ -591,7 +591,14 @@ def diagonalize(mat):
 	else:
 		egmat = Matrix(vecs)
 		return egmat**-1*mat*egmat	
-	
+		
+def trace(mat):
+	'''
+	Trace of matrix.
+	'''
+	egvecs = eigen(mat)
+	return sum([egvalue for egvalue in egvecs])
+		
 def spectral_decompose(mat):
 	'''
 	Matrix spectral decomposition.
