@@ -6,6 +6,7 @@ import math
 
 import moglabo.pychalle.util as ut
 import moglabo.pychalle.algorithm as al
+import moglabo.pychalle.algebra as ag
 
 class Vector():
 	'''
@@ -409,6 +410,188 @@ class Matrix():
 			tmp = self[i]
 			self[i] = self[j]
 			self[j] = tmp
+	
+	def det(self):
+		'''
+		Caluculate determinant.
+		'''
+		#TODO: more than 3 dimention matrix
+		dimension = self.dim()
+		if dimension == [2,2]:
+			v1 = self.rows[0]
+			v2 = self.rows[1]
+			a = v1.cols[0]
+			b = v1.cols[1]
+			c = v2.cols[0]
+			d = v2.cols[1]
+		
+			return a*d-b*c
+		
+		elif dimension == [3,3]:
+			row1 = self.rows[0]
+			row2 = self.rows[1]
+			row3 = self.rows[2]
+		
+			A = row1.cols[0]
+			B = row1.cols[1]
+			C = row1.cols[2]
+			x = row2.cols[0]
+			y = row2.cols[1]
+			z = row2.cols[2]
+			a = row3.cols[0]
+			b = row3.cols[1]
+			c = row3.cols[2]
+		
+			return A*y*c+B*z*a+C*x*b-A*z*b-B*x*c-C*y*a
+		
+		else:
+			pass
+			
+	def __eigen_2dim(self):
+		'''
+		Calculate eigen value for 2 dimension matrix.
+		'''
+		formula = [0]*3
+		formula[0] = 1 #x^2 coef
+
+		rows = self.rows
+		cols1 = rows[0].cols
+		cols2 = rows[1].cols
+		a = cols1[0]
+		d = cols2[1]
+		formula[1] = a*-1+(-1)*d
+
+		formula[2] = self.det()
+	
+		egs = ag.quadeq(formula)
+	
+		res = {}
+		for eg in egs:
+			resA = a-eg
+			resC = cols2[0]
+	#TODO: reduct function is fault.
+	#		if resA != 1 and resC != 1:
+	#			if resA>resC:
+	#				resA,resC = ag.reduct(resA, resC)
+	#			elif resC<resA:	
+	#				resC,resA = ag.reduct(resC, resA)
+	#			else:
+	#				resA = resC = 1
+				
+			res[eg] = Vector([-resC,resA])
+	
+		return res
+	
+	def __eigen_3dim(self):
+		'''
+		Calculate eigen value for 3 dimension matrix.
+		'''
+		#TODO:More than 3 dimention case.
+		pass				
+
+	def eigen(self):
+		'''
+		Calculate eigen value.
+		Return dict has key of eigen value, 
+		value of eigen vector.
+		'''
+		dimension = self.dim()
+		if dimension == [2,2]:
+			return self.__eigen_2dim()
+		elif dimension == [3,3]:
+			return self.__eigen_3dim()
+		else:
+			pass
+		
+	def base_exchange(self, dist):
+		'''
+		Matrix base exchange.
+		'''
+		return self**-1*dist
+	
+	def base_exchanged_express(self, exchange_mat):
+		'''
+		Matrix expression after base exchange.
+		From standard base to any base.
+		'''
+		return exchange_mat**-1*self*exchange_mat
+		
+	def diagonalize(self):
+		'''
+		Matrix diagonalization.
+		Complex implement for check calculation.
+		'''
+		eg = self.eigen()
+		vecs = [eg[egv] for egv in sorted(eg)]
+		if self.symmetryp():
+			normvecs = [normalize(vec) for vec in vecs]
+			normmat = Matrix(normvecs)
+			transnormmat = normmat.transpose()
+			return transnormmat*self*normmat
+		else:
+			egmat = Matrix(vecs)
+			return egmat**-1*self*egmat	
+		
+	def transpose(self):
+		'''
+		Matrix transposition.
+		'''
+		cols = [row.cols for row in self.rows]
+		tmp = list(zip(*cols))
+		newrows = [Vector(newcols) for newcols in tmp]
+		
+		return Matrix(newrows)
+	
+	def lu_decompose(self):
+		'''
+		LU-decomposition of matrix.
+		'''
+		#TODO:implement on the way
+		cols = self.getcolumns()
+		msize = len(cols)
+		for i in range(msize-1):
+			j = i+1
+			while j < msize:
+				cols[j*msize+i] /= cols[i*msize+i]
+				j += 1
+				k = i+1
+				while k < msize:
+					cols[j*msize+k] -= cols[j+msize+i]*cols[i*msize+k]
+
+					k += 1
+	
+		rows = list(*zip(cols))
+	
+		lvs = []
+		for l in range(len(rows)):
+			lvs.append(rows[l])
+			for ll in range(l):
+				lvs[ll] = 0
+			
+		lvecs = [Vector(vs) for vs in lvs]
+
+		uvs = []
+		for u in range(len(rows)):
+			uvs.append(rows[u])
+			uu = u
+			while uu < msize:
+				if uu == u:
+					uvs[uu] = 1
+				else:
+					uvs[uu] = 0
+				uu += 1
+
+		uvecs = [Vector(vs) for vs in uvs]
+	
+		return (Matrix(lvecs), Matrix(uvecs))	
+		
+	def spectral_decompose(self):
+		'''
+		Matrix spectral decomposition.
+		'''
+		diag = self.diagonalize()
+		matdim = self.dim()
+		return [diag[(i,i)] for i in range(matdim[0])]
 		
 def einheit(dim):
 	'''make identity matrix'''
@@ -424,191 +607,51 @@ def det(mat):
 	matrix determinent
 	todo: more than 3 dimention matrix
 	'''
-	dimension = mat.dim()
-	if dimension == [2,2]:
-		v1 = mat.rows[0]
-		v2 = mat.rows[1]
-		a = v1.cols[0]
-		b = v1.cols[1]
-		c = v2.cols[0]
-		d = v2.cols[1]
-		
-		return a*d-b*c
-		
-	elif dimension == [3,3]:
-		row1 = mat.rows[0]
-		row2 = mat.rows[1]
-		row3 = mat.rows[2]
-		
-		A = row1.cols[0]
-		B = row1.cols[1]
-		C = row1.cols[2]
-		x = row2.cols[0]
-		y = row2.cols[1]
-		z = row2.cols[2]
-		a = row3.cols[0]
-		b = row3.cols[1]
-		c = row3.cols[2]
-		
-		return A*y*c+B*z*a+C*x*b-A*z*b-B*x*c-C*y*a
-		
-	else:
-		pass
+	return mat.det()
 
 def lu_decompose(mat):
 	'''
-	LU-decomposition
+	LU-decomposition of matrix.
 	'''
-	#TODO:implement on the way
-	cols = mat.getcolumns()
-	msize = len(cols)
-	for i in range(msize-1):
-		j = i+1
-		while j < msize:
-			cols[j*msize+i] /= cols[i*msize+i]
-			j += 1
-			k = i+1
-			while k < msize:
-				cols[j*msize+k] -= cols[j+msize+i]*cols[i*msize+k]
-				k += 1
-	
-	rows = list(*zip(cols))
-	
-	lvs = []
-	for l in range(len(rows)):
-		lvs.append(rows[l])
-		for ll in range(l):
-			lvs[ll] = 0
-			
-	lvecs = [Vector(vs) for vs in lvs]
-
-	uvs = []
-	for u in range(len(rows)):
-		uvs.append(rows[u])
-		uu = u
-		while uu < msize:
-			if uu == u:
-				uvs[uu] = 1
-			else:
-				uvs[uu] = 0
-			uu += 1
-
-	uvecs = [Vector(vs) for vs in uvs]
-	
-	return (Matrix(lvecs), Matrix(uvecs))
+	return mat.lu_decompose()
 	
 def base_exchange(matSrc, matDist):
 	'''
-	matrix base exchange
+	Matrix base exchange.
 	'''
-	return matSrc**-1*matDist
+	return matSrc.base_exchange(matDist)
 	
 def base_exchanged_express(express_mat, exchange_mat):
 	'''
-	expression matrix after base exchange 
-	from standard base to any base
+	Matrix expression after base exchange.
+	From standard base to any base.
 	'''
-	return exchange_mat**-1*express_mat*exchange_mat
-
-def gcdreduct(a, b):
-	'''
-	coefficient reduction
-	'''
-	#TODO: gcd function number mark destroy.
-	gcdval = abs(al.gcd(a, b))
-	if gcdval != 1:
-		a /= gcdval
-		b /= gcdval
-	
-	return (a, b)	
-	
-def __eigen_2dim(mat):
-	'''
-	Calculate eigen value for 2 dimension matrix.
-	'''
-	formula = [0]*3
-	formula[0] = 1 #x^2 coef
-
-	rows = mat.rows
-	cols1 = rows[0].cols
-	cols2 = rows[1].cols
-	a = cols1[0]
-	d = cols2[1]
-	formula[1] = a*-1+(-1)*d
-
-	formula[2] = det(mat)
-	
-	egs = ut.quadeq(formula)
-	
-	res = {}
-	for eg in egs:
-		resA = a-eg
-		resC = cols2[0]
-#TODO: gcd function is fault.
-#		if resA != 1 and resC != 1:
-#			if resA>resC:
-#				resA,resC = gcdreduct(resA, resC)
-#			elif resC<resA:	
-#				resC,resA = gcdreduct(resC, resA)
-#			else:
-#				resA = resC = 1
-				
-		res[eg] = Vector([-resC,resA])
-	
-	return res
-	
-def __eigen_3dim(mat):
-	'''
-	Calculate eigen value for 3 dimension matrix.
-	'''
-	#TODO:More than 3 dimention case.
-	pass	
+	return express_mat.base_exchanged_express(exchange_mat)
 
 def eigen(mat):
 	'''
 	Calculate eigen value.
 	'''
-	dimension = mat.dim()
-	if dimension == [2,2]:
-		return __eigen_2dim(mat)
-	elif dimension == [3,3]:
-		return __eigen_3dim(mat)
-	else:
-		pass
+	return mat.eigen()
 		
 def diagonalize(mat):
 	'''
 	Matrix diagonalization.
 	Complex implement for check calculation.
 	'''
-	eg = eigen(mat)
-	vecs = [eg[egv] for egv in sorted(eg)]
-	if mat.symmetryp():
-		normvecs = [normalize(vec) for vec in vecs]
-		normmat = Matrix(normvecs)
-		transnormmat = transpose(normmat)
-		return transnormmat*mat*normmat
-	else:
-		egmat = Matrix(vecs)
-		return egmat**-1*mat*egmat	
+	return mat.diagonalize()
 	
 def spectral_decompose(mat):
 	'''
 	Matrix spectral decomposition.
 	'''
-	diag = diagonalize(mat)
-	matdim = mat.dim()
-	return [diag[(i,i)] for i in range(matdim[0])]
+	return mat.spectral_decompose()
 	
 def transpose(mat):
 	'''
 	Matrix transpose.
 	'''
-	cols = [row.cols for row in mat.rows]
-	tmp = list(zip(*cols))
-	newrows = [Vector(newcols) for newcols in tmp]
-		
-	return Matrix(newrows)
+	return mat.transpose()
 
 def sweep_out(leftm, rightv):
 	'''
