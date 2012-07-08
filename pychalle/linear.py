@@ -593,6 +593,13 @@ class Matrix():
 		matdim = self.dim()
 		return [diag[(i,i)] for i in range(matdim[0])]
 		
+	def trace(self):
+		'''
+		Trace of matrix.
+		'''
+		egvecs = self.eigen()
+		return sum([egvalue for egvalue in egvecs])		
+		
 def einheit(dim):
 	'''make identity matrix'''
 	rows = ut.makeformatlist(dim, None)
@@ -640,6 +647,12 @@ def diagonalize(mat):
 	Complex implement for check calculation.
 	'''
 	return mat.diagonalize()
+	
+def trace(mat):
+	'''
+	Trace of matrix.
+	'''
+	return mat.trace()
 	
 def spectral_decompose(mat):
 	'''
