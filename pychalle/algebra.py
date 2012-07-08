@@ -72,7 +72,7 @@ def gcd(a, b):
 	'''
 	Calculate gcd.
 	'''
-	#TODO:If a or b is negative, value is undefined.
+	#TODO: If a or b is negative, value is undefined.
 	if b == 0:
 		return a
 	else:
@@ -80,6 +80,18 @@ def gcd(a, b):
 		if (not (a<0 and b<0)) and (a<0 or b<0):
 			x *= -1
 		return gcd(b, x)
+		
+def reduct(deno, nume):
+	'''
+	Coefficient reduction by gcd.
+	'''
+	#TODO: gcd function number mark destroy.
+	gcdval = abs(gcd(deno, nume))
+	if gcdval != 1:
+		deno /= gcdval
+		nume /= gcdval
+	
+	return (deno, nume)	
 	
 def discriminant(formula):
 	'''
@@ -94,9 +106,9 @@ def discriminant(formula):
 
 def quadeq(formula):
 	'''
-	a quadratic equation
+	Quadratic equation.
 	[x**2-2x-3] has arguments [1, -2, -3]
-	now real root and multiple root only deal.
+	Now real root and multiple root only deal.
 	'''
 	disc = discriminant(formula)
 	if disc < 0:

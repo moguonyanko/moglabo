@@ -6,6 +6,26 @@ import math
 
 import moglabo.pychalle.algebra as ag
 
+class TestGCD(unittest.TestCase):
+	'''
+	GCD test class.
+	'''
+	def test_gcd(self):
+		'''
+		Test of greatest common divisor.
+		'''
+		res = ag.gcd(10, 8)
+		
+		self.assertEqual(res, 2)
+
+	def test_reduct(self):
+		'''
+		Test of reduction by greatest common divisor.
+		'''
+		res = ag.reduct(10, 5)
+		
+		self.assertEqual(res, (2, 1))
+
 class TestIterationMethodTest(unittest.TestCase):
 	'''
 	Iteration method test class.

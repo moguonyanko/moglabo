@@ -128,25 +128,6 @@ def discriminant(formula):
 	
 	return b**2-4*a*c
 
-def quadeq(formula):
-	'''
-	a quadratic equation
-	[x**2-2x-3] has arguments [1, -2, -3]
-	now real root and multiple root only deal.
-	'''
-	disc = discriminant(formula)
-	if disc < 0:
-		raise ValueError("Real root is none.")
-
-	b = formula[1]
-	discroot = math.sqrt(disc)
-	deno = 2*formula[0]
-	
-	alpha = (-b+discroot)/deno
-	beta = (-b-discroot)/deno
-
-	return {alpha, beta}
-
 def makelist(length, initvalue=None):
 	'''
 	make standard list requested length
