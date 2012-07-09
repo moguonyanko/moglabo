@@ -69,6 +69,7 @@ class Vector():
 		'''
 		cmps = zip(self.cols, target.cols)
 		ps = [a+b for a,b in cmps]
+		
 		return Vector(ps)
 		
 	def __sub__(self, target):
@@ -77,6 +78,7 @@ class Vector():
 		'''
 		cmps = zip(self.cols, target.cols)
 		ps = [a-b for a,b in cmps]
+		
 		return Vector(ps)
 		
 	def __mul__(self, target):
@@ -100,6 +102,7 @@ class Vector():
 		for a,b in cmps:
 			if round(a, sg) != round(b, sg):
 				return False
+				
 		return True
 		
 	def __str__(self):
@@ -126,6 +129,7 @@ class Vector():
 		v1 = Vector([math.cos(rad), math.sin(rad)])
 		v2 = Vector([-math.sin(rad), math.cos(rad)])
 		rotatem = Matrix([v1, v2])
+		
 		return rotatem*self
 
 	def turn(self, degree):
@@ -139,40 +143,65 @@ class Vector():
 		v1 = Vector([math.cos(rad), math.sin(rad)])
 		v2 = Vector([math.sin(rad), -math.cos(rad)])
 		rotatem = Matrix([v1, v2])
+		
 		return rotatem*self
 		
+	def normalize(self):
+		'''
+		Vector normalization.
+		'''
+		orgcols = self.cols
+		tmp = [a**2 for a in orgcols]
+		distance = math.sqrt(sum(tmp))
+		newcols = list(map(lambda x: x*1/distance, orgcols))
+		
+		return Vector(newcols)
+		
+	def orthproj(self, targetv, normal=False):
+		'''
+		Orthographic projection vector.
+		'''
+		normv = self
+		if normal == False: 
+			normv = self.normalize()
+			
+		return targetv*normv*normv
+
 def normalize(vec):
-	'''normalize vector'''
-	orgcols = vec.cols
-	tmp = [a**2 for a in orgcols]
-	distance = math.sqrt(sum(tmp))
-	newcols = list(map(lambda x: x*1/distance, orgcols))
-	return Vector(newcols)
+	'''
+	Vector normalization.
+	'''
+	return vec.normalize()
 
 def orthproj(scalev, targetv):
-	'''orthographic projection'''
-	normv = normalize(scalev)
-	return targetv*normv*normv
+	'''
+	Orthographic projection vector.
+	'''
+	return scalev.orthproj(targetv)
 
 def rmcols(targetv, vecs):
-	'''remove vectors columns'''
+	'''
+	Remove columns from vector.
+	'''
 	orgv = Vector(targetv.cols)
 	for v in vecs:
 		orgv = orgv-v
+		
 	return orgv
 
 def orthogonalize(vecs):
 	'''Gram-Schmidt orthogonalization'''
-	normvs = [normalize(vecs[0])]
+	normvs = [vecs[0].normalize()]
 	tmp = vecs[1:len(vecs)]
 	for v in tmp:
 		orthvs = []
 		for normv in normvs:
-			otv = v*normv*normv #orthographic projection
+			otv = normv.orthproj(v, normal=True)
 			orthvs.append(otv)
 		rmdv = rmcols(v, orthvs)
-		nmv = normalize(rmdv)
+		nmv = rmdv.normalize()
 		normvs.append(nmv)
+		
 	return normvs
 
 class Matrix():
