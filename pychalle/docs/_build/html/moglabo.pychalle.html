@@ -146,8 +146,102 @@ rad: radian value</p>
 <div class="section" id="statistics-module">
 <h2><tt class="xref py py-mod docutils literal"><span class="pre">statistics</span></tt> Module<a class="headerlink" href="#statistics-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="util-module">
-<h2><tt class="xref py py-mod docutils literal"><span class="pre">util</span></tt> Module<a class="headerlink" href="#util-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-moglabo.pychalle.util">
+<span id="util-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">util</span></tt> Module<a class="headerlink" href="#module-moglabo.pychalle.util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="moglabo.pychalle.util.compose">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">compose</tt><big>(</big><em>*funcs</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#compose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.compose" title="Permalink to this definition">¶</a></dt>
+<dd><p>function compose</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moglabo.pychalle.util.discriminant">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">discriminant</tt><big>(</big><em>formula</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#discriminant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.discriminant" title="Permalink to this definition">¶</a></dt>
+<dd><p>discriminant of quadratic equation
+return real root number</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moglabo.pychalle.util.flatten">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">flatten</tt><big>(</big><em>ls</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#flatten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.flatten" title="Permalink to this definition">¶</a></dt>
+<dd><p>nested list flatten</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moglabo.pychalle.util.makeformatlist">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">makeformatlist</tt><big>(</big><em>size</em>, <em>initnum</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#makeformatlist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.makeformatlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>make adapt size and filled initnum list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moglabo.pychalle.util.makelist">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">makelist</tt><big>(</big><em>length</em>, <em>initvalue=None</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#makelist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.makelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>make standard list requested length
+[object]*length is all value equal object.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moglabo.pychalle.util.nearchoice">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">nearchoice</tt><big>(</big><em>target</em>, <em>sample</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#nearchoice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.nearchoice" title="Permalink to this definition">¶</a></dt>
+<dd><p>choice near value
+key is number type only.
+but should be modified algorithm.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moglabo.pychalle.util.newton_raphson">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">newton_raphson</tt><big>(</big><em>root</em>, <em>start</em>, <em>repeat</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#newton_raphson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.newton_raphson" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iteration method to calculate near solution.
+root: Origin of square root.
+start: Repeat start value.
+repeat: Repeat limit.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moglabo.pychalle.util.normalize_formula">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">normalize_formula</tt><big>(</big><em>form</em>, <em>target</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#normalize_formula"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.normalize_formula" title="Permalink to this definition">¶</a></dt>
+<dd><p>make 1 for simultanious linear equations</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moglabo.pychalle.util.rands">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">rands</tt><big>(</big><em>start</em>, <em>end</em>, <em>size</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#rands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.rands" title="Permalink to this definition">¶</a></dt>
+<dd><p>make random list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moglabo.pychalle.util.readcsv">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">readcsv</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#readcsv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.readcsv" title="Permalink to this definition">¶</a></dt>
+<dd><p>read csv file and return list</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moglabo.pychalle.util.sleq">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">sleq</tt><big>(</big><em>formulas</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#sleq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.sleq" title="Permalink to this definition">¶</a></dt>
+<dd><p>simultanious linear equations 
+formura length 2 (so 2 dimention), should be inverse matrix use. 
+but if LU resolve masterd, should be attempt to use it.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moglabo.pychalle.util.subtraction_formulas">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">subtraction_formulas</tt><big>(</big><em>formulas</em>, <em>target</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#subtraction_formulas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.subtraction_formulas" title="Permalink to this definition">¶</a></dt>
+<dd><p>make 0 for simultanious linear equations</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moglabo.pychalle.util.swap">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">swap</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#swap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.swap" title="Permalink to this definition">¶</a></dt>
+<dd><p>value swap function</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="moglabo.pychalle.util.tarai">
+<tt class="descclassname">moglabo.pychalle.util.</tt><tt class="descname">tarai</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="_modules/moglabo/pychalle/util.html#tarai"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#moglabo.pychalle.util.tarai" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tarai function.(Takeuchi function)
+Used at benchmark.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
@@ -160,7 +254,7 @@ rad: radian value</p>
 <li class="toctree-l2"><a class="reference internal" href="moglabo.pychalle.test.html#module-moglabo.pychalle.test.test_geometry"><tt class="docutils literal"><span class="pre">test_geometry</span></tt> Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="moglabo.pychalle.test.html#test-linear-module"><tt class="docutils literal"><span class="pre">test_linear</span></tt> Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="moglabo.pychalle.test.html#test-statistics-module"><tt class="docutils literal"><span class="pre">test_statistics</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="moglabo.pychalle.test.html#test-util-module"><tt class="docutils literal"><span class="pre">test_util</span></tt> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="moglabo.pychalle.test.html#module-moglabo.pychalle.test.test_util"><tt class="docutils literal"><span class="pre">test_util</span></tt> Module</a></li>
 </ul>
 </li>
 </ul>
@@ -185,7 +279,7 @@ rad: radian value</p>
 <li><a class="reference internal" href="#linear-module"><tt class="docutils literal"><span class="pre">linear</span></tt> Module</a></li>
 <li><a class="reference internal" href="#server-module"><tt class="docutils literal"><span class="pre">server</span></tt> Module</a></li>
 <li><a class="reference internal" href="#statistics-module"><tt class="docutils literal"><span class="pre">statistics</span></tt> Module</a></li>
-<li><a class="reference internal" href="#util-module"><tt class="docutils literal"><span class="pre">util</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-moglabo.pychalle.util"><tt class="docutils literal"><span class="pre">util</span></tt> Module</a></li>
 <li><a class="reference internal" href="#subpackages">Subpackages</a><ul>
 </ul>
 </li>
