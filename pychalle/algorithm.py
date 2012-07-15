@@ -278,28 +278,6 @@ def without_priority_queue_dijkstra(route, start, end):
 	
 	return (path[::-1], d[end])
 
-def sieve(n):
-	'''
-	Caluculate prime number length under "n" by Eratosthenes sieve.
-	n: under n prime number detect and return.
-	'''
-	prime = []
-	is_prime = ut.makelist(n+1, initvalue=True)
-	is_prime[0] = False
-	is_prime[1] = False
-
-	i = 2 #Most minimum prime number.
-	while i <= n:
-		if is_prime[i] == True:
-			prime.append(i)
-			j = 2*i
-			while j <= n:
-				is_prime[j] = False
-				j += i
-		i += 1
-	
-	return len(prime)
-
 #Dining Philosophers Problem	
 class Waiter():
 	'''

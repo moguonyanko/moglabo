@@ -11,9 +11,9 @@ cd test/
 
 ${PYPATH} `pwd`/test_util.py
 ${PYPATH} `pwd`/test_algebra.py
-${PYPATH} `pwd`/test_algorithm.py
 ${PYPATH} `pwd`/test_linear.py
-${PYPATH} `pwd`/test_geometry.py
 ${PYPATH} `pwd`/test_calculus.py
+${PYPATH} `pwd`/test_algorithm.py
+${PYPATH} `pwd`/test_geometry.py
 ${PYPATH} `pwd`/test_statistics.py
 

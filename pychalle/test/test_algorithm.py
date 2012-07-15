@@ -125,19 +125,6 @@ class TestRouteSearch(unittest.TestCase):
 		
 		#TODO:dijkstra function is not work normality.Must be repaired.
 		#self.assertEqual(res, ([A,C,D,F,E,G], 16))
-		
-class TestPrimeNumber(unittest.TestCase):
-	'''
-	Prime number algorithm test class.
-	'''
-	def test_sieve(self):
-		'''
-		Test for prime number check function.
-		'''
-		res = al.sieve(11)
-		self.assertEqual(res, 5)
-		#res = al.sieve(1000000)
-		#self.assertEqual(res, 78498)
 
 class TestMultiProcess(unittest.TestCase):
 	'''

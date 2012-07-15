@@ -6,9 +6,9 @@ import math
 
 import moglabo.pychalle.algebra as ag
 
-class TestGCD(unittest.TestCase):
+class TestPrimeNumberFunctions(unittest.TestCase):
 	'''
-	GCD test class.
+	Test class of prime number functions.
 	'''
 	def test_gcd(self):
 		'''
@@ -25,7 +25,32 @@ class TestGCD(unittest.TestCase):
 		res = ag.reduct(10, 5)
 		
 		self.assertEqual(res, (2, 1))
-
+		
+	def test_coprimep(self):
+		'''
+		Test coprimep function.
+		'''
+		res = ag.coprimep(2,5)
+		self.assertEqual(res, True)
+		res = ag.coprimep(2,10)
+		self.assertEqual(res, False)
+	
+	def test_prime(self):
+		'''
+		Test for prime number check function.
+		'''
+		res = ag.prime(11)
+		self.assertEqual(res, [2,3,5,7,11])
+		#res = al.prime(1000000)
+		#self.assertEqual(len(res), 78498)
+			
+	def test_euler_totient(self):
+		'''
+		Test Euler's totient function.
+		'''
+		res = ag.euler_totient(100)
+		self.assertEqual(res, 40)
+		
 class TestIterationMethodTest(unittest.TestCase):
 	'''
 	Iteration method test class.

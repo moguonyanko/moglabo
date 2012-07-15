@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import math
+import fractions as fr
+
+import moglabo.pychalle.util as ut
 
 class Term():
 	'''
@@ -183,6 +186,46 @@ def zeta(exp):
 	'''
 	#TODO: Infinity stream implement?
 	pass
+	
+def prime(n):
+	'''
+	Caluculate prime number length under "n" by Eratosthenes sieve.
+	n: under n prime number detect and return.
+	'''
+	prime = []
+	is_prime = ut.makelist(n+1, initvalue=True)
+	is_prime[0] = False
+	is_prime[1] = False
+
+	i = 2 #Most minimum prime number.
+	while i <= n:
+		if is_prime[i] == True:
+			prime.append(i)
+			j = 2*i
+			while j <= n:
+				is_prime[j] = False
+				j += i
+		i += 1
+	
+	return prime
+	
+def coprimep(a, b):
+	'''
+	Check on coprime.
+	'''
+	return gcd(a, b) == 1
+	
+def euler_totient(n):
+	'''
+	Euler's totient function.
+	'''
+	res = []
+	for m in range(n):
+		chknum = m+1
+		if coprimep(chknum, n):
+			res.append(chknum)
+	
+	return len(res)
 	
 if __name__ == '__main__':
 	print("algebra module load")
