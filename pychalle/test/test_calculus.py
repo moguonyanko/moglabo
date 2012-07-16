@@ -19,7 +19,7 @@ class TestIntegral(unittest.TestCase):
 			
 		largenum = 1000
 		
-		res = cl.simpson(fn1, 0, 1, largenum)
+		res = cl.simpson(fn1, 1, 0, largenum)
 		
 		self.assertEqual(round(res), 3)
 		

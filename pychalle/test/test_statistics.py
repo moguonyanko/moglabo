@@ -3,9 +3,11 @@
 
 import unittest
 import math
+import fractions as fr
 
-import moglabo.pychalle.statistics as ts
 import moglabo.pychalle.util as ym
+import moglabo.pychalle.algebra as ag
+import moglabo.pychalle.statistics as ts
 
 class TestMeanValue(unittest.TestCase):
 	samples = [5,8,10,11,12]
@@ -496,6 +498,42 @@ class TestBayes(unittest.TestCase):
 		res = ts.bayes(befores, results, target)
 		
 		self.assertEqual(round(res,2), round(0.205,2))
+		
+class TestProbability(unittest.TestCase):
+	'''
+	Test class of function find to probability. 
+	'''
+	def test_probability(self):
+		'''
+		The probability function test.
+		'''
+		fm = None
+		
+		def probfn(x):
+			a = ag.Term(3/4, 1)
+			b = ag.Term(-3/4*x**2, 1)
+			fm = ag.Formula([a, b])
+			return fm.calc()
+			
+		res = ts.probability(probfn, 1, -1)
+		self.assertEqual(round(res), 1)
+		
+	def test_expection(self):
+		'''
+		Test for expection function.
+		'''
+		#TODO: Need to improve Formula class.
+		'''
+		fm2 = None
+		def probfn2(y):
+			c = ag.Term(y)
+			fm2 = ag.Formula([c])
+			return fm2.calc()
+			
+		res = ts.expection(fm*fm2, 1, -1)
+		self.assertEqual(res, 0)
+		'''
+		pass
 	
 #Entry point
 if __name__ == '__main__':

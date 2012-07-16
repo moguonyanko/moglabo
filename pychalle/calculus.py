@@ -3,15 +3,15 @@
 
 import math
 
-def simpson(fn, bottom, top, divnum=1000):
+def simpson(fn, upper, lower, divnum=1000):
 	'''
 	Definite integral by simpson method.
 	'''
-	h = top - bottom
+	h = upper - lower
 	if(divnum>0):
 		h /= divnum
 	
-	x = bottom
+	x = lower
 	
 	res = 0
 	for i in range(divnum):

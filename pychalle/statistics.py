@@ -3,10 +3,13 @@
 
 import unittest
 import math
+import fractions as fr
 
-import moglabo.pychalle.const_statistics as cs
 import moglabo.pychalle.util as ut
 import moglabo.pychalle.linear as lr
+import moglabo.pychalle.calculus as cl
+
+import moglabo.pychalle.const.statistics as cs
 
 def mean(samples, mode="arith"):
 	'''
@@ -602,6 +605,18 @@ def bayes(befores, results, target):
 	nume = befores[target]*results[target]
 	
 	return nume/deno
+	
+def probability(probfn, upper, lower):
+	'''
+	Calculate probability by probability density function.
+	'''
+	return cl.simpson(probfn, upper, lower)
+
+def expection(fn, upper, lower):
+	'''
+	Calculate expection by probability density function.
+	'''
+	pass 
 	
 #Entry point
 if __name__ == '__main__':

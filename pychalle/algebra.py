@@ -35,12 +35,32 @@ class Formula():
 		Recieved Term object list.
 		'''
 		#TODO: Undefined number cannot deal.
+		#TODO: Function can not recieve.
+		
+		self.terms = terms
+
 		def form():
 			res = 0
 			for x in terms:
 				res += x.base**x.power
 			return res
 			
+		self.form = form
+
+	def __mul__(self, target):
+		'''
+		Multiply out.
+		'''
+		if isinstance(target, Formula) == False:
+			raise ValueError("Require Formula instance!")
+			
+		def form():
+			res = 0
+			for t in target.terms:
+				for x in self.terms:
+					res += t*x.base**x.power
+			return res
+		
 		self.form = form
 
 	def calc(self):
