@@ -309,15 +309,36 @@ class Matrix():
 			return self.__common_mulmatscala(target)
 		else:
 			pass
+			
+	def __propereq_dim2(self, n):
+		'''
+		Solve to power of 2x2 dimention matrix by proper equation.
+		n: Power number.
+		'''
+		#TODO: Bug included.
+		eg = self.eigen()
+		egvalues = sorted(list(eg.keys()))
+		a = egvalues[0]
+		b = egvalues[1] 
+		E = einheit(2)
+		
+		resm = ((b**n-a**n)/b-a)*self+((a**n*b-a*b**n)/b-a)*E
+		
+		#print(resm)
+		
+		return resm
 		
 	def __pow__(self, target):
 		'''
-		matrix inverse 
-		dimention 2 or more than 3,
-		method change.
+		If power number is -1, inverse matrix.
+		Dimention 2 or more than 3, method change.
+		target: Power number.
 		'''
 		if target != -1:
-				raise ValueError("only accept -1 for exponent value.")
+			if self.dim() == [2,2]:
+				self.__propereq_dim2(target)
+			else:
+				raise ValueError("Unsupported exponent value.")
 			
 		cols = self.rows[0].cols
 		if len(self.rows) == 2 and len(cols) == 2:

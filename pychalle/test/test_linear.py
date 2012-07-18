@@ -262,9 +262,9 @@ class TestMatrix(unittest.TestCase):
 		self.assertRaises(ValueError, m1.__pow__, -1)
 
 	def test_pow_dim2x2_notminus1(self):
-		'''test determinent by diimention 2x2 but not minus1,occured exception'''
-		v1 = lr.Vector([3,1])
-		v2 = lr.Vector([1,8])
+		'''test determinent by diimention 3x2 but not minus1,occured exception'''
+		v1 = lr.Vector([3,1,1])
+		v2 = lr.Vector([1,8,3])
 		m1 = lr.Matrix([v1,v2])
 		self.assertRaises(ValueError, m1.__pow__, 2)
 
@@ -790,6 +790,23 @@ class TestSweepOut(unittest.TestCase):
 		self.assertEqual(resv, chkv)
 		'''
 		pass
+		
+class MatrixPowerTest(unittest.TestCase):
+	'''
+	Matrix power calculateion function test.
+	'''
+	def test_matrix_pow_notminus1(self):
+		v1 = lr.Vector([1,1])
+		v2 = lr.Vector([1,0])
+		m1 = lr.Matrix([v1,v2])
+	
+		resm = m1**10
+	
+		chkv1 = lr.Vector([89,55])
+		chkv2 = lr.Vector([55,34])
+		chkm = lr.Matrix([chkv1,chkv2])
+	
+		self.assertEqual(resm, chkm)
 			
 #Entry point
 if __name__ == '__main__':
