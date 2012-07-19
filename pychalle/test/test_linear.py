@@ -796,14 +796,18 @@ class MatrixPowerTest(unittest.TestCase):
 	Matrix power calculateion function test.
 	'''
 	def test_matrix_pow_notminus1(self):
-		v1 = lr.Vector([1,1])
-		v2 = lr.Vector([1,0])
+		'''
+		Matrix power function test.
+		'''
+		v1 = lr.Vector([1.0,0.0])
+		v2 = lr.Vector([0.0,2.0])
 		m1 = lr.Matrix([v1,v2])
 	
-		resm = m1**10
-	
-		chkv1 = lr.Vector([89,55])
-		chkv2 = lr.Vector([55,34])
+		#resm = m1*m1 #easy test
+		resm = m1**2
+		
+		chkv1 = lr.Vector([1.0,0.0])
+		chkv2 = lr.Vector([0.0,4.0])
 		chkm = lr.Matrix([chkv1,chkv2])
 	
 		self.assertEqual(resm, chkm)

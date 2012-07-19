@@ -10,20 +10,20 @@ import moglabo.pychalle.algebra as ag
 
 class Vector():
 	'''
-	Vector class 
+	Vector class definition.
 	This class will be used Matrix.
 	'''
 	
 	'''
-	a significant figure 
-	suitably value set
+	A significant figure,
+	suitably value set.
 	'''
 	SIGNIFICANT_FIGURE = 4
 	
 	def __init__(self, cols):
 		'''
-		initialize vector
-		recieve column value
+		Initialize vector.
+		cols: column value list.
 		'''
 		self.cols = cols
 		
@@ -47,9 +47,9 @@ class Vector():
 		
 	def __common_mul_operate(self, target, org):
 		'''
-		common multiplication operation 
-		if argument is numbers.Real, scalar multiplication.
-		elif Vector, dot multiplication.
+		Common multiplication operation.
+		If argument is numbers.Real, scalar multiplication.
+		Elif Vector, dot multiplication.
 		'''
 		if isinstance(target, numbers.Real):
 			ps = [target*a for a in org.cols]
@@ -65,7 +65,7 @@ class Vector():
 	
 	def __add__(self, target):
 		'''
-		addition vector
+		Addition vector.
 		'''
 		cmps = zip(self.cols, target.cols)
 		ps = [a+b for a,b in cmps]
@@ -74,7 +74,7 @@ class Vector():
 		
 	def __sub__(self, target):
 		'''
-		subtract vector
+		Subtract vector.
 		'''
 		cmps = zip(self.cols, target.cols)
 		ps = [a-b for a,b in cmps]
@@ -83,19 +83,19 @@ class Vector():
 		
 	def __mul__(self, target):
 		'''
-		multiplication vector for left side vector
+		Multiplication vector for left side vector.
 		'''
 		return self.__common_mul_operate(target, self)
 
 	def __rmul__(self, target):
 		'''
-		multiplication vector for right side vector
+		Multiplication vector for right side vector.
 		'''
 		return self.__common_mul_operate(target, self)
 		
 	def __eq__(self, target):
 		'''
-		if point value equal, vectors are equal
+		If point value equal, vectors are equal.
 		'''
 		cmps = zip(self.cols, target.cols)
 		sg = self.SIGNIFICANT_FIGURE
@@ -107,20 +107,20 @@ class Vector():
 		
 	def __str__(self):
 		'''
-		point value return
+		Return point value by string expression.
 		'''
 		return str(self.cols)
 
 	def __sizecheck(self):
 		'''
-		dimention size check
+		Dimention size check.
 		'''
 		if len(self.cols) != 2:
 			raise ValueError("Sorry, now required 2 dimention vector.")
 
 	def rotate(self, degree):
 		'''
-		calculate rotate matorix or vector expression
+		Calculate rotate matorix or vector expression.
 		note:This function is adapt only 2 dimention vector.
 		'''
 		self.__sizecheck()
@@ -134,7 +134,7 @@ class Vector():
 
 	def turn(self, degree):
 		'''
-		turn vector
+		Turn vector function.
 		note:This function is adapt only 2 dimention vector.
 		'''
 		self.__sizecheck()
@@ -190,7 +190,9 @@ def rmcols(targetv, vecs):
 	return orgv
 
 def orthogonalize(vecs):
-	'''Gram-Schmidt orthogonalization'''
+	'''
+	Gram-Schmidt orthogonalization.
+	'''
 	normvs = [vecs[0].normalize()]
 	tmp = vecs[1:len(vecs)]
 	for v in tmp:
@@ -206,7 +208,7 @@ def orthogonalize(vecs):
 
 class Matrix():
 	'''
-	Matrix class \
+	Matrix class definition.
 	This is used to express linear mapping.
 	'''
 	invalid_index_message = "Invarid index recieved."
@@ -242,7 +244,9 @@ class Matrix():
 			raise ValueError(self.invalid_index_message)
 		
 	def __add__(self, target):
-		'''matrix addition'''
+		'''
+		Matrix addition.
+		'''
 		newrows = []
 		rows = self.rows
 		trows = target.rows
@@ -255,7 +259,9 @@ class Matrix():
 		return Matrix(newrows)
 		
 	def __sub__(self, target):
-		'''matrix subsctiption'''
+		'''
+		Matrix subsctiption.
+		'''
 		newrows = []
 		rows = self.rows
 		trows = target.rows
@@ -268,28 +274,36 @@ class Matrix():
 		return Matrix(newrows)
 
 	def __innermul(self, col, nums):
-		'''matrix column multipulate to numbers'''
+		'''
+		Matrix column multipulate to numbers.
+		'''
 		res = []
 		for i in range(len(nums)):
 			res.append(col[i]*nums[i])
 		return sum(res)
 	
 	def __mulvector(self, target):
-		'''matrix multipulate vector'''
+		'''
+		Matrix multipulate vector.
+		'''
 		orgcols = [v.cols for v in self.rows]
 		cols = list(zip(*orgcols))
 		newcols = list(map(lambda col: self.__innermul(col, target.cols), cols))
 		return Vector(newcols)
 
 	def __common_mulmatscala(self, target):
-		'''matrix multipulate scala common routine'''
+		'''
+		Matrix multipulate scala common routine.
+		'''
 		vecs = []
 		for v in self.rows:
 			vecs.append(Vector([x*target for x in v.cols]))
 		return Matrix(vecs)
 
 	def __mul__(self, target):
-		'''composite linear mapping'''
+		'''
+		Composite linear mapping.
+		'''
 		if isinstance(target, Vector):
 			if len(self.rows) != len(target.cols):
 				raise ValueError("difference size of matrix rows and vector columns.")
@@ -304,7 +318,9 @@ class Matrix():
 			pass
 			
 	def __rmul__(self, target):
-		'''composite linear mapping by right multipulate'''
+		'''
+		Composite linear mapping by right multipulate.
+		'''
 		if isinstance(target, numbers.Real):
 			return self.__common_mulmatscala(target)
 		else:
@@ -315,16 +331,14 @@ class Matrix():
 		Solve to power of 2x2 dimention matrix by proper equation.
 		n: Power number.
 		'''
-		#TODO: Bug included.
 		eg = self.eigen()
 		egvalues = sorted(list(eg.keys()))
+		
 		a = egvalues[0]
 		b = egvalues[1] 
 		E = einheit(2)
 		
-		resm = ((b**n-a**n)/b-a)*self+((a**n*b-a*b**n)/b-a)*E
-		
-		#print(resm)
+		resm = ((b**n-a**n)/(b-a))*self+((a**n*b-a*b**n)/(b-a))*E
 		
 		return resm
 		
@@ -334,45 +348,45 @@ class Matrix():
 		Dimention 2 or more than 3, method change.
 		target: Power number.
 		'''
+		is2x2 = self.dim() == [2,2]
 		if target != -1:
-			if self.dim() == [2,2]:
-				self.__propereq_dim2(target)
-			else:
-				raise ValueError("Unsupported exponent value.")
-			
-		cols = self.rows[0].cols
-		if len(self.rows) == 2 and len(cols) == 2:
-			detval = det(self)
-			if detval == 0:
-				raise ValueError("no matrix determinent.")
-				
-			v1 = self.rows[0]
-			v2 = self.rows[1]
-			a = v1.cols[0]
-			b = v1.cols[1]
-			c = v2.cols[0]
-			d = v2.cols[1]
-			scala = 1/detval
-			newv1 = Vector([d,-b])
-			newv2 = Vector([-c,a])
-			
-			return scala*Matrix([newv1,newv2])
-		elif self.squarep():
-			E = einheit(len(self.rows))
-			eqvecs = []
-			veccols = [row.cols for row in self.rows]
-			for erow in E.rows:
-				tmp = veccols+[erow.cols]
-				formuras = list(zip(*tmp))
-				eqs = ut.sleq(formuras)
-				eqvecs.append(Vector(eqs))
-			
-			return Matrix(eqvecs)
+			if is2x2:	return self.__propereq_dim2(target)
+			else:	raise ValueError("Unsupported exponent value.")
 		else:
-			pass			
+			cols = self.rows[0].cols
+			if is2x2:
+				detval = det(self)
+				if detval == 0:	raise ValueError("no matrix determinent.")
+				
+				v1 = self.rows[0]
+				v2 = self.rows[1]
+				a = v1.cols[0]
+				b = v1.cols[1]
+				c = v2.cols[0]
+				d = v2.cols[1]
+				scala = 1/detval
+				newv1 = Vector([d,-b])
+				newv2 = Vector([-c,a])
+			
+				return scala*Matrix([newv1,newv2])
+			elif self.squarep():
+				E = einheit(len(self.rows))
+				eqvecs = []
+				veccols = [row.cols for row in self.rows]
+				for erow in E.rows:
+					tmp = veccols+[erow.cols]
+					formuras = list(zip(*tmp))
+					eqs = ut.sleq(formuras)
+					eqvecs.append(Vector(eqs))
+			
+				return Matrix(eqvecs)
+			else:
+				pass			
 	
 	def __eq__(self, target):
-		'''if rows equal, return true.'''
+		'''
+		If rows equal, return true.
+		'''
 		rows = self.rows
 		tarrows = target.rows
 		rowlen = len(rows)
@@ -386,23 +400,37 @@ class Matrix():
 		return True
 				
 	def __str__(self):
-		'''rows string expression'''
+		'''
+		Rows string expression return.
+		'''
 		rows = self.rows
 		strs = ""
 		for row in rows:
 			strs += str(row)
 		return strs
 		
+	def __round__(self, n):
+		'''
+		Matrix element round.
+		'''	
+		pass
+		
 	def rotate(self, degree):
-		'''expression matrix of rotated degree this matrix'''
+		'''
+		Expression matrix of rotated degree this matrix.
+		'''
 		pass
 		
 	def turn(self, degree):
-		'''turn expression matrix'''
+		'''
+		Turn expression matrix.
+		'''
 		pass
 		
 	def squarep(self):
-		'''is this matrix square matrix?'''
+		'''
+		Predicate to confirm matrix square.
+		'''
 		rownum = len(self.rows)
 		colnum = len(self.rows[0].cols)
 		return rownum == colnum
@@ -415,7 +443,7 @@ class Matrix():
 		
 	def symmetryp(self):
 		'''
-		Is matrix symmetry?
+		Predicate to confirm matrix symmetry.
 		'''
 		if self.squarep() == False:
 			return False
@@ -501,7 +529,7 @@ class Matrix():
 		'''
 		Calculate eigen value for 2 dimension matrix.
 		'''
-		formula = [0]*3
+		formula = ut.makelist(length=3, initvalue=0)
 		formula[0] = 1 #x^2 coef
 
 		rows = self.rows
@@ -514,7 +542,10 @@ class Matrix():
 		formula[2] = self.det()
 	
 		egs = ag.quadeq(formula)
-	
+		
+		if len(egs) <= 1:
+			raise ValueError("Multiple root cannot deal.")
+		
 		res = {}
 		for eg in egs:
 			resA = a-eg
@@ -661,7 +692,7 @@ def einheit(dim):
 	
 def det(mat):
 	'''
-	matrix determinent
+	Matrix determinent.
 	todo: more than 3 dimention matrix
 	'''
 	return mat.det()
