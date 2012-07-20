@@ -792,5 +792,5 @@ def sweep_out(leftm, rightv):
 	
 #Entry point
 if __name__ == '__main__':
-	print("traingeom module load")
+	print("linear module load")
 		
