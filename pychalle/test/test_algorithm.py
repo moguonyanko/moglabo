@@ -70,6 +70,27 @@ class TestDynamicProgramming(unittest.TestCase):
 		res = al.knapsack(items, lim_weight)
 		#todo: test cannot pass
 		#self.assertEqual(res, 7)
+		
+	def test_tsp(self):
+		'''
+		Test of tsp function.
+		'''
+		g = al.Graph(vertexlen=5, direct=True)
+		g.append(start=0, end=1, cost=3)
+		g.append(start=0, end=3, cost=4)
+		g.append(start=1, end=2, cost=5)
+		g.append(start=2, end=0, cost=4)
+		g.append(start=2, end=3, cost=5)
+		g.append(start=3, end=4, cost=3)
+		g.append(start=4, end=0, cost=7)
+		g.append(start=4, end=1, cost=6)
+		
+		res = al.tsp(g)
+		
+		chk = 22 #Minimum cost.
+		
+		#TODO: Implement now.
+		#self.assertEqual(res, chk)
 
 class TestGraph(unittest.TestCase):
 	'''

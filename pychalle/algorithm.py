@@ -527,7 +527,15 @@ def gcd(a, b):
 		if (not (a<0 and b<0)) and (a<0 or b<0):
 			x *= -1
 		return gcd(b, x)	
-		
+	
+def tsp(rts):
+	'''
+	Traveling Salesman Probrem.
+	rts: Routes by graph expression.
+	'''
+	#TODO: Implement now.
+	pass
+	
 #Entry point
 if __name__ == '__main__':
 	print("algorithm module load")
