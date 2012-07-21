@@ -592,7 +592,7 @@ def stdresi(ms, ps, predictornum=1):
 
 def bayes(befores, results, target):
 	'''
-	Bayes' theorem
+	Bayes' theorem function.
 	befores: Before probability.
 	results: Probability of that result reach.
 	target: Number of test target.
@@ -616,7 +616,28 @@ def expection(fn, upper, lower):
 	'''
 	Calculate expection by probability density function.
 	'''
-	pass 
+	pass
+
+def likelihood(probfn, results):
+	'''
+	Likelihood function.
+	probfn: Target probability function.
+	results: Estimate results.
+	'''	 
+	x = 0
+	y = 0
+	
+	for res in results:
+		if res: x += 1
+		else: y += 1
+	
+	def lhfn(p):
+		xterm = probfn(p)
+		yterm = 1-probfn(p)
+		
+		return xterm**x*yterm**y
+	
+	return lhfn
 	
 #Entry point
 if __name__ == '__main__':

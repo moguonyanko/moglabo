@@ -432,6 +432,31 @@ class TestRegressionAnalysis(unittest.TestCase):
 		
 		self.assertEqual(rndres, chk)
 		
+	def test_likelihood(self):
+		'''
+		Likelihood test function.
+		'''
+		def chkfn(p):
+			return p**7*(1-p)**3
+			
+		def probfn(prob):
+			return prob
+		estimates = [True,False,True,False,True,True,True,True,False,True]
+		
+		resfn = ts.likelihood(probfn, estimates) 
+			
+		testp = 1/3
+		res = resfn(testp)
+		chk = chkfn(testp)
+			
+		self.assertEqual(res, chk)
+	
+	def test_logreg(self):
+		'''
+		Test logistic regression analysis function.
+		'''
+		pass
+		
 class TestRandomVariable(unittest.TestCase):
 	'''
 	Random variable function test class.
@@ -534,7 +559,7 @@ class TestProbability(unittest.TestCase):
 		self.assertEqual(res, 0)
 		'''
 		pass
-	
+		
 #Entry point
 if __name__ == '__main__':
 	print(__file__)
