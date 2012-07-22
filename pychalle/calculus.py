@@ -22,10 +22,23 @@ def simpson(fn, upper, lower, divnum=1000):
 
 def differentiate(fn, x, dx):
 	'''
-	Differentiate by standard definition.
-	But an error to some extent.
+	Calculate value by differentiate to x power function,
+	but an error to some extent.
+	fn: Differentiate target function.
+	x: Differentiate start point.
+	dx: Delta quantity from x.
 	'''
 	return (fn(x+dx)-fn(x))/dx
+
+def diffn(fn):
+	'''
+	Make function to differentiate given function.
+	fn: Differentiate target function.
+	'''
+	def nowdiffn(x, dx):
+		return differentiate(fn, x, dx)
+	
+	return nowdiffn
 	
 def trapezoid(upper, lower, divnum, func):
 	'''

@@ -41,22 +41,44 @@ class TestDifferentiate(unittest.TestCase):
 	'''
 	Differentiate class.
 	'''
-	def test_differentiate(self):
+	
+	#Test delta x.
+	dx = 0.00000000001
+	
+	def test_differentiate_calcvalue(self):
 		'''
-		test differentiate function.
+		Differentiate to x power function test.
 		'''
 		def fn1(x):
 			return x*x
 		
 		def fn2(x):
 			return math.cos(x)
-			
-		dx = 0.00000000001
 		
-		res = cl.differentiate(fn1, 2, dx)
+		res = cl.differentiate(fn1, 2, self.dx)
 		self.assertEqual(round(res), 4)
-		res2 = cl.differentiate(fn2, math.pi/2, dx)
+		res2 = cl.differentiate(fn2, math.pi/2, self.dx)
 		self.assertEqual(round(res2), -1)
+
+	def test_differentiate_makefunc(self):
+		'''
+		Make differentiate function test.
+		'''
+		def testfn(p):
+			return 7*math.log(p)+3*math.log(1-p)
+			
+		testprob = 0.1	
+			
+		resfn = cl.diffn(testfn)
+		
+		def chkfn(p):
+			return 7*(1/p)+3*(1/(1-p))*(-1)
+			
+		res = resfn(testprob, self.dx)
+		chk = chkfn(testprob)
+			
+		r = 2 #Convenient value for round...
+		self.assertEqual(round(res, r), round(chk, r))
 
 #Entry point
 if __name__ == '__main__':

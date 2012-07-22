@@ -382,8 +382,11 @@ class TestRegressionAnalysis(unittest.TestCase):
 	xs = [29,28,34,31,25,29,32,31,24,33,25,31,26,30]
 	ys = [77,62,93,84,59,64,80,75,58,91,51,73,65,84]
 	
-	#Predicted values
+	#Predicted values.
 	pys = [72.0,68.3,90.7,79.5,57.1,72.0,83.3,79.5,53.3,87.0,57.1,79.5,60.8,75.8]
+	
+	#Likelihood test values.
+	estimates = [True,False,True,False,True,True,True,True,False,True]
 	
 	def test_regression_analysis_single(self):
 		'''
@@ -441,16 +444,33 @@ class TestRegressionAnalysis(unittest.TestCase):
 			
 		def probfn(prob):
 			return prob
-		estimates = [True,False,True,False,True,True,True,True,False,True]
 		
-		resfn = ts.likelihood(probfn, estimates) 
+		resfn = ts.likelihood(probfn, self.estimates, log=False) 
 			
 		testp = 1/3
 		res = resfn(testp)
 		chk = chkfn(testp)
 			
 		self.assertEqual(res, chk)
-	
+
+	def test_likelihood_log(self):
+		'''
+		Logarithm likelihood function test.
+		'''
+		def chkfn(p):
+			return 7*math.log(p)+3*math.log(1-p)
+			
+		def probfn(prob):
+			return prob
+		
+		resfn = ts.likelihood(probfn, self.estimates, log=True) 
+			
+		testp = 1/2
+		res = resfn(testp)
+		chk = chkfn(testp)
+			
+		self.assertEqual(res, chk)
+
 	def test_logreg(self):
 		'''
 		Test logistic regression analysis function.

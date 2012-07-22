@@ -618,24 +618,28 @@ def expection(fn, upper, lower):
 	'''
 	pass
 
-def likelihood(probfn, results):
+def likelihood(probfn, results, log=True):
 	'''
 	Likelihood function.
 	probfn: Target probability function.
 	results: Estimate results.
+	log: Frag of logarithm expression.
 	'''	 
-	x = 0
-	y = 0
+	powx = 0
+	powy = 0
 	
 	for res in results:
-		if res: x += 1
-		else: y += 1
+		if res: powx += 1
+		else: powy += 1
 	
 	def lhfn(p):
 		xterm = probfn(p)
 		yterm = 1-probfn(p)
 		
-		return xterm**x*yterm**y
+		if log:
+			return powx*math.log(xterm)+powy*math.log(yterm)
+		else:
+			return xterm**powx*yterm**powy
 	
 	return lhfn
 	
