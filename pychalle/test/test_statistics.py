@@ -7,6 +7,7 @@ import fractions as fr
 
 import moglabo.pychalle.util as ym
 import moglabo.pychalle.algebra as ag
+import moglabo.pychalle.calculus as cl
 import moglabo.pychalle.statistics as ts
 
 class TestMeanValue(unittest.TestCase):
@@ -427,11 +428,10 @@ class TestRegressionAnalysis(unittest.TestCase):
 		x2s = [80,0,200,200,300,230,40,0,330,180]
 		ys = [469,366,371,208,246,297,363,436,198,364]
 		
-		res = ts.multiple_regression_analysis(x1s,x2s,ys)
+		res = ts.multireg(x1s,x2s,ys)
 		rndres = [round(x,1) for x in res]
 		
-		#chk = [[1,41.5],[1,-0.3],[0,65.3]]
-		chk = [41.5,-0.3,65.3]
+		chk = [41.5,-0.3,65.3] # y=41.5x1-0.3x2+65.3
 		
 		self.assertEqual(rndres, chk)
 		
@@ -470,6 +470,20 @@ class TestRegressionAnalysis(unittest.TestCase):
 		chk = chkfn(testp)
 			
 		self.assertEqual(res, chk)
+		
+	def test_maxlikelihood(self):
+		'''
+		Test function of Maximum Likelihood Estimate.
+		'''
+		def probfn(prob):
+			return prob
+		fn = ts.likelihood(probfn, self.estimates, log=True) 
+		
+		dfn = cl.diffn(fn)
+		
+		chk = 7/10
+		#TODO: solver is not prepared.
+		#self.assertEqual(res, chk)
 
 	def test_logreg(self):
 		'''

@@ -533,7 +533,7 @@ class Graph():
 		self.coefs = coefs
 		self.scope = scope
 	
-def multiple_regression_analysis(x1s, x2s, ys):
+def multireg(x1s, x2s, ys):
 	'''
 	Multiple regression analysis.
 	'''
@@ -642,6 +642,12 @@ def likelihood(probfn, results, log=True):
 			return xterm**powx*yterm**powy
 	
 	return lhfn
+	
+def maxlikelihood():
+	'''
+	Maximum Likelihood Estimate.
+	'''
+	pass
 	
 #Entry point
 if __name__ == '__main__':
