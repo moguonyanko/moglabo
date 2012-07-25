@@ -242,6 +242,13 @@ def cor(xs,ys):
 	
 	return sxy/math.sqrt(sxx*syy)	
 	
+def cormat(datamap):
+	'''
+	Create correlation coefficient matrix.
+	datas: Target data map.
+	'''
+	pass
+	
 def t_test(xs, ys):
 	'''t test'''
 	devm = mean(xs)-mean(ys)

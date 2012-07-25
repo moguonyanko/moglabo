@@ -646,6 +646,26 @@ class TestEigen(unittest.TestCase):
 		res = lr.trace(matA)
 		
 		self.assertEqual(res, 2)
+			
+	def test_jacobi(self):
+		'''
+		Jacobi method test.
+		'''
+		v1 = lr.Vector([1,0.19,0.36])
+		v2 = lr.Vector([0.19,1,0.30])
+		v3 = lr.Vector([0.36,0.30,1])
+		m1 = lr.Matrix([v1,v2,v3])
+		
+		res = m1.jacobi()
+		#res = m1.eigen()
+		
+		chk = {
+			1.6 : lr.Vector([0.57,0.52,0.63]), 
+			0.8 : lr.Vector([-0.60,0.79,-0.11]),
+			0.6 : lr.Vector([-0.55,-0.32,0.77])
+		}		
+		
+		self.assertEqual(res, chk)
 	
 class TestTranspose(unittest.TestCase):
 	'''

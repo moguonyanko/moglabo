@@ -568,21 +568,31 @@ class Matrix():
 		Calculate eigen value for 3 dimension matrix.
 		'''
 		#TODO:More than 3 dimention case.
-		pass				
-
+		pass			
+		
+	def jacobi(self):
+		'''
+		Matrix Jacobi method.
+		'''
+		#TODO: After implement, this function is concealed.
+		pass			
+		
 	def eigen(self):
 		'''
 		Calculate eigen value.
 		Return dict has key of eigen value, 
 		value of eigen vector.
 		'''
+		#if self.symmetryp():
+		#	return self.__jacobi()
+			
 		dimension = self.dim()
 		if dimension == [2,2]:
 			return self.__eigen_2dim()
 		elif dimension == [3,3]:
 			return self.__eigen_3dim()
 		else:
-			pass
+			raise ValueError("Sorry, unsupported dimension.")
 		
 	def base_exchange(self, dist):
 		'''

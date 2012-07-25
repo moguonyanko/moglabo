@@ -221,6 +221,12 @@ class TestCorrelation(unittest.TestCase):
 		'''test correlation coefficient'''
 		result = ts.cor(self.xs, self.ys)
 		self.assertEqual(round(result,4), self.res)
+		
+	def test_cormat(self):
+		'''
+		Correlation coefficient matrix test.
+		'''
+		pass
 
 class TestTTest(unittest.TestCase):
 	xs = [70,75,70,85,90,70,80,75]
