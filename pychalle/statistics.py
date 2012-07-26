@@ -228,7 +228,9 @@ def chisq(freqpair):
 	return x
 	
 def cor(xs,ys):
-	'''correlation coreffcient'''
+	'''
+	Calculate correlation coreffcient.
+	'''
 	mx = mean(xs)
 	my = mean(ys)
 	sxx = 0
@@ -242,15 +244,22 @@ def cor(xs,ys):
 	
 	return sxy/math.sqrt(sxx*syy)	
 	
-def cormat(datamap):
+def cormat(datas):
 	'''
 	Create correlation coefficient matrix.
-	datas: Target data map.
+	datas: Target datas.
 	'''
-	pass
+	rng = range(len(datas))
+	vecs = []
+	for n in rng:
+		vecs.append(lr.Vector([cor(datas[n], datas[m]) for m in rng]))
+		
+	return lr.Matrix(vecs)	
 	
 def t_test(xs, ys):
-	'''t test'''
+	'''
+	T TEST function.
+	'''
 	devm = mean(xs)-mean(ys)
 	deverr = stderrdev(xs, ys)
 	t = devm/deverr
@@ -259,7 +268,9 @@ def t_test(xs, ys):
 	return (t, abs(t)>abs(tdist))
 
 def t_test_inter(xs, ys):
-	'''t test with interraction'''
+	'''
+	T TEST function with interraction.
+	'''
 	devm = mean(xs)-mean(ys)
 	xys = list(zip(xs, ys))
 	devs = list(map(lambda pair: pair[0]-pair[1], xys))

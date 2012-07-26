@@ -8,6 +8,7 @@ import fractions as fr
 import moglabo.pychalle.util as ym
 import moglabo.pychalle.algebra as ag
 import moglabo.pychalle.calculus as cl
+import moglabo.pychalle.linear as lr
 import moglabo.pychalle.statistics as ts
 
 class TestMeanValue(unittest.TestCase):
@@ -226,7 +227,24 @@ class TestCorrelation(unittest.TestCase):
 		'''
 		Correlation coefficient matrix test.
 		'''
-		pass
+		x1 = [86,71,42,62,96,39,50,78,51,89]
+		x2 = [79,75,43,58,97,33,53,66,44,92]
+		x3 = [67,78,39,98,61,45,64,52,76,93]
+		x4 = [68,84,44,95,63,50,72,47,72,91]
+		
+		datas = [x1, x2, x3, x4]
+		
+		resm = ts.cormat(datas)
+		resm = round(resm, 3)
+		
+		v1 = lr.Vector([1.0,0.967,0.376,0.311])
+		v2 = lr.Vector([0.967,1.0,0.415,0.398])
+		v3 = lr.Vector([0.376,0.415,1.0,0.972])
+		v4 = lr.Vector([0.311,0.398,0.972,1.0])
+		
+		chkm = lr.Matrix([v1, v2, v3, v4])
+		
+		self.assertEqual(resm, chkm)
 
 class TestTTest(unittest.TestCase):
 	xs = [70,75,70,85,90,70,80,75]

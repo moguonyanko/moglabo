@@ -396,6 +396,8 @@ class Matrix():
 			
 		for i in range(rowlen):
 			if rows[i] != tarrows[i]:
+				print(rows[i])
+				print(tarrows[i])
 				return False
 		return True
 				
@@ -412,8 +414,13 @@ class Matrix():
 	def __round__(self, n):
 		'''
 		Matrix element round.
-		'''	
-		pass
+		'''
+		#TODO: not make new Matrix.
+		newrows = []	
+		for row in self.rows:
+			newrows.append(Vector([round(value, n) for value in row.cols]))
+			
+		return Matrix(newrows)
 		
 	def rotate(self, degree):
 		'''
