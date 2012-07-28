@@ -246,6 +246,33 @@ def euler_totient(n):
 			res.append(chknum)
 	
 	return len(res)
+
+def even(n):
+	'''
+	Is even number?
+	'''
+	return n % 2 == 0
+	
+def odd(n):
+	'''
+	Is odd number?
+	'''
+	return n % 2 != 0
+
+def collatz(n):
+	'''
+	Collatz probrem function.
+	n: Natural Number (not zero).
+	'''
+	if n == 0:
+		raise ValueError("Given Natural Number but not zero.")
+	
+	if n == 1:
+		return n
+	elif even(n):
+		return collatz(n/2)
+	else: #odd number except 1
+		return collatz(n*3+1)
 	
 if __name__ == '__main__':
 	print("algebra module load")

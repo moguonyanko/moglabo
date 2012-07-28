@@ -203,6 +203,47 @@ class TestProgression(unittest.TestCase):
 		#self.assertEqual(res, math.pi**2/6)
 		#TODO Implement method thinking now.
 		pass
+		
+class TestEvenOdd(unittest.TestCase):
+	'''
+	Test class to judge even or odd functions.
+	'''
+	def test_even(self):
+		'''
+		Even number test.
+		'''
+		r1 = ag.even(2)
+		self.assertEqual(r1, True)
+		r2 = ag.even(0)
+		self.assertEqual(r2, True)
+		r3 = ag.even(7)
+		self.assertEqual(r3, False)
+		
+	def test_odd(self):
+		'''
+		Odd number test.
+		'''
+		r1 = ag.odd(3)
+		self.assertEqual(r1, True)
+		r3 = ag.odd(0)
+		self.assertEqual(r3, False)
+		
+class TestCollatz(unittest.TestCase):
+	'''
+	Collatz probrem test class.
+	'''
+	def test_collatz(self):
+		'''
+		Collatz probrem function test.
+		'''
+		one = 1
+		
+		r1 = ag.collatz(10)
+		self.assertEqual(r1, one)
+		r2 = ag.collatz(31)
+		self.assertEqual(r2, one)
+		r3 = ag.collatz(3*2**53)
+		self.assertEqual(r3, one)
 
 if __name__ == '__main__':
 	print(__file__)

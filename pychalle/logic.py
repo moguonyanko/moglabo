@@ -36,6 +36,12 @@ def variablep(x):
 	Is x a variable (a symbol begining with ?) ?
 	'''
 	pass
+	
+def natp(n):
+	'''
+	Is n Natural Number?.
+	'''
+	pass
 
 if __name__ == '__main__':
 	print("logic module load")
