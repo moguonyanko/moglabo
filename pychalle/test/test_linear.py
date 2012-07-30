@@ -646,6 +646,25 @@ class TestEigen(unittest.TestCase):
 		res = lr.trace(matA)
 		
 		self.assertEqual(res, 2)
+		
+	def test_givens_rotate(self):
+		'''
+		Givens rotation function test.
+		'''
+		v1 = lr.Vector([1,0.19,0.36])
+		v2 = lr.Vector([0.19,1,0.30])
+		v3 = lr.Vector([0.36,0.30,1])
+		m1 = lr.Matrix([v1,v2,v3])
+		
+		resm = m1.rotate(degree=0, method="givens")
+		
+		#TODO:test code is not uncompleted
+		chkv1 = lr.Vector([1,0.19,0.36])
+		chkv2 = lr.Vector([0.19,1,0.30])
+		chkv3 = lr.Vector([0.36,0.30,1])
+		chkm = lr.Matrix([chkv1,chkv2,chkv3])
+		
+		#self.assertEqual(resm, chkm)
 			
 	def test_jacobi(self):
 		'''
@@ -656,7 +675,7 @@ class TestEigen(unittest.TestCase):
 		v3 = lr.Vector([0.36,0.30,1])
 		m1 = lr.Matrix([v1,v2,v3])
 		
-		res = m1.jacobi()
+		res = lr.jacobi(m1)
 		#res = m1.eigen()
 		
 		chk = {
@@ -787,6 +806,23 @@ class TestSpecialMethodAccessor(unittest.TestCase):
 			#print(type(v))
 			self.assertEqual(v, v1)
 
+	def test_matrix_pow_notminus1(self):
+		'''
+		Matrix power function test.
+		'''
+		v1 = lr.Vector([1.0,0.0])
+		v2 = lr.Vector([0.0,2.0])
+		m1 = lr.Matrix([v1,v2])
+	
+		#resm = m1*m1 #easy test
+		resm = m1**2
+		
+		chkv1 = lr.Vector([1.0,0.0])
+		chkv2 = lr.Vector([0.0,4.0])
+		chkm = lr.Matrix([chkv1,chkv2])
+	
+		self.assertEqual(resm, chkm)
+
 class TestSweepOut(unittest.TestCase):
 	'''
 	Test class for sweep out function.
@@ -812,27 +848,33 @@ class TestSweepOut(unittest.TestCase):
 		'''
 		pass
 		
-class MatrixPowerTest(unittest.TestCase):
+class MatrixMinMaxTest(unittest.TestCase):
 	'''
-	Matrix power calculateion function test.
+	Matrix min max value function test class.
 	'''
-	def test_matrix_pow_notminus1(self):
+	v1 = lr.Vector([1,4,7])
+	v2 = lr.Vector([-2,-50,-7])
+	v3 = lr.Vector([3,6,10])
+	v4 = lr.Vector([1,-10,100])
+	m1 = lr.Matrix([v1,v2,v3,v4])
+	def test_min(self):
 		'''
-		Matrix power function test.
+		Matrix min value test.
 		'''
-		v1 = lr.Vector([1.0,0.0])
-		v2 = lr.Vector([0.0,2.0])
-		m1 = lr.Matrix([v1,v2])
+		res = self.m1.minElement()		
+
+		chk = (1,1,-50) #column index 1 and row index 1, value is -50.
+		self.assertEqual(res, chk)
 	
-		#resm = m1*m1 #easy test
-		resm = m1**2
-		
-		chkv1 = lr.Vector([1.0,0.0])
-		chkv2 = lr.Vector([0.0,4.0])
-		chkm = lr.Matrix([chkv1,chkv2])
-	
-		self.assertEqual(resm, chkm)
-			
+	def test_max(self):
+		'''
+		Matrix max value test.
+		'''
+		res = self.m1.maxElement()		
+
+		chk = (2,3,100) #column index 2 and row index 3, value is 100.
+		self.assertEqual(res, chk)
+
 #Entry point
 if __name__ == '__main__':
 	print(__file__)

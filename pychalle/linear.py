@@ -222,9 +222,12 @@ class Matrix():
 	def __setitem__(self, row_column, value):
 		'''
 		Set value to matrix by row column tuple.
+		If row_column is tuple, set element. 
+		Tuple is composed (column index, row index).
+		If row_column is int, set vector. 
 		'''
 		if isinstance(row_column, tuple):
-			self.rows[row_column[0]][row_column[1]] = value
+			self.rows[row_column[1]][row_column[0]] = value
 		elif isinstance(row_column, int):
 			self.rows[row_column] = value
 		else:
@@ -234,10 +237,11 @@ class Matrix():
 		'''
 		Get value from matrix by row column tuple.
 		If row_column is tuple, return element. 
+		Tuple is composed (column index, row index).
 		If row_column is int, return row of vector. 
 		'''
 		if isinstance(row_column, tuple):
-			return self.rows[row_column[0]][row_column[1]]
+			return self.rows[row_column[1]][row_column[0]]
 		elif isinstance(row_column, int):
 			return self.rows[row_column]
 		else:
@@ -422,11 +426,57 @@ class Matrix():
 			
 		return Matrix(newrows)
 		
-	def rotate(self, degree):
+	def find(self, pred):
+		'''
+		Find target element to fulfill the given predicate.
+		'''	
+		row = 0
+		col = 0
+		rsize = len(self.rows)
+		csize = len(self[row])
+		
+		retcol = 0
+		retrow = 0
+		value = self[(col,row)]
+		while row < rsize:
+			col = 0
+			maxcol = 0
+			while col < csize:
+				if pred(self[(col,row)],value):
+					retcol = col
+					retrow = row
+					value = self[(col,row)]
+				col += 1
+			row += 1
+		
+		return (retcol, retrow, value)		
+	
+	def minElement(self):
+		'''
+		Get minimum element in this matrix.
+		'''
+		def pred(now, target):
+			return now < target
+		
+		return self.find(pred)
+		
+	def maxElement(self):
+		'''
+		Get maximum element in this matrix.
+		'''
+		def pred(now, target):
+			return now > target
+		
+		return self.find(pred)
+		
+	def rotate(self, degree=0, method="givens"):
 		'''
 		Expression matrix of rotated degree this matrix.
 		'''
-		pass
+		if method == "givens":
+			pass
+		else:
+			raise ValueError("Sorry, "+method+" is unsupported.")
 		
 	def turn(self, degree):
 		'''
@@ -577,13 +627,6 @@ class Matrix():
 		#TODO:More than 3 dimention case.
 		pass			
 		
-	def jacobi(self):
-		'''
-		Matrix Jacobi method.
-		'''
-		#TODO: After implement, this function is concealed.
-		pass			
-		
 	def eigen(self):
 		'''
 		Calculate eigen value.
@@ -640,63 +683,19 @@ class Matrix():
 		
 		return Matrix(newrows)
 	
-	def lu_decompose(self):
-		'''
-		LU-decomposition of matrix.
-		'''
-		#TODO:implement on the way
-		cols = self.getcolumns()
-		msize = len(cols)
-		for i in range(msize-1):
-			j = i+1
-			while j < msize:
-				cols[j*msize+i] /= cols[i*msize+i]
-				j += 1
-				k = i+1
-				while k < msize:
-					cols[j*msize+k] -= cols[j+msize+i]*cols[i*msize+k]
-
-					k += 1
-	
-		rows = list(*zip(cols))
-	
-		lvs = []
-		for l in range(len(rows)):
-			lvs.append(rows[l])
-			for ll in range(l):
-				lvs[ll] = 0
-			
-		lvecs = [Vector(vs) for vs in lvs]
-
-		uvs = []
-		for u in range(len(rows)):
-			uvs.append(rows[u])
-			uu = u
-			while uu < msize:
-				if uu == u:
-					uvs[uu] = 1
-				else:
-					uvs[uu] = 0
-				uu += 1
-
-		uvecs = [Vector(vs) for vs in uvs]
-	
-		return (Matrix(lvecs), Matrix(uvecs))	
-		
-	def spectral_decompose(self):
-		'''
-		Matrix spectral decomposition.
-		'''
-		diag = self.diagonalize()
-		matdim = self.dim()
-		return [diag[(i,i)] for i in range(matdim[0])]
-		
 	def trace(self):
 		'''
 		Trace of matrix.
 		'''
 		egvecs = self.eigen()
 		return sum([egvalue for egvalue in egvecs])		
+
+def jacobi(mat):
+	'''
+	Matrix Jacobi method.
+	'''
+	#TODO: After implement, this function is concealed.
+	pass			
 		
 def einheit(dim):
 	'''make identity matrix'''
@@ -715,10 +714,50 @@ def det(mat):
 	return mat.det()
 
 def lu_decompose(mat):
+	'''	LU-decomposition of matrix.
 	'''
-	LU-decomposition of matrix.
-	'''
-	return mat.lu_decompose()
+	#TODO:implement on the way
+	cols = mat.getcolumns()
+	msize = len(cols)
+	for i in range(msize-1):
+		j = i+1
+		while j < msize:
+			cols[j*msize+i] /= cols[i*msize+i]
+			j += 1
+			k = i+1
+			while k < msize:
+				cols[j*msize+k] -= cols[j+msize+i]*cols[i*msize+k]
+				k += 1
+
+	rows = list(*zip(cols))
+
+	lvs = []
+	for l in range(len(rows)):
+		lvs.append(rows[l])
+		for ll in range(l):
+			lvs[ll] = 0
+		
+	lvecs = [Vector(vs) for vs in lvs]
+	uvs = []
+	for u in range(len(rows)):
+		uvs.append(rows[u])
+		uu = u
+		while uu < msize:
+			if uu == u:
+				uvs[uu] = 1
+			else:
+				uvs[uu] = 0
+		uu += 1
+			
+	uvecs = [Vector(vs) for vs in uvs]
+
+	return (Matrix(lvecs), Matrix(uvecs))	
+		
+def spectral_decompose(mat):
+	'''	Matrix spectral decomposition.	'''
+	diag = mat.diagonalize()
+	matdim = mat.dim()
+	return [diag[(i,i)] for i in range(matdim[0])]
 	
 def base_exchange(matSrc, matDist):
 	'''
@@ -751,12 +790,6 @@ def trace(mat):
 	Trace of matrix.
 	'''
 	return mat.trace()
-	
-def spectral_decompose(mat):
-	'''
-	Matrix spectral decomposition.
-	'''
-	return mat.spectral_decompose()
 	
 def transpose(mat):
 	'''
