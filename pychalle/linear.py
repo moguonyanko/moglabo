@@ -5,7 +5,6 @@ import numbers
 import math
 
 import moglabo.pychalle.util as ut
-import moglabo.pychalle.algorithm as al
 import moglabo.pychalle.algebra as ag
 
 class Vector():

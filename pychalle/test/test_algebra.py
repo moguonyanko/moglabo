@@ -244,6 +244,26 @@ class TestCollatz(unittest.TestCase):
 		self.assertEqual(r2, one)
 		r3 = ag.collatz(3*2**53)
 		self.assertEqual(r3, one)
+		
+class TestHarmonicSeries(unittest.TestCase):
+	'''
+	Harmonic series test class.
+	'''
+	def test_harmony(self):
+		'''
+		Harmonic series function test.
+		'''
+		har = ag.harmony()
+		
+		self.assertEqual(next(har), 1/1)
+		self.assertEqual(next(har), 1/2)
+		self.assertEqual(next(har), 1/3)
+
+		har = ag.harmony(101)
+		
+		self.assertEqual(next(har), 1/101)
+		self.assertEqual(next(har), 1/102)
+		self.assertEqual(next(har), 1/103)
 
 if __name__ == '__main__':
 	print(__file__)

@@ -274,6 +274,15 @@ def collatz(n):
 	else: #odd number except 1
 		return collatz(n*3+1)
 	
+def harmony(n=1):
+	'''
+	Harmonic series generate.
+	'''
+	def fn(k): return 1/k
+	while True:
+		yield fn(n)
+		n += 1
+	
 if __name__ == '__main__':
 	print("algebra module load")
 
