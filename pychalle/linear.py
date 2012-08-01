@@ -468,14 +468,11 @@ class Matrix():
 		
 		return self.find(pred)
 		
-	def rotate(self, degree=0, method="givens"):
+	def rotate(self, degree=0):
 		'''
 		Expression matrix of rotated degree this matrix.
 		'''
-		if method == "givens":
-			pass
-		else:
-			raise ValueError("Sorry, "+method+" is unsupported.")
+		pass
 		
 	def turn(self, degree):
 		'''
@@ -694,7 +691,56 @@ def jacobi(mat):
 	Matrix Jacobi method.
 	'''
 	#TODO: After implement, this function is concealed.
-	pass			
+	
+	EPS = 0.0001
+	
+	matsize = len(mat)
+	eigmat = einheit(matsize)
+	
+	while True:
+		#print(mat)
+		maxEle = mat.maxElement()
+		if maxEle[2] < EPS: break
+		
+		p = maxEle[0]
+		q = maxEle[1]
+		app = mat[p][p]
+		apq = mat[p][q]
+		aqq = mat[q][q]
+		
+		alpha = (app-aqq)/2
+		beta = -apq
+		gamma = abs(alpha)/math.sqrt(alpha**2+beta**2) #TODO: OverflowError
+		
+		sin = math.sqrt((1-gamma)/2)
+		cos = math.sqrt((1+gamma)/2)
+		
+		if alpha*beta < 0: sin = -sin
+		
+		rng = range(matsize)
+		
+		for i in rng: #row update
+			mat[p][i] = cos*mat[p][i]-sin*mat[q][i]
+			mat[q][i] = sin*mat[p][i]+cos*mat[q][i]
+
+		for i in rng: #column update
+			mat[i][p] = cos*mat[i][p]-sin*mat[i][p]
+			mat[i][q] = sin*mat[i][q]+cos*mat[i][q]
+		
+		mat[p][p] = cos*cos*app + sin*sin*aqq - 2*sin*cos*apq
+		mat[p][q] = sin*cos*(app-aqq) + (cos*cos-sin*sin)*aqq
+		mat[q][p] = mat[p][q]
+		mat[q][q] = sin*sin*app + cos*cos*aqq + 2*sin*cos*apq
+	
+		for i in rng:
+			eigmat[i][q] = sin*eigmat[i][p]+cos*eigmat[i][q]
+			eigmat[i][p] = cos*eigmat[i][p]-sin*eigmat[i][q]
+	
+	eigs = {}
+	for i in range(matsize):
+		eigs[mat[i][i]] = eigmat[i]
+	
+	return eigs
 		
 def einheit(dim):
 	'''make identity matrix'''

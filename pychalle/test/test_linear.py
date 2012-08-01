@@ -647,6 +647,7 @@ class TestEigen(unittest.TestCase):
 		
 		self.assertEqual(res, 2)
 		
+	"""	
 	def test_givens_rotate(self):
 		'''
 		Givens rotation function test.
@@ -665,7 +666,8 @@ class TestEigen(unittest.TestCase):
 		chkm = lr.Matrix([chkv1,chkv2,chkv3])
 		
 		#self.assertEqual(resm, chkm)
-			
+	"""		
+		
 	def test_jacobi(self):
 		'''
 		Jacobi method test.
@@ -685,7 +687,7 @@ class TestEigen(unittest.TestCase):
 		}
 				
 		#TODO: implement
-		#self.assertEqual(res, chk)
+		self.assertEqual(res, chk)
 	
 class TestTranspose(unittest.TestCase):
 	'''
