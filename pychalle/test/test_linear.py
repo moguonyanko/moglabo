@@ -4,7 +4,6 @@
 import unittest
 import math
 
-#My module import
 import moglabo.pychalle.linear as lr
 
 class TestVector(unittest.TestCase):
