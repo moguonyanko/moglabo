@@ -698,22 +698,25 @@ def jacobi(mat):
 	rng = range(matsize)
 	eigmat = einheit(matsize)
 	
+	#value check counter
+	#c = 0
 	while True:
 		maxEle = mat.maxElement()
-		#print(maxEle[2])
 		if maxEle[2] < EPS: break
+		
+		#print(maxEle)
+		#if c > 10: break
+		#c += 1
 		
 		p = maxEle[0]
 		q = maxEle[1]
-		app = mat[p][p]
-		apq = mat[p][q]
-		aqq = mat[q][q]
+		app = mat[(p,p)]
+		apq = mat[(p,q)]
+		aqq = mat[(q,q)]
 		
 		alpha = (app-aqq)/2
 		beta = -apq
-		a2 = alpha**2
-		b2 = beta**2 #TODO: OverflowError
-		gamma = abs(alpha)/math.sqrt(a2+b2)
+		gamma = abs(alpha)/math.sqrt(alpha**2+beta**2) #TODO: beta is OverflowError
 		
 		sin = math.sqrt((1-gamma)/2)
 		cos = math.sqrt((1+gamma)/2)
@@ -721,27 +724,27 @@ def jacobi(mat):
 		if alpha*beta < 0: sin = -sin
 		
 		for i in rng: #row update
-			temp = cos*mat[p][i]-sin*mat[q][i]
-			mat[q][i] = sin*mat[p][i]+cos*mat[q][i]
-			mat[p][i] = temp
+			temp = cos*mat[(p,i)]-sin*mat[(q,i)]
+			mat[(q,i)] = sin*mat[(p,i)]+cos*mat[(q,i)]
+			mat[(p,i)] = temp
 
 		for i in rng: #column update
-			mat[i][p] = cos*mat[i][p]-sin*mat[i][p]
-			mat[i][q] = sin*mat[i][q]+cos*mat[i][q]
+			mat[(i,p)] = cos*mat[(i,p)]-sin*mat[(i,p)]
+			mat[(i,q)] = sin*mat[(i,q)]+cos*mat[(i,q)]
 		
-		mat[p][p] = cos*cos*app + sin*sin*aqq - 2*sin*cos*apq
-		mat[p][q] = sin*cos*(app-aqq) + (cos*cos-sin*sin)*aqq
-		mat[q][p] = mat[p][q]
-		mat[q][q] = sin*sin*app + cos*cos*aqq + 2*sin*cos*apq
+		mat[(p,p)] = cos*cos*app + sin*sin*aqq - 2*sin*cos*apq
+		mat[(p,q)] = sin*cos*(app-aqq) + (cos*cos-sin*sin)*aqq
+		mat[(q,p)] = mat[(p,q)]
+		mat[(q,q)] = sin*sin*app + cos*cos*aqq + 2*sin*cos*apq
 	
 		for i in rng:
-			temp = cos*eigmat[i][p]-sin*eigmat[i][q]
-			eigmat[i][q] = sin*eigmat[i][p]+cos*eigmat[i][q]
-			eigmat[i][p] = temp
+			temp = cos*eigmat[(i,p)]-sin*eigmat[(i,q)]
+			eigmat[(i,q)] = sin*eigmat[(i,p)]+cos*eigmat[(i,q)]
+			eigmat[(i,p)] = temp
 	
 	eigs = {}
 	for i in rng:
-		eigs[mat[i][i]] = eigmat[i]
+		eigs[mat[(i,i)]] = eigmat[i]
 	
 	return eigs
 		
