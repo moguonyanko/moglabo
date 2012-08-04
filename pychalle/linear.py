@@ -716,6 +716,7 @@ def jacobi(mat):
 		
 		alpha = (app-aqq)/2
 		beta = -apq
+		#print(beta*beta)
 		gamma = abs(alpha)/math.sqrt(alpha**2+beta**2) #TODO: beta is OverflowError
 		
 		sin = math.sqrt((1-gamma)/2)
@@ -729,8 +730,8 @@ def jacobi(mat):
 			mat[(p,i)] = temp
 
 		for i in rng: #column update
-			mat[(i,p)] = cos*mat[(i,p)]-sin*mat[(i,p)]
-			mat[(i,q)] = sin*mat[(i,q)]+cos*mat[(i,q)]
+			mat[(i,p)] = mat[(i,p)]
+			mat[(i,q)] = mat[(q,i)]
 		
 		mat[(p,p)] = cos*cos*app + sin*sin*aqq - 2*sin*cos*apq
 		mat[(p,q)] = sin*cos*(app-aqq) + (cos*cos-sin*sin)*aqq

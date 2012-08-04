@@ -671,6 +671,9 @@ class TestEigen(unittest.TestCase):
 		'''
 		Jacobi method test.
 		'''
+		#v1 = lr.Vector([1,1,2])
+		#v2 = lr.Vector([1,1,1])
+		#v3 = lr.Vector([2,1,1])
 		v1 = lr.Vector([1.0,0.19,0.36])
 		v2 = lr.Vector([0.19,1.0,0.30])
 		v3 = lr.Vector([0.36,0.30,1.0])
