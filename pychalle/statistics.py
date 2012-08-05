@@ -285,7 +285,9 @@ def t_test_inter(xs, ys):
 	return (t, result)
 
 def anova(groups):
-	'''analysis of variance'''
+	'''
+	Analysis of variance.
+	'''
 	alls = ut.flatten(groups)
 	aldsq = sqsum(alls)
 	allm = mean(alls)
@@ -309,7 +311,9 @@ def anova(groups):
 	return (f, f>fdist)
 
 def anovam(g1, g2):
-	'''analysis of variance for multi group'''
+	'''
+	Analysis of variance for multi group.
+	'''
 	g1a = g1[0]
 	g1b = g1[1]
 	g2a = g2[0]

@@ -857,9 +857,9 @@ class MatrixMinMaxTest(unittest.TestCase):
 	Matrix min max value function test class.
 	'''
 	v1 = lr.Vector([1,4,7])
-	v2 = lr.Vector([-2,-50,-7])
+	v2 = lr.Vector([-2,-50,-300])
 	v3 = lr.Vector([3,6,10])
-	v4 = lr.Vector([1,-10,100])
+	v4 = lr.Vector([1,500,100])
 	m1 = lr.Matrix([v1,v2,v3,v4])
 	def test_min(self):
 		'''
@@ -867,7 +867,7 @@ class MatrixMinMaxTest(unittest.TestCase):
 		'''
 		res = self.m1.minElement()		
 
-		chk = (1,1,-50) #column index 1 and row index 1, value is -50.
+		chk = (2,1,-300)
 		self.assertEqual(res, chk)
 	
 	def test_max(self):
@@ -876,7 +876,7 @@ class MatrixMinMaxTest(unittest.TestCase):
 		'''
 		res = self.m1.maxElement()		
 
-		chk = (2,3,100) #column index 2 and row index 3, value is 100.
+		chk = (1,3,500)
 		self.assertEqual(res, chk)
 
 #Entry point

@@ -688,25 +688,27 @@ class Matrix():
 
 def jacobi(mat):
 	'''
-	Matrix Jacobi method.
+	Caluclate matrix eigen value and vector by Jacobi method.
+	mat: Symmetry matrix. If that is not symmetry, raise ValueError.
 	'''
 	#TODO: After implement, this function is concealed.
-	
+	if mat.symmetryp() == False:
+		raise ValueError("Matrix is not symmetry!")
+		
 	EPS = 0.0001
 	
 	matsize = len(mat)
 	rng = range(matsize)
 	eigmat = einheit(matsize)
 	
-	#value check counter
-	#c = 0
-	while True:
-		maxEle = mat.maxElement()
-		if maxEle[2] < EPS: break
-		
-		#print(maxEle)
-		#if c > 10: break
-		#c += 1
+	maxEle = mat.maxElement()
+	
+	testcounter = 0 #value check counter
+	while maxEle[2] >= EPS:
+	
+		print(maxEle)
+		if testcounter > 10: break
+		testcounter += 1
 		
 		p = maxEle[0]
 		q = maxEle[1]
@@ -714,35 +716,35 @@ def jacobi(mat):
 		apq = mat[(p,q)]
 		aqq = mat[(q,q)]
 		
-		alpha = (app-aqq)/2
+		alpha = (app - aqq)/2
 		beta = -apq
-		#print(beta*beta)
-		gamma = abs(alpha)/math.sqrt(alpha**2+beta**2) #TODO: beta is OverflowError
+		gamma = abs(alpha)/math.sqrt(alpha**2 + beta**2) #TODO: beta is OverflowError
 		
-		sin = math.sqrt((1-gamma)/2)
-		cos = math.sqrt((1+gamma)/2)
-		
+		sin = math.sqrt((1 - gamma)/2)
+		cos = math.sqrt((1 + gamma)/2)
 		if alpha*beta < 0: sin = -sin
 		
 		for i in rng: #row update
-			temp = cos*mat[(p,i)]-sin*mat[(q,i)]
-			mat[(q,i)] = sin*mat[(p,i)]+cos*mat[(q,i)]
+			temp = cos*mat[(p,i)] - sin*mat[(q,i)]
+			mat[(q,i)] = sin*mat[(p,i)] + cos*mat[(q,i)]
 			mat[(p,i)] = temp
 
 		for i in rng: #column update
-			mat[(i,p)] = mat[(i,p)]
+			mat[(i,p)] = mat[(p,i)]
 			mat[(i,q)] = mat[(q,i)]
 		
 		mat[(p,p)] = cos*cos*app + sin*sin*aqq - 2*sin*cos*apq
-		mat[(p,q)] = sin*cos*(app-aqq) + (cos*cos-sin*sin)*aqq
+		mat[(p,q)] = sin*cos*(app - aqq) + (cos*cos - sin*sin)*apq
 		mat[(q,p)] = mat[(p,q)]
-		mat[(q,q)] = sin*sin*app + cos*cos*aqq + 2*sin*cos*apq
+		mat[(q,q)] = sin*sin*app + cos*cos*aqq + 2*sin*cos*apq #TODO: include bug?
 	
 		for i in rng:
-			temp = cos*eigmat[(i,p)]-sin*eigmat[(i,q)]
-			eigmat[(i,q)] = sin*eigmat[(i,p)]+cos*eigmat[(i,q)]
+			temp = cos*eigmat[(i,p)] - sin*eigmat[(i,q)]
+			eigmat[(i,q)] = sin*eigmat[(i,p)] + cos*eigmat[(i,q)]
 			eigmat[(i,p)] = temp
-	
+			
+		maxEle = mat.maxElement()
+
 	eigs = {}
 	for i in rng:
 		eigs[mat[(i,i)]] = eigmat[i]
@@ -766,7 +768,8 @@ def det(mat):
 	return mat.det()
 
 def lu_decompose(mat):
-	'''	LU-decomposition of matrix.
+	'''
+	LU-decomposition of matrix.
 	'''
 	#TODO:implement on the way
 	cols = mat.getcolumns()
@@ -806,7 +809,9 @@ def lu_decompose(mat):
 	return (Matrix(lvecs), Matrix(uvecs))	
 		
 def spectral_decompose(mat):
-	'''	Matrix spectral decomposition.	'''
+	'''
+	Matrix spectral decomposition.
+	'''
 	diag = mat.diagonalize()
 	matdim = mat.dim()
 	return [diag[(i,i)] for i in range(matdim[0])]
