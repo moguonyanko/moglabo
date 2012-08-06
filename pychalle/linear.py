@@ -706,7 +706,6 @@ def jacobi(mat):
 	testcounter = 0 #value check counter
 	while maxEle[2] >= EPS:
 	
-		print(maxEle)
 		if testcounter > 10: break
 		testcounter += 1
 		
@@ -719,7 +718,7 @@ def jacobi(mat):
 		alpha = (app - aqq)/2
 		beta = -apq
 		gamma = abs(alpha)/math.sqrt(alpha**2 + beta**2) #TODO: beta is OverflowError
-		
+
 		sin = math.sqrt((1 - gamma)/2)
 		cos = math.sqrt((1 + gamma)/2)
 		if alpha*beta < 0: sin = -sin
@@ -736,7 +735,7 @@ def jacobi(mat):
 		mat[(p,p)] = cos*cos*app + sin*sin*aqq - 2*sin*cos*apq
 		mat[(p,q)] = sin*cos*(app - aqq) + (cos*cos - sin*sin)*apq
 		mat[(q,p)] = mat[(p,q)]
-		mat[(q,q)] = sin*sin*app + cos*cos*aqq + 2*sin*cos*apq #TODO: include bug?
+		mat[(q,q)] = sin*sin*app + cos*cos*aqq + 2*sin*cos*apq #TODO: Bug in apq?
 	
 		for i in rng:
 			temp = cos*eigmat[(i,p)] - sin*eigmat[(i,q)]
