@@ -5,7 +5,7 @@ from distutils.core import setup
 
 setup(
 	name = "gomath",
-	packages = ["gomath","const","test"],
+	packages = ["gomath","gomath.const","gomath.test"],
 	version = "0.1.1",
 	description = "Practical math library",
 	author = "moguonyanko",
