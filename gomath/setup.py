@@ -5,8 +5,8 @@ from distutils.core import setup
 
 setup(
 	name = "gomath",
-	packages = ["gomath"],
-	version = "1.0.0",
+	packages = ["gomath","const","test"],
+	version = "0.1.1",
 	description = "Practical math library",
 	author = "moguonyanko",
 	author_email = "moguo_50000_nyanko@yahoo.co.jp",
@@ -15,14 +15,14 @@ setup(
 	keywords = ["math", "statistics"],
 	classifiers = [
 		"Programming Language :: Python",
-		"Programming Language :: Python :: 3",
-		"Development Status :: 0 - Alpha",
+		"Programming Language :: Python :: 3.1",
+		"Development Status :: 1 - Planning",
 		"Environment :: Other Environment",
 		"Intended Audience :: Developers",
-		"License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)",
+		"License :: OSI Approved :: BSD License",
 		"Operating System :: OS Independent",
-		"Topic :: Software Development :: Libraries :: Python Modules",
-		"Topic :: Text Processing :: Linguistic",
+		"Topic :: Software Development :: Libraries",
+		"Topic :: Scientific/Engineering :: Mathematics"
 	],
 	long_description = """\
 Practical math library
