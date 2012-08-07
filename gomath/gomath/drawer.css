@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+header {
+	position: relative;
+	width: 25em;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.canvas_container {
+	position: relative;
+	width: 800px;
+	height: auto;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+canvas {
+	position: relative;
+	border: solid 1px black;
+}
+
