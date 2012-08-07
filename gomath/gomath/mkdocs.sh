@@ -1,12 +1,12 @@
 #!/bin/sh
 
-PYTHONPATH=${PYTHONPATH}:`pwd`
+PYTHONPATH=${PYTHONPATH}:../
 export PYTHONPATH
 
 #Ocuur error for Sphinx adapt Python3.
-sphinx-apidoc -F -f -o `pwd`/docs/ ../gomath
+sphinx-apidoc -F -f -o ../docs/ ../gomath
 
-cd `pwd`/docs/
+cd ../docs/
 
 make html
 

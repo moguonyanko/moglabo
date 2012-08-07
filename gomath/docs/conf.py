@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # gomath documentation build configuration file, created by
-# sphinx-quickstart on Wed Aug  8 03:17:37 2012.
+# sphinx-quickstart on Wed Aug  8 03:37:36 2012.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
