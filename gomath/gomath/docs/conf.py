@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# moglabo documentation build configuration file, created by
-# sphinx-quickstart on Mon Jul 16 03:56:21 2012.
+# gomath documentation build configuration file, created by
+# sphinx-quickstart on Wed Aug  8 03:17:37 2012.
 #
 # This file is execfile()d with the current directory set to its containing dir.
 #
@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'moglabo'
+project = u'gomath'
 copyright = u'2012, Author'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -164,7 +164,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'moglabodoc'
+htmlhelp_basename = 'gomathdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -183,7 +183,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'moglabo.tex', u'moglabo Documentation',
+  ('index', 'gomath.tex', u'gomath Documentation',
    u'Author', 'manual'),
 ]
 
@@ -213,7 +213,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'moglabo', u'moglabo Documentation',
+    ('index', 'gomath', u'gomath Documentation',
      [u'Author'], 1)
 ]
 
@@ -227,8 +227,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'moglabo', u'moglabo Documentation',
-   u'Author', 'moglabo', 'One line description of project.',
+  ('index', 'gomath', u'gomath Documentation',
+   u'Author', 'gomath', 'One line description of project.',
    'Miscellaneous'),
 ]
 
@@ -245,7 +245,7 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'moglabo'
+epub_title = u'gomath'
 epub_author = u'Author'
 epub_publisher = u'Author'
 epub_copyright = u'2012, Author'
