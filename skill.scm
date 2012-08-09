@@ -581,15 +581,22 @@
 	(let ((nume (+ (tan a) (tan b))))
 		(/ nume (- 1 (* (tan a) (tan b))))))
 		
-(define (simpson fn x0 x1 num)
-	;Simpson rule. TODO:implement now.
-	(let ((h 0.0) (sum 0.0) (x 0.0) (i 0))
-		(set! h (- x1 x0))
-		(if (> num 0) 
-			)))
+;(define (simpson fn x0 x1 num)
+;	;Simpson rule. TODO:implement now.
+;	(let ((h 0.0) (sum 0.0) (x 0.0) (i 0))
+;		(set! h (- x1 x0))
+;		(if (> num 0) 
+;			)))
 
-
-
+(define (pow a n)
+	;Repeat power.
+	(let rec ((_a a) (_n n) (answer 1))
+		(if (= _n 0)
+			answer
+			(if (odd? _n)
+				(rec (* _a _a) (quotient _n 2) (* answer _a))
+				(rec (* _a _a) (quotient _n 2) answer)))))
+				
 
 
 
