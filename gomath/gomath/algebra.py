@@ -104,6 +104,12 @@ def gcd(a, b):
 			x *= -1
 		return gcd(b, x)
 		
+def exgcd(a,b):
+	'''
+	Calculate gcd by extended Euclid's algorithm.
+	'''
+	pass
+
 def reduct(deno, nume):
 	'''
 	Coefficient reduction by gcd.

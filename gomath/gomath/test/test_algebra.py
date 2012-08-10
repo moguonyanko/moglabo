@@ -17,7 +17,7 @@ class TestPrimeNumberFunctions(unittest.TestCase):
 		res = ag.gcd(10, 8)
 		
 		self.assertEqual(res, 2)
-
+		
 	def test_reduct(self):
 		'''
 		Test of reduction by greatest common divisor.
@@ -50,6 +50,12 @@ class TestPrimeNumberFunctions(unittest.TestCase):
 		'''
 		res = ag.euler_totient(100)
 		self.assertEqual(res, 40)
+
+	def test_exgcd(self):
+		'''
+		Test of extended greatest common divisor
+		'''
+		pass
 		
 class TestIterationMethodTest(unittest.TestCase):
 	'''
