@@ -104,9 +104,10 @@ def gcd(a, b):
 			x *= -1
 		return gcd(b, x)
 		
-def exgcd(a,b):
+def exgcd(terms):
 	'''
 	Calculate gcd by extended Euclid's algorithm.
+	terms: Expressed (a,b). This tuple is composed a of ax and b of by.
 	'''
 	pass
 

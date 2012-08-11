@@ -55,7 +55,10 @@ class TestPrimeNumberFunctions(unittest.TestCase):
 		'''
 		Test of extended greatest common divisor
 		'''
-		pass
+		terms = (1004,1001)
+		
+		res = ag.exgcd(terms)
+		self.assertEqual(res, (334,-335))		
 		
 class TestIterationMethodTest(unittest.TestCase):
 	'''
