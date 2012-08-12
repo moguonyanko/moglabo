@@ -109,7 +109,23 @@ def exgcd(terms):
 	Calculate gcd by extended Euclid's algorithm.
 	terms: Expressed (a,b). This tuple is composed a of ax and b of by.
 	'''
-	pass
+	x1 = 1
+	y1 = 0
+	z1 = terms[0] 
+	x2 = 0
+	y2 = 1
+	z2 = terms[1]
+	while z2 > 1:
+		r = (z1-(z1%z2))/z2
+		x1 = x1-(r*x2)
+		y1 = y1-(r*y2)
+		z1 = z1-(r*z2)
+		
+		x1,x2 = ut.swap(x1,x2)
+		y1,y2 = ut.swap(y1,y2)
+		z1,z2 = ut.swap(z1,z2)
+	
+	return (x2,y2)
 
 def reduct(deno, nume):
 	'''
