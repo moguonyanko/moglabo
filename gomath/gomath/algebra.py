@@ -115,6 +115,10 @@ def exgcd(terms):
 	x2 = 0
 	y2 = 1
 	z2 = terms[1]
+
+	if coprime(z1, z2) == False: 
+		raise ValueError("Sorry, can only relatively prime number given.")
+	
 	while z2 > 1:
 		r = (z1-(z1%z2))/z2
 		x1 = x1-(r*x2)
@@ -252,7 +256,7 @@ def prime(n):
 	
 	return prime
 	
-def coprimep(a, b):
+def coprime(a, b):
 	'''
 	Check on coprime.
 	'''
@@ -265,7 +269,7 @@ def euler_totient(n):
 	res = []
 	for m in range(n):
 		chknum = m+1
-		if coprimep(chknum, n):
+		if coprime(chknum, n):
 			res.append(chknum)
 	
 	return len(res)

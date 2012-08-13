@@ -26,13 +26,13 @@ class TestPrimeNumberFunctions(unittest.TestCase):
 		
 		self.assertEqual(res, (2, 1))
 		
-	def test_coprimep(self):
+	def test_coprime(self):
 		'''
-		Test coprimep function.
+		Test coprime function.
 		'''
-		res = ag.coprimep(2,5)
+		res = ag.coprime(2,5)
 		self.assertEqual(res, True)
-		res = ag.coprimep(2,10)
+		res = ag.coprime(2,10)
 		self.assertEqual(res, False)
 	
 	def test_prime(self):
