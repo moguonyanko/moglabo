@@ -2,11 +2,11 @@
 ;;;This program to implove my programing skill.
 ;;;Reference:
 ;;;Structure and Interpretation of Computer Programs (2nd Edition)
-;;;	Hal Abelson, Jerry Sussman, Julie Sussman
+;;;		Hal Abelson, Jerry Sussman, Julie Sussman
 ;;;The programing language Scheme
-;;;	Kent Dybvig
+;;;		Kent Dybvig
 ;;;M.Hiroi's Home Page
-;;;	M.Hiroi
+;;;		M.Hiroi
 
 ;;Linear congruential generators
 (define *seed* 1)
@@ -597,6 +597,7 @@
 				(rec (* _a _a) (quotient _n 2) (* answer _a))
 				(rec (* _a _a) (quotient _n 2) answer)))))
 				
-
-
+(define (exgcd a b)
+	;Calculate gcd by extended Euclid's algorithm.
+	)
 
