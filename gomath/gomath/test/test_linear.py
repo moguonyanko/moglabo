@@ -488,7 +488,6 @@ class TestLUDecompose(unittest.TestCase):
 		self.assertEqual(ml, chkml)
 		self.assertEqual(mu, chkmu)
 		'''
-		pass
 
 class TestBaseExchange(unittest.TestCase):
 	'''

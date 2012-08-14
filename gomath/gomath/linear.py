@@ -770,42 +770,22 @@ def lu_decompose(mat):
 	'''
 	LU-decomposition of matrix.
 	'''
-	#TODO:implement on the way
-	cols = mat.getcolumns()
-	msize = len(cols)
-	for i in range(msize-1):
-		j = i+1
-		while j < msize:
-			cols[j*msize+i] /= cols[i*msize+i]
-			j += 1
-			k = i+1
-			while k < msize:
-				cols[j*msize+k] -= cols[j+msize+i]*cols[i*msize+k]
-				k += 1
-
-	rows = list(*zip(cols))
-
-	lvs = []
-	for l in range(len(rows)):
-		lvs.append(rows[l])
-		for ll in range(l):
-			lvs[ll] = 0
-		
-	lvecs = [Vector(vs) for vs in lvs]
-	uvs = []
-	for u in range(len(rows)):
-		uvs.append(rows[u])
-		uu = u
-		while uu < msize:
-			if uu == u:
-				uvs[uu] = 1
-			else:
-				uvs[uu] = 0
-		uu += 1
-			
-	uvecs = [Vector(vs) for vs in uvs]
-
-	return (Matrix(lvecs), Matrix(uvecs))	
+	#TODO: Not work.
+	rsiz = len(mat.rows)
+	csiz = len(mat[0].cols)
+	size = max(rsiz, csiz)
+	
+	for k in range(size):
+		x = 1.0/mat[(k,k)]
+		rowrng = range(k+1, rsiz)
+		colrng = range(k+1, csiz)
+		for i in rowrng:
+			mat[(i,k)] = mat[(i,k)]*x
+		for m in rowrng:
+			for n in colrng:
+				mat[(m,n)] = mat[(m,n)]-mat[(m,k)]*mat[(k,n)]
+				
+	return (mat, mat)
 		
 def spectral_decompose(mat):
 	'''
