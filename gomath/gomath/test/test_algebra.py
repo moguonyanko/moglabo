@@ -26,22 +26,22 @@ class TestPrimeNumberFunctions(unittest.TestCase):
 		
 		self.assertEqual(res, (2, 1))
 		
-	def test_coprime(self):
+	def test_coprimep(self):
 		'''
 		Test coprime function.
 		'''
-		res = ag.coprime(2,5)
+		res = ag.coprimep(2,5)
 		self.assertEqual(res, True)
-		res = ag.coprime(2,10)
+		res = ag.coprimep(2,10)
 		self.assertEqual(res, False)
 	
-	def test_prime(self):
+	def test_primep(self):
 		'''
 		Test for prime number check function.
 		'''
-		res = ag.prime(11)
+		res = ag.primep(11)
 		self.assertEqual(res, [2,3,5,7,11])
-		#res = al.prime(1000000)
+		#res = al.primep(1000000)
 		#self.assertEqual(len(res), 78498)
 			
 	def test_euler_totient(self):
@@ -51,13 +51,13 @@ class TestPrimeNumberFunctions(unittest.TestCase):
 		res = ag.euler_totient(100)
 		self.assertEqual(res, 40)
 
-	def test_exgcd(self):
+	def test_indeq(self):
 		'''
-		Test of extended greatest common divisor
+		Test of indeterminate equation function.
 		'''
 		terms = (1004,1001)
 		
-		res = ag.exgcd(terms)
+		res = ag.indeq(terms)
 		self.assertEqual(res, (334,-335))		
 		
 class TestIterationMethodTest(unittest.TestCase):

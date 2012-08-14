@@ -597,7 +597,15 @@
 				(rec (* _a _a) (quotient _n 2) (* answer _a))
 				(rec (* _a _a) (quotient _n 2) answer)))))
 				
-(define (exgcd a b)
-	;Calculate gcd by extended Euclid's algorithm.
-	)
+(define (indeq a b)
+	;Solve indeterminate equation by extended Euclid's algorithm.
+	;TODO: Not work.
+	(let rec ((x1 0) (y1 0) (z1 a) (x2 0) (y2 0) (z2 b))
+		(if (<= z2 1)
+			(list x2 y2)
+			(let ((r (/ (- z1 (remainder z1 z2)) z2)))
+				(set! x1 (- x1 (* r x2)))
+				(set! y1 (- y1 (* r y2)))
+				(set! z1 (- z1 (* r z2)))
+				(rec x2 y2 z2 x1 y1 z1)))))
 

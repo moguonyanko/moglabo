@@ -104,9 +104,9 @@ def gcd(a, b):
 			x *= -1
 		return gcd(b, x)
 		
-def exgcd(terms):
+def indeq(terms):
 	'''
-	Calculate gcd by extended Euclid's algorithm.
+	Solve indeterminate equation by extended Euclid's algorithm.
 	terms: Expressed (a,b). This tuple is composed a of ax and b of by.
 	'''
 	x1 = 1
@@ -116,7 +116,7 @@ def exgcd(terms):
 	y2 = 1
 	z2 = terms[1]
 
-	if coprime(z1, z2) == False: 
+	if coprimep(z1, z2) == False: 
 		raise ValueError("Sorry, can only relatively prime number given.")
 	
 	while z2 > 1:
@@ -234,7 +234,7 @@ def zeta(exp):
 	#TODO: Infinity stream implement?
 	pass
 	
-def prime(n):
+def primep(n):
 	'''
 	Caluculate prime number length under "n" by Eratosthenes sieve.
 	n: under n prime number detect and return.
@@ -256,9 +256,9 @@ def prime(n):
 	
 	return prime
 	
-def coprime(a, b):
+def coprimep(a, b):
 	'''
-	Check on coprime.
+	Check on coprimep.
 	'''
 	return gcd(a, b) == 1
 	
@@ -269,7 +269,7 @@ def euler_totient(n):
 	res = []
 	for m in range(n):
 		chknum = m+1
-		if coprime(chknum, n):
+		if coprimep(chknum, n):
 			res.append(chknum)
 	
 	return len(res)
