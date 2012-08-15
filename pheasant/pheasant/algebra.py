@@ -4,7 +4,7 @@
 import math
 import fractions as fr
 
-import gomath.util as ut
+import pheasant.util as ut
 
 class Term():
 	'''
@@ -309,6 +309,20 @@ def harmony(n=1):
 	while True:
 		yield fn(n)
 		n += 1
+
+def addchain(n):
+	'''
+	Calculate addtion chain.
+	Gotton chain is not always minimum chain.
+	'''
+	res = [n]
+	
+	while n > 1:
+		if odd(n): n -= 1
+		else: n //= 2
+		res.append(n)
+		
+	return res[::-1]
 	
 if __name__ == '__main__':
 	print("algebra module load")

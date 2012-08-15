@@ -5,11 +5,11 @@ import unittest
 import math
 import fractions as fr
 
-import gomath.util as ut
-import gomath.linear as lr
-import gomath.calculus as cl
+import pheasant.util as ut
+import pheasant.linear as lr
+import pheasant.calculus as cl
 
-import gomath.const.defstat as cs
+import pheasant.const.defstat as cs
 
 def mean(samples, mode="arith"):
 	'''

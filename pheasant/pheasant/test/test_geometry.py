@@ -4,7 +4,7 @@
 import unittest
 import math
 
-import gomath.geometry as gm
+import pheasant.geometry as gm
 
 class TestCalcArea(unittest.TestCase):
 	'''

@@ -3,7 +3,7 @@
 
 import unittest
 
-import gomath.algorithm as al
+import pheasant.algorithm as al
 
 class TestSearch(unittest.TestCase):
 	'''

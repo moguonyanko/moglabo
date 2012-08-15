@@ -5,7 +5,7 @@ import random
 import unittest
 import math
 
-import gomath.util as ut
+import pheasant.util as ut
 
 class TestFlatten(unittest.TestCase):
 	sample_flatten = [[1,2,3],[4,5,6],["a",[400,500,600],"b"],[7,8,9]]

@@ -4,8 +4,8 @@
 import numbers
 import math
 
-import gomath.util as ut
-import gomath.algebra as ag
+import pheasant.util as ut
+import pheasant.algebra as ag
 
 class Vector():
 	'''

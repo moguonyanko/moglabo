@@ -5,7 +5,7 @@ import random
 import math
 import queue as qu
 
-import gomath.util as ut
+import pheasant.util as ut
 
 def fib(number):
 	'''

@@ -4,7 +4,7 @@
 import math
 import unittest
 
-import gomath.calculus as cl
+import pheasant.calculus as cl
 
 class TestIntegral(unittest.TestCase):
 	'''

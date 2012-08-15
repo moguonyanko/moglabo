@@ -4,15 +4,15 @@
 from distutils.core import setup
 
 setup(
-	name = "gomath",
-	packages = ["gomath","gomath.const","gomath.test"],
+	name = "pheasant",
+	packages = ["pheasant","pheasant.const","pheasant.test"],
 	version = "0.1.1",
-	description = "Practical math library",
+	description = "Python library for work mathmatics",
 	author = "moguonyanko",
 	author_email = "moguo_50000_nyanko@yahoo.co.jp",
 	url = "",
 	download_url = "",
-	keywords = ["math", "statistics"],
+	keywords = ["mathmatics", "statistics"],
 	classifiers = [
 		"Programming Language :: Python",
 		"Programming Language :: Python :: 3.1",

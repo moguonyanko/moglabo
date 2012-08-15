@@ -4,7 +4,7 @@
 import unittest
 import math
 
-import gomath.algebra as ag
+import pheasant.algebra as ag
 
 class TestPrimeNumberFunctions(unittest.TestCase):
 	'''
@@ -273,6 +273,19 @@ class TestHarmonicSeries(unittest.TestCase):
 		self.assertEqual(next(har), 1/101)
 		self.assertEqual(next(har), 1/102)
 		self.assertEqual(next(har), 1/103)
+
+class TestNumericalSequence(unittest.TestCase):
+	'''
+	Test class for numerical sequence functions.
+	'''
+	def test_addchain(self):
+		'''
+		Test addition chain function.
+		'''
+		res = ag.addchain(45)
+		chk = [1,2,4,5,10,11,22,44,45]
+		
+		self.assertEqual(res, chk)
 
 if __name__ == '__main__':
 	print(__file__)

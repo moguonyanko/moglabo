@@ -5,11 +5,11 @@ import unittest
 import math
 import fractions as fr
 
-import gomath.util as ym
-import gomath.algebra as ag
-import gomath.calculus as cl
-import gomath.linear as lr
-import gomath.statistics as ts
+import pheasant.util as ym
+import pheasant.algebra as ag
+import pheasant.calculus as cl
+import pheasant.linear as lr
+import pheasant.statistics as ts
 
 class TestMeanValue(unittest.TestCase):
 	samples = [5,8,10,11,12]

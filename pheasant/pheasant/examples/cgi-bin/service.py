@@ -3,8 +3,8 @@
 
 import cgi
 
-import gomath.util as ut
-import gomath.geometry as gm
+import pheasant.util as ut
+import pheasant.geometry as gm
 
 def get_test_points():
 	'''

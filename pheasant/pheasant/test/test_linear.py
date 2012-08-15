@@ -4,7 +4,7 @@
 import unittest
 import math
 
-import gomath.linear as lr
+import pheasant.linear as lr
 
 class TestVector(unittest.TestCase):
 	

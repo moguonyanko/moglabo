@@ -3,7 +3,7 @@
 
 import unittest
 
-import gomath.logic as lo
+import pheasant.logic as lo
 
 class TestPatternMatchingUtillity(unittest.TestCase):
 	'''
