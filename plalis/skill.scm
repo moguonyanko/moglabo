@@ -609,3 +609,16 @@
 				(set! z1 (- z1 (* r z2)))
 				(rec x2 y2 z2 x1 y1 z1)))))
 
+(define (zip ls1 ls2)
+	;Combine two lists vertically.
+	;TODO: Syntax error.
+;	(let rec ((_l1 l1) (_l2 l2) (res `())
+;		(if (or (null? _l1) (null? _l2))
+;			res
+;			(let ((a (car _l1)) (b (car _l2))
+;				(rec (cdr _l1) (cdr _l2) (list res (cons a b))))))))
+)
+
+
+	
+	
