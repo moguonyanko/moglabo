@@ -17,15 +17,15 @@ class Env(dict):
         self.update(zip(parms,args))
         self.outer = outer
     def find(self, var):
-        '''
-        Find the innermost Env where var appears.
-        '''
+		      '''
+		      Find the innermost Env where var appears.
+		      '''
         return self if var in self else self.outer.find(var)
 
 def add_globals(env):
     '''
-	Add some Scheme standard procedures to an environment.
-	'''
+		Add some Scheme standard procedures to an environment.
+		'''
     import math, operator as op
     env.update(vars(math)) # sin, sqrt, ...
     env.update(
