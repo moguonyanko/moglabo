@@ -1,0 +1,121 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		F2CA234A16185F500072D864 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F2CA234516185F480072D864 /* SingleViewTest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F2CA230316185F480072D864;
+			remoteInfo = SingleViewTest;
+		};
+		F2CA234C16185F500072D864 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F2CA234516185F480072D864 /* SingleViewTest.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F2CA232D16185F480072D864;
+			remoteInfo = SingleViewTestTests;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F2CA234516185F480072D864 /* SingleViewTest.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SingleViewTest.xcodeproj; path = ../SingleViewTest/SingleViewTest.xcodeproj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		F2CA22EF16182EDB0072D864 = {
+			isa = PBXGroup;
+			children = (
+				F2CA234516185F480072D864 /* SingleViewTest.xcodeproj */,
+			);
+			sourceTree = "<group>";
+		};
+		F2CA234616185F480072D864 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F2CA234B16185F500072D864 /* SingleViewTest.app */,
+				F2CA234D16185F500072D864 /* SingleViewTestTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXProject section */
+		F2CA22F116182EDC0072D864 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0450;
+			};
+			buildConfigurationList = F2CA22F416182EDC0072D864 /* Build configuration list for PBXProject "MyTestProject" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = F2CA22EF16182EDB0072D864;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = F2CA234616185F480072D864 /* Products */;
+					ProjectRef = F2CA234516185F480072D864 /* SingleViewTest.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		F2CA234B16185F500072D864 /* SingleViewTest.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = SingleViewTest.app;
+			remoteRef = F2CA234A16185F500072D864 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F2CA234D16185F500072D864 /* SingleViewTestTests.octest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SingleViewTestTests.octest;
+			remoteRef = F2CA234C16185F500072D864 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin XCBuildConfiguration section */
+		F2CA22F616182EDC0072D864 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		F2CA22F716182EDC0072D864 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F2CA22F416182EDC0072D864 /* Build configuration list for PBXProject "MyTestProject" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F2CA22F616182EDC0072D864 /* Debug */,
+				F2CA22F716182EDC0072D864 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F2CA22F116182EDC0072D864 /* Project object */;
+}
