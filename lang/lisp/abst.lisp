@@ -1,5 +1,5 @@
 ;;; 2012/06/22 moguonyanko
-;;; Training of abstract programing
+;;; Training of function type programing
 ;;; Reference:
 ;;;	 ANSI Common Lisp
 ;;;	  Paul Graham
@@ -35,8 +35,23 @@
 (defun integral (a b n)
 	)
 
-(defclass vector ()
-	;Vector class
-	;elements : Retained numbers.
+;(defclass vector ()
+;	;Vector class
+;	;elements : Retained numbers.
+;	(elements))
+
+(defun permutate (n)
+	;Permutation
+	;n: index of permutation
+	(labels ((rec (n acc)
+		(if (= n 0)
+			acc
+			(rec (- n 1) (* (acc n))))))
+		(rec n 1)))
+
+(defclass matrix ()
+	;Matrix class
 	(elements))
+
+
 
