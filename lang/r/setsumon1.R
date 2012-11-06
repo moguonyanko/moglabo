@@ -7,10 +7,13 @@ summary(nenrei)
 boxplot(nenrei)
 
 kiroku <- read.csv("oubo_kiroku.csv", header=F)
+
 summary(kiroku)
 length(kiroku$V1)
-oubono <- kiroku$V1
-hist(oubono)
+jikantai <- kiroku$V2
+plot(jikantai)
+library(chron)
+day.of.week()
 
 
 
