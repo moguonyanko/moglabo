@@ -43,16 +43,22 @@ class Book():
 		self.rank = rank
 		
 	def __lt__(self, other):
-		pass
+		rankdiv = self.rank <= other.rank
+		
+		if rankdiv != 0: return rankdiv
+		else: self.name <= other.name		
 
 	def __gt__(self, other):
-		pass
+		rankdiv = self.rank > other.rank
+		
+		if rankdiv != 0: return rankdiv
+		else: self.name > other.name		
 
 	def __eq__(self, other):
-		pass
+		return self.name == other.name
 
 	def __ne__(self, other):
-		pass
+		return self.name != other.name
 	
 	def __str__(self):
 		return str(rank)+":"+name
@@ -62,7 +68,7 @@ class SalesRanking():
 	書籍の売り上げランキングのクラスです。
 	'''
 	def __init__(self, path):
-		ranking = {}
+		ranking = []
 		categories = {}
 		
 		with open(path, encoding='utf-8') as sales:
@@ -71,14 +77,14 @@ class SalesRanking():
 				
 				rank, name, category = line.split("\t")
 				book = Book(name, rank)
-				ranking[rank] = book
+				ranking.append(book)
 				if categories[category] == None:
 					categories[category] = []
 				categories[category].append(book)
 						
-		self.ranking = ranking
+		self.ranking = sorted(ranking)
 				
-def recommend(customers, sales, recommendnum=3):
+class Recommender():
 	'''
 	*推薦方針* 
 	基本的に購入実績が多いジャンルの書籍を推薦する。
@@ -92,8 +98,16 @@ def recommend(customers, sales, recommendnum=3):
 	全体で最も多く推薦されているジャンルの書籍を
 	別枠で表示できるようにするのもいい。
 	'''
-	pass
-	
+	def __init__(self, customerlist, sales):
+		self.customerlist = customerlist
+		self.salesranking = salesranking 
+		
+	def recommend(self, target, recommendnum=3):
+		'''
+		target: Recommend target customer's name.
+		'''
+		pass			
+
 	def __str__(self):
 		pass
 
@@ -109,6 +123,10 @@ if __name__ == '__main__':
 	customerlist = CustomerList(customer_list_file)
 	salesranking = SalesRanking(sales_ranking_file)
 	
-	result = recommend(customerlist, salesranking)
+	recommender = Recommender(customerlist, salesranking)
+	
+	recommendnum = 3 #3冊推薦する
+	result = recommender.recommend("太郎", recommendnum)
+	
 	print(result)
 	
