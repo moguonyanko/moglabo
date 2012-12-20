@@ -1,12 +1,9 @@
-#import <stdio.h>
-#import <objc/Object.h>
-#import <Foundation/NSObject.h>
+#import <Foundation/Foundation.h>
 
-int main (int argc, const char * argv[]) {
-    NSString* str = @"Hello";
-    NSLog(@"%@",str);
-     
+int main(void)
+{
+    NSLog(@"Hello, objc world!");  
+    
     return 0;
 }
-
 
