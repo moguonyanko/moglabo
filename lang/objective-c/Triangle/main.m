@@ -1,7 +1,11 @@
 #include <stdio.h>
 
+//float remainingAngle(angleA, angleB)
+//static float remainingAngle(angleA, angleB)
 static float remainingAngle(float angleA, float angleB)
 {
+	printf("angleA is %f\n", angleA);
+	printf("angleB is %f\n", angleB);
 	float angleC = 180.0 - (angleA + angleB);
 	return angleC;
 }
