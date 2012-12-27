@@ -1,10 +1,18 @@
 #include <stdio.h>
 #include <math.h>
 
+static const float M_PI_2 = 3.14/2;
+
 void cartesianToPolar(double x, double y, double *rPtr, double *thetaPtr)
 {
-	*rPtr = sqrt(x * x + y * y);
+	if(rPtr){
+		*rPtr = sqrt(x * x + y * y);
+	}
 	
+	if(!thetaPtr){
+		return;
+	}
+
 	double theta;
 	if(x == 0.0){
 		if(y == 0.0){
@@ -37,7 +45,7 @@ int main(int argc, const char * argv[])
 	double angle;
 	
 	cartesianToPolar(x, y, &radius, &angle);
-	printf("(%.2f, %.2f) becomes (%.2f, %.2f radians)\n", x, y, radius);
+	printf("(%.2f, %.2f) becomes (%.2f, %.2f radians)\n", x, y, radius, angle);
 
 	return 0;
 }
