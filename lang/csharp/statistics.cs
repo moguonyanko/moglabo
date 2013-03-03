@@ -8,11 +8,11 @@ namespace Statistics
 {
 	class StatUtil
 	{
-		private static int Sum(int[] datas)
+		private static double Sum(double[] datas)
 		{
-			int result = 0;
+			double result = 0;
 			
-			foreach(int data in datas)
+			foreach (double data in datas)
 			{
 				result += data;
 			}
@@ -20,9 +20,60 @@ namespace Statistics
 			return result;
 		}
 		
-		public static int Mean(int[] datas)
+		public static double Mean(double[] datas)
 		{
 			return Sum(datas) / datas.Length;
+		}
+		
+		private static double Square(double x)
+		{
+			return x * x;
+		}
+		
+		private static double DeviationSqSum(double[] datas)
+		{
+			double mean = Mean(datas);
+			double result = 0;
+			
+			foreach (double data in datas)
+			{
+				double devSq = Square(data - mean);
+				result += devSq;
+			}
+			
+			return result;			
+		}
+		
+		private static double Var(double[] datas, string type)
+		{
+			double result = DeviationSqSum(datas);
+			
+			int denominator = 1, dataLen = datas.Length;
+			
+			if (type == "Sampling")
+			{
+				denominator = dataLen;
+			}
+			else if (type == "Unbiased")
+			{
+				denominator = dataLen - 1;
+			}
+			else
+			{
+				throw new ArgumentException("Invalid type name.");
+			}
+			
+			return result / denominator;
+		}
+		
+		public static double SamplingVar(double[] datas)
+		{
+			return Var(datas, "Sampling");
+		}
+		
+		public static double UnbiasedVar(double[] datas)
+		{
+			return Var(datas, "Unbiased");
 		}
 	}
 	
@@ -30,9 +81,12 @@ namespace Statistics
 	{
 		static void Main(string[] args)
 		{
-			int[] sample = {1, 2, 3, 4, 5};
-			int result = StatUtil.Mean(sample);
-			Console.WriteLine(result);
+			double[] sample = {43, 47, 52, 52, 54, 61, 67, 67, 68, 69, 70, 71, 71, 73, 76, 82, 84, 84, 91};
+			// double result = StatUtil.Mean(sample);
+			double result1 = StatUtil.SamplingVar(sample);
+			Console.WriteLine(result1);
+			double result2 = StatUtil.UnbiasedVar(sample);
+			Console.WriteLine(result2);
 		
 			/*
 			if(args.Length > 0)
