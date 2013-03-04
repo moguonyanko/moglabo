@@ -75,6 +75,11 @@ namespace Statistics
 		{
 			return Var(datas, "Unbiased");
 		}
+		
+		public static double StdDeviation(double[] datas)
+		{
+			return Math.Sqrt(UnbiasedVar(datas));
+		}
 	}
 	
 	class TestMain
@@ -83,10 +88,10 @@ namespace Statistics
 		{
 			double[] sample = {43, 47, 52, 52, 54, 61, 67, 67, 68, 69, 70, 71, 71, 73, 76, 82, 84, 84, 91};
 			// double result = StatUtil.Mean(sample);
-			double result1 = StatUtil.SamplingVar(sample);
-			Console.WriteLine(result1);
-			double result2 = StatUtil.UnbiasedVar(sample);
-			Console.WriteLine(result2);
+			// double result1 = StatUtil.SamplingVar(sample);
+			// double result2 = StatUtil.UnbiasedVar(sample);
+			double result = StatUtil.StdDeviation(sample);
+			Console.WriteLine(result);
 		
 			/*
 			if(args.Length > 0)
