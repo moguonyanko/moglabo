@@ -1,5 +1,7 @@
 /**
  * This is statistics library to study mine.
+ * Reference:
+ * 「意味がわかる統計学（ベレ出版）」
  **/
 
 using System;
