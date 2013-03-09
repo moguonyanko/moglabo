@@ -8,6 +8,11 @@ using System;
 
 namespace Statistics
 {
+	/**
+	 * <summary>
+	 * Utillity for statistics.
+	 * </summary>
+	 **/
 	public class StatUtil
 	{
 		private static double Sum(double[] datas)
