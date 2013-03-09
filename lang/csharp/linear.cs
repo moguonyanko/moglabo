@@ -8,7 +8,7 @@ using System;
 
 namespace Linear
 {
-	class Vector
+	public class Vector
 	{
 		public Vector(double newx, double newy, double newz)
 		{
@@ -35,12 +35,12 @@ namespace Linear
 			set;
 		}
 		
-		public void zero()
+		public void Zero()
 		{
 			x = y = z = 0.0;
 		}
 		
-		public void normalize()
+		public void Normalize()
 		{
 			double magSq = x*x + y*y + z*z;
 			
@@ -59,15 +59,4 @@ namespace Linear
 			return "(x, y, z) = " + x + ", " + y + ", " + z;
 		}
 	}
-	
-	class TestMain
-	{
-		static void Main(string[] args)
-		{
-			Vector v = new Vector(12, -5, 0);
-			Console.WriteLine(v);
-			v.normalize();
-			Console.WriteLine(v);
-		}
-	}	
 }
