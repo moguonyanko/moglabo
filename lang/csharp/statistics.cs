@@ -37,7 +37,7 @@ namespace Statistics
 			return x * x;
 		}
 		
-		private static double DeviationSqSum(double[] datas)
+		private static double DeviationSqrtSum(double[] datas)
 		{
 			double mean = Mean(datas);
 			double result = 0;
@@ -53,7 +53,7 @@ namespace Statistics
 		
 		private static double Var(double[] datas, string type)
 		{
-			double result = DeviationSqSum(datas);
+			double result = DeviationSqrtSum(datas);
 			
 			int denominator = 1, dataLen = datas.Length;
 			
@@ -83,9 +83,49 @@ namespace Statistics
 			return Var(datas, "Unbiased");
 		}
 		
-		public static double StdDeviation(double[] datas)
+		public static double SamplingStdDeviation(double[] datas)
+		{
+			return Math.Sqrt(SamplingVar(datas));
+		}
+		
+		public static double UnbiasedStdDeviation(double[] datas)
 		{
 			return Math.Sqrt(UnbiasedVar(datas));
+		}
+		
+		public static double DeviationProductSum(double[] datas1, double[] datas2)
+		{
+			double mean1 = Mean(datas1);
+			double mean2 = Mean(datas2);
+		
+			int minDatasLen = Math.Min(datas1.Length, datas2.Length);
+			
+			double result = 0.0;
+			
+			for (int dataIdx = 0; dataIdx < minDatasLen; dataIdx++)
+			{
+				double dev1 = datas1[dataIdx] - mean1;
+				double dev2 = datas2[dataIdx] - mean2;
+				result += dev1 * dev2;
+			}
+		
+			return result;
+		}
+		
+		public static double SamplingCor(double[] datas1, double[] datas2)
+		{
+			if (datas1.Length <= 0 || datas2.Length <= 0)
+			{
+				throw new ArgumentException("Cannot handle empty datas.");
+			}
+		
+			double proDevSum = DeviationProductSum(datas1, datas2);
+			double proDevSumMean = proDevSum / Math.Min(datas1.Length, datas2.Length);
+			
+			double sd1 = SamplingStdDeviation(datas1);
+			double sd2 = SamplingStdDeviation(datas2);
+			
+			return proDevSumMean / (sd1 * sd2);
 		}
 	}
 }	

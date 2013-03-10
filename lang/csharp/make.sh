@@ -3,7 +3,7 @@
 MCS=`which gmcs`
 ${MCS} --version
 
-NUNITFRAMEWORK=/usr/lib/mono/gac/nunit.framework/2.4.8.0__96d09a1eb7f44a77/nunit.framework.dll
+NUNITFRAMEWORK=/usr/lib/mono/gac/nunit/framework/nunit.framework.dll
 
 echo "Try to make modules from all C# files..."
 
