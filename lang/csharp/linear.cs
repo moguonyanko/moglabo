@@ -8,6 +8,11 @@ using System;
 
 namespace Linear
 {
+	/*
+	 * <summary>
+	 * Vector expression class.
+	 * </summary>
+	 */
 	public class Vector
 	{
 		public Vector(double newx, double newy, double newz)
