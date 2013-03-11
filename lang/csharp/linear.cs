@@ -40,9 +40,33 @@ namespace Linear
 			set;
 		}
 		
+		public override bool Equals(object o)
+		{
+			Vector v = o as Vector;
+			
+			if (v != null)
+			{		
+				return x == v.x && y == v.y && z == v.z;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		public override int GetHashCode()
+		{
+			return (int)x^(int)y^(int)z;
+		}
+		
 		public void Zero()
 		{
 			x = y = z = 0.0;
+		}
+		
+		public static Vector operator+(Vector v1, Vector v2)
+		{
+			return new Vector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
 		}
 		
 		public void Normalize()
