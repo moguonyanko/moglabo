@@ -64,9 +64,41 @@ namespace Linear
 			x = y = z = 0.0;
 		}
 		
+		public static Vector operator-(Vector v1)
+		{
+			return new Vector(-v1.x, -v1.y, -v1.z);
+		}
+		
 		public static Vector operator+(Vector v1, Vector v2)
 		{
 			return new Vector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
+		}
+
+		public static Vector operator-(Vector v1, Vector v2)
+		{
+			return new Vector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+		}
+		
+		public static Vector operator*(Vector v1, double scalar)
+		{
+			return new Vector(v1.x * scalar, v1.y * scalar, v1.z * scalar);
+		}
+
+		public static Vector operator/(Vector v1, double scalar)
+		{
+			if (scalar == 0)
+			{
+				throw new ArgumentException("Zero division cannot accept.");
+			}
+			
+			double oneOverScalar = 1.0 / scalar;
+			
+			return new Vector(v1.x * oneOverScalar, v1.y * oneOverScalar, v1.z * oneOverScalar);
+		}
+		
+		public static double operator*(Vector v1, Vector v2)
+		{
+			return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 		}
 		
 		public void Normalize()
