@@ -73,8 +73,10 @@ namespace TestLinear
 		{
 			Vector v1 = new Vector(1, 2, 3);
 			Vector result = v1 * 3;
+			Vector result2 = 3 * v1;
 			Vector expect = new Vector(3, 6, 9);
 			Assert.AreEqual(expect, result);
+			Assert.AreEqual(expect, result2);
 		}
 		
 		[Test]
@@ -112,12 +114,38 @@ namespace TestLinear
 			Console.WriteLine(v1 / 0);
 		}
 		
-			[Test]
+		[Test]
 		public void TestVectorDotProduct()
 		{
 			Vector v1 = new Vector(1, 2, 3);
 			Vector v2 = new Vector(3, 2, 1);
 			double result = v1 * v2;
+			Assert.AreEqual(10, result);
+		}
+		
+		[Test]
+		public void TestVectorMag()
+		{
+			Vector v1 = new Vector(0, 3, 4);
+			double result = LinearUtil.VectorMag(v1);
+			Assert.AreEqual(5, result);
+		}
+		
+		[Test]
+		public void TestCrossProduct()
+		{
+			Vector v1 = new Vector(1, 3, 4);
+			Vector v2 = new Vector(2, -5, 8);
+			Vector result = LinearUtil.CrossProduct(v1, v2);
+			Assert.AreEqual(new Vector(44, 0, -11), result);
+		}
+		
+		[Test]
+		public void TestDistance()
+		{
+			Vector v1 = new Vector(5, 0, 0);
+			Vector v2 = new Vector(-1, 8, 0);
+			double result = LinearUtil.Distance(v1, v2);
 			Assert.AreEqual(10, result);
 		}
 	}

@@ -79,11 +79,21 @@ namespace Linear
 			return new Vector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
 		}
 		
-		public static Vector operator*(Vector v1, double scalar)
+		private static Vector Product(Vector v1, double scalar)
 		{
 			return new Vector(v1.x * scalar, v1.y * scalar, v1.z * scalar);
 		}
+		
+		public static Vector operator*(Vector v1, double scalar)
+		{
+			return Product(v1, scalar);
+		}
 
+		public static Vector operator*(double scalar, Vector v1)
+		{
+			return Product(v1, scalar);
+		}
+		
 		public static Vector operator/(Vector v1, double scalar)
 		{
 			if (scalar == 0)
@@ -118,6 +128,34 @@ namespace Linear
 		public override string ToString()
 		{
 			return "(x, y, z) = " + x + ", " + y + ", " + z;
+		}
+	}
+	
+	/*
+	 * <summary>
+	 * Utility tool class.
+	 * </summary>
+	 */
+	public class LinearUtil
+	{
+		// public const Vector ZeroVector = new Vector(0, 0, 0);
+		
+		public static double VectorMag(Vector v)
+		{
+			return Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+		}
+		
+		public static Vector CrossProduct(Vector v1, Vector v2)
+		{
+			return new Vector(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, 	v1.x * v2.y - v1.y * v2.x);
+		}
+		
+		public static double Distance(Vector v1, Vector v2)
+		{
+			double deltaX = v1.x - v2.x;
+			double deltaY = v1.y - v2.y;
+			double deltaZ = v1.z - v2.z;
+			return Math.Sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
 		}
 	}
 }
