@@ -11,17 +11,11 @@ namespace Linear
 	/*
 	 * <summary>
 	 * Vector expression class.
+	 * Make as row vector.
 	 * </summary>
 	 */
 	public class Vector
 	{
-		public Vector(double newx, double newy, double newz)
-		{
-			x = newx;
-			y = newy;
-			z = newz;
-		}
-		
 		public double x
 		{
 			get;
@@ -38,6 +32,32 @@ namespace Linear
 		{
 			get;
 			set;
+		}
+		
+		public Vector(double newx, double newy, double newz)
+		{
+			x = newx;
+			y = newy;
+			z = newz;
+		}
+		
+		private double[] elements;
+		
+		public double this[int x]
+		{
+			get
+			{
+				return elements[x];
+			}
+			set
+			{
+				elements[x] = value;
+			}
+		}
+		
+		public Vector(double[] src)
+		{
+			elements = src;
 		}
 		
 		public override bool Equals(object o)
@@ -133,13 +153,119 @@ namespace Linear
 	
 	/*
 	 * <summary>
+	 * Matrix expression class.
+	 * </summary>
+	 */
+	public class Matrix
+	{
+		private double[,] elements;
+		
+		public Matrix(double[,] src)
+		{
+			elements = src;
+		}
+		
+		public double this[int x, int y]
+		{
+			get
+			{
+				return elements[x, y];
+			}
+			set
+			{
+				elements[x, y] = value;
+			}
+		}
+		
+		private static Matrix MakeMatrix(Matrix m1, Matrix m2)
+		{
+			int xLen = m1.elements.GetLength(1);
+			int yLen = m1.elements.GetLength(0);
+			double[,] newEle = new double[xLen, yLen];
+			
+			for (int x = 0; x < xLen; x++)
+			{
+				for (int y = 0; y < yLen; y++)
+				{
+					// Any operate.
+				}
+			}
+			
+			return new Matrix(newEle);
+		}
+		
+		public static Matrix operator+(Matrix m1, Matrix m2)
+		{
+			int xLen = m1.elements.GetLength(1);
+			int yLen = m1.elements.GetLength(0);
+			double[,] newEle = new double[xLen, yLen];
+			
+			for (int x = 0; x < xLen; x++)
+			{
+				for (int y = 0; y < yLen; y++)
+				{
+					newEle[x, y] = m1[x, y] + m2[x, y];
+				}
+			}
+			
+			return new Matrix(newEle);
+		}
+		
+		public override bool Equals(object o)
+		{
+			Matrix m = o as Matrix;
+			
+			if (m != null)
+			{		
+				int xLen = elements.GetLength(1);
+				int yLen = elements.GetLength(0);
+			
+				for (int x = 0; x < xLen; x++)
+				{
+					for (int y = 0; y < yLen; y++)
+					{
+						if (this[x, y] != m[x, y])
+						{
+							return false;
+						}
+					}
+				}
+				
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		public override int GetHashCode()
+		{
+			int hash = 1;
+			int xLen = elements.GetLength(1);
+			int yLen = elements.GetLength(0);
+		
+			for (int x = 0; x < xLen; x++)
+			{
+				for (int y = 0; y < yLen; y++)
+				{
+					hash ^= (int)this[x, y];
+				}
+			}
+			
+			return hash;
+		}
+	}
+	
+	/*
+	 * <summary>
 	 * Utility tool class.
 	 * </summary>
 	 */
 	public class LinearUtil
 	{
-		// public const Vector ZeroVector = new Vector(0, 0, 0);
-		
+		public readonly Vector ZeroVector = new Vector(0, 0, 0);
+	
 		public static double VectorMag(Vector v)
 		{
 			return Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
