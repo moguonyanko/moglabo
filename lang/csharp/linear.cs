@@ -1,19 +1,20 @@
 /**
- * This is linear algebra library to study mine.
+ * This is linear algebra library for studying oneself.
  * Reference:
  * 「ゲーム３D数学(O'REILLY)」
+ * 「意味がわかる線形代数（ベレ出版）」
  **/
  
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Linear
 {
-	/*
-	 * <summary>
-	 * Vector expression class.
-	 * Make as row vector.
-	 * </summary>
-	 */
+	/// <summary>
+	/// Vector expression class.
+	/// Make as row vector.
+	/// </summary>
 	public class Vector
 	{
 		public double x
@@ -41,23 +42,23 @@ namespace Linear
 			z = newz;
 		}
 		
-		private double[] elements;
+		private double[] Elements;
 		
 		public double this[int x]
 		{
 			get
 			{
-				return elements[x];
+				return Elements[x];
 			}
 			set
 			{
-				elements[x] = value;
+				Elements[x] = value;
 			}
 		}
 		
 		public Vector(double[] src)
 		{
-			elements = src;
+			Elements = src;
 		}
 		
 		public override bool Equals(object o)
@@ -151,43 +152,64 @@ namespace Linear
 		}
 	}
 	
-	/*
-	 * <summary>
-	 * Matrix expression class.
-	 * </summary>
-	 */
+	/// <summary>
+	/// Matrix expression class.
+	/// </summary>
 	public class Matrix
 	{
-		private double[,] elements;
+		private double[,] Elements;
 		
 		public Matrix(double[,] src)
 		{
-			elements = src;
+			Elements = src;
 		}
 		
+		public double[] this[int x]
+		{
+			get
+			{
+				int xLen = Elements.GetLength(0);
+				double[] row = new double[xLen];
+				for (int i = 0; i < xLen; i++) 
+				{
+					row[i] = Elements[x, i];
+				}
+				
+				return row;
+			}
+			set
+			{
+				int xLen = Elements.GetLength(0);
+				for (int i = 0; i < xLen; i++) 
+				{
+					Elements[x, i] = value[i];
+				}
+			}
+		}
+
 		public double this[int x, int y]
 		{
 			get
 			{
-				return elements[x, y];
+				return Elements[x, y];
 			}
 			set
 			{
-				elements[x, y] = value;
+				Elements[x, y] = value;
 			}
 		}
 		
-		private static Matrix MakeMatrix(Matrix m1, Matrix m2)
+		private static Matrix OperateMatrix(Matrix m1, Func<int, int, double> operation)
 		{
-			int xLen = m1.elements.GetLength(1);
-			int yLen = m1.elements.GetLength(0);
+			int xLen = m1.Elements.GetLength(1);
+			int yLen = m1.Elements.GetLength(0);
 			double[,] newEle = new double[xLen, yLen];
 			
 			for (int x = 0; x < xLen; x++)
 			{
 				for (int y = 0; y < yLen; y++)
 				{
-					// Any operate.
+					newEle[x, y] = operation(x, y);
 				}
 			}
 			
@@ -196,29 +218,46 @@ namespace Linear
 		
 		public static Matrix operator+(Matrix m1, Matrix m2)
 		{
-			int xLen = m1.elements.GetLength(1);
-			int yLen = m1.elements.GetLength(0);
-			double[,] newEle = new double[xLen, yLen];
-			
-			for (int x = 0; x < xLen; x++)
-			{
-				for (int y = 0; y < yLen; y++)
-				{
-					newEle[x, y] = m1[x, y] + m2[x, y];
-				}
-			}
-			
-			return new Matrix(newEle);
+			Func<int, int, double> plus = (x, y) => m1[x, y] + m2[x, y];
+			return OperateMatrix(m1, plus);
 		}
 		
+		public static Matrix operator-(Matrix m1, Matrix m2)
+		{
+			Func<int, int, double> minus = (x, y) => m1[x, y] - m2[x, y];
+			return OperateMatrix(m1, minus);
+		}
+		
+		public Matrix transpose()
+		{
+			Func<int, int, double> trans = (x, y) => this[y, x];
+			return OperateMatrix(this, trans);
+		}
+		
+		public static Matrix operator*(Matrix m1, Matrix m2)
+		{
+			Matrix tm = m2.transpose();
+			Func<int, int, double> mul = 
+			(x, y) => 
+			{
+				double tmp = 0;
+				foreach (double ele in m1[x])
+				{
+					 tmp += ele * tm[x, y];
+				}
+				return tmp;
+			};
+			return OperateMatrix(m1, mul);
+		}
+
 		public override bool Equals(object o)
 		{
 			Matrix m = o as Matrix;
 			
 			if (m != null)
 			{		
-				int xLen = elements.GetLength(1);
-				int yLen = elements.GetLength(0);
+				int xLen = Elements.GetLength(1);
+				int yLen = Elements.GetLength(0);
 			
 				for (int x = 0; x < xLen; x++)
 				{
@@ -242,8 +281,8 @@ namespace Linear
 		public override int GetHashCode()
 		{
 			int hash = 1;
-			int xLen = elements.GetLength(1);
-			int yLen = elements.GetLength(0);
+			int xLen = Elements.GetLength(1);
+			int yLen = Elements.GetLength(0);
 		
 			for (int x = 0; x < xLen; x++)
 			{
@@ -257,11 +296,9 @@ namespace Linear
 		}
 	}
 	
-	/*
-	 * <summary>
-	 * Utility tool class.
-	 * </summary>
-	 */
+	/// <summary>
+	/// Utility tool class.
+	/// </summary>
 	public class LinearUtil
 	{
 		public readonly Vector ZeroVector = new Vector(0, 0, 0);
