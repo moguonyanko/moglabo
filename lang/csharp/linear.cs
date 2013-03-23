@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Linear
 {
@@ -293,6 +294,24 @@ namespace Linear
 			}
 			
 			return hash;
+		}
+		
+		public override String ToString()
+		{
+			StringBuilder vals = new StringBuilder();
+			
+			int xLen = Elements.GetLength(1);
+			int yLen = Elements.GetLength(0);
+			for (int x = 0; x < xLen; x++)
+			{
+				for (int y = 0; y < yLen; y++)
+				{
+					vals.Append(this[x, y]).Append("\t");
+				}
+				vals.Append("\n");
+			}
+			
+			return vals.ToString();
 		}
 	}
 	

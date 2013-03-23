@@ -275,6 +275,8 @@ namespace TestLinear
 			Matrix m2 = new Matrix(src2);
 			Matrix result = m1 * m2;
 			
+			// Console.WriteLine(result);
+			
 			double[,] src3 = new double[,]
 			{
 				{5, 0},
