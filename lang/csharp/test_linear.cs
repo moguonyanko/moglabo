@@ -148,5 +148,165 @@ namespace TestLinear
 			double result = LinearUtil.Distance(v1, v2);
 			Assert.AreEqual(10, result);
 		}
+		
+		[Test]
+		public void TestIndexer()
+		{
+			double[] src = new double[]{0, 1, 2};
+			Vector v1 = new Vector(src);
+			Assert.AreEqual(0, v1[0]);
+			Assert.AreEqual(1, v1[1]);
+			Assert.AreEqual(2, v1[2]);
+		}
+	}
+	
+	[TestFixture]
+	public class TestMatrix
+	{
+		[Test]
+		public void TestIndexerArg1()
+		{
+			double[,] elements = new double[,]
+			{
+				{0, 1},
+				{2, 3}
+			};
+			
+			Matrix m = new Matrix(elements);
+			Assert.AreEqual(new double[]{0, 1}, m[0]);
+			Assert.AreEqual(new double[]{2, 3}, m[1]);
+			
+			m[0] = new double[]{100, 200};
+			Assert.AreEqual(new double[]{100, 200}, m[0]);
+		}
+		
+		[Test]
+		public void TestIndexerArg2()
+		{
+			double[,] elements = new double[,]
+			{
+				{0, 1},
+				{2, 3}
+			};
+			
+			Matrix m = new Matrix(elements);
+			Assert.AreEqual(0, m[0, 0]);
+			Assert.AreEqual(1, m[0, 1]);
+			Assert.AreEqual(2, m[1, 0]);
+			Assert.AreEqual(3, m[1, 1]);
+			
+			m[0, 0] = 10;
+			Assert.AreEqual(10, m[0, 0]);
+		}
+		
+		[Test]
+		public void TestMatrixPlus()
+		{
+			double[,] src1 = new double[,]
+			{
+				{0, 1},
+				{2, 3}
+			};			
+			double[,] src2 = new double[,]
+			{
+				{4, 3},
+				{2, 1}
+			};
+			
+			Matrix m1 = new Matrix(src1);
+			Matrix m2 = new Matrix(src2);
+			Matrix result = m1 + m2;
+			
+			double[,] src3 = new double[,]
+			{
+				{4, 4},
+				{4, 4}
+			};
+			
+			Matrix expect = new Matrix(src3);
+			
+			Assert.AreEqual(expect, result);
+		}
+	
+		[Test]
+		public void TestMatrixMinus()
+		{
+			double[,] src1 = new double[,]
+			{
+				{4, 3},
+				{2, 1}
+			};			
+			double[,] src2 = new double[,]
+			{
+				{0, 1},
+				{2, 3}
+			};
+			
+			Matrix m1 = new Matrix(src1);
+			Matrix m2 = new Matrix(src2);
+			Matrix result = m1 - m2;
+			
+			double[,] src3 = new double[,]
+			{
+				{4, 2},
+				{0, -2}
+			};
+			
+			Matrix expect = new Matrix(src3);
+			
+			Assert.AreEqual(expect, result);
+		}
+		
+		[Test]
+		public void TestMatrixMultiply()
+		{
+			double[,] src1 = new double[,]
+			{
+				{1, 3},
+				{4, 6}
+			};			
+			double[,] src2 = new double[,]
+			{
+				{-1, 3},
+				{2, -1}
+			};
+			
+			Matrix m1 = new Matrix(src1);
+			Matrix m2 = new Matrix(src2);
+			Matrix result = m1 * m2;
+			
+			double[,] src3 = new double[,]
+			{
+				{5, 0},
+				{8, 6}
+			};
+			
+			Matrix expect = new Matrix(src3);
+			
+			Assert.AreEqual(expect, result);
+		}
+		
+		[Test]
+		public void TestMatrixTranspose()
+		{
+			double[,] src1 = new double[,]
+			{
+				{3, 2},
+				{-1, 6}
+			};			
+			
+			Matrix m1 = new Matrix(src1);
+			Matrix result = m1.transpose();
+			
+			double[,] src2 = new double[,]
+			{
+				{3, -1},
+				{2, 6}
+			};
+			
+			Matrix expect = new Matrix(src2);
+			
+			Assert.AreEqual(expect, result);
+		}
 	}
 }

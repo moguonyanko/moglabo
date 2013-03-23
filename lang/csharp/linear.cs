@@ -1,27 +1,22 @@
 /**
- * This is linear algebra library to study mine.
+ * This is linear algebra library for studying oneself.
  * Reference:
  * 「ゲーム３D数学(O'REILLY)」
+ * 「意味がわかる線形代数（ベレ出版）」
  **/
  
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Linear
 {
-	/*
-	 * <summary>
-	 * Vector expression class.
-	 * </summary>
-	 */
+	/// <summary>
+	/// Vector expression class.
+	/// Make as row vector.
+	/// </summary>
 	public class Vector
 	{
-		public Vector(double newx, double newy, double newz)
-		{
-			x = newx;
-			y = newy;
-			z = newz;
-		}
-		
 		public double x
 		{
 			get;
@@ -38,6 +33,32 @@ namespace Linear
 		{
 			get;
 			set;
+		}
+		
+		public Vector(double newx, double newy, double newz)
+		{
+			x = newx;
+			y = newy;
+			z = newz;
+		}
+		
+		private double[] Elements;
+		
+		public double this[int x]
+		{
+			get
+			{
+				return Elements[x];
+			}
+			set
+			{
+				Elements[x] = value;
+			}
+		}
+		
+		public Vector(double[] src)
+		{
+			Elements = src;
 		}
 		
 		public override bool Equals(object o)
@@ -131,15 +152,157 @@ namespace Linear
 		}
 	}
 	
-	/*
-	 * <summary>
-	 * Utility tool class.
-	 * </summary>
-	 */
+	/// <summary>
+	/// Matrix expression class.
+	/// </summary>
+	public class Matrix
+	{
+		private double[,] Elements;
+		
+		public Matrix(double[,] src)
+		{
+			Elements = src;
+		}
+		
+		public double[] this[int x]
+		{
+			get
+			{
+				int xLen = Elements.GetLength(0);
+				double[] row = new double[xLen];
+				for (int i = 0; i < xLen; i++) 
+				{
+					row[i] = Elements[x, i];
+				}
+				
+				return row;
+			}
+			set
+			{
+				int xLen = Elements.GetLength(0);
+				for (int i = 0; i < xLen; i++) 
+				{
+					Elements[x, i] = value[i];
+				}
+			}
+		}
+
+		public double this[int x, int y]
+		{
+			get
+			{
+				return Elements[x, y];
+			}
+			set
+			{
+				Elements[x, y] = value;
+			}
+		}
+		
+		private static Matrix OperateMatrix(Matrix m1, Func<int, int, double> operation)
+		{
+			int xLen = m1.Elements.GetLength(1);
+			int yLen = m1.Elements.GetLength(0);
+			double[,] newEle = new double[xLen, yLen];
+			
+			for (int x = 0; x < xLen; x++)
+			{
+				for (int y = 0; y < yLen; y++)
+				{
+					newEle[x, y] = operation(x, y);
+				}
+			}
+			
+			return new Matrix(newEle);
+		}
+		
+		public static Matrix operator+(Matrix m1, Matrix m2)
+		{
+			Func<int, int, double> plus = (x, y) => m1[x, y] + m2[x, y];
+			return OperateMatrix(m1, plus);
+		}
+		
+		public static Matrix operator-(Matrix m1, Matrix m2)
+		{
+			Func<int, int, double> minus = (x, y) => m1[x, y] - m2[x, y];
+			return OperateMatrix(m1, minus);
+		}
+		
+		public Matrix transpose()
+		{
+			Func<int, int, double> trans = (x, y) => this[y, x];
+			return OperateMatrix(this, trans);
+		}
+		
+		public static Matrix operator*(Matrix m1, Matrix m2)
+		{
+			Matrix tm = m2.transpose();
+			Func<int, int, double> mul = 
+			(x, y) => 
+			{
+				double tmp = 0;
+				foreach (double ele in m1[x])
+				{
+					 tmp += ele * tm[x, y];
+				}
+				return tmp;
+			};
+			return OperateMatrix(m1, mul);
+		}
+
+		public override bool Equals(object o)
+		{
+			Matrix m = o as Matrix;
+			
+			if (m != null)
+			{		
+				int xLen = Elements.GetLength(1);
+				int yLen = Elements.GetLength(0);
+			
+				for (int x = 0; x < xLen; x++)
+				{
+					for (int y = 0; y < yLen; y++)
+					{
+						if (this[x, y] != m[x, y])
+						{
+							return false;
+						}
+					}
+				}
+				
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		public override int GetHashCode()
+		{
+			int hash = 1;
+			int xLen = Elements.GetLength(1);
+			int yLen = Elements.GetLength(0);
+		
+			for (int x = 0; x < xLen; x++)
+			{
+				for (int y = 0; y < yLen; y++)
+				{
+					hash ^= (int)this[x, y];
+				}
+			}
+			
+			return hash;
+		}
+	}
+	
+	/// <summary>
+	/// Utility tool class.
+	/// </summary>
 	public class LinearUtil
 	{
-		// public const Vector ZeroVector = new Vector(0, 0, 0);
-		
+		public readonly Vector ZeroVector = new Vector(0, 0, 0);
+	
 		public static double VectorMag(Vector v)
 		{
 			return Math.Sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
