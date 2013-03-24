@@ -278,14 +278,22 @@ namespace Linear
 				for (int x = 0; x < xLen; x++)
 				{
 					double[] column = m2.GetColumn(x);
-			
+					
+					int colLen = column.Length;
+					double[] vals = new double[colLen];
+					for (int i = 0; i < colLen; i++)
+					{
+						vals[i] = row[i] * column[i];
+					}
+					/*
 					var vals = 
 						from r in row
 							from c in column
 							select r * c;
-						
+					*/
+					
 					double val = vals.Sum();
-					newEle[x, y] = val;
+					newEle[y, x] = val;
 				}
 			}
 			
