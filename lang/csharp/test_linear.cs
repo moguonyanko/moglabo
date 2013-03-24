@@ -275,8 +275,6 @@ namespace TestLinear
 			Matrix m2 = new Matrix(src2);
 			Matrix result = m1 * m2;
 			
-			// Console.WriteLine(result);
-			
 			double[,] src3 = new double[,]
 			{
 				{5, 0},
@@ -293,8 +291,9 @@ namespace TestLinear
 		{
 			double[,] src1 = new double[,]
 			{
-				{3, 2},
-				{-1, 6}
+				{1, 4, -4},
+				{5, 3, -3},
+				{-2, -1, 2}
 			};			
 			
 			Matrix m1 = new Matrix(src1);
@@ -302,11 +301,30 @@ namespace TestLinear
 			
 			double[,] src2 = new double[,]
 			{
-				{3, -1},
-				{2, 6}
+				{1, 5, -2},
+				{4, 3, -1},
+				{-4, -3, 2}
 			};
 			
 			Matrix expect = new Matrix(src2);
+			
+			Assert.AreEqual(expect, result);
+		}
+		
+		[Test]
+		public void TestMatrixGetColumn()
+		{
+			double[,] src1 = new double[,]
+			{
+				{1, 4, -4},
+				{5, 3, -3},
+				{-2, -1, 2}
+			};			
+			
+			Matrix m1 = new Matrix(src1);
+			double[] result = m1.GetColumn(1);
+			
+			double[] expect = new double[]{4, 3, -1};
 			
 			Assert.AreEqual(expect, result);
 		}

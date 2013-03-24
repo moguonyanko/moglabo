@@ -220,35 +220,76 @@ namespace Linear
 		public static Matrix operator+(Matrix m1, Matrix m2)
 		{
 			Func<int, int, double> plus = (x, y) => m1[x, y] + m2[x, y];
+			
 			return OperateMatrix(m1, plus);
 		}
 		
 		public static Matrix operator-(Matrix m1, Matrix m2)
 		{
 			Func<int, int, double> minus = (x, y) => m1[x, y] - m2[x, y];
+			
 			return OperateMatrix(m1, minus);
 		}
 		
 		public Matrix transpose()
 		{
 			Func<int, int, double> trans = (x, y) => this[y, x];
+			
 			return OperateMatrix(this, trans);
+		}
+		
+		public double[] GetColumn(int targetX)
+		{
+			List<double> column = new List<double>(Elements.GetLength(0));
+			
+			for (int x = 0, rowLength = Elements.GetLength(1); x < rowLength; x++)
+			{
+				double[] row = this[x];
+				column.Add(row[targetX]);
+			}
+			
+			return column.ToArray();
+		}
+		
+		private static double[] MulArray(double[] a, double[] b)
+		{
+			List<double> ret = new List<double>(a.Length);
+			
+			for (int x = 0; x < a.Length; x++)
+			{
+				for (int y = 0; y < b.Length; y++)
+				{
+					ret.Add(a[x] * b[y]);
+				}
+			}
+			
+			return ret.ToArray();
 		}
 		
 		public static Matrix operator*(Matrix m1, Matrix m2)
 		{
-			Matrix tm = m2.transpose();
-			Func<int, int, double> mul = 
-			(x, y) => 
+			int xLen = m1.Elements.GetLength(1);
+			int yLen = m1.Elements.GetLength(0);
+			double[,] newEle = new double[xLen, yLen];
+		
+			for (int y = 0; y < yLen; y++)
 			{
-				double tmp = 0;
-				foreach (double ele in m1[x])
+				double[] row = m1[y];
+				for (int x = 0; x < xLen; x++)
 				{
-					 tmp += ele * tm[x, y];
+					double[] column = m2.GetColumn(x);
+			
+					var vals = 
+						from r in row
+							from c in column
+							select r * c;
+						
+					double val = vals.Sum();
+					newEle[x, y] = val;
 				}
-				return tmp;
-			};
-			return OperateMatrix(m1, mul);
+			}
+			
+			return new Matrix(newEle);
 		}
 
 		public override bool Equals(object o)
