@@ -266,40 +266,45 @@ namespace Linear
 			return ret.ToArray();
 		}
 		
+		private static double CrossSum(Matrix m1, Matrix m2, int m, int n)
+		{
+			double[] row = m1[m];
+			double[] column = m2.GetColumn(n);
+			int rowSize = row.Length;
+			double[] mulSet = new double[rowSize];
+			
+			for (int i = 0; i < rowSize; i++)
+			{
+				mulSet[i] = row[i] * column[i];
+			}
+			
+			// var mulSet = row.Zip(column, (first, second) => first * second);
+			return mulSet.Sum();
+		}
+		
 		public static Matrix operator*(Matrix m1, Matrix m2)
 		{
 			int xLen = m1.Elements.GetLength(1);
-			int yLen = m1.Elements.GetLength(0);
-			double[,] newEle = new double[xLen, yLen];
-		
+			int yLen = m2.Elements.GetLength(0);
+			
+			if (xLen != yLen)
+			{
+				throw new ArgumentException("Invalid matrix size.");
+			}
+			
+			double[,] newEle = new double[yLen, xLen];
 			for (int y = 0; y < yLen; y++)
 			{
-				double[] row = m1[y];
 				for (int x = 0; x < xLen; x++)
 				{
-					double[] column = m2.GetColumn(x);
-					
-					int colLen = column.Length;
-					double[] vals = new double[colLen];
-					for (int i = 0; i < colLen; i++)
-					{
-						vals[i] = row[i] * column[i];
-					}
-					/*
-					var vals = 
-						from r in row
-							from c in column
-							select r * c;
-					*/
-					
-					double val = vals.Sum();
-					newEle[y, x] = val;
+					newEle[y, x] = CrossSum(m1, m2, y, x);
 				}
 			}
 			
 			return new Matrix(newEle);
 		}
 
+		// TODO:Should be used "Predicate".
 		public override bool Equals(object o)
 		{
 			Matrix m = o as Matrix;

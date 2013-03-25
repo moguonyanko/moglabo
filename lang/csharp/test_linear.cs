@@ -258,7 +258,7 @@ namespace TestLinear
 		}
 		
 		[Test]
-		public void TestMatrixMultiply()
+		public void TestMatrixMultiplyDim2x2()
 		{
 			double[,] src1 = new double[,]
 			{
@@ -274,6 +274,7 @@ namespace TestLinear
 			Matrix m1 = new Matrix(src1);
 			Matrix m2 = new Matrix(src2);
 			Matrix result = m1 * m2;
+			Matrix result2 = m2 * m1;
 			
 			double[,] src3 = new double[,]
 			{
@@ -281,9 +282,46 @@ namespace TestLinear
 				{8, 6}
 			};
 			
+			double[,] src4 = new double[,]
+			{
+				{11, 15},
+				{-2, 0}
+			};
+			
 			Matrix expect = new Matrix(src3);
+			Matrix expect2 = new Matrix(src4);
 			
 			Assert.AreEqual(expect, result);
+			Assert.AreEqual(expect2, result2);
+		}
+		
+		[Test]
+		public void TestMatrixMultiplyDim2x3()
+		{
+			double[,] src1 = new double[,]
+			{
+				{-1, 3, 2},
+				{3, -4, -5}
+			};
+			double[,] src2 = new double[,]
+			{
+				{1, 3},
+				{-2, -2},
+				{3, -1}
+			};
+		
+			Matrix m1 = new Matrix(src1);
+			Matrix m2 = new Matrix(src2);
+			Matrix result1 = m1 * m2;
+			
+			double[,] src3 = new double[,]
+			{
+				{-1, -11},
+				{-4, 22}
+			};
+			Matrix expect1 = new Matrix(src3);
+			
+			Assert.AreEqual(expect1, result1);
 		}
 		
 		[Test]
