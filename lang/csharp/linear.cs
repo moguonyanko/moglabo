@@ -284,30 +284,51 @@ namespace Linear
 		
 		public static Matrix operator*(Matrix m1, Matrix m2)
 		{
-			int xLen = m1.Elements.GetLength(1);
-			int yLen = m2.Elements.GetLength(0);
-			
-			if (xLen != yLen)
+			if (m1.Elements.GetLength(1) != m2.Elements.GetLength(0))
 			{
 				throw new ArgumentException("Invalid matrix size.");
 			}
 			
-			double[,] newEle = new double[yLen, xLen];
-			for (int y = 0; y < yLen; y++)
+			List<double[]> allColumnLst = new List<double[]>();
+			for (int i = 0; i < m2.Elements.GetLength(1); i++)
 			{
-				for (int x = 0; x < xLen; x++)
+				allColumnLst.Add(m2.GetColumn(i));
+			}
+			double[][] allColumn = allColumnLst.ToArray();
+			
+			double[,] newEle = new double[m2.Elements.GetLength(1), m1.Elements.GetLength(0)];
+			
+			int x = 0;
+			for (int j = 0; j < m1.Elements.GetLength(0); j++)
+			{
+				double[] row = m1[j];
+				for (int y = 0; y < allColumn.Length; y++)
 				{
-					newEle[y, x] = CrossSum(m1, m2, y, x);
+					double[] column = allColumn[y];
+					List<double> tmp = new List<double>();
+					for (int k = 0; k < row.Length; k++)
+					{
+						tmp.Add(row[k] * column[k]);
+					}
+					newEle[x++, y] = tmp.Sum();
 				}
+				x = 0;
 			}
 			
 			return new Matrix(newEle);
 		}
 
 		// TODO:Should be used "Predicate".
+		// TODO:Only can deal 2 dimension.
 		public override bool Equals(object o)
 		{
 			Matrix m = o as Matrix;
+			
+			if (this.Elements.GetLength(0) != m.Elements.GetLength(0) || 
+			this.Elements.GetLength(1) != m.Elements.GetLength(1))
+			{
+				return false;
+			}
 			
 			if (m != null)
 			{		
