@@ -169,9 +169,9 @@ namespace Linear
 		{
 			get
 			{
-				int xLen = Elements.GetLength(0);
-				double[] row = new double[xLen];
-				for (int i = 0; i < xLen; i++) 
+				int rowLen = Elements.GetLength(1);
+				double[] row = new double[rowLen];
+				for (int i = 0; i < rowLen; i++) 
 				{
 					row[i] = Elements[x, i];
 				}
@@ -180,8 +180,8 @@ namespace Linear
 			}
 			set
 			{
-				int xLen = Elements.GetLength(0);
-				for (int i = 0; i < xLen; i++) 
+				int rowLen = Elements.GetLength(1);
+				for (int i = 0; i < rowLen; i++) 
 				{
 					Elements[x, i] = value[i];
 				}
@@ -192,11 +192,11 @@ namespace Linear
 		{
 			get
 			{
-				return Elements[x, y];
+				return Elements[y, x];
 			}
 			set
 			{
-				Elements[x, y] = value;
+				Elements[y, x] = value;
 			}
 		}
 		
@@ -210,7 +210,7 @@ namespace Linear
 			{
 				for (int y = 0; y < yLen; y++)
 				{
-					newEle[x, y] = operation(x, y);
+					newEle[y, x] = operation(x, y);
 				}
 			}
 			
@@ -240,12 +240,11 @@ namespace Linear
 		
 		public double[] GetColumn(int targetX)
 		{
-			List<double> column = new List<double>(Elements.GetLength(0));
+			List<double> column = new List<double>();
 			
-			for (int x = 0, rowLength = Elements.GetLength(1); x < rowLength; x++)
+			for (int y = 0, rowLength = Elements.GetLength(0); y < rowLength; y++)
 			{
-				double[] row = this[x];
-				column.Add(row[targetX]);
+				column.Add(this[targetX, y]);
 			}
 			
 			return column.ToArray();
@@ -284,6 +283,52 @@ namespace Linear
 		
 		public static Matrix operator*(Matrix m1, Matrix m2)
 		{
+			int m1ColLen = m1.Elements.GetLength(0);
+			int m1RowLen = m1.Elements.GetLength(1);
+			int m2ColLen = m2.Elements.GetLength(0);
+			int m2RowLen = m2.Elements.GetLength(1);
+			
+			if (m1RowLen != m2ColLen)
+			{
+				throw new ArgumentException("Invalid matrix size.");
+			}
+			
+			double[,] newSrc = new double[m1RowLen, m2ColLen];
+			
+			List<double[][]> calcPairs = new List<double[][]>();
+			for (int i = 0; i < m1ColLen; i++)
+			{
+				double[] m1Row = m1[i];
+				double[] m2Col = m2.GetColumn(i);
+				calcPairs.Add(new double[][]{m1Row, m2Col});
+			}
+			
+			int x = 0;
+			int y = 0;
+			foreach (double[][] calcPair in calcPairs)
+			{
+				double[] row = calcPair[0];
+				double[] col = calcPair[1];
+				List<double> tmp = new List<double>();
+				for (int k = 0; k < m2RowLen; k++)
+				{
+					tmp.Add(row[k] * col[k]);
+				}
+				newSrc[x++, y] = tmp.Sum();
+				
+				if (x % m2RowLen == 0)
+				{
+					x = 0;
+					y++;
+				}
+			}
+			
+			return new Matrix(newSrc); 
+		}
+		
+		/*
+		public static Matrix operator*(Matrix m1, Matrix m2)
+		{
 			if (m1.Elements.GetLength(1) != m2.Elements.GetLength(0))
 			{
 				throw new ArgumentException("Invalid matrix size.");
@@ -292,6 +337,7 @@ namespace Linear
 			List<double[]> allColumnLst = new List<double[]>();
 			for (int i = 0; i < m2.Elements.GetLength(1); i++)
 			{
+				Console.WriteLine("m2 Elements index : " + i);
 				allColumnLst.Add(m2.GetColumn(i));
 			}
 			double[][] allColumn = allColumnLst.ToArray();
@@ -310,13 +356,14 @@ namespace Linear
 					{
 						tmp.Add(row[k] * column[k]);
 					}
-					newEle[x++, y] = tmp.Sum();
+					newEle[y, x] = tmp.Sum();
 				}
-				x = 0;
+				x++;
 			}
 			
 			return new Matrix(newEle);
 		}
+		*/
 
 		// TODO:Should be used "Predicate".
 		// TODO:Only can deal 2 dimension.
