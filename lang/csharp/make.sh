@@ -15,5 +15,9 @@ ${MCS} -target:library statistics.cs
 ${MCS} -r:${NUNITFRAMEWORK} -r:./statistics.dll -target:library test_statistics.cs
 echo "statistics module has compiled."
 
+${MCS} -target:library ci.cs
+${MCS} -r:${NUNITFRAMEWORK} -r:./ci.dll -target:library test_ci.cs
+echo "CI module has compiled."
+
 echo "All module making finished!"
 
