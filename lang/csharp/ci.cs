@@ -12,6 +12,104 @@ using System.Text.RegularExpressions;
 
 namespace CI
 {
+	class Feature
+	{
+		public double Term
+		{
+			get;
+			private set;
+		}
+		
+		public double Count
+		{
+			get;
+			private set;
+		}		
+		
+		internal Feature(string term, int count)
+		{
+			Team = term;
+			Count = count;
+		}	
+		
+		public override bool Equals(object o)
+		{
+			Feature f = o as Feature;
+			
+			if (f != null)
+			{		
+				return Term.Equals(f.Term) && Count == f.Count;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		public override int GetHashCode()
+		{
+			return Term.GetHashCode()^Count;
+		}		
+		
+		public override string ToString()
+		{
+			return "Feature term is [" + term + "], that count is " + Count;
+		}		
+	}
+	
+	/// <summary>
+	/// Basic classifier class
+	/// </summary>
+	public class Classifier
+	{
+		private Func<string, Dictionary<string, int>> GetFeatures;
+		private Dictionary<Feature, int> FeatureOverCatrgoryCount;
+		private Dictionary<Feature, int> CategoryCount;
+	
+		public Classifier(Func<string, Dictionary<string, int>> func, string fileName)
+		{
+			GetFeatures = func;
+			FeatureOverCatrgoryCount = new Dictionary<Feature, int>();
+			CategoryCount = new Dictionary<Feature, int>();
+		}
+		
+		public void Incf(Feature f, string category)
+		{
+		}
+
+		public void Incc(string category)
+		{
+		}
+
+		public int FCount(Feature f, string category)
+		{
+			return 0;
+		}
+
+		public int CatCount(string category)
+		{
+			return 0;
+		}
+		
+		public int TotalCount()
+		{
+			return 0;
+		}
+
+		public Dictionary<Feature, int>.KeyCollection Categories()
+		{
+			return null;
+		}
+		
+		public void Train(string item, string category)
+		{
+		}
+		
+		public void SampleTrain()
+		{
+		}
+	}
+	
 	public class DocumentFiltering
 	{
 		private static bool IsAcceptWord(string word)
