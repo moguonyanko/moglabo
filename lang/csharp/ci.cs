@@ -1,5 +1,5 @@
 /**
- * This is Collective Intelligence library for studying oneself.
+ * This is "Collective Intelligence" library for studying oneself.
  * Reference:
  * 「集合知プログラミング(O'REILLY)」
  **/
@@ -12,23 +12,23 @@ using System.Text.RegularExpressions;
 
 namespace CI
 {
-	class Feature
+	public class Feature
 	{
-		public double Term
+		public string Term
 		{
 			get;
 			private set;
 		}
 		
-		public double Count
+		public int Count
 		{
 			get;
 			private set;
 		}		
 		
-		internal Feature(string term, int count)
+		public Feature(string term, int count)
 		{
-			Team = term;
+			Term = term;
 			Count = count;
 		}	
 		
@@ -53,7 +53,7 @@ namespace CI
 		
 		public override string ToString()
 		{
-			return "Feature term is [" + term + "], that count is " + Count;
+			return "Feature term is [" + Term + "], that count is " + Count;
 		}		
 	}
 	
@@ -63,27 +63,50 @@ namespace CI
 	public class Classifier
 	{
 		private Func<string, Dictionary<string, int>> GetFeatures;
-		private Dictionary<Feature, int> FeatureOverCatrgoryCount;
-		private Dictionary<Feature, int> CategoryCount;
+		private Dictionary<string, Dictionary<string, int>> FeatureOverCatrgoryCount;
+		private Dictionary<string, int> CategoryCount;
 	
 		public Classifier(Func<string, Dictionary<string, int>> func, string fileName)
 		{
 			GetFeatures = func;
-			FeatureOverCatrgoryCount = new Dictionary<Feature, int>();
-			CategoryCount = new Dictionary<Feature, int>();
+			FeatureOverCatrgoryCount = new Dictionary<string, Dictionary<string, int>>();
+			CategoryCount = new Dictionary<string, int>();
 		}
 		
-		public void Incf(Feature f, string category)
+		public void Incf(string feature, string category)
 		{
+			if (!FeatureOverCatrgoryCount.ContainsKey(feature))
+			{
+				FeatureOverCatrgoryCount[feature] = new Dictionary<string, int>();
+			}
+			
+			if (!FeatureOverCatrgoryCount[feature].ContainsKey(category))
+			{
+				FeatureOverCatrgoryCount[feature][category] = 0;
+			}
+			
+			FeatureOverCatrgoryCount[feature][category] += 1;
 		}
 
 		public void Incc(string category)
 		{
+			if (!CategoryCount.ContainsKey(category))
+			{
+				CategoryCount[category] = 0;
+			}
+			
+			CategoryCount[category] += 1;
 		}
 
-		public int FCount(Feature f, string category)
+		public double FCount(string feature, string category)
 		{
-			return 0;
+			if (FeatureOverCatrgoryCount.ContainsKey(feature) && 
+			FeatureOverCatrgoryCount[feature].ContainsKey(category))
+			{
+				double fc = FeatureOverCatrgoryCount[feature][category];
+				return fc;
+			}
+			return 0.0;
 		}
 
 		public int CatCount(string category)
@@ -96,13 +119,20 @@ namespace CI
 			return 0;
 		}
 
-		public Dictionary<Feature, int>.KeyCollection Categories()
+		public Dictionary<string, int>.KeyCollection Categories()
 		{
 			return null;
 		}
 		
-		public void Train(string item, string category)
+		public void Train(string sample, string category)
 		{
+			var features = GetFeatures(sample);
+			
+			foreach (var feature in features)
+			{
+				Incf(feature.Key, category);
+			}
+			Incc(category);
 		}
 		
 		public void SampleTrain()

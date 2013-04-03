@@ -30,5 +30,17 @@ namespace TestCI
 			
 			Assert.AreEqual(expect, result);
 		}
+		
+		[Test]
+		public void TestTrain()
+		{
+			Classifier cl = new Classifier(DocumentFiltering.GetWords, null);
+			cl.Train("the quick brown fox jumps over the lazy dog", "good");
+			cl.Train("make quick money in the online casino", "bad");
+			double goodfc = cl.FCount("quick", "good");
+			double badfc = cl.FCount("quick", "bad");
+			Assert.AreEqual(1.0, goodfc);
+			Assert.AreEqual(1.0, badfc);
+		}
 	}
 }	
