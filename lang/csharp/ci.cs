@@ -65,6 +65,9 @@ namespace CI
 		private Func<string, Dictionary<string, int>> GetFeatures;
 		private Dictionary<string, Dictionary<string, int>> FeatureOverCatrgoryCount;
 		private Dictionary<string, int> CategoryCount;
+		
+		private readonly double Weight = 1.0;
+		private readonly double Ap = 0.5;
 	
 		public Classifier(Func<string, Dictionary<string, int>> func, string fileName)
 		{
@@ -111,7 +114,12 @@ namespace CI
 
 		public int CatCount(string category)
 		{
-			return 0;
+			if (!CategoryCount.ContainsKey(category))
+			{
+				return 0;
+			}
+			
+			return CategoryCount[category];
 		}
 		
 		public int TotalCount()
@@ -119,9 +127,35 @@ namespace CI
 			return 0;
 		}
 
-		public Dictionary<string, int>.KeyCollection Categories()
+		private Dictionary<string, int>.KeyCollection Categories()
 		{
-			return null;
+			return CategoryCount.Keys;
+		}
+		
+		public double FProb(string feature, string category)
+		{
+			int catcnt = CatCount(category);
+			if (catcnt == 0)
+			{
+				return 0.0;
+			}
+			
+			return FCount(feature, category) / catcnt;
+		}
+		
+		public double WeightedProb(string feature, string category, Func<string, string, double> probFunc)
+		{
+			double nowProb = probFunc(feature, category);
+			
+			double totals = 0.0;
+			foreach (var cat in Categories())
+			{
+				totals += FCount(feature, cat);
+			}
+			
+			double bp = ((Weight * Ap) + (totals * nowProb)) / (Weight + totals);
+			
+			return bp;
 		}
 		
 		public void Train(string sample, string category)
@@ -135,8 +169,14 @@ namespace CI
 			Incc(category);
 		}
 		
+		/* for test */
 		public void SampleTrain()
 		{
+			Train("Nobady owns the water.", "good");
+			Train("the quick rabbit jumps fences.", "good");
+			Train("buy pharmaceuticals now", "bad");
+			Train("make quick money at the online casino", "bad");
+			Train("the quick brown fox jumps", "good");
 		}
 	}
 	
