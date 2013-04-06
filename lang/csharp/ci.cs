@@ -62,12 +62,14 @@ namespace CI
 	/// </summary>
 	public class Classifier
 	{
-		private Func<string, Dictionary<string, int>> GetFeatures;
+		protected readonly Func<string, Dictionary<string, int>> GetFeatures;
 		private Dictionary<string, Dictionary<string, int>> FeatureOverCatrgoryCount;
 		private Dictionary<string, int> CategoryCount;
 		
 		private readonly double Weight = 1.0;
 		private readonly double Ap = 0.5;
+	
+		public Classifier(){ }	
 	
 		public Classifier(Func<string, Dictionary<string, int>> func, string fileName)
 		{
@@ -124,7 +126,7 @@ namespace CI
 		
 		public int TotalCount()
 		{
-			return 0;
+			return CategoryCount.Values.Sum();
 		}
 
 		private Dictionary<string, int>.KeyCollection Categories()
@@ -148,7 +150,7 @@ namespace CI
 			double nowProb = probFunc(feature, category);
 			
 			double totals = 0.0;
-			foreach (var cat in Categories())
+			foreach (var cat in Categories()) /* @TODO: use LINQ; */
 			{
 				totals += FCount(feature, cat);
 			}
@@ -162,7 +164,7 @@ namespace CI
 		{
 			var features = GetFeatures(sample);
 			
-			foreach (var feature in features)
+			foreach (var feature in features) /* @TODO: use LINQ; */
 			{
 				Incf(feature.Key, category);
 			}
@@ -177,6 +179,34 @@ namespace CI
 			Train("buy pharmaceuticals now", "bad");
 			Train("make quick money at the online casino", "bad");
 			Train("the quick brown fox jumps", "good");
+		}
+	}
+	
+	public class NaiveBays : Classifier
+	{
+		public NaiveBays(Func<string, Dictionary<string, int>> func, string fileName) 
+		: base(func, fileName)
+		{
+		}
+	
+		private double DocProb(string item, string category)
+		{
+			var features = GetFeatures(item);
+			
+			double prob = 1.0;
+			foreach (var feature in features)
+			{
+				prob *= WeightedProb(feature.Key, category, FProb);
+			}
+			
+			return prob;
+		}
+	
+		public double Prob(string item, string category)
+		{
+			double categoryProb = CatCount(category) / TotalCount();
+			double docp = DocProb(item, category);
+			return categoryProb * docp;
 		}
 	}
 	

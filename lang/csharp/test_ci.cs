@@ -66,5 +66,19 @@ namespace TestCI
 			int fix = 4;
 			Assert.AreEqual(Math.Round(expect, fix), Math.Round(result, fix));
 		}
+		
+		[Test]
+		public void TestProb()
+		{
+			int fix = 4;
+			NaiveBays nb = new NaiveBays(DocumentFiltering.GetWords, null);
+			nb.SampleTrain();
+			double expect0 = 0.1562499;
+			double result0 = nb.Prob("quick rabbit", "good");
+			double expect1 = 0.0500000;
+			double result1 = nb.Prob("quick rabbit", "bad");
+			Assert.AreEqual(Math.Round(expect0, fix), Math.Round(result0, fix));
+			Assert.AreEqual(Math.Round(expect1, fix), Math.Round(result1, fix));
+		}
 	}
 }	
