@@ -63,8 +63,8 @@ namespace CI
 	public class Classifier
 	{
 		protected readonly Func<string, Dictionary<string, int>> GetFeatures;
-		private Dictionary<string, Dictionary<string, int>> FeatureOverCatrgoryCount;
-		private Dictionary<string, int> CategoryCount;
+		private readonly Dictionary<string, Dictionary<string, int>> FeatureOverCatrgoryCount;
+		private readonly Dictionary<string, int> CategoryCount;
 		
 		private readonly double Weight = 1.0;
 		private readonly double Ap = 0.5;
@@ -126,10 +126,11 @@ namespace CI
 		
 		public int TotalCount()
 		{
-			return CategoryCount.Values.Sum();
+			int total = CategoryCount.Values.Sum();
+			return total;
 		}
 
-		private Dictionary<string, int>.KeyCollection Categories()
+		protected Dictionary<string, int>.KeyCollection Categories()
 		{
 			return CategoryCount.Keys;
 		}
@@ -184,9 +185,12 @@ namespace CI
 	
 	public class NaiveBays : Classifier
 	{
+		private Dictionary<string, double> Thresholds;
+	
 		public NaiveBays(Func<string, Dictionary<string, int>> func, string fileName) 
 		: base(func, fileName)
 		{
+			Thresholds = new Dictionary<string, double>();
 		}
 	
 		private double DocProb(string item, string category)
@@ -204,9 +208,59 @@ namespace CI
 	
 		public double Prob(string item, string category)
 		{
-			double categoryProb = CatCount(category) / TotalCount();
+			double cc = CatCount(category);
+			double total = TotalCount();
+			double categoryProb = cc / total;
 			double docp = DocProb(item, category);
+			
 			return categoryProb * docp;
+		}
+		
+		public void SetThresholds(string category, double t)
+		{
+			Thresholds[category] = t;
+		}
+
+		public double GetThresholds(string category)
+		{
+			if (!Thresholds.ContainsKey(category))
+			{
+				return 1.0;
+			}
+		
+			return Thresholds[category];
+		}
+		
+		public string Classify(string item, string defaultClass)
+		{
+			var probs = new Dictionary<string, double>();
+			
+			double max = 0.0;
+			string best = defaultClass;
+			foreach (string category in Categories())
+			{
+				probs[category] = Prob(item, category);
+				if (probs[category] > max)
+				{
+					max = probs[category];
+					best = category;
+				}
+			}
+			
+			foreach (string category in probs.Keys)
+			{
+				if (category.Equals(best))
+				{
+					continue;
+				}
+				
+				if (probs[category] * GetThresholds(best) > probs[best])
+				{
+					return defaultClass;		
+				}
+			}
+			
+			return best;
 		}
 	}
 	

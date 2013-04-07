@@ -77,8 +77,32 @@ namespace TestCI
 			double result0 = nb.Prob("quick rabbit", "good");
 			double expect1 = 0.0500000;
 			double result1 = nb.Prob("quick rabbit", "bad");
+			//Assert.AreEqual(expect0, result0);
+			//Assert.AreEqual(expect1, result1);
 			Assert.AreEqual(Math.Round(expect0, fix), Math.Round(result0, fix));
 			Assert.AreEqual(Math.Round(expect1, fix), Math.Round(result1, fix));
+		}
+		
+		[Test]
+		public void TestClassify()
+		{
+			NaiveBays nb = new NaiveBays(DocumentFiltering.GetWords, null);
+			nb.SampleTrain();
+			string defclass = "unknown";
+			
+			string result0 = nb.Classify("quick rabbit", defclass);
+			string result1 = nb.Classify("quick money", defclass);
+			nb.SetThresholds("bad", 3.0);
+			string result2 = nb.Classify("quick money", defclass);
+			
+			for (int i = 0; i < 10; i++) nb.SampleTrain();
+
+			string result3 = nb.Classify("quick money", defclass);
+			
+			Assert.AreEqual("good", result0);
+			Assert.AreEqual("bad", result1);
+			Assert.AreEqual("unknown", result2);
+			Assert.AreEqual("bad", result3);
 		}
 	}
 }	
