@@ -1,5 +1,5 @@
 /**
- * This is "Collective Intelligence" library for studying oneself.
+ * The "Collective Intelligence" library for studying oneself.
  * Reference:
  * 「集合知プログラミング(O'REILLY)」
  **/
@@ -58,7 +58,7 @@ namespace CI
 	}
 	
 	/// <summary>
-	/// Basic classifier class
+	/// Basic classifier
 	/// </summary>
 	public class Classifier
 	{
@@ -78,7 +78,7 @@ namespace CI
 			CategoryCount = new Dictionary<string, int>();
 		}
 		
-		public void Incf(string feature, string category)
+		private void Incf(string feature, string category)
 		{
 			if (!FeatureOverCatrgoryCount.ContainsKey(feature))
 			{
@@ -93,7 +93,7 @@ namespace CI
 			FeatureOverCatrgoryCount[feature][category] += 1;
 		}
 
-		public void Incc(string category)
+		private void Incc(string category)
 		{
 			if (!CategoryCount.ContainsKey(category))
 			{
@@ -114,7 +114,7 @@ namespace CI
 			return 0.0;
 		}
 
-		public int CatCount(string category)
+		internal int CatCount(string category)
 		{
 			if (!CategoryCount.ContainsKey(category))
 			{
@@ -124,13 +124,13 @@ namespace CI
 			return CategoryCount[category];
 		}
 		
-		public int TotalCount()
+		internal int TotalCount()
 		{
 			int total = CategoryCount.Values.Sum();
 			return total;
 		}
 
-		protected Dictionary<string, int>.KeyCollection Categories()
+		internal Dictionary<string, int>.KeyCollection Categories()
 		{
 			return CategoryCount.Keys;
 		}
@@ -183,6 +183,9 @@ namespace CI
 		}
 	}
 	
+	/// <summary>
+	/// Naive Bays classifier
+	/// </summary>
 	public class NaiveBays : Classifier
 	{
 		private Dictionary<string, double> Thresholds;
@@ -264,6 +267,9 @@ namespace CI
 		}
 	}
 	
+	/// <summary>
+	/// Document filtering function
+	/// </summary>
 	public class DocumentFiltering
 	{
 		private static bool IsAcceptWord(string word)

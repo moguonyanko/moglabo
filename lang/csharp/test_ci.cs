@@ -92,11 +92,15 @@ namespace TestCI
 			
 			string result0 = nb.Classify("quick rabbit", defclass);
 			string result1 = nb.Classify("quick money", defclass);
+			
 			nb.SetThresholds("bad", 3.0);
+			
+			/* badに分類されるしきい値が上がったためbadに分類されなくなる */
 			string result2 = nb.Classify("quick money", defclass);
 			
 			for (int i = 0; i < 10; i++) nb.SampleTrain();
 
+			/* トレーニングが積まれたためbadに分類できるようになる。 */
 			string result3 = nb.Classify("quick money", defclass);
 			
 			Assert.AreEqual("good", result0);
