@@ -66,10 +66,8 @@ namespace CI
 		private readonly Dictionary<string, Dictionary<string, int>> FeatureOverCatrgoryCount;
 		private readonly Dictionary<string, int> CategoryCount;
 		
-		private readonly double Weight = 1.0;
-		private readonly double Ap = 0.5;
-	
-		public Classifier(){ }	
+		private const double WEIGHT = 1.0;
+		private const double AP = 0.5;
 	
 		public Classifier(Func<string, Dictionary<string, int>> func, string fileName)
 		{
@@ -148,38 +146,27 @@ namespace CI
 		
 		public double WeightedProb(string feature, string category, Func<string, string, double> probFunc)
 		{
+			var fcounts = from cat in Categories()
+										select FCount(feature, cat);
+										
+			double totals = fcounts.Sum();
 			double nowProb = probFunc(feature, category);
 			
-			double totals = 0.0;
-			foreach (var cat in Categories()) /* @TODO: use LINQ; */
-			{
-				totals += FCount(feature, cat);
-			}
+			double weightedProb = ((WEIGHT * AP) + (totals * nowProb)) / (WEIGHT + totals);
 			
-			double bp = ((Weight * Ap) + (totals * nowProb)) / (Weight + totals);
-			
-			return bp;
+			return weightedProb;
 		}
 		
 		public void Train(string sample, string category)
 		{
 			var features = GetFeatures(sample);
 			
-			foreach (var feature in features) /* @TODO: use LINQ; */
+			foreach (var feature in features)
 			{
 				Incf(feature.Key, category);
 			}
+			
 			Incc(category);
-		}
-		
-		/* for test */
-		public void SampleTrain()
-		{
-			Train("Nobady owns the water.", "good");
-			Train("the quick rabbit jumps fences.", "good");
-			Train("buy pharmaceuticals now", "bad");
-			Train("make quick money at the online casino", "bad");
-			Train("the quick brown fox jumps", "good");
 		}
 	}
 	
@@ -188,7 +175,7 @@ namespace CI
 	/// </summary>
 	public class NaiveBays : Classifier
 	{
-		private Dictionary<string, double> Thresholds;
+		private readonly Dictionary<string, double> Thresholds;
 	
 		public NaiveBays(Func<string, Dictionary<string, int>> func, string fileName) 
 		: base(func, fileName)
@@ -200,11 +187,10 @@ namespace CI
 		{
 			var features = GetFeatures(item);
 			
-			double prob = 1.0;
-			foreach (var feature in features)
-			{
-				prob *= WeightedProb(feature.Key, category, FProb);
-			}
+			var weitedProbs = from feature in features
+												select WeightedProb(feature.Key, category, FProb);
+			
+			double prob = weitedProbs.Aggregate((x, y) => x * y);
 			
 			return prob;
 		}
@@ -219,9 +205,9 @@ namespace CI
 			return categoryProb * docp;
 		}
 		
-		public void SetThresholds(string category, double t)
+		public void SetThresholds(string category, double thres)
 		{
-			Thresholds[category] = t;
+			Thresholds[category] = thres;
 		}
 
 		public double GetThresholds(string category)
@@ -252,12 +238,7 @@ namespace CI
 			
 			foreach (string category in probs.Keys)
 			{
-				if (category.Equals(best))
-				{
-					continue;
-				}
-				
-				if (probs[category] * GetThresholds(best) > probs[best])
+				if (!category.Equals(best) && probs[category] * GetThresholds(best) > probs[best])
 				{
 					return defaultClass;		
 				}
@@ -291,12 +272,26 @@ namespace CI
 				orderby grp.Count() 
 				select new { Count = grp.Count(), Word = grp.Key };
 			
+			//result = wordRecords.ToDictionary(record => record.Word);
+			
 			foreach (var record in wordRecords)
 			{
 				result.Add(record.Word, record.Count);
 			}
 			
 			return result;
+		}
+	}
+	
+	public static class CIUtil
+	{
+		public static void SampleTrain(Classifier cl)
+		{
+			cl.Train("Nobady owns the water.", "good");
+			cl.Train("the quick rabbit jumps fences.", "good");
+			cl.Train("buy pharmaceuticals now", "bad");
+			cl.Train("make quick money at the online casino", "bad");
+			cl.Train("the quick brown fox jumps", "good");
 		}
 	}
 }

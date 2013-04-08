@@ -47,7 +47,7 @@ namespace TestCI
 		public void TestFProb()
 		{
 			Classifier cl = new Classifier(DocumentFiltering.GetWords, null);
-			cl.SampleTrain();
+			CIUtil.SampleTrain(cl);
 			double result = cl.FProb("quick", "good");
 			double expect = 0.66666666666666;
 			int fix = 4;
@@ -58,9 +58,9 @@ namespace TestCI
 		public void TestWeightedProb()
 		{
 			Classifier cl = new Classifier(DocumentFiltering.GetWords, null);
-			cl.SampleTrain();
+			CIUtil.SampleTrain(cl);
 			double result = cl.WeightedProb("money", "good", cl.FProb);
-			cl.SampleTrain();
+			CIUtil.SampleTrain(cl);
 			result = cl.WeightedProb("money", "good", cl.FProb);
 			double expect = 0.16666666666666;
 			int fix = 4;
@@ -72,7 +72,7 @@ namespace TestCI
 		{
 			int fix = 4;
 			NaiveBays nb = new NaiveBays(DocumentFiltering.GetWords, null);
-			nb.SampleTrain();
+			CIUtil.SampleTrain(nb);
 			double expect0 = 0.1562499;
 			double result0 = nb.Prob("quick rabbit", "good");
 			double expect1 = 0.0500000;
@@ -87,7 +87,7 @@ namespace TestCI
 		public void TestClassify()
 		{
 			NaiveBays nb = new NaiveBays(DocumentFiltering.GetWords, null);
-			nb.SampleTrain();
+			CIUtil.SampleTrain(nb);
 			string defclass = "unknown";
 			
 			string result0 = nb.Classify("quick rabbit", defclass);
@@ -98,7 +98,7 @@ namespace TestCI
 			/* badに分類されるしきい値が上がったためbadに分類されなくなる */
 			string result2 = nb.Classify("quick money", defclass);
 			
-			for (int i = 0; i < 10; i++) nb.SampleTrain();
+			for (int i = 0; i < 10; i++) CIUtil.SampleTrain(nb);
 
 			/* トレーニングが積まれたためbadに分類できるようになる。 */
 			string result3 = nb.Classify("quick money", defclass);
