@@ -58,9 +58,9 @@ namespace CI
 	}
 	
 	/// <summary>
-	/// Basic classifier
+	/// Basic classifier.
 	/// </summary>
-	public class Classifier
+	public abstract class Classifier
 	{
 		protected readonly Func<string, Dictionary<string, int>> GetFeatures;
 		private readonly Dictionary<string, Dictionary<string, int>> FeatureOverCatrgoryCount;
@@ -168,10 +168,15 @@ namespace CI
 			
 			Incc(category);
 		}
+		
+		/// <summary>
+		/// Classify method.
+		/// </summary>
+		public abstract string Classify(string item, string defaultClass);
 	}
 	
 	/// <summary>
-	/// Naive Bays classifier
+	/// Naive Bays classifier.
 	/// </summary>
 	public class NaiveBays : Classifier
 	{
@@ -220,7 +225,7 @@ namespace CI
 			return Thresholds[category];
 		}
 		
-		public string Classify(string item, string defaultClass)
+		public override string Classify(string item, string defaultClass)
 		{
 			var probs = new Dictionary<string, double>();
 			

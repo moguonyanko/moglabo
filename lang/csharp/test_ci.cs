@@ -31,6 +31,7 @@ namespace TestCI
 			Assert.AreEqual(expect, result);
 		}
 		
+		/*
 		[Test]
 		public void TestTrain()
 		{
@@ -66,6 +67,7 @@ namespace TestCI
 			int fix = 4;
 			Assert.AreEqual(Math.Round(expect, fix), Math.Round(result, fix));
 		}
+		*/
 		
 		[Test]
 		public void TestProb()
