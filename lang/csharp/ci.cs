@@ -254,9 +254,43 @@ namespace CI
 	}
 	
 	/// <summary>
-	/// Document filtering function
+	/// Fisher method classifier.
 	/// </summary>
-	public class DocumentFiltering
+	public class FisherClassifier : Classifier
+	{
+		public FisherClassifier(Func<string, Dictionary<string, int>> func, string fileName) 
+		: base(func, fileName)
+		{
+		}
+		
+		public double CProb(string feature, string category)
+		{
+			var clf = FProb(feature, category);
+			
+			if (clf == 0) 
+			{
+				return 0;
+			}
+			
+			var fprobs = from _category in Categories()
+									select FProb(feature, _category);
+									
+			var freqsum = fprobs.Sum();			
+			var cprob = clf / freqsum;
+			
+			return cprob;
+		}
+		
+		public override string Classify(string item, string defaultClass)
+		{
+			return "";
+		}		
+	}
+	
+	/// <summary>
+	/// Document filtering function class.
+	/// </summary>
+	public static class DocumentFiltering
 	{
 		private static bool IsAcceptWord(string word)
 		{

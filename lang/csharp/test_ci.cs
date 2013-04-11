@@ -110,5 +110,20 @@ namespace TestCI
 			Assert.AreEqual("unknown", result2);
 			Assert.AreEqual("bad", result3);
 		}
+		
+		[Test]
+		public void TestCProb()
+		{
+			int fix = 4;
+		
+			FisherClassifier fc = new FisherClassifier(DocumentFiltering.GetWords, null);
+			CIUtil.SampleTrain(fc);
+			double result0 = fc.CProb("quick", "good");
+			double result1 = fc.CProb("money", "bad");
+			double result2 = fc.WeightedProb("money", "bad", fc.CProb);
+			Assert.AreEqual(0.5714, Math.Round(result0, fix));
+			Assert.AreEqual(1.0, result1);
+			Assert.AreEqual(0.75, result2);
+		}
 	}
 }	
