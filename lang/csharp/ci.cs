@@ -170,6 +170,11 @@ namespace CI
 		}
 		
 		/// <summary>
+		/// Get Probability the item in category.
+		/// </summary>
+		public abstract double Prob(string item, string category);
+
+		/// <summary>
 		/// Classify method.
 		/// </summary>
 		public abstract string Classify(string item, string defaultClass);
@@ -192,15 +197,15 @@ namespace CI
 		{
 			var features = GetFeatures(item);
 			
-			var weitedProbs = from feature in features
+			var weightedProbs = from feature in features
 												select WeightedProb(feature.Key, category, FProb);
 			
-			double prob = weitedProbs.Aggregate((x, y) => x * y);
+			double prob = weightedProbs.Aggregate((x, y) => x * y);
 			
 			return prob;
 		}
 	
-		public double Prob(string item, string category)
+		public override double Prob(string item, string category)
 		{
 			double cc = CatCount(category);
 			double total = TotalCount();
@@ -273,12 +278,40 @@ namespace CI
 			}
 			
 			var fprobs = from _category in Categories()
-									select FProb(feature, _category);
+											select FProb(feature, _category);
 									
 			var freqsum = fprobs.Sum();			
 			var cprob = clf / freqsum;
 			
 			return cprob;
+		}
+		
+		private double InvChi2(double chi, int df)
+		{
+			var m = chi / 2.0;
+			var sum = Math.Exp(-m);
+			var term = sum;
+			
+			foreach (int i in Enumerable.Range(1, df / 2))
+			{
+				term *= m / i;
+				sum += term;
+			}
+			
+			return Math.Min(sum, 1.0);
+		}
+		
+		public override double Prob(string item, string category)
+		{
+			var features = GetFeatures(item);
+			
+			var weightedProbs = from feature in features
+															select WeightedProb(feature.Key, category, CProb);
+															
+			var prob = 	weightedProbs.Aggregate((x, y) => x * y);
+			var fscore = -2 * Math.Log(prob);
+			
+			return InvChi2(fscore, features.Count * 2);
 		}
 		
 		public override string Classify(string item, string defaultClass)

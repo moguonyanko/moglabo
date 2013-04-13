@@ -9,6 +9,13 @@ namespace TestCI
 	[TestFixture]
 	public class TestDocumentFiltering
 	{
+		private const int FIX = 4;
+	
+		[SetUp]
+		public void Init()
+		{
+		}
+	
 		[Test]
 		public void TestGetWords()
 		{
@@ -70,7 +77,7 @@ namespace TestCI
 		*/
 		
 		[Test]
-		public void TestProb()
+		public void TestNaiveBaysProb()
 		{
 			int fix = 4;
 			NaiveBays nb = new NaiveBays(DocumentFiltering.GetWords, null);
@@ -86,7 +93,7 @@ namespace TestCI
 		}
 		
 		[Test]
-		public void TestClassify()
+		public void TestNaiveBaysClassify()
 		{
 			NaiveBays nb = new NaiveBays(DocumentFiltering.GetWords, null);
 			CIUtil.SampleTrain(nb);
@@ -124,6 +131,23 @@ namespace TestCI
 			Assert.AreEqual(0.5714, Math.Round(result0, fix));
 			Assert.AreEqual(1.0, result1);
 			Assert.AreEqual(0.75, result2);
+		}
+		
+		[Test]
+		public void TestFisherProb()
+		{
+			FisherClassifier fc = new FisherClassifier(DocumentFiltering.GetWords, null);
+			CIUtil.SampleTrain(fc);
+			//fc.CProb("quick", "good");
+			double result0 = fc.Prob("quick rabbit", "good");
+			double result1 = fc.Prob("quick rabbit", "bad");
+			Assert.AreEqual(0.7801, Math.Round(result0, FIX));
+			Assert.AreEqual(0.3563, Math.Round(result1, FIX));
+		}
+		
+		[TearDown]
+		public void Dispose()
+		{
 		}
 	}
 }	
