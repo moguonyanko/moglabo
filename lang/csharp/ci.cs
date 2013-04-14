@@ -62,18 +62,21 @@ namespace CI
 	/// </summary>
 	public abstract class Classifier
 	{
-		protected readonly Func<string, Dictionary<string, int>> GetFeatures;
+		internal readonly Func<string, Dictionary<string, int>> GetFeatures;
 		private readonly Dictionary<string, Dictionary<string, int>> FeatureOverCatrgoryCount;
 		private readonly Dictionary<string, int> CategoryCount;
 		
 		private const double WEIGHT = 1.0;
 		private const double AP = 0.5;
 	
+		internal readonly Dictionary<string, double> Thresholds;
+	
 		public Classifier(Func<string, Dictionary<string, int>> func, string fileName)
 		{
 			GetFeatures = func;
 			FeatureOverCatrgoryCount = new Dictionary<string, Dictionary<string, int>>();
 			CategoryCount = new Dictionary<string, int>();
+			Thresholds = new Dictionary<string, double>();
 		}
 		
 		private void Incf(string feature, string category)
@@ -146,8 +149,9 @@ namespace CI
 		
 		public double WeightedProb(string feature, string category, Func<string, string, double> probFunc)
 		{
-			var fcounts = from cat in Categories()
-										select FCount(feature, cat);
+			var fcounts = 
+				from cat in Categories()
+				select FCount(feature, cat);
 										
 			double totals = fcounts.Sum();
 			double nowProb = probFunc(feature, category);
@@ -178,6 +182,24 @@ namespace CI
 		/// Classify method.
 		/// </summary>
 		public abstract string Classify(string item, string defaultClass);
+		
+		/// <summary>
+		///	Set thresholds each category.
+		/// </summary>
+		public abstract void SetThresholds(string category, double thres);
+		
+		/// <summary>
+		///	Get thresholds each category.
+		/// </summary>
+		public abstract double GetThresholds(string category);
+		
+		/// <summary>
+		/// Omit defaultClass version, Classify method.
+		/// </summary>
+		public string Classify(string item)
+		{
+			return Classify(item, null);
+		}
 	}
 	
 	/// <summary>
@@ -185,20 +207,18 @@ namespace CI
 	/// </summary>
 	public class NaiveBays : Classifier
 	{
-		private readonly Dictionary<string, double> Thresholds;
-	
 		public NaiveBays(Func<string, Dictionary<string, int>> func, string fileName) 
 		: base(func, fileName)
 		{
-			Thresholds = new Dictionary<string, double>();
 		}
 	
 		private double DocProb(string item, string category)
 		{
 			var features = GetFeatures(item);
 			
-			var weightedProbs = from feature in features
-												select WeightedProb(feature.Key, category, FProb);
+			var weightedProbs = 
+				from feature in features
+				select WeightedProb(feature.Key, category, FProb);
 			
 			double prob = weightedProbs.Aggregate((x, y) => x * y);
 			
@@ -215,12 +235,12 @@ namespace CI
 			return categoryProb * docp;
 		}
 		
-		public void SetThresholds(string category, double thres)
+		public override void SetThresholds(string category, double thres)
 		{
 			Thresholds[category] = thres;
 		}
 
-		public double GetThresholds(string category)
+		public override double GetThresholds(string category)
 		{
 			if (!Thresholds.ContainsKey(category))
 			{
@@ -277,8 +297,9 @@ namespace CI
 				return 0;
 			}
 			
-			var fprobs = from _category in Categories()
-											select FProb(feature, _category);
+			var fprobs = 
+				from _category in Categories()
+				select FProb(feature, _category);
 									
 			var freqsum = fprobs.Sum();			
 			var cprob = clf / freqsum;
@@ -305,18 +326,48 @@ namespace CI
 		{
 			var features = GetFeatures(item);
 			
-			var weightedProbs = from feature in features
-															select WeightedProb(feature.Key, category, CProb);
-															
+			var weightedProbs = 
+				from feature in features
+				select WeightedProb(feature.Key, category, CProb);
+				
 			var prob = 	weightedProbs.Aggregate((x, y) => x * y);
 			var fscore = -2 * Math.Log(prob);
 			
 			return InvChi2(fscore, features.Count * 2);
 		}
 		
+		public override void SetThresholds(string category, double minimum)
+		{
+			Thresholds[category] = minimum;
+		}
+		
+		public override double GetThresholds(string category)
+		{
+			if (!Thresholds.ContainsKey(category)) 
+			{
+				return 0;
+			}
+			
+			return Thresholds[category];
+		}
+		
 		public override string Classify(string item, string defaultClass)
 		{
-			return "";
+			var best = defaultClass;
+			var max = 0.0;
+			
+			foreach (var category in Categories())
+			{
+				var prob = Prob(item, category);
+				
+				if (GetThresholds(category) < prob && max < prob)
+				{
+					best = category;
+					max = prob;	
+				}
+			}
+			
+			return best;
 		}		
 	}
 	

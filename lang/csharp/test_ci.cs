@@ -144,6 +144,29 @@ namespace TestCI
 			Assert.AreEqual(0.7801, Math.Round(result0, FIX));
 			Assert.AreEqual(0.3563, Math.Round(result1, FIX));
 		}
+
+		[Test]
+		public void TestFisherClassify()
+		{
+			FisherClassifier fc = new FisherClassifier(DocumentFiltering.GetWords, null);
+			CIUtil.SampleTrain(fc);
+			string result0 = fc.Classify("quick rabbit");
+			string result1 = fc.Classify("quick money");
+			
+			/* badに判定されるしきい値を高くしてbadに分類されにくくする。 */
+			fc.SetThresholds("bad", 0.8);
+			
+			string result2 = fc.Classify("quick money");
+
+			fc.SetThresholds("good", 0.4);
+
+			string result3 = fc.Classify("quick money");
+
+			Assert.AreEqual("good", result0);
+			Assert.AreEqual("bad", result1);
+			Assert.AreEqual("good", result2);
+			Assert.AreEqual("good", result3);
+		}
 		
 		[TearDown]
 		public void Dispose()
