@@ -1,7 +1,7 @@
 /**
  * The "Collective Intelligence" library for studying oneself.
  * Reference:
- * 「集合知プログラミング(O'REILLY)」
+ * 「Programming Collective Intelligence」 By Toby Segaran / Publisher:O'Reilly Media
  **/
 
 using System;
@@ -12,7 +12,10 @@ using System.Text.RegularExpressions;
 
 namespace CI
 {
-	public class Feature
+	/// <summary>
+	/// General feature expression. 
+	/// </summary>
+	public class Feature : IEquatable<Feature>
 	{
 		public string Term
 		{
@@ -34,16 +37,31 @@ namespace CI
 		
 		public override bool Equals(object o)
 		{
+			if (object.ReferenceEquals(o, null))
+			{
+				return false;
+			}
+
+			if (object.ReferenceEquals(this, o))
+			{
+				return true;
+			}
+		
 			Feature f = o as Feature;
 			
 			if (f != null)
 			{		
-				return Term.Equals(f.Term) && Count == f.Count;
+				return this.Equals(f);
 			}
 			else
 			{
 				return false;
 			}
+		}
+		
+		public bool Equals(Feature f)
+		{
+			return Term.Equals(f.Term) && Count == f.Count;
 		}
 		
 		public override int GetHashCode()
@@ -176,7 +194,7 @@ namespace CI
 		/// <summary>
 		/// Get Probability the item in category.
 		/// </summary>
-		public abstract double Prob(string item, string category);
+		internal abstract double Prob(string item, string category);
 
 		/// <summary>
 		/// Classify method.
@@ -225,7 +243,7 @@ namespace CI
 			return prob;
 		}
 	
-		public override double Prob(string item, string category)
+		internal override double Prob(string item, string category)
 		{
 			double cc = CatCount(category);
 			double total = TotalCount();
@@ -322,7 +340,7 @@ namespace CI
 			return Math.Min(sum, 1.0);
 		}
 		
-		public override double Prob(string item, string category)
+		internal override double Prob(string item, string category)
 		{
 			var features = GetFeatures(item);
 			

@@ -76,21 +76,24 @@ namespace TestCI
 		}
 		*/
 		
+		/*
 		[Test]
 		public void TestNaiveBaysProb()
 		{
-			int fix = 4;
+			//int fix = 4;
 			NaiveBays nb = new NaiveBays(DocumentFiltering.GetWords, null);
 			CIUtil.SampleTrain(nb);
-			double expect0 = 0.1562499;
+			//double expect0 = 0.1562499;
 			double result0 = nb.Prob("quick rabbit", "good");
-			double expect1 = 0.0500000;
+			//double expect1 = 0.0500000;
 			double result1 = nb.Prob("quick rabbit", "bad");
+			Assert.IsTrue(result0 > result1);
 			//Assert.AreEqual(expect0, result0);
 			//Assert.AreEqual(expect1, result1);
-			Assert.AreEqual(Math.Round(expect0, fix), Math.Round(result0, fix));
-			Assert.AreEqual(Math.Round(expect1, fix), Math.Round(result1, fix));
+			//Assert.AreEqual(Math.Round(expect0, fix), Math.Round(result0, fix));
+			//Assert.AreEqual(Math.Round(expect1, fix), Math.Round(result1, fix));
 		}
+		*/
 		
 		[Test]
 		public void TestNaiveBaysClassify()
@@ -118,7 +121,8 @@ namespace TestCI
 			Assert.AreEqual("bad", result3);
 		}
 		
-		[Test]
+		/*
+		//[Test]
 		public void TestCProb()
 		{
 			int fix = 4;
@@ -133,7 +137,7 @@ namespace TestCI
 			Assert.AreEqual(0.75, result2);
 		}
 		
-		[Test]
+		//[Test]
 		public void TestFisherProb()
 		{
 			FisherClassifier fc = new FisherClassifier(DocumentFiltering.GetWords, null);
@@ -144,8 +148,9 @@ namespace TestCI
 			Assert.AreEqual(0.7801, Math.Round(result0, FIX));
 			Assert.AreEqual(0.3563, Math.Round(result1, FIX));
 		}
+		*/
 
-		[Test]
+		//[Test]
 		public void TestFisherClassify()
 		{
 			FisherClassifier fc = new FisherClassifier(DocumentFiltering.GetWords, null);
