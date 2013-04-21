@@ -15,8 +15,11 @@ echo "Try to make modules from all C# files..."
 #${MCS} -r:${NUNITFRAMEWORK} -r:./statistics.dll -target:library test_statistics.cs
 #echo "statistics module has compiled."
 
+${MCS} -r:./MongoDB.Bson.dll,./MongoDB.Driver.dll -target:library resource.cs
+${MCS} -r:${NUNITFRAMEWORK} -r:./resource.dll -target:library test_resource.cs
+echo "Resource module has compiled."
+
 ${MCS} -r:./MongoDB.Bson.dll,./MongoDB.Driver.dll -target:library ci.cs
-#${MCS} -target:library ci.cs
 ${MCS} -r:${NUNITFRAMEWORK} -r:./ci.dll -target:library test_ci.cs
 echo "CI module has compiled."
 

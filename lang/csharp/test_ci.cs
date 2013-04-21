@@ -173,14 +173,6 @@ namespace TestCI
 			Assert.AreEqual("good", result3);
 		}
 		
-		[Test]
-		public void TestGetMongoDBString()
-		{
-			string expect = "test";
-			string result = CIUtil.GetMongoDBString();
-			Assert.AreEqual(expect, result);
-		}
-		
 		[TearDown]
 		public void Dispose()
 		{

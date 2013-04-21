@@ -10,12 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-using MongoDB.Bson;
-using MongoDB.Driver;
-using MongoDB.Driver.Builders;
-using MongoDB.Driver.GridFS;
-using MongoDB.Driver.Linq;
-
 namespace CI
 {
 	/// <summary>
@@ -101,6 +95,11 @@ namespace CI
 			FeatureOverCatrgoryCount = new Dictionary<string, Dictionary<string, int>>();
 			CategoryCount = new Dictionary<string, int>();
 			Thresholds = new Dictionary<string, double>();
+		}
+		
+		/* @TODO Need abstraction */
+		public void SetDB(string connectURL, string dbName)
+		{
 		}
 		
 		private void Incf(string feature, string category)
@@ -439,17 +438,6 @@ namespace CI
 			cl.Train("buy pharmaceuticals now", "bad");
 			cl.Train("make quick money at the online casino", "bad");
 			cl.Train("the quick brown fox jumps", "good");
-		}
-		
-		public static string GetMongoDBString()
-		{
-			/* Sample code from MongoDB official site */
-			var connectionString = "mongodb://localhost";
-			var client = new MongoClient(connectionString);	
-			var server = client.GetServer();
-			var database = server.GetDatabase("test"); // "test" is the name of the database
-			
-			return database.ToString();
 		}
 	}
 }
