@@ -10,6 +10,14 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using MongoDB.Bson;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+using MongoDB.Driver.GridFS;
+using MongoDB.Driver.Linq;
+
+using Resource;
+
 namespace CI
 {
 	/// <summary>
@@ -88,6 +96,8 @@ namespace CI
 		private const double AP = 0.5;
 	
 		internal readonly Dictionary<string, double> Thresholds;
+		
+		private IDatabase DB;
 	
 		public Classifier(Func<string, Dictionary<string, int>> func, string fileName)
 		{
@@ -97,9 +107,9 @@ namespace CI
 			Thresholds = new Dictionary<string, double>();
 		}
 		
-		/* @TODO Need abstraction */
-		public void SetDB(string connectURL, string dbName)
+		public void SetDB(string dbName)
 		{
+			DB = DatabaseResourceFactory.CheckOut(dbName);
 		}
 		
 		private void Incf(string feature, string category)

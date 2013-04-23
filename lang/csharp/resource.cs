@@ -18,21 +18,44 @@ using MongoDB.Driver.Linq;
 
 namespace Resource
 {
-	interface IDatabase : IDisposable
+	public interface IDatabase : IDisposable
 	{
 	}
 	
-	internal class MongoDBResource : IDatabase
+	public class MongoDBResource : IDatabase
+	{
+		private readonly MongoClient Client;
+		private readonly MongoServer Server;
+		private readonly MongoDatabase Database;
+		
+		public MongoDBResource(string ConnectionURL, string dbName)
+		{
+			Client = new MongoClient(ConnectionURL);	
+			Server = Client.GetServer();
+			Database = Server.GetDatabase(dbName);
+		}
+	
+		public void Dispose()
+		{
+			/* @TODO: Nothing to do, really? */
+		}
+	}
+	
+	public class SQLiteResource : IDatabase
 	{
 		public void Dispose()
 		{
 		}
 	}
 	
-	internal class SQLiteResource : IDatabase
+	public static class DatabaseResourceFactory
 	{
-		public void Dispose()
+		public static IDatabase CheckOut(string dbName)
 		{
+			var url = "mongodb://localhost";
+			var db = new MongoDBResource(url, dbName);
+			
+			return db;
 		}
 	}
 
