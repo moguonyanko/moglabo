@@ -21,11 +21,84 @@ using Resource;
 namespace CI
 {
 	/// <summary>
+	/// Category including a feature. 
+	/// </summary>
+	internal class Category : IEquatable<Category>
+	{
+		public ObjectId Id { get; set; }
+		
+		public string Name
+		{
+			get;
+			private set;
+		}
+		
+		public int Count
+		{
+			get;
+			private set;
+		}
+		
+		public Category(string name, int count)
+		{
+			Name = name;
+			Count = count;
+		}				
+			
+		public override bool Equals(object o)
+		{
+			if (object.ReferenceEquals(o, null))
+			{
+				return false;
+			}
+
+			if (object.ReferenceEquals(this, o))
+			{
+				return true;
+			}
+		
+			Category c = o as Category;
+			
+			if (c != null)
+			{		
+				return this.Equals(c);
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		public bool Equals(Category c)
+		{
+			return Name.Equals(c.Name) && Count == c.Count;
+		}
+		
+		public override int GetHashCode()
+		{
+			return Name.GetHashCode()^Count;
+		}		
+		
+		public override string ToString()
+		{
+			return "Caategory name is [" + Name + "], category count is " + Count;
+		}	
+	}
+
+	/// <summary>
 	/// General feature expression. 
 	/// </summary>
-	public class Feature : IEquatable<Feature>
+	internal class Feature : IEquatable<Feature>
 	{
-		public string Term
+		public ObjectId Id { get; set; }
+		
+		public string Name
+		{
+			get;
+			private set;
+		}
+		
+		public string CategoryName
 		{
 			get;
 			private set;
@@ -37,9 +110,10 @@ namespace CI
 			private set;
 		}		
 		
-		public Feature(string term, int count)
+		public Feature(string name, string categoryName, int count)
 		{
-			Term = term;
+			Name = name;
+			CategoryName = categoryName;
 			Count = count;
 		}	
 		
@@ -69,17 +143,18 @@ namespace CI
 		
 		public bool Equals(Feature f)
 		{
-			return Term.Equals(f.Term) && Count == f.Count;
+			return Name.Equals(f.Name) && CategoryName.Equals(f.CategoryName) && Count == f.Count;
 		}
 		
 		public override int GetHashCode()
 		{
-			return Term.GetHashCode()^Count;
+			return Name.GetHashCode()^CategoryName.GetHashCode()^Count;
 		}		
 		
 		public override string ToString()
 		{
-			return "Feature term is [" + Term + "], that count is " + Count;
+			return "Feature term is [" + Name + "], CategoryName is " + 
+				CategoryName + ", feature count is " + Count;
 		}		
 	}
 	
@@ -97,7 +172,9 @@ namespace CI
 	
 		internal readonly Dictionary<string, double> Thresholds;
 		
-		private IDatabase DB;
+		/* @TODO: Should not use db class name. */
+		private MongoDatabase DB;
+		//private IDatabase DB;
 	
 		public Classifier(Func<string, Dictionary<string, int>> func, string fileName)
 		{
@@ -109,11 +186,28 @@ namespace CI
 		
 		public void SetDB(string dbName)
 		{
-			DB = DatabaseResourceFactory.CheckOut(dbName);
+			MongoDBResource res = DatabaseResourceFactory.CheckOut(dbName) as MongoDBResource;
+			DB = res.Database;
 		}
 		
 		private void Incf(string feature, string category)
 		{
+			var collection = DB.GetCollection<Feature>("fc");
+			
+			double count = FCount(feature, category);
+			
+			if (count <= 0)
+			{
+				collection.Insert(new Feature(feature, category, 1));
+			}
+			else
+			{
+				var query = Query<Feature>.EQ(f => f.Name, feature);
+				var update = Update<Feature>.Set(f => f.Count, count + 1);
+				collection.Update(query, update);
+			}
+		
+			/*
 			if (!FeatureOverCatrgoryCount.ContainsKey(feature))
 			{
 				FeatureOverCatrgoryCount[feature] = new Dictionary<string, int>();
@@ -125,6 +219,7 @@ namespace CI
 			}
 			
 			FeatureOverCatrgoryCount[feature][category] += 1;
+			*/
 		}
 
 		private void Incc(string category)

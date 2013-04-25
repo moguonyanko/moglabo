@@ -14,6 +14,8 @@ namespace TestCI
 		[SetUp]
 		public void Init()
 		{
+			NaiveBays nb = new NaiveBays(DocumentFiltering.GetWords, null);
+			nb.SetDB("cistore");
 		}
 	
 		[Test]
@@ -172,15 +174,6 @@ namespace TestCI
 			Assert.AreEqual("good", result2);
 			Assert.AreEqual("good", result3);
 		}
-		
-		/*
-		[Test]
-		public void TestSetDB()
-		{
-			NaiveBays nb = new NaiveBays(DocumentFiltering.GetWords, null);
-			nb.SetDB("cistore");
-		}
-		*/
 		
 		[TearDown]
 		public void Dispose()

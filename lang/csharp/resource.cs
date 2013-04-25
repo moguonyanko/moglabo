@@ -26,7 +26,11 @@ namespace Resource
 	{
 		private readonly MongoClient Client;
 		private readonly MongoServer Server;
-		private readonly MongoDatabase Database;
+		public MongoDatabase Database
+		{
+			get;
+			private set;
+		}
 		
 		public MongoDBResource(string ConnectionURL, string dbName)
 		{
