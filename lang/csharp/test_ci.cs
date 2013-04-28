@@ -14,8 +14,6 @@ namespace TestCI
 		[SetUp]
 		public void Init()
 		{
-			NaiveBays nb = new NaiveBays(DocumentFiltering.GetWords, null);
-			nb.SetDB("cistore");
 		}
 	
 		[Test]
@@ -101,6 +99,8 @@ namespace TestCI
 		public void TestNaiveBaysClassify()
 		{
 			NaiveBays nb = new NaiveBays(DocumentFiltering.GetWords, null);
+			nb.SetDB("cistore");
+			
 			CIUtil.SampleTrain(nb);
 			string defclass = "unknown";
 			

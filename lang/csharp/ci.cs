@@ -172,6 +172,16 @@ namespace CI
 	
 		internal readonly Dictionary<string, double> Thresholds;
 		
+		private readonly string FC = "fc";
+		private readonly string CC = "cc";
+
+		/*		
+		private enum Tables 
+		{
+			FC, CC
+		};
+		*/
+		
 		/* @TODO: Should not use db class name. */
 		private MongoDatabase DB;
 		//private IDatabase DB;
@@ -192,9 +202,9 @@ namespace CI
 		
 		private void Incf(string feature, string category)
 		{
-			var collection = DB.GetCollection<Feature>("fc");
+			var collection = DB.GetCollection<Feature>(FC);
 			
-			double count = FCount(feature, category);
+			var count = FCount(feature, category);
 			
 			if (count <= 0)
 			{
@@ -224,16 +234,38 @@ namespace CI
 
 		private void Incc(string category)
 		{
+			var collection = DB.GetCollection<Feature>(CC);
+
+			var count = CatCount(category);
+			
+			if (count <= 0)
+			{
+					collection.Insert(new Category(category, 1));
+			}
+			else
+			{
+				var query = Query<Category>.EQ(c => c.Name, category);
+				var update = Update<Category>.Set(c => c.Count, count + 1);
+				collection.Update(query, update);
+			}
+		
+			/*
 			if (!CategoryCount.ContainsKey(category))
 			{
 				CategoryCount[category] = 0;
 			}
 			
 			CategoryCount[category] += 1;
+			*/
 		}
 
 		public double FCount(string feature, string category)
 		{
+			var collection = DB.GetCollection<Feature>(FC);
+			
+			return collection.AsQueryable().Count();
+			
+			/*
 			if (FeatureOverCatrgoryCount.ContainsKey(feature) && 
 			FeatureOverCatrgoryCount[feature].ContainsKey(category))
 			{
@@ -241,27 +273,55 @@ namespace CI
 				return fc;
 			}
 			return 0.0;
+			*/
 		}
 
 		internal int CatCount(string category)
 		{
+			var collection = DB.GetCollection<Category>(CC);
+			
+			return collection.AsQueryable().Count();
+		
+			/*
 			if (!CategoryCount.ContainsKey(category))
 			{
 				return 0;
 			}
 			
 			return CategoryCount[category];
+			*/
 		}
 		
 		internal int TotalCount()
 		{
+			var collection = DB.GetCollection<Category>(CC);
+			
+			var counts = 
+				from record in collection.AsQueryable()
+				select record.Count;
+				
+			//return counts.Aggregate(0, (current, next) => current + next);
+			return counts.Sum();
+			
+			/*
 			int total = CategoryCount.Values.Sum();
 			return total;
+			*/
 		}
 
-		internal Dictionary<string, int>.KeyCollection Categories()
+		internal IEnumerable<string> Categories()
 		{
+			var collection = DB.GetCollection<Category>(CC);
+			
+			var catNames = 
+				from record in collection.AsQueryable()
+				select record.Name;
+			
+			return catNames;
+			
+			/*
 			return CategoryCount.Keys;
+			*/
 		}
 		
 		public double FProb(string feature, string category)
