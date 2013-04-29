@@ -20,6 +20,7 @@ namespace Resource
 {
 	public interface IDatabase : IDisposable
 	{
+		//object Select<T>(string tableName);
 	}
 	
 	public class MongoDBResource : IDatabase

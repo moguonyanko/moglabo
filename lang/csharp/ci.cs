@@ -240,7 +240,7 @@ namespace CI
 			
 			if (count <= 0)
 			{
-					collection.Insert(new Category(category, 1));
+				collection.Insert(new Category(category, 1));
 			}
 			else
 			{
@@ -263,7 +263,7 @@ namespace CI
 		{
 			var collection = DB.GetCollection<Feature>(FC);
 			
-			return collection.AsQueryable().Count();
+			return collection.Count();
 			
 			/*
 			if (FeatureOverCatrgoryCount.ContainsKey(feature) && 
@@ -280,7 +280,7 @@ namespace CI
 		{
 			var collection = DB.GetCollection<Category>(CC);
 			
-			return collection.AsQueryable().Count();
+			return (int)collection.Count();
 		
 			/*
 			if (!CategoryCount.ContainsKey(category))
