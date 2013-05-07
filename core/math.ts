@@ -1,10 +1,10 @@
 module Geese {
   export class Math {
-    static sum(numbers : number[]) : number {
+    static sum(numbers: number[]): number {
       return numbers.reduce((a, b) => (a + b));
     }
 
-    static mean(numbers : number[]) : number {
+    static mean(numbers: number[]): number {
       var len = numbers.length;
 		
       if (len <= 0) {
@@ -14,7 +14,7 @@ module Geese {
       return Math.sum(numbers) / len;
     }
 		
-    static getPrime(n : number) : number[] {
+    static getPrime(n: number): number[] {
       var prime = [];
       var is_prime = new Array(n + 1);
 			

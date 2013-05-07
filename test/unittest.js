@@ -1,43 +1,31 @@
-/**
- * Unittest functions.
- **/
 
-if(!this.assert){
-	var assert = function(b){
-		if(b){
-			return;
-		}
-		
-		throw new Error("FAILED(-_-;)");
-	}
-}
-
-var unittest = {
-	suites : {},
-	assertEqual : function(ans, res){
-		try{
-			/* TODO:Not enough as for checking "array". */
-			if(ans.length != null && res.length != null){
-				for(var i = 0, len = res.length; i<len; i++){
-					assert(res[i] === ans[i]);
-				}
-			}else{
-				assert(ans === res);
-			}
-			
-			print("OK(*^_^*)b");
-		}catch(e){
-			print(e);
-			print("ANSWER:" + ans);
-			print("RESULT:" + res);
-		}
-	},
-	putSuites : function(key, suite){
-		this.suites[key] = suite;
-	},
-	assertAll : function(){
-		for(var st in this.suites.length){
-			st();
-		}
-	}
-};
+var UnitTest;
+(function (UnitTest) {
+    var Assertions = (function () {
+        function Assertions() { }
+        Assertions.assert = function assert(a) {
+            if(!a) {
+                throw new Error("FAILED(-_-;)");
+            }
+        };
+        Assertions.assertEquals = function assertEquals(ans, res) {
+            try  {
+                var arrayStr = "[object Array]";
+                if(Object.prototype.toString.call(ans) !== arrayStr && Object.prototype.toString.call(res) !== arrayStr) {
+                    for(var i = 0, len = res.length; i < len; i++) {
+                        Assertions.assert(res[i] === ans[i]);
+                    }
+                } else {
+                    Assertions.assert(ans === res);
+                }
+                print("OK(*^_^*)b");
+            } catch (e) {
+                Logger.log(e.message);
+                Logger.log("ANSWER:" + ans);
+                Logger.log("RESULT:" + res);
+            }
+        };
+        return Assertions;
+    })();
+    UnitTest.Assertions = Assertions;    
+})(UnitTest || (UnitTest = {}));
