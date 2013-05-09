@@ -1,6 +1,5 @@
-/// <reference path="../util/logging.ts" />
-
-import Logger = module("../util/logging")
+import Logging = module("../util/logging");
+import logger = Logging.Logger;
 
 module UnitTest {
   export class Assertions {
@@ -26,9 +25,9 @@ module UnitTest {
 			
 			  print("OK(*^_^*)b");
 		  } catch(e) {
-			  Logger.log(e.message);
-			  Logger.log("ANSWER:" + ans);
-			  Logger.log("RESULT:" + res);
+			  logger.log(e.message);
+			  logger.log("ANSWER:" + ans);
+			  logger.log("RESULT:" + res);
 		  }      
     }
   } 

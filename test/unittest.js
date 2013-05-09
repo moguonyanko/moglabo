@@ -1,4 +1,5 @@
-
+var Logging = require("../util/logging")
+var logger = Logging.Logger;
 var UnitTest;
 (function (UnitTest) {
     var Assertions = (function () {
@@ -20,9 +21,9 @@ var UnitTest;
                 }
                 print("OK(*^_^*)b");
             } catch (e) {
-                Logger.log(e.message);
-                Logger.log("ANSWER:" + ans);
-                Logger.log("RESULT:" + res);
+                logger.log(e.message);
+                logger.log("ANSWER:" + ans);
+                logger.log("RESULT:" + res);
             }
         };
         return Assertions;
