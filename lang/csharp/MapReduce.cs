@@ -103,15 +103,20 @@ namespace Algorithm {
 			Entries = new List<MapEntry>();
 		}
 		
-		public void Execute(string target)
+		public List<MapEntry> Execute(string target)
 		{
-			UTF8Encoding utf8 = new UTF8Encoding();
-			byte[] bytes = utf8.GetBytes(target);
+			var utf8 = new UTF8Encoding();
+			var bytes = utf8.GetBytes(target);
+			
 			foreach (byte b in bytes)
 			{
-				MapEntry entry = new MapEntry((char)b, 1);
+				var entry = new MapEntry((char)b, 1);
 				Entries.Add(entry);
 			}
+			
+			Entries.Sort();
+			
+			return Entries;
 		}
 	}
 	
@@ -128,17 +133,18 @@ namespace Algorithm {
 			Count = 0;
 		}
 		
-		public void Execute(ReduceInput input)
+		public MapEntry Execute(ReduceInput input)
 		{
-			Count = 0;
-			foreach (MapEntry entry in input.Entries)
-			{
-				Count++;
-			}
-			MapReduceCharCounter.emit(input, Count);
+			Count = input.Entries.Count;
+			
+			return new MapEntry(input.Key, Count);
 		}
 	}
 	
+	/// <summary>
+	/// Intermediate data.
+	/// Maybe this is file on disk.
+	/// </summary>
 	struct ReduceInput
 	{
 		public char Key
@@ -165,12 +171,12 @@ namespace Algorithm {
 	{
 		public static List<ReduceInput> CreateInstance(List<MapEntry> entries)
 		{
-			List<ReduceInput> instance = new List<ReduceInput>();
+			var instance = new List<ReduceInput>();
 			
 			MapEntry? current;
 			ReduceInput ri;
 			
-			foreach (MapEntry entry in entries)
+			foreach (var entry in entries)
 			{
 				if (!entry.Equals(current))
 				{
@@ -187,39 +193,34 @@ namespace Algorithm {
 	
 	class MapReduceCharCounter
 	{
-		private readonly static int[] CharCount = new int[128];
+		private Dictionary<char, int> CharCount = new Dictionary<char, int>();
 		
-		public static void emit(ReduceInput input, int count)
+		public void Run(string target)
 		{
-			CharCount[input.Key] = count;
-		}
-		
-		internal MapReduceCharCounter(string target)
-		{
-			if (target != null)
-			{
-				Count(target);
-			}
-		}
-		
-		private void Count(string target)
-		{
-			MapTask map = new MapTask();
-			map.Execute(target);
-			map.Entries.Sort();
+			var map = new MapTask();
+			var entries = map.Execute(target);
 			
-			ReduceTask reduce = new ReduceTask();
-			List<ReduceInput> inputList = ReduceInputListFactory.CreateInstance(map.Entries);
-			foreach (ReduceInput input in inputList)
-			{
-				reduce.Execute(input);
-			}
+			var reduce = new ReduceTask();
+			var inputList = ReduceInputListFactory.CreateInstance(entries);
+			
+			var results = 
+				from input in inputList
+				select reduce.Execute(input);
+			
+			CharCount = results.ToDictionary(result => result.Key, 
+				result => result.Value);
 		}
 		
 		public int GetCharCount(char c)
 		{
-			int index = (int)c;
-			return CharCount[index];
+			if (CharCount.ContainsKey(c))
+			{
+				return CharCount[c];
+			}
+			else
+			{
+				return 0;
+			}
 		}
 	}
 	
@@ -230,7 +231,9 @@ namespace Algorithm {
 			var target = "abcaba";
 			// var target2 = "abcacbaabbcbacbacbaabbbabcbacbabab";
 			
-			MapReduceCharCounter counter = new MapReduceCharCounter(target);
+			var counter = new MapReduceCharCounter();
+			
+			counter.Run(target);
 			
 			Console.WriteLine("a:" + counter.GetCharCount('a'));
 			Console.WriteLine("b:" + counter.GetCharCount('b'));
