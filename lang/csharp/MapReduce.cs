@@ -12,7 +12,7 @@ using System.Text;
 
 namespace Algorithm {
 	
-	public class MapEntry : IComparable<MapEntry>, IComparable
+	struct MapEntry : IComparable<MapEntry>, IComparable
 	{
 		public char Key
 		{
@@ -26,7 +26,8 @@ namespace Algorithm {
 			private set;
 		}
 		
-		public MapEntry(char entryKey, int entryValue)
+		internal MapEntry(char entryKey, int entryValue)
+			: this()
 		{
 			Key = entryKey;
 			Value = entryValue;
@@ -52,21 +53,10 @@ namespace Algorithm {
 		
 		public override bool Equals(object o)
 		{
-			if (object.ReferenceEquals(o, null))
+			if (o is MapEntry)
 			{
-				return false;
-			}
-
-			if (object.ReferenceEquals(this, o))
-			{
-				return true;
-			}
-		
-			MapEntry entry = o as MapEntry;
-			
-			if (entry != null)
-			{		
-				return this.Equals(entry);
+				MapEntry entry = (MapEntry)o;
+				return entry.Key.Equals(Key);
 			}
 			else
 			{
@@ -74,7 +64,7 @@ namespace Algorithm {
 			}
 		}
 		
-		private bool Equals(MapEntry entry)
+		public bool Equals(MapEntry entry)
 		{
 			return entry.Key.Equals(Key);
 		}
@@ -84,13 +74,23 @@ namespace Algorithm {
 			return Key;
 		}		
 		
+		public static bool operator ==(MapEntry lhs, MapEntry rhs)
+        {
+			return lhs.Equals(rhs);
+        }
+
+		public static bool operator !=(MapEntry lhs, MapEntry rhs)
+        {
+			return !(lhs.Equals(rhs));
+        }		
+		
 		public override string ToString()
 		{
 			return "Key is [" + Key + "], Value is " + Value;
 		}				
 	}
 	
-	public class MapTask
+	class MapTask
 	{
 		public List<MapEntry> Entries
 		{
@@ -98,7 +98,7 @@ namespace Algorithm {
 			private set;
 		}
 		
-		public MapTask()
+		internal MapTask()
 		{
 			Entries = new List<MapEntry>();
 		}
@@ -115,7 +115,7 @@ namespace Algorithm {
 		}
 	}
 	
-	public class ReduceTask
+	class ReduceTask
 	{
 		public int Count
 		{
@@ -123,7 +123,7 @@ namespace Algorithm {
 			private set;
 		}
 		
-		public ReduceTask()
+		internal ReduceTask()
 		{
 			Count = 0;
 		}
@@ -139,7 +139,7 @@ namespace Algorithm {
 		}
 	}
 	
-	public class ReduceInput
+	struct ReduceInput
 	{
 		public char Key
 		{
@@ -153,21 +153,22 @@ namespace Algorithm {
 			private set;
 		}
 		
-		public ReduceInput(char inputKey)
+		internal ReduceInput(char inputKey)
+			: this()
 		{
 			Key = inputKey;
 			Entries = new List<MapEntry>();
 		}
 	}
 	
-	public class ReduceInputListFactory
+	class ReduceInputListFactory
 	{
 		public static List<ReduceInput> CreateInstance(List<MapEntry> entries)
 		{
 			List<ReduceInput> instance = new List<ReduceInput>();
 			
-			MapEntry current = null;
-			ReduceInput ri = null;
+			MapEntry? current;
+			ReduceInput ri;
 			
 			foreach (MapEntry entry in entries)
 			{
@@ -184,19 +185,25 @@ namespace Algorithm {
 		}
 	}
 	
-	public class MapReduceCharCounter
+	class MapReduceCharCounter
 	{
-		private static int[] CharCount = new int[128];
+		private readonly static int[] CharCount = new int[128];
 		
 		public static void emit(ReduceInput input, int count)
 		{
 			CharCount[input.Key] = count;
 		}
 		
-		public void Count(string target)
+		internal MapReduceCharCounter(string target)
 		{
-			CharCount = new int[128];
-			
+			if (target != null)
+			{
+				Count(target);
+			}
+		}
+		
+		private void Count(string target)
+		{
 			MapTask map = new MapTask();
 			map.Execute(target);
 			map.Entries.Sort();
@@ -216,13 +223,15 @@ namespace Algorithm {
 		}
 	}
 	
-	public class MapReduceCharCounterApp
+	public class MapReduceCharCounterMain
 	{
 		static void Main(string[] args)
 		{
-			MapReduceCharCounter counter = new MapReduceCharCounter();
-			counter.Count("abcaba");
-			// counter.Count("abcacbaabbcbacbacbaabbbabcbacbabab");
+			var target = "abcaba";
+			// var target2 = "abcacbaabbcbacbacbaabbbabcbacbabab";
+			
+			MapReduceCharCounter counter = new MapReduceCharCounter(target);
+			
 			Console.WriteLine("a:" + counter.GetCharCount('a'));
 			Console.WriteLine("b:" + counter.GetCharCount('b'));
 			Console.WriteLine("c:" + counter.GetCharCount('c'));
