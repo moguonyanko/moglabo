@@ -3,29 +3,30 @@ package org.mognyan.ci;
 import java.util.*;
 import java.util.regex.*;
 
-public class DocumentFiltering {
-	private static boolean acceptWords(String word){
+import org.mognyan.ci.filter.DefaultWordFilter;
+import org.mognyan.ci.filter.WordFilterTask;
+import org.mognyan.ci.filter.WordFilter;
 
-		if(word == null){
-			return false;
-		}
+public class DocumentFiltering implements WordFilterTask{
 
-		if(word.isEmpty()){
-			return false;
-		}
+	private static final Pattern DOCUMENT_SPLITTER = Pattern.compile("[\\s\\p{Punct}]");
 
-		int wordLength = word.length();
+	private final WordFilter wordFilter;
 
-		return 2 < wordLength && wordLength < 20;
+	public DocumentFiltering() {
+		this(new DefaultWordFilter());
 	}
 
-	public static Map<String, Integer> getWords(String doc){
+	public DocumentFiltering(WordFilter wordFilter) {
+		this.wordFilter = wordFilter;
+	}
+
+	public Map<String, Integer> get(String doc){
 		Map<String, Integer> result = new HashMap<String, Integer>();
-		Pattern splitter = Pattern.compile("[\\s\\p{Punct}]");
-		String[] words = splitter.split(doc);
+		String[] words = DOCUMENT_SPLITTER.split(doc);
 
 		for(String word : words){
-			if(acceptWords(word)){
+			if(wordFilter.accept(word)){
 				if(result.containsKey(word)){
 					int nowCount = result.get(word);
 					result.put(word, nowCount + 1);
