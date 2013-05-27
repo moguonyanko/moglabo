@@ -1,18 +1,18 @@
 package org.mognyan.ci;
 
 public class Feature {
-	private final String name;
+	private final String word;
 	private final String categoryName;
 	private final int count;
 
-	public Feature(String name, String categoryName, int count) {
-		this.name = name;
+	public Feature(String word, String categoryName, int count) {
+		this.word = word;
 		this.categoryName = categoryName;
 		this.count = count;
 	}
 
-	public String getName() {
-		return name;
+	public String getWord() {
+		return word;
 	}
 
 	public String getCategoryName() {
@@ -25,13 +25,13 @@ public class Feature {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj == null){
+		if(obj == null || word == null || categoryName == null){
 			return false;
 		}
 
 		if(obj instanceof Feature){
 			Feature other = (Feature)obj;
-			return name.equals(other.getName()) &&
+			return word.equals(other.getWord()) &&
 					categoryName.equals(other.getCategoryName()) &&
 					count == other.getCount();
 		}else{
@@ -41,11 +41,11 @@ public class Feature {
 
 	@Override
 	public int hashCode() {
-		return name.hashCode()^categoryName.hashCode()^count^7;
+		return word.hashCode()^categoryName.hashCode()^count^7;
 	}
 
 	@Override
 	public String toString() {
-		return "name : " + name + ", category name : " + categoryName + ", count : " + count;
+		return "word : " + word + ", category name : " + categoryName + ", count : " + count;
 	}
 }
