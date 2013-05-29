@@ -7,7 +7,7 @@ import org.mognyan.ci.filter.DefaultWordFilter;
 import org.mognyan.ci.filter.WordFilterTask;
 import org.mognyan.ci.filter.WordFilter;
 
-public class DocumentFiltering implements WordFilterTask{
+public class DocumentFiltering implements WordFilterTask {
 
 	private static final Pattern DOCUMENT_SPLITTER = Pattern.compile("[\\s\\p{Punct}]");
 
