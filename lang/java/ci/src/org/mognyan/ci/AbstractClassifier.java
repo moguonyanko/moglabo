@@ -25,10 +25,16 @@ public abstract class AbstractClassifier implements Classifier {
 	};
 	
 	final WordFilterTask task;
+	final String defaultClass;
 	final Map<String, Double> thresholds = new HashMap<>();
 	
 	public AbstractClassifier(WordFilterTask task) {
+		this(task, "unknown");
+	}
+	
+	public AbstractClassifier(WordFilterTask task, String defaultClass){
 		this.task = task;
+		this.defaultClass = defaultClass;
 	}
 
 	private void incFeatureCount(String word, String categoryName) {
@@ -126,10 +132,4 @@ public abstract class AbstractClassifier implements Classifier {
 
 		incCategoryCount(category);
 	}
-
-	abstract double prob(String word, String categoryName);
-
-	abstract void setThresholds(String categoryName, double thres);
-
-	abstract double getThresholds(String categoryName);
 }

@@ -6,6 +6,8 @@ import org.mognyan.ci.filter.WordFilterTask;
 
 public class NaiveBays extends AbstractClassifier {
 
+	private static final double DEFAULT_THRESHOLDS = 1.0;
+	
 	public NaiveBays(WordFilterTask task) {
 		super(task);
 	}
@@ -23,7 +25,7 @@ public class NaiveBays extends AbstractClassifier {
 	}
 
 	@Override
-	double prob(String word, String categoryName) {
+	public double prob(String word, String categoryName) {
 		double cc = getCategoryCount(categoryName);
 		double total = getTotalFeatureCount();
 		double categoryp = cc / total;
@@ -31,7 +33,7 @@ public class NaiveBays extends AbstractClassifier {
 
 		return categoryp * docp;
 	}
-
+	
 	@Override
 	public void setThresholds(String categoryName, double thres) {
 		thresholds.put(categoryName, thres);
@@ -40,14 +42,14 @@ public class NaiveBays extends AbstractClassifier {
 	@Override
 	public double getThresholds(String categoryName) {
 		if (!thresholds.containsKey(categoryName)) {
-			return 1.0;
+			return DEFAULT_THRESHOLDS;
 		} else {
 			return thresholds.get(categoryName);
 		}
-	}
+	}	
 
 	@Override
-	public String classify(String word, String defaultClass) {
+	public String classify(String word) {
 		Map<String, Double> probs = new HashMap<>();
 
 		double max = 0.0;
