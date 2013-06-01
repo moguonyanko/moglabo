@@ -1,1 +1,4 @@
 /lang/java/ci/bin
+/lang/java/ci/nbproject/private/
+/lang/java/ci/dist/
+/lang/java/ci/build/
