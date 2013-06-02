@@ -54,7 +54,7 @@ public class TestDocumentFiltering {
 		assertEquals("bad", result3);
 	}
 
-	@Test
+	//@Test
 	public void test_FisherClassify() {
 		WordFilterTask task = new DocumentFiltering();
 		FisherClassifier fc = new FisherClassifier(task);
