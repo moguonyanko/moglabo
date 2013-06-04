@@ -27,7 +27,7 @@ public class NaiveBays extends AbstractClassifier {
 	@Override
 	public double prob(String word, String categoryName) {
 		double cc = getCategoryCount(categoryName);
-		double total = getTotalFeatureCount();
+		double total = getTotalCategoryCount();
 		double categoryp = cc / total;
 		double docp = docProb(word, categoryName);
 

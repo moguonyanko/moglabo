@@ -28,7 +28,7 @@ public class FeatureCountDao extends AbstractDao{
 		try(PreparedStatement ps = con.prepareStatement(SQL_INSERT)){
 			ps.setString(1, feature);
 			ps.setString(2, category);
-			ps.setInt(3, 1);
+			ps.setDouble(3, 1.0);
 			result = ps.execute();
 		}catch(SQLException sqle){
 			sqle.printStackTrace();
@@ -37,8 +37,8 @@ public class FeatureCountDao extends AbstractDao{
 		return result;
 	}
 
-	public int select(String feature, String category){
-		int count = 0;
+	public double select(String feature, String category){
+		double count = 0;
 		Connection con = getConnection();
 
 		try(PreparedStatement ps = con.prepareStatement(SQL_SELECT + SQL_WHERE)){
@@ -50,7 +50,7 @@ public class FeatureCountDao extends AbstractDao{
 			
 			if (row > 0) {
 				rs.first();
-				count = rs.getInt(1);
+				count = rs.getDouble(3);
 			}
 		}catch(SQLException sqle){
 			sqle.printStackTrace();
@@ -59,12 +59,12 @@ public class FeatureCountDao extends AbstractDao{
 		return count;
 	}
 
-	public int update(int nowCount, String feature, String category){
+	public int update(double count, String feature, String category){
 		int effectCount = 0;
 		Connection con = getConnection();
 		
 		try(PreparedStatement ps = con.prepareStatement(SQL_UPDATE + SQL_WHERE)){
-			ps.setInt(1, nowCount + 1);
+			ps.setDouble(1, count);
 			ps.setString(2, feature);
 			ps.setString(3, category);
 			effectCount = ps.executeUpdate();
