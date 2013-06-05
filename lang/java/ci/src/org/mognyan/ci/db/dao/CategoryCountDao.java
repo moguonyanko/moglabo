@@ -8,13 +8,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.mognyan.ci.util.SQLUtil;
 
 public class CategoryCountDao extends AbstractDao{
 
 	private static final String TABLE = "categorycount";
 	private static final String SQL_INSERT = "INSERT INTO " + TABLE + " VALUES (?,?);";
 	private static final String SQL_SELECT = "SELECT * FROM " + TABLE;
-	private static final String SQL_UPDATE = "UPDATE" + TABLE + " SET count=?";
+	private static final String SQL_UPDATE = "UPDATE " + TABLE + " SET count=?";
 	private static final String SQL_DELETE = "DELETE FROM " + TABLE;
 	/* The category is primary key. */
 	private static final String SQL_WHERE = " WHERE category=?;";
@@ -31,8 +32,9 @@ public class CategoryCountDao extends AbstractDao{
 			ps.setString(1, category);
 			ps.setDouble(2, 1.0);
 			result = ps.execute();
+			con.commit();
 		}catch(SQLException sqle){
-			sqle.printStackTrace();
+			SQLUtil.rollbackConnection(con);
 		}
 
 		return result;
@@ -40,9 +42,9 @@ public class CategoryCountDao extends AbstractDao{
 
 	public double select(String category){
 		double count = 0;
-		Connection con = getConnection();
 
-		try(PreparedStatement ps = con.prepareStatement(SQL_SELECT + SQL_WHERE)){
+		try(Connection con = getConnection();
+			PreparedStatement ps = con.prepareStatement(SQL_SELECT + SQL_WHERE)){
 			ps.setString(1, category);
 			ResultSet rs = ps.executeQuery();
 			rs.last();
@@ -62,9 +64,8 @@ public class CategoryCountDao extends AbstractDao{
 	public Set<String> findAllCategories(){
 		Set<String> result = new HashSet<>();
 		
-		Connection con = getConnection();
-		
-		try(PreparedStatement ps = con.prepareStatement(SQL_SELECT + ";")){
+		try(Connection con = getConnection();
+			PreparedStatement ps = con.prepareStatement(SQL_SELECT + ";")){
 			ResultSet rs = ps.executeQuery();
 			rs.last();
 			int row = rs.getRow();
@@ -85,9 +86,8 @@ public class CategoryCountDao extends AbstractDao{
 	public List<Double> findAllCounts(){
 		List<Double> counts = new ArrayList<>();
 		
-		Connection con = getConnection();
-		
-		try(PreparedStatement ps = con.prepareStatement(SQL_SELECT + ";")){
+		try(Connection con = getConnection();
+			PreparedStatement ps = con.prepareStatement(SQL_SELECT + ";")){
 			ResultSet rs = ps.executeQuery();
 			rs.last();
 			int row = rs.getRow();
@@ -113,8 +113,9 @@ public class CategoryCountDao extends AbstractDao{
 			ps.setDouble(1, count);
 			ps.setString(2, category);
 			effectCount = ps.executeUpdate();
+			con.commit();
 		}catch(SQLException sqle){
-			sqle.printStackTrace();
+			SQLUtil.rollbackConnection(con);
 		}
 
 		return effectCount;
