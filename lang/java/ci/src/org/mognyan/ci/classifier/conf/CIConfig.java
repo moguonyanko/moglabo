@@ -1,10 +1,10 @@
-package org.mognyan.ci.conf;
+package org.mognyan.ci.classifier.conf;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import org.mognyan.ci.util.LogUtil;
+import org.mognyan.ci.classifier.util.LogUtil;
 
 public class CIConfig{
 

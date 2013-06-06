@@ -1,10 +1,11 @@
-package org.mognyan.ci.util;
+package org.mognyan.ci.classifier.util;
 
-import org.mognyan.ci.Classifier;
+import org.mognyan.ci.classifier.Classifier;
+import org.mognyan.ci.classifier.ClassifierException;
 
 public class TrainUtil {
 
-	public static void sampleTrain(Classifier cl) {
+	public static void sampleTrain(Classifier cl) throws ClassifierException {
 		cl.train("Nobady owns the water.", "good");
 		cl.train("the quick rabbit jumps fences.", "good");
 		cl.train("buy pharmaceuticals now", "bad");

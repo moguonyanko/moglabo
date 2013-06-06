@@ -1,4 +1,4 @@
-package org.mognyan.ci.db.dao;
+package org.mognyan.ci.classifier.db.dao;
 
 import java.sql.Connection;
 

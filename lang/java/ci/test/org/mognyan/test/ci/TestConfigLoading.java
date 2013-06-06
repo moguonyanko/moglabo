@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.mognyan.ci.util.LogUtil;
+import org.mognyan.ci.classifier.util.LogUtil;
 
 public class TestConfigLoading{
 	

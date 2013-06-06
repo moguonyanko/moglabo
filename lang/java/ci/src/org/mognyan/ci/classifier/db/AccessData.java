@@ -1,6 +1,6 @@
-package org.mognyan.ci.db;
+package org.mognyan.ci.classifier.db;
 
-import org.mognyan.ci.conf.CIConfig;
+import org.mognyan.ci.classifier.conf.CIConfig;
 
 /**
  * DB Access data.

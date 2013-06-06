@@ -1,4 +1,4 @@
-package org.mognyan.ci.db.dao;
+package org.mognyan.ci.classifier.db.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.mognyan.ci.util.SQLUtil;
 
 public class CategoryCountDao extends AbstractDao{
 
@@ -24,7 +23,7 @@ public class CategoryCountDao extends AbstractDao{
 		super(connection);
 	}
 
-	public boolean insert(String category){
+	public boolean insert(String category) throws SQLException{
 		boolean result = false;
 		Connection con = getConnection();
 
@@ -32,19 +31,18 @@ public class CategoryCountDao extends AbstractDao{
 			ps.setString(1, category);
 			ps.setDouble(2, 1.0);
 			result = ps.execute();
-			con.commit();
 		}catch(SQLException sqle){
-			SQLUtil.rollbackConnection(con);
+			throw sqle;
 		}
 
 		return result;
 	}
 
-	public double select(String category){
+	public double select(String category) throws SQLException{
 		double count = 0;
+		Connection con = getConnection();
 
-		try(Connection con = getConnection();
-			PreparedStatement ps = con.prepareStatement(SQL_SELECT + SQL_WHERE)){
+		try(PreparedStatement ps = con.prepareStatement(SQL_SELECT + SQL_WHERE)){
 			ps.setString(1, category);
 			ResultSet rs = ps.executeQuery();
 			rs.last();
@@ -55,17 +53,17 @@ public class CategoryCountDao extends AbstractDao{
 				count = rs.getDouble(2);
 			}
 		}catch(SQLException sqle){
-			sqle.printStackTrace();
+			throw sqle;
 		}
 
 		return count;
 	}
 
-	public Set<String> findAllCategories(){
+	public Set<String> findAllCategories() throws SQLException{
 		Set<String> result = new HashSet<>();
-		
-		try(Connection con = getConnection();
-			PreparedStatement ps = con.prepareStatement(SQL_SELECT + ";")){
+		Connection con = getConnection();
+
+		try(PreparedStatement ps = con.prepareStatement(SQL_SELECT + ";")){
 			ResultSet rs = ps.executeQuery();
 			rs.last();
 			int row = rs.getRow();
@@ -77,17 +75,17 @@ public class CategoryCountDao extends AbstractDao{
 				}
 			}
 		}catch(SQLException sqle){
-			sqle.printStackTrace();
+			throw sqle;
 		}
 
 		return result;
 	}
-	
-	public List<Double> findAllCounts(){
+
+	public List<Double> findAllCounts() throws SQLException{
 		List<Double> counts = new ArrayList<>();
-		
-		try(Connection con = getConnection();
-			PreparedStatement ps = con.prepareStatement(SQL_SELECT + ";")){
+		Connection con = getConnection();
+
+		try(PreparedStatement ps = con.prepareStatement(SQL_SELECT + ";")){
 			ResultSet rs = ps.executeQuery();
 			rs.last();
 			int row = rs.getRow();
@@ -99,13 +97,13 @@ public class CategoryCountDao extends AbstractDao{
 				}
 			}
 		}catch(SQLException sqle){
-			sqle.printStackTrace();
+			throw sqle;
 		}
-		
+
 		return counts;
 	}
 
-	public int update(double count, String category){
+	public int update(double count, String category) throws SQLException{
 		int effectCount = 0;
 		Connection con = getConnection();
 
@@ -113,9 +111,8 @@ public class CategoryCountDao extends AbstractDao{
 			ps.setDouble(1, count);
 			ps.setString(2, category);
 			effectCount = ps.executeUpdate();
-			con.commit();
 		}catch(SQLException sqle){
-			SQLUtil.rollbackConnection(con);
+			throw sqle;
 		}
 
 		return effectCount;

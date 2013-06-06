@@ -1,8 +1,8 @@
-package org.mognyan.ci.util;
+package org.mognyan.ci.classifier.util;
 
 import java.util.logging.Logger;
 
-import org.mognyan.ci.conf.CIConfig;
+import org.mognyan.ci.classifier.conf.CIConfig;
 
 public class LogUtil{
 

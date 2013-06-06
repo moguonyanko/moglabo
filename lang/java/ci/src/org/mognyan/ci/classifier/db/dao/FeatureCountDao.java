@@ -1,20 +1,17 @@
-package org.mognyan.ci.db.dao;
+package org.mognyan.ci.classifier.db.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.mognyan.ci.util.SQLUtil;
 
 public class FeatureCountDao extends AbstractDao{
 
 	private static final String TABLE = "featurecount";
 	private static final String SQL_INSERT = "INSERT INTO " + TABLE + " VALUES (?,?,?);";
-	
 	private static final String SQL_SELECT = "SELECT * FROM " + TABLE;
-	private static final String SQL_UPDATE = "UPDATE " + TABLE +" SET count=?";
+	private static final String SQL_UPDATE = "UPDATE " + TABLE + " SET count=?";
 	private static final String SQL_DELETE = "DELETE FROM " + TABLE;
-	
 	/* The feature and category is primary key. */
 	private static final String SQL_WHERE = " WHERE feature=? AND category=?;";
 
@@ -22,7 +19,7 @@ public class FeatureCountDao extends AbstractDao{
 		super(connection);
 	}
 
-	public boolean insert(String feature, String category){
+	public boolean insert(String feature, String category) throws SQLException{
 		boolean result = false;
 		Connection con = getConnection();
 
@@ -31,50 +28,48 @@ public class FeatureCountDao extends AbstractDao{
 			ps.setString(2, category);
 			ps.setDouble(3, 1.0);
 			result = ps.execute();
-			con.commit();
 		}catch(SQLException sqle){
-			SQLUtil.rollbackConnection(con);
+			throw sqle;
 		}
 
 		return result;
 	}
 
-	public double select(String feature, String category){
+	public double select(String feature, String category) throws SQLException{
 		double count = 0;
-		
-		try(Connection con = getConnection();
-			PreparedStatement ps = con.prepareStatement(SQL_SELECT + SQL_WHERE)){
+		Connection con = getConnection();
+
+		try(PreparedStatement ps = con.prepareStatement(SQL_SELECT + SQL_WHERE)){
 			ps.setString(1, feature);
 			ps.setString(2, category);
 			ResultSet rs = ps.executeQuery();
 			rs.last();
 			int row = rs.getRow();
-			
-			if (row > 0) {
+
+			if(row > 0){
 				rs.first();
 				count = rs.getDouble(3);
 			}
 		}catch(SQLException sqle){
-			sqle.printStackTrace();
+			throw sqle;
 		}
 
 		return count;
 	}
 
-	public int update(double count, String feature, String category){
+	public int update(double count, String feature, String category) throws SQLException{
 		int effectCount = 0;
 		Connection con = getConnection();
-		
+
 		try(PreparedStatement ps = con.prepareStatement(SQL_UPDATE + SQL_WHERE)){
 			ps.setDouble(1, count);
 			ps.setString(2, feature);
 			ps.setString(3, category);
 			effectCount = ps.executeUpdate();
-			con.commit();
 		}catch(SQLException sqle){
-			SQLUtil.rollbackConnection(con);
+			throw sqle;
 		}
-		
+
 		return effectCount;
 	}
 }
