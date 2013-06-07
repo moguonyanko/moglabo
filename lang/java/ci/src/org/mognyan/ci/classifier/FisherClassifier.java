@@ -6,12 +6,12 @@ import java.util.*;
 import org.mognyan.ci.classifier.filter.WordFilterTask;
 import org.mognyan.ci.classifier.probability.WordProbability;
 
-public class FisherClassifier extends AbstractClassifier{
+public class FisherClassifier extends AbstractTransactionClassifier{
 
 	private static final double DEFAULT_MIN_THRES = 0.0;
 	private final WordProbability cprob = new WordProbability(){
 		@Override
-		public double prob(String word, String categoryName) throws ClassifierException{
+		public double prob(String word, String categoryName) throws ClassifyException{
 
 			try{
 
@@ -31,7 +31,7 @@ public class FisherClassifier extends AbstractClassifier{
 				}
 
 			}catch(SQLException sqle){
-				throw new ClassifierException("Misstake calculate prob.");
+				throw new ClassifyException("Misstake calculate prob.");
 			}
 		}
 	};
@@ -57,7 +57,7 @@ public class FisherClassifier extends AbstractClassifier{
 	}
 
 	@Override
-	public double prob(String word, String categoryName) throws ClassifierException{
+	public double prob(String word, String categoryName) throws ClassifyException{
 		Map<String, Integer> result = task.get(word);
 		double pb = 1.0;
 
@@ -85,7 +85,7 @@ public class FisherClassifier extends AbstractClassifier{
 	}
 
 	@Override
-	public String classify(String word) throws ClassifierException{
+	public String classify(String word) throws ClassifyException{
 		String best = defaultClass;
 		double max = 0.0;
 
@@ -99,7 +99,7 @@ public class FisherClassifier extends AbstractClassifier{
 				}
 			}
 		}catch(SQLException sqle){
-			throw new ClassifierException("Misstake classify.");
+			throw new ClassifyException("Misstake classify.");
 		}
 
 		return best;

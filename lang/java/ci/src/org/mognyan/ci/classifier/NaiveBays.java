@@ -5,7 +5,7 @@ import java.util.*;
 
 import org.mognyan.ci.classifier.filter.WordFilterTask;
 
-public class NaiveBays extends AbstractClassifier{
+public class NaiveBays extends AbstractTransactionClassifier{
 
 	private static final double DEFAULT_THRESHOLDS = 1.0;
 
@@ -13,7 +13,7 @@ public class NaiveBays extends AbstractClassifier{
 		super(task);
 	}
 
-	private double docProb(String doc, String categoryName) throws ClassifierException{
+	private double docProb(String doc, String categoryName) throws ClassifyException{
 		Map<String, Integer> result = task.get(doc);
 
 		double prob = 1.0;
@@ -26,7 +26,7 @@ public class NaiveBays extends AbstractClassifier{
 	}
 
 	@Override
-	public double prob(String word, String categoryName) throws ClassifierException{
+	public double prob(String word, String categoryName) throws ClassifyException{
 		double categoryp = 0.0;
 		double docp = 0.0;
 		
@@ -36,7 +36,7 @@ public class NaiveBays extends AbstractClassifier{
 			categoryp = cc / total;
 			docp = docProb(word, categoryName);
 		}catch(SQLException sqle){
-			throw new ClassifierException("Misstake calculate prob.");
+			throw new ClassifyException("Misstake calculate prob.");
 		}
 		
 		return categoryp * docp;
@@ -57,7 +57,7 @@ public class NaiveBays extends AbstractClassifier{
 	}
 
 	@Override
-	public String classify(String word) throws ClassifierException{
+	public String classify(String word) throws ClassifyException{
 		Map<String, Double> probs = new HashMap<>();
 
 		double max = 0.0;
@@ -72,7 +72,7 @@ public class NaiveBays extends AbstractClassifier{
 				}
 			}
 		}catch(SQLException te){
-			throw new ClassifierException("Misstake classify.");
+			throw new ClassifyException("Misstake classify.");
 		}
 
 		for(String category : probs.keySet()){

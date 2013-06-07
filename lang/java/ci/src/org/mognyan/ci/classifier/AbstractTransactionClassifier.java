@@ -12,13 +12,13 @@ import org.mognyan.ci.classifier.filter.WordFilterTask;
 import org.mognyan.ci.classifier.probability.WordProbability;
 import org.mognyan.ci.classifier.util.LogUtil;
 
-public abstract class AbstractClassifier implements Classifier{
+public abstract class AbstractTransactionClassifier implements TransactionClassifier{
 
 	private final static double WEIGHT = 1.0;
 	private final static double AP = 0.5;
 	private final WordProbability defaultProbability = new WordProbability(){
 		@Override
-		public double prob(String word, String categoryName) throws ClassifierException{
+		public double prob(String word, String categoryName) throws ClassifyException{
 			try{
 				double catCount = getCategoryCount(categoryName);
 
@@ -29,7 +29,7 @@ public abstract class AbstractClassifier implements Classifier{
 				}
 
 			}catch(SQLException sqle){
-				throw new ClassifierException("Misstake calculate prob.");
+				throw new ClassifyException("Misstake calculate prob.");
 			}
 		}
 	};
@@ -38,11 +38,11 @@ public abstract class AbstractClassifier implements Classifier{
 	final Map<String, Double> thresholds = new HashMap<>();
 	private Connection con;
 
-	public AbstractClassifier(WordFilterTask task){
+	public AbstractTransactionClassifier(WordFilterTask task){
 		this(task, "unknown");
 	}
 
-	public AbstractClassifier(WordFilterTask task, String defaultClass){
+	public AbstractTransactionClassifier(WordFilterTask task, String defaultClass){
 		this.task = task;
 		this.defaultClass = defaultClass;
 	}
@@ -139,7 +139,7 @@ public abstract class AbstractClassifier implements Classifier{
 		}
 	}
 
-	double weightProb(String word, String categoryName, WordProbability probability) throws ClassifierException{
+	double weightProb(String word, String categoryName, WordProbability probability) throws ClassifyException{
 		double totalFeatureCount = 0.0;
 
 		try{
@@ -147,7 +147,7 @@ public abstract class AbstractClassifier implements Classifier{
 				totalFeatureCount += getFeatureCount(word, existingCategory);
 			}
 		}catch(SQLException sqle){
-			throw new ClassifierException("Misstake calculate prob.");
+			throw new ClassifyException("Misstake calculate prob.");
 		}
 
 		double nowProb = probability.prob(word, categoryName);
@@ -157,22 +157,25 @@ public abstract class AbstractClassifier implements Classifier{
 		return weightedProb;
 	}
 
-	double weightProb(String word, String categoryName) throws ClassifierException{
+	double weightProb(String word, String categoryName) throws ClassifyException{
 		return weightProb(word, categoryName, defaultProbability);
 	}
 
 	@Override
-	public void train(String doc, String category) throws ClassifierException{
+	public void train(String doc, String category) throws TrainException{
 		Map<String, Integer> result = task.get(doc);
 
+		String word = null;
 		try{
-			for(String word : result.keySet()){
+			Iterator<String> wordIter = result.keySet().iterator();
+			while(wordIter.hasNext()){
+				word = wordIter.next();
 				incFeatureCount(word, category);
 			}
 
 			incCategoryCount(category);
 		}catch(SQLException sqle){
-			throw new ClassifierException("Mistake training!");
+			throw new TrainException(word, category, "Mistake training!");
 		}
 
 	}
