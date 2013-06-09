@@ -3,12 +3,10 @@ package org.mognyan.ci.classifier;
 public class Feature {
 	private final String word;
 	private final String categoryName;
-	private final int count;
 
-	public Feature(String word, String categoryName, int count) {
+	public Feature(String word, String categoryName) {
 		this.word = word;
 		this.categoryName = categoryName;
-		this.count = count;
 	}
 
 	public String getWord() {
@@ -17,10 +15,6 @@ public class Feature {
 
 	public String getCategoryName() {
 		return categoryName;
-	}
-
-	public int getCount() {
-		return count;
 	}
 
 	@Override
@@ -32,8 +26,7 @@ public class Feature {
 		if(obj instanceof Feature){
 			Feature other = (Feature)obj;
 			return word.equals(other.getWord()) &&
-					categoryName.equals(other.getCategoryName()) &&
-					count == other.getCount();
+					categoryName.equals(other.getCategoryName());
 		}else{
 			return false;
 		}
@@ -41,11 +34,11 @@ public class Feature {
 
 	@Override
 	public int hashCode() {
-		return word.hashCode()^categoryName.hashCode()^count^7;
+		return word.hashCode()^categoryName.hashCode()^7;
 	}
 
 	@Override
 	public String toString() {
-		return "word : " + word + ", category name : " + categoryName + ", count : " + count;
+		return "word : " + word + ", category name : " + categoryName;
 	}
 }

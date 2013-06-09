@@ -3,20 +3,15 @@ package org.mognyan.ci.classifier;
 public class Category {
 
 	private final String name;
-	private final int count;
 
-	public Category(String name, int count){
+	public Category(String name){
 		this.name = name;
-		this.count = count;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public int getCount() {
-		return count;
-	}
 	@Override
 	public boolean equals(Object obj) {
 		if(obj == null){
@@ -25,7 +20,7 @@ public class Category {
 
 		if(obj instanceof Category){
 			Category other = (Category)obj;
-			return name.equals(other.getName()) && count == other.getCount();
+			return name.equals(other.getName());
 		}else{
 			return false;
 		}
@@ -33,11 +28,11 @@ public class Category {
 
 	@Override
 	public int hashCode() {
-		return name.hashCode()^count^7;
+		return name.hashCode()^7;
 	}
 
 	@Override
 	public String toString() {
-		return "name : " + name + ", count : " + count;
+		return "name : " + name;
 	}
 }

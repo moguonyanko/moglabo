@@ -29,7 +29,7 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 				}
 
 			}catch(SQLException sqle){
-				throw new ClassifyException("Misstake calculate prob.");
+				throw new ClassifyException("Fail to calculate probability.");
 			}
 		}
 	};
@@ -63,6 +63,7 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 		return con;
 	}
 
+	@Override
 	public void start(){
 		String driverName = "";
 		try{
@@ -147,7 +148,7 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 				totalFeatureCount += getFeatureCount(word, existingCategory);
 			}
 		}catch(SQLException sqle){
-			throw new ClassifyException("Misstake calculate prob.");
+			throw new ClassifyException("Fail to calculate probabillity.");
 		}
 
 		double nowProb = probability.prob(word, categoryName);
@@ -175,11 +176,12 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 
 			incCategoryCount(category);
 		}catch(SQLException sqle){
-			throw new TrainException(word, category, "Mistake training!");
+			throw new TrainException(word, category, "Fail training.");
 		}
 
 	}
 
+	@Override
 	public void end(boolean fail){
 		try(Connection _con = getConnection()){
 			if(!fail){
