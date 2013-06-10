@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.mognyan.ci.classifier.Category;
 
 public class CategoryCountDao extends AbstractDao{
 
@@ -23,12 +24,12 @@ public class CategoryCountDao extends AbstractDao{
 		super(connection);
 	}
 
-	public boolean insert(String category) throws SQLException{
+	public boolean insert(Category category) throws SQLException{
 		boolean result = false;
 		Connection con = getConnection();
 
 		try(PreparedStatement ps = con.prepareStatement(SQL_INSERT)){
-			ps.setString(1, category);
+			ps.setString(1, category.getName());
 			ps.setDouble(2, 1.0);
 			result = ps.execute();
 		}catch(SQLException sqle){
@@ -38,12 +39,12 @@ public class CategoryCountDao extends AbstractDao{
 		return result;
 	}
 
-	public double select(String category) throws SQLException{
+	public double select(Category category) throws SQLException{
 		double count = 0;
 		Connection con = getConnection();
 
 		try(PreparedStatement ps = con.prepareStatement(SQL_SELECT + SQL_WHERE)){
-			ps.setString(1, category);
+			ps.setString(1, category.getName());
 			ResultSet rs = ps.executeQuery();
 			rs.last();
 			int row = rs.getRow();
@@ -103,13 +104,13 @@ public class CategoryCountDao extends AbstractDao{
 		return counts;
 	}
 
-	public int update(double count, String category) throws SQLException{
+	public int update(double count, Category category) throws SQLException{
 		int effectCount = 0;
 		Connection con = getConnection();
 
 		try(PreparedStatement ps = con.prepareStatement(SQL_UPDATE + SQL_WHERE)){
 			ps.setDouble(1, count);
-			ps.setString(2, category);
+			ps.setString(2, category.getName());
 			effectCount = ps.executeUpdate();
 		}catch(SQLException sqle){
 			throw sqle;

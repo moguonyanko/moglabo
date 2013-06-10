@@ -13,4 +13,6 @@ public abstract class AbstractDao{
 	public Connection getConnection(){
 		return connection;
 	}
+	
+	//abstract <T> double select(T target);
 }

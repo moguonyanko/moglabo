@@ -80,35 +80,41 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 
 	private void incFeatureCount(String word, String categoryName) throws SQLException{
 		FeatureCountDao dao = new FeatureCountDao(getConnection());
+		
+		Feature feature = new Feature(word, categoryName);
 		double count = getFeatureCount(word, categoryName);
 
 		if(count <= 0){
-			dao.insert(word, categoryName);
+			dao.insert(feature);
 		}else{
-			dao.update(count + 1, word, categoryName);
+			dao.update(count + 1, feature);
 		}
 	}
 
 	private void incCategoryCount(String categoryName) throws SQLException{
 		CategoryCountDao dao = new CategoryCountDao(getConnection());
+		
+		Category category = new Category(categoryName);
 		double count = getCategoryCount(categoryName);
 
 		if(count <= 0){
-			dao.insert(categoryName);
+			dao.insert(category);
 		}else{
-			dao.update(count + 1, categoryName);
+			dao.update(count + 1, category);
 		}
 	}
 
 	double getFeatureCount(String word, String categoryName) throws SQLException{
 		FeatureCountDao dao = new FeatureCountDao(getConnection());
-		double count = dao.select(word, categoryName);
+		Feature feature = new Feature(word, categoryName);
+		double count = dao.select(feature);
 		return count;
 	}
 
 	double getCategoryCount(String categoryName) throws SQLException{
 		CategoryCountDao dao = new CategoryCountDao(getConnection());
-		double count = dao.select(categoryName);
+		Category category = new Category(categoryName);
+		double count = dao.select(category);
 		return count;
 	}
 
