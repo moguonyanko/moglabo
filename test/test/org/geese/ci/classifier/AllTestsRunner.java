@@ -5,8 +5,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	TestConfigLoading.class,
-	TestDocumentFiltering.class,
-})
-public class AllCITests{
+	TestUtilities.class,
+	TestDocumentFiltering.class,})
+public class AllTestsRunner {
 }

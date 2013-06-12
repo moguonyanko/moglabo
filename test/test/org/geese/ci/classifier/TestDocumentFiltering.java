@@ -37,7 +37,7 @@ public class TestDocumentFiltering{
 		try{
 			nb.start();
 
-			TrainUtil.sampleTrain(nb);
+			TrainUtil.train(nb);
 
 			String result0 = nb.classify("quick rabbit");
 			String result1 = nb.classify("quick money");
@@ -47,7 +47,7 @@ public class TestDocumentFiltering{
 			String result2 = nb.classify("quick money");
 
 			for(int i = 0; i < 10; i++){
-				TrainUtil.sampleTrain(nb);
+				TrainUtil.train(nb);
 			}
 
 			String result3 = nb.classify("quick money");
@@ -85,7 +85,7 @@ public class TestDocumentFiltering{
 		try{
 			fc.start();
 
-			TrainUtil.sampleTrain(fc);
+			TrainUtil.train(fc);
 
 			String result0 = fc.classify("quick rabbit");
 			String result1 = fc.classify("quick money");
