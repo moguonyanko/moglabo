@@ -63,18 +63,21 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 		return con;
 	}
 
+	/**
+	 * Transaction start.
+	 * 
+	 * Get connection and start transaction.
+	 * The connection is disabled auto commit mode.
+	 * This method is working without Class.forName because of using JDBC4 driver.
+	 * 
+	 */
 	@Override
 	public void start(){
-		String driverName = "";
 		try{
-			driverName = AccessData.getDriverName();
-			Class.forName(driverName);
-			con = DriverManager.getConnection(AccessData.getURL(), AccessData.getUserId(), AccessData.getUserId());
+			con = DriverManager.getConnection(AccessData.getURL(), AccessData.getUserId(), AccessData.getPassword());
 			con.setAutoCommit(false);
 		}catch(SQLException ex){
 			LogUtil.error("Fail to get connection. : " + ex.getMessage());
-		}catch(ClassNotFoundException ex){
-			LogUtil.error("Missing driver class. : " + driverName);
 		}
 	}
 
