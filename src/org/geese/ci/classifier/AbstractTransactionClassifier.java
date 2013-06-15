@@ -1,15 +1,17 @@
 package org.geese.ci.classifier;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.*;
 
-import org.geese.ci.classifier.db.AccessData;
-import org.geese.ci.classifier.db.dao.CategoryCountDao;
+import org.geese.ci.classifier.db.DBAccess;
+import org.geese.ci.classifier.db.DBAccessFactory;
+import org.geese.ci.classifier.db.dao.DaoFactory;
 import org.geese.ci.classifier.db.dao.FeatureCountDao;
+import org.geese.ci.classifier.db.dao.CategoryCountDao;
 import org.geese.ci.classifier.filter.WordFilterTask;
 import org.geese.ci.classifier.probability.WordProbability;
+import org.geese.ci.classifier.util.ConfigUtil;
 import org.geese.ci.classifier.util.LogUtil;
 
 public abstract class AbstractTransactionClassifier implements TransactionClassifier{
@@ -33,9 +35,12 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 			}
 		}
 	};
+	
 	final WordFilterTask task;
 	final String defaultClass;
 	final Map<String, Double> thresholds = new HashMap<>();
+	
+	private final String DBTYPE = ConfigUtil.getValue("db.type");
 	private Connection con;
 
 	public AbstractTransactionClassifier(WordFilterTask task){
@@ -45,22 +50,6 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 	public AbstractTransactionClassifier(WordFilterTask task, String defaultClass){
 		this.task = task;
 		this.defaultClass = defaultClass;
-	}
-
-	/**
-	 * Get database connection.
-	 *
-	 *
-	 *
-	 * @todo Use DataSource.
-	 * @return
-	 */
-	private Connection getConnection(){
-		if(con == null){
-			start();
-		}
-
-		return con;
 	}
 
 	/**
@@ -74,15 +63,15 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 	@Override
 	public void start(){
 		try{
-			con = DriverManager.getConnection(AccessData.getURL(), AccessData.getUserId(), AccessData.getPassword());
-			con.setAutoCommit(false);
+			DBAccess dba = DBAccessFactory.create(DBTYPE);
+			con = dba.connect();
 		}catch(SQLException ex){
 			LogUtil.error("Fail to get connection. : " + ex.getMessage());
 		}
 	}
 
 	private void incFeatureCount(String word, String categoryName) throws SQLException{
-		FeatureCountDao dao = new FeatureCountDao(getConnection());
+		FeatureCountDao dao = DaoFactory.createFeatureCountDao(DBTYPE, con);
 		
 		Feature feature = new Feature(word, categoryName);
 		double count = getFeatureCount(word, categoryName);
@@ -95,7 +84,7 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 	}
 
 	private void incCategoryCount(String categoryName) throws SQLException{
-		CategoryCountDao dao = new CategoryCountDao(getConnection());
+		CategoryCountDao dao = DaoFactory.createCategoryCountDao(DBTYPE, con);
 		
 		Category category = new Category(categoryName);
 		double count = getCategoryCount(categoryName);
@@ -108,21 +97,21 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 	}
 
 	double getFeatureCount(String word, String categoryName) throws SQLException{
-		FeatureCountDao dao = new FeatureCountDao(getConnection());
+		FeatureCountDao dao = DaoFactory.createFeatureCountDao(DBTYPE, con);
 		Feature feature = new Feature(word, categoryName);
 		double count = dao.select(feature);
 		return count;
 	}
 
 	double getCategoryCount(String categoryName) throws SQLException{
-		CategoryCountDao dao = new CategoryCountDao(getConnection());
+		CategoryCountDao dao = DaoFactory.createCategoryCountDao(DBTYPE, con);
 		Category category = new Category(categoryName);
 		double count = dao.select(category);
 		return count;
 	}
 
 	double getTotalCategoryCount() throws SQLException{
-		CategoryCountDao dao = new CategoryCountDao(getConnection());
+		CategoryCountDao dao = DaoFactory.createCategoryCountDao(DBTYPE, con);
 		List<Double> counts = dao.findAllCounts();
 
 		double total = 0;
@@ -135,7 +124,7 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 	}
 
 	Set<String> getCategories() throws SQLException{
-		CategoryCountDao dao = new CategoryCountDao(getConnection());
+		CategoryCountDao dao = DaoFactory.createCategoryCountDao(DBTYPE, con);
 		return dao.findAllCategories();
 	}
 
@@ -192,7 +181,7 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 
 	@Override
 	public void end(boolean fail){
-		try(Connection _con = getConnection()){
+		try(Connection _con = con){
 			if(!fail){
 				_con.commit();
 				LogUtil.info("Classfier finished.");
