@@ -10,7 +10,7 @@ import org.geese.ci.classifier.util.ConfigUtil;
  * RDBMS Access data.
  *
  */
-public enum RDBMSDBAccess implements DBAccess {
+public enum MySQLDBAccess implements DBAccess {
 
 	DBACCESS;
 	
@@ -18,7 +18,9 @@ public enum RDBMSDBAccess implements DBAccess {
 	private final String userId;
 	private final String password;
 
-	RDBMSDBAccess() {
+	private final String DBNAME = "MySQL";
+	
+	MySQLDBAccess() {
 		String name = ConfigUtil.getValue("db.name");
 		String host = ConfigUtil.getValue("db.host");
 		String port = ConfigUtil.getValue("db.port");
@@ -40,5 +42,10 @@ public enum RDBMSDBAccess implements DBAccess {
 		con.setAutoCommit(false);
 
 		return con;
+	}
+
+	@Override
+	public String getDBName(){
+		return DBNAME;
 	}
 }

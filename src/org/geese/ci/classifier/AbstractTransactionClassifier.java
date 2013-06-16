@@ -40,7 +40,7 @@ public abstract class AbstractTransactionClassifier implements TransactionClassi
 	final String defaultClass;
 	final Map<String, Double> thresholds = new HashMap<>();
 	
-	private final String DBTYPE = ConfigUtil.getValue("db.type");
+	private final String DBTYPE = ConfigUtil.getValue("db.name");
 	private Connection con;
 
 	public AbstractTransactionClassifier(WordFilterTask task){

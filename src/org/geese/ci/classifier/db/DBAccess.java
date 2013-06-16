@@ -5,4 +5,5 @@ import java.sql.SQLException;
 
 public interface DBAccess {
 	Connection connect() throws SQLException;
+	String getDBName();
 }

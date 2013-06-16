@@ -1,4 +1,4 @@
-package org.geese.ci.classifier.db.dao.rdbms;
+package org.geese.ci.classifier.db.dao.mysql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +12,7 @@ import java.util.Set;
 import org.geese.ci.classifier.Category;
 import org.geese.ci.classifier.db.dao.CategoryCountDao;
 
-public class RDBMSCategoryCountDao extends CategoryCountDao {
+public class MySQLCategoryCountDao extends CategoryCountDao {
 
 	private static final String TABLE = "categorycount";
 	private static final String SQL_INSERT = "INSERT INTO " + TABLE + " VALUES (?,?);";
@@ -22,7 +22,7 @@ public class RDBMSCategoryCountDao extends CategoryCountDao {
 	/* The category is primary key. */
 	private static final String SQL_WHERE = " WHERE category=?;";
 
-	public RDBMSCategoryCountDao(Connection connection) {
+	public MySQLCategoryCountDao(Connection connection) {
 		super(connection);
 	}
 

@@ -1,4 +1,4 @@
-package org.geese.ci.classifier.db.dao.rdbms;
+package org.geese.ci.classifier.db.dao.mysql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import org.geese.ci.classifier.Feature;
 import org.geese.ci.classifier.db.dao.FeatureCountDao;
 
-public class RDBMSFeatureCountDao extends FeatureCountDao {
+public class MySQLFeatureCountDao extends FeatureCountDao {
 
 	private static final String TABLE = "featurecount";
 	private static final String SQL_INSERT = "INSERT INTO " + TABLE + " VALUES (?,?,?);";
@@ -18,7 +18,7 @@ public class RDBMSFeatureCountDao extends FeatureCountDao {
 	/* The feature and category is primary key. */
 	private static final String SQL_WHERE = " WHERE feature=? AND category=?;";
 
-	public RDBMSFeatureCountDao(Connection connection) {
+	public MySQLFeatureCountDao(Connection connection) {
 		super(connection);
 	}
 

@@ -2,18 +2,18 @@ package org.geese.ci.classifier.db;
 
 public class DBAccessFactory {
 
-	public static DBAccess create(String type) {
+	public static DBAccess create(String dbName) {
 
-		if (type == null) {
-			throw new IllegalArgumentException("DB type is null.");
+		if (dbName == null) {
+			throw new IllegalArgumentException("Database name is null.");
 		}
 
-		if (type.equalsIgnoreCase("RDBMS")) {
-			return RDBMSDBAccess.DBACCESS;
-		} else if (type.equalsIgnoreCase("NOSQL")) {
-			return NOSQLDBAccess.DBACCESS;
+		if (dbName.equalsIgnoreCase(MySQLDBAccess.DBACCESS.getDBName())) {
+			return MySQLDBAccess.DBACCESS;
+		} else if (dbName.equalsIgnoreCase(MongoDBDBAccess.DBACCESS.getDBName())) {
+			return MongoDBDBAccess.DBACCESS;
 		} else {
-			throw new UnsupportedOperationException("Unsupported DB type requested.");
+			throw new UnsupportedOperationException("Unsupported database name requested.");
 		}
 	}
 }
