@@ -1,0 +1,5 @@
+/lang/java/exercise/manifest.mf
+/lang/java/exercise/build
+/lang/java/exercise/nbproject
+/lang/java/exercise/build.xml
+/.gitignore
