@@ -15,7 +15,6 @@ import java.util.Date;
  * Reference:
  * MongoDB In Action
  * 
- * @author kouichi
  */
 public class MongoDBAccess {
 
