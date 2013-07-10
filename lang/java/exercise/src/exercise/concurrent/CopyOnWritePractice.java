@@ -1,44 +1,54 @@
 package exercise.concurrent;
 
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class CopyOnWritePractice {
 
 	public static void main(String[] args) {
-		CopyOnWriteArrayList<Employee> list = new CopyOnWriteArrayList<>();
+		List<String> list = new CopyOnWriteArrayList<>();
+		//List<String> list = new Vector<>();
+		//List<String> list = new ArrayList<>();
+
+		list.add("Usao");
+		list.add("Monchi");
+		list.add("Goro");
+
+		Printer p = new Printer(list);
+		Modificator m = new Modificator(list);
+
+		new Thread(p).start();
+		new Thread(m).start();
+
 	}
 }
 
-class Employee {
+class Printer implements Runnable {
 
-	private final Integer id;
+	private final List<String> list;
 
-	public Employee(Integer id) {
-		this.id = id;
-	}
-}
-
-class CheckerA implements Runnable{
-
-	private final List<Employee> list;
-	private int count;
-
-	public CheckerA(List<Employee> list) {
+	public Printer(List<String> list) {
 		this.list = list;
 	}
-	
+
 	@Override
 	public void run() {
-		list.add(new Employee(count++));
+		for (String value : list) {
+			System.out.println(value);
+		}
 	}
-	
 }
 
-class CheckerB implements Runnable{
+class Modificator implements Runnable {
+
+	private final List<String> list;
+
+	public Modificator(List<String> list) {
+		this.list = list;
+	}
 
 	@Override
 	public void run() {
+		list.add("NEKONEKONEKO");
 	}
-	
 }
