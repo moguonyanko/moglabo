@@ -14,8 +14,8 @@ public class CopyOnWritePractice {
 		list.add("Monchi");
 		list.add("Goro");
 
-		Printer p = new Printer(list);
-		Modificator m = new Modificator(list);
+		ListPrinter p = new ListPrinter(list);
+		ListModificator m = new ListModificator(list);
 
 		new Thread(p).start();
 		new Thread(m).start();
@@ -23,11 +23,11 @@ public class CopyOnWritePractice {
 	}
 }
 
-class Printer implements Runnable {
+class ListPrinter implements Runnable {
 
 	private final List<String> list;
 
-	public Printer(List<String> list) {
+	public ListPrinter(List<String> list) {
 		this.list = list;
 	}
 
@@ -39,11 +39,11 @@ class Printer implements Runnable {
 	}
 }
 
-class Modificator implements Runnable {
+class ListModificator implements Runnable {
 
 	private final List<String> list;
 
-	public Modificator(List<String> list) {
+	public ListModificator(List<String> list) {
 		this.list = list;
 	}
 

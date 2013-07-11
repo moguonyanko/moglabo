@@ -6,13 +6,16 @@ public class AtomicPractice {
 
 	public static void main(String[] args) {
 		CountMachine machine = new CountMachine();
-		int loopNum = 10;
-		int threadNum = 200;
+
+		int threadNum = 10;
 
 		for (int i = 0; i < threadNum; i++) {
-			Counter counter1 = new Counter(machine, loopNum);
-			Thread t1 = new Thread(counter1);
-			t1.start();
+			Runnable updater = new CountUpdater(machine);
+			Runnable reader = new CountReader(machine);
+			Thread writeThread = new Thread(updater);
+			Thread readThread = new Thread(reader);
+			writeThread.start();
+			readThread.start();
 		}
 	}
 }
@@ -20,33 +23,48 @@ public class AtomicPractice {
 class CountMachine {
 
 //	private int count;
-	
 	private AtomicInteger count = new AtomicInteger();
-	
 	private final byte[] mutex = new byte[0];
 
 	void incCount() {
-		synchronized(mutex){
+		synchronized (mutex) {
 			//count++;
-			System.out.println(count.incrementAndGet());
+			count.incrementAndGet();
+			//System.out.println(count.incrementAndGet());
+		}
+	}
+
+	public int getCount() {
+		synchronized (mutex) {
+			return count.get();
 		}
 	}
 }
 
-class Counter implements Runnable {
+class CountUpdater implements Runnable {
 
 	private final CountMachine at;
-	private final int loopNum;
 
-	public Counter(CountMachine at, int loopNum) {
+	public CountUpdater(CountMachine at) {
 		this.at = at;
-		this.loopNum = loopNum;
 	}
 
 	@Override
 	public void run() {
-		for (int i = 0; i < loopNum; i++) {
-			this.at.incCount();
-		}
+		this.at.incCount();
+	}
+}
+
+class CountReader implements Runnable {
+
+	private final CountMachine at;
+
+	public CountReader(CountMachine at) {
+		this.at = at;
+	}
+
+	@Override
+	public void run() {
+		System.out.println("Read : " + at.getCount());
 	}
 }
