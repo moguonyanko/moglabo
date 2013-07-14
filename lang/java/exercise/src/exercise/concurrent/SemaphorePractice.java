@@ -54,7 +54,7 @@ class BoundedArrayList<T> {
 		} finally {
 			if (!wasAdded) {
 				semaphore.release();
-				throw new IllegalStateException();
+				//throw new IllegalStateException();
 			}
 		}
 		return wasAdded;
