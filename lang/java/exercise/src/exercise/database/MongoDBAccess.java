@@ -1,4 +1,4 @@
-package exercise.db;
+package exercise.database;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;

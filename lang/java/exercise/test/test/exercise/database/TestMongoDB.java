@@ -1,4 +1,4 @@
-package test.exercise;
+package test.exercise.database;
 
 public class TestMongoDB {
 	
