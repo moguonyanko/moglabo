@@ -15,8 +15,8 @@ import java.sql.SQLException;
 public class BlobPractice {
 
 	public static void main(String[] args) {
-		File input = new File("/Users/hisako/src/moglabo/sample/sample.png");
-		File output = new File("/Users/hisako/src/moglabo/sample/result.png");
+		File input = new File("../../../sample/sample.png");
+		File output = new File("../../../sample/result.png");
 
 		String url = "jdbc:mysql://localhost:3306/geolib";
 		String user = "geofw", pass = "geofw";
