@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 public class WatchablePractice {
 
 	public static void main(String[] args) {
-		Path target = Paths.get("/var/log");
+		Path target = Paths.get("../../../sample");
 		
 		try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
 
