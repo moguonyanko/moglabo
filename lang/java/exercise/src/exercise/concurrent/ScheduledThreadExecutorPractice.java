@@ -16,6 +16,7 @@ public class ScheduledThreadExecutorPractice {
 	public static void main(String[] args) {
 
 		int delaySec = 2;
+		long initDelay = 3;
 
 		int[] nums = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 		Callable<Integer> task = new TotalIntTask(nums);
@@ -32,7 +33,11 @@ public class ScheduledThreadExecutorPractice {
 			}
 		};
 		ScheduledFuture<?> runFuture =
-			caller.schedule(runner, delaySec + 1, TimeUnit.SECONDS);
+			caller.scheduleAtFixedRate(runner, initDelay, delaySec + 1, TimeUnit.SECONDS);
+		//ScheduledFuture<?> runFuture =
+		//	caller.scheduleWithFixedDelay(runner, initDelay, delaySec + 1, TimeUnit.SECONDS);
+		//ScheduledFuture<?> runFuture =
+		//	caller.schedule(runner, delaySec + 1, TimeUnit.SECONDS);
 
 		Integer callerResult = null;
 		Object runnerResult = null;
@@ -47,7 +52,7 @@ public class ScheduledThreadExecutorPractice {
 		}
 
 		System.out.println(callerResult);
-		System.out.println(runnerResult);;
+		System.out.println(runnerResult);
 
 		caller.shutdown();
 	}
