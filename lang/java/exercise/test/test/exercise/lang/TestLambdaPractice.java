@@ -1,7 +1,6 @@
 package test.exercise.lang;
 
 import java.util.*;
-import java.util.concurrent.Callable;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -46,14 +45,14 @@ public class TestLambdaPractice {
 		Func<Integer, Integer> square = (num) -> {
 			return num * num;
 		};
-		
+
 		List<Integer> actual = map(nums, square);
-		
+
 		List<Integer> expected = new ArrayList<>();
 		expected.add(1);
 		expected.add(4);
 		expected.add(9);
-		
+
 		assertThat(actual, is(expected));
 	}
 }
