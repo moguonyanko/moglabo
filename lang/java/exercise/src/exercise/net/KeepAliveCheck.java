@@ -1,4 +1,4 @@
-package exercise.lang;
+package exercise.net;
 
 import java.net.Socket;
 import java.net.SocketException;
