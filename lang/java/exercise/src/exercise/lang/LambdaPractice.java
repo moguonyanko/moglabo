@@ -13,5 +13,15 @@ public class LambdaPractice {
 
 		return result;
 	}
+	
+	public static <T> T reduce(List<T> targets, Func<T, T> fn){
+		T result = null;
+		
+		for(T target : targets){
+			result = fn.call(target);
+		}
+		
+		return result;
+	}
 
 }

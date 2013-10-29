@@ -55,4 +55,23 @@ public class TestLambdaPractice {
 
 		assertThat(actual, is(expected));
 	}
+	
+	@Test
+	public void reduce_受け取ったリストの各要素に関数を適用しその結果をまとめて返す(){
+		List<Integer> nums = new ArrayList<>();
+
+		nums.add(1);
+		nums.add(2);
+		nums.add(3);
+
+		final Integer acc = 1;
+		Func<Integer, Integer> multi = (num) -> {
+			return acc * num;
+		};
+
+		Integer actual = reduce(nums, multi);
+		Integer expected = 1 * 2 * 3;
+
+		assertThat(actual, is(expected));
+	}
 }
