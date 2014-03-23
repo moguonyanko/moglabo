@@ -12,8 +12,9 @@ import static org.hamcrest.CoreMatchers.*;
 
 import exercise.lang.Func;
 import exercise.lang.AccFunc;
+import exercise.lang.Discount;
 import static exercise.lang.LambdaPractice.*;
-import exercise.lang.PredicateShop;
+import exercise.lang.FunctionalShop;
 import exercise.lang.ShopItem;
 
 public class TestLambdaPractice {
@@ -82,18 +83,36 @@ public class TestLambdaPractice {
 	
 	@Test
 	public void predicate_条件を満たす品物を取り出す(){
-		PredicateShop shop = new PredicateShop();
+		FunctionalShop shop = new FunctionalShop(new Discount(1.0));
 		
-		shop.addShopItem(new ShopItem("Apple", 300));
-		shop.addShopItem(new ShopItem("Orange", 200));
-		shop.addShopItem(new ShopItem("Meron", 1000));
-		shop.addShopItem(new ShopItem("Potato", 500));
-		shop.addShopItem(new ShopItem("Pen", 100));
+		shop.addShopItem("Apple", 300);
+		shop.addShopItem("Orange", 200);
+		shop.addShopItem("Meron", 1000);
+		shop.addShopItem("Potato", 500);
+		shop.addShopItem("Pen", 100);
 		
-		List<ShopItem> actual = shop.getShopItem(p -> p.getPrice() > 300);
-		List<ShopItem> expected = new ArrayList<>();
+		Set<ShopItem> actual = shop.getShopItems(item -> item.getPrice() > 300);
+		Set<ShopItem> expected = new HashSet<>();
 		expected.add(new ShopItem("Meron", 1000));
 		expected.add(new ShopItem("Potato", 500));
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void function_外部から計算式を与えたときの価格を得る(){
+		double rate = 0.5;
+		double extraValue = 2.0;
+		Discount discount = new Discount(rate);
+		FunctionalShop shop = new FunctionalShop(discount);
+		
+		String targetName = "Meron";
+		int targetPrince = 1000;
+		shop.addShopItem(targetName, targetPrince);
+		
+		int actual = shop.getDiscountPrice(targetName, 
+			item -> (int)(item.getPrice() * discount.getRate() * extraValue));
+		int expected = (int)(targetPrince * rate * extraValue);
 		
 		assertThat(actual, is(expected));
 	}
