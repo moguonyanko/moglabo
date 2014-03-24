@@ -1,4 +1,4 @@
-package exercise.lang;
+package exercise.lang.lambda;
 
 import java.util.HashMap;
 import java.util.HashSet;

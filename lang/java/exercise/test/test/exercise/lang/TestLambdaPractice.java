@@ -12,10 +12,12 @@ import static org.hamcrest.CoreMatchers.*;
 
 import exercise.lang.Func;
 import exercise.lang.AccFunc;
-import exercise.lang.Discount;
 import static exercise.lang.LambdaPractice.*;
-import exercise.lang.FunctionalShop;
-import exercise.lang.ShopItem;
+import exercise.lang.lambda.Customer;
+import exercise.lang.lambda.Discount;
+import exercise.lang.lambda.FunctionalShop;
+import exercise.lang.lambda.ShopItem;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class TestLambdaPractice {
 
@@ -69,7 +71,7 @@ public class TestLambdaPractice {
 		nums.add(3);
 
 		AccFunc<Integer, Integer> multi = (num, acc) -> {
-			if(acc == null){
+			if (acc == null) {
 				acc = 1;
 			}
 			return acc * num;
@@ -80,41 +82,56 @@ public class TestLambdaPractice {
 
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void predicate_条件を満たす品物を取り出す(){
+	public void predicate_条件を満たす品物を取り出す() {
 		FunctionalShop shop = new FunctionalShop(new Discount(1.0));
-		
+
 		shop.addShopItem("Apple", 300);
 		shop.addShopItem("Orange", 200);
 		shop.addShopItem("Meron", 1000);
 		shop.addShopItem("Potato", 500);
 		shop.addShopItem("Pen", 100);
-		
+
 		Set<ShopItem> actual = shop.getShopItems(item -> item.getPrice() > 300);
 		Set<ShopItem> expected = new HashSet<>();
 		expected.add(new ShopItem("Meron", 1000));
 		expected.add(new ShopItem("Potato", 500));
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void function_外部から計算式を与えたときの価格を得る(){
+	public void function_外部から計算式を与えたときの価格を得る() {
 		double rate = 0.5;
 		double extraValue = 2.0;
 		Discount discount = new Discount(rate);
 		FunctionalShop shop = new FunctionalShop(discount);
-		
+
 		String targetName = "Meron";
 		int targetPrince = 1000;
 		shop.addShopItem(targetName, targetPrince);
-		
-		int actual = shop.getDiscountPrice(targetName, 
-			item -> (int)(item.getPrice() * discount.getRate() * extraValue));
-		int expected = (int)(targetPrince * rate * extraValue);
+
+		int actual = shop.getDiscountPrice(targetName,
+			item -> (int) (item.getPrice() * discount.getRate() * extraValue));
+		int expected = (int) (targetPrince * rate * extraValue);
+
+		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void consumer_顧客は品物を消費する() {
+		Set<ShopItem> boughtItems = new CopyOnWriteArraySet<>();
+		boughtItems.add(new ShopItem("Meron", 1000));
+		boughtItems.add(new ShopItem("Potato", 500));
+
+		Customer customer = new Customer(boughtItems);
+		customer.consumeAll(item -> System.out.println("consume " + item.getName()));
+
+		int actual = customer.getItems().size();
+		int expected = 0;
 		
 		assertThat(actual, is(expected));
 	}
-	
+
 }
