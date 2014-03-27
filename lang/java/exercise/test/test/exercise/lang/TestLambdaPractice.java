@@ -15,6 +15,7 @@ import exercise.lang.AccFunc;
 import static exercise.lang.LambdaPractice.*;
 import exercise.lang.lambda.Customer;
 import exercise.lang.lambda.Discount;
+import exercise.lang.lambda.FunctionalFactory;
 import exercise.lang.lambda.FunctionalShop;
 import exercise.lang.lambda.ShopItem;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -130,6 +131,23 @@ public class TestLambdaPractice {
 
 		int actual = customer.getItems().size();
 		int expected = 0;
+		
+		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void supplier_工場は製品を作り梱包する() {
+		Map<String, Integer> stuffs = new HashMap<>();
+		stuffs.put("Lemon", 100);
+		stuffs.put("Toy", 1000);
+		stuffs.put("Globe", 750);
+
+		Set<ShopItem> actual = FunctionalFactory.packItems(stuffs, HashSet<ShopItem>::new);
+
+		Set<ShopItem> expected = new HashSet<>();
+		expected.add(new ShopItem("Lemon", 100));
+		expected.add(new ShopItem("Toy", 1000));
+		expected.add(new ShopItem("Globe", 750));
 		
 		assertThat(actual, is(expected));
 	}
