@@ -103,7 +103,7 @@ public class TestLambdaPractice {
 	}
 
 	@Test
-	public void unction_外部から計算式を与えたときの価格を得る() {
+	public void function_外部から計算式を与えたときの価格を得る() {
 		double rate = 0.5;
 		double extraValue = 2.0;
 		Discount discount = new Discount(rate);
