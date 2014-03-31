@@ -103,7 +103,7 @@ public class TestLambdaPractice {
 	}
 
 	@Test
-	public void function_外部から計算式を与えたときの価格を得る() {
+	public void unction_外部から計算式を与えたときの価格を得る() {
 		double rate = 0.5;
 		double extraValue = 2.0;
 		Discount discount = new Discount(rate);
@@ -115,7 +115,7 @@ public class TestLambdaPractice {
 
 		int actual = shop.getDiscountPrice(targetName,
 			item -> (int) (item.getPrice() * discount.getRate() * extraValue));
-		int expected = (int) (targetPrince * rate * extraValue);
+		int expected = targetPrince - (int) (targetPrince * rate * extraValue);
 
 		assertThat(actual, is(expected));
 	}
@@ -152,4 +152,22 @@ public class TestLambdaPractice {
 		assertThat(actual, is(expected));
 	}
 
+	@Test
+	public void doubleUnaryOperator_店舗の割引率を倍にする() {
+		double rate = 0.1;
+		Discount discount = new Discount(rate);
+		FunctionalShop shop = new FunctionalShop(discount);
+		
+		String targetName = "Meron";
+		int targetPrince = 1000;
+		shop.addShopItem(targetName, targetPrince);
+		
+		shop.riseDiscount(r -> r * 2);
+		
+		int actual = shop.getDisCountPrice(targetName);
+		int expected = 800;
+		
+		assertThat(actual, is(expected));
+	}
+	
 }
