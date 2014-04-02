@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -36,14 +37,19 @@ public class FunctionalShop {
 		items.put(name, new ShopItem(name, price));
 	}
 	
-	public int getDiscountPrice(String name, Function<ShopItem, Integer> f){
+	public final int getDiscountPrice(String name, Function<ShopItem, Integer> f){
 		int orgPrice = items.get(name).getPrice();
 		return orgPrice - f.apply(items.get(name));
 	}
 	
-	public int getDisCountPrice(String name){
+	public final int getDisCountPrice(String name){
 		int orgPrice = items.get(name).getPrice();
 		return orgPrice - (int)(orgPrice * discount.getRate());
+	}
+
+	public final double getDisCountPrice(String name, DoubleBinaryOperator op){
+		int orgPrice = items.get(name).getPrice();
+		return op.applyAsDouble(orgPrice, discount.getRate());
 	}
 	
 	public void riseDiscount(DoubleUnaryOperator operator){

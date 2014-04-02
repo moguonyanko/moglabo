@@ -12,11 +12,11 @@ public class ShopItem {
 		this.price = price;
 	}
 
-	public String getName() {
+	public final String getName() {
 		return name;
 	}
 
-	public int getPrice() {
+	public final int getPrice() {
 		return price;
 	}
 

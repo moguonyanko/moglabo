@@ -170,4 +170,23 @@ public class TestLambdaPractice {
 		assertThat(actual, is(expected));
 	}
 	
+	@Test
+	public void doubleBinaryOperator_購買には税金がかかる() {
+		double rate = 0.1;
+		Discount discount = new Discount(rate);
+		FunctionalShop shop = new FunctionalShop(discount);
+		
+		String targetName = "Meron";
+		int targetPrince = 1000;
+		shop.addShopItem(targetName, targetPrince);
+		
+		double tax = 0.1;
+		
+		int actual = (int)shop.getDisCountPrice(targetName, 
+			(p, r) -> p * (1 - r) * (1 + tax));
+		int expected = 990;
+		
+		assertThat(actual, is(expected));
+	}
+	
 }
