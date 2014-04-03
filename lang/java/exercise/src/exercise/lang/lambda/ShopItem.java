@@ -2,8 +2,8 @@ package exercise.lang.lambda;
 
 import java.util.Objects;
 
-public class ShopItem {
-	
+public class ShopItem implements Taxable, Favorable {
+
 	private final String name;
 	private final int price;
 
@@ -27,16 +27,16 @@ public class ShopItem {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj == null){
+		if (obj == null) {
 			return false;
 		}
-		
-		if(!(obj instanceof ShopItem)){
+
+		if (!(obj instanceof ShopItem)) {
 			return false;
 		}
-		
-		ShopItem other = (ShopItem)obj;
-		
+
+		ShopItem other = (ShopItem) obj;
+
 		return name.equals(other.name) && price == other.price;
 	}
 
@@ -47,5 +47,10 @@ public class ShopItem {
 		hash = 37 * hash + this.price;
 		return hash;
 	}
-	
+
+	@Override
+	public int getAmount() {
+		return getPrice();
+	}
+
 }
