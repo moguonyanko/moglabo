@@ -6,10 +6,16 @@ public class ShopItem implements Taxable, Favorable {
 
 	private final String name;
 	private final int price;
+	private final ShopItemType type;
 
-	public ShopItem(String name, int price) {
+	public ShopItem(String name, int price, ShopItemType type) {
 		this.name = name;
 		this.price = price;
+		this.type = type;
+	}
+	
+	public ShopItem(String name, int price) {
+		this(name, price, ShopItemType.ANY);
 	}
 
 	public final String getName() {
@@ -51,6 +57,10 @@ public class ShopItem implements Taxable, Favorable {
 	@Override
 	public int getAmount() {
 		return getPrice();
+	}
+
+	public ShopItemType getType() {
+		return type;
 	}
 
 }

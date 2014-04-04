@@ -33,8 +33,12 @@ public class FunctionalShop {
 		return result;
 	}
 	
+	public void addShopItem(String name, int price, ShopItemType type){
+		items.put(name, new ShopItem(name, price, type));
+	}
+	
 	public void addShopItem(String name, int price){
-		items.put(name, new ShopItem(name, price));
+		this.addShopItem(name, price, ShopItemType.ANY);
 	}
 	
 	public final int getDiscountPrice(String name, Function<ShopItem, Integer> f){
@@ -55,6 +59,10 @@ public class FunctionalShop {
 	public void riseDiscount(DoubleUnaryOperator operator){
 		double newRate = operator.applyAsDouble(discount.getRate());
 		discount = new Discount(newRate);
+	}
+	
+	public final ShopItem getShopItem(String name){
+		return items.get(name);
 	}
 	
 }

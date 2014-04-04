@@ -18,6 +18,7 @@ import exercise.lang.lambda.Discount;
 import exercise.lang.lambda.FunctionalFactory;
 import exercise.lang.lambda.FunctionalShop;
 import exercise.lang.lambda.ShopItem;
+import exercise.lang.lambda.ShopItemType;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public class TestLambdaPractice {
@@ -185,6 +186,27 @@ public class TestLambdaPractice {
 		int actual = (int)shop.getDisCountPrice(targetName, 
 			(p, r) -> p * (1 - r) * (1 + tax));
 		int expected = 990;
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void average_特定の品種の平均購入額を求める() {
+		FunctionalShop shop = new FunctionalShop(new Discount(1.0));
+
+		shop.addShopItem("Apple", 300, ShopItemType.FLUIT);
+		shop.addShopItem("Orange", 200, ShopItemType.FLUIT);
+		shop.addShopItem("Meron", 1000, ShopItemType.FLUIT);
+		shop.addShopItem("Potato", 500, ShopItemType.GRAIN);
+		shop.addShopItem("Pen", 100, ShopItemType.STATIONERY);
+		
+		Customer customer = new Customer(HashSet::new);
+		customer.buy(shop, "Apple");
+		customer.buy(shop, "Orange");
+		customer.buy(shop, "Pen"); /* Not "FLUIT" */
+		
+		double actual = customer.averagePurchaseAmount(ShopItemType.FLUIT);
+		double expected = 250;
 		
 		assertThat(actual, is(expected));
 	}

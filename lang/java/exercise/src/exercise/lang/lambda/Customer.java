@@ -1,25 +1,44 @@
 package exercise.lang.lambda;
 
-import java.util.Set;
+import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class Customer {
 
-	private final Set<ShopItem> items;
+	private final Collection<ShopItem> myBag;
 
-	public Customer(Set<ShopItem> items) {
-		this.items = items;
+	public Customer(Supplier<? extends Collection> bagFactory) {
+		this.myBag = bagFactory.get();
 	}
 
-	public Set<ShopItem> getItems() {
-		return items;
+	public Customer(Collection<ShopItem> myBag) {
+		this.myBag = myBag;
 	}
-	
-	public void consumeAll(Consumer<ShopItem> c){
-		items.stream().forEach((item) -> {
+
+	public Collection<ShopItem> getItems() {
+		return myBag;
+	}
+
+	public void consumeAll(Consumer<ShopItem> c) {
+		myBag.stream().forEach((item) -> {
 			c.accept(item);
-			items.remove(item);
+			myBag.remove(item);
 		});
 	}
-	
+
+	public double averagePurchaseAmount(ShopItemType type) {
+		double avg = myBag.stream()
+			.filter(item -> item.getType().equals(type))
+			.mapToInt(ShopItem::getPrice)
+			.average()
+			.getAsDouble();
+
+		return avg;
+	}
+
+	public void buy(FunctionalShop shop, String itemName) {
+		this.myBag.add(shop.getShopItem(itemName));
+	}
+
 }
