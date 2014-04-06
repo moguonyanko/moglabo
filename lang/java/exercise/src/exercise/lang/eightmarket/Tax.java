@@ -1,4 +1,4 @@
-package exercise.lang.lambda;
+package exercise.lang.eightmarket;
 
 public interface Tax {
 	double getRate();

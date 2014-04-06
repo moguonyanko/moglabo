@@ -1,5 +1,7 @@
-package exercise.lang;
+package exercise.lang.eightmarket;
 
+import exercise.lang.AccFunc;
+import exercise.lang.Func;
 import java.util.*;
 
 public class LambdaPractice {

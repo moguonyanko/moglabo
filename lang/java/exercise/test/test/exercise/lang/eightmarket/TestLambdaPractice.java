@@ -1,6 +1,7 @@
-package test.exercise.lang;
+package test.exercise.lang.eightmarket;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -12,14 +13,13 @@ import static org.hamcrest.CoreMatchers.*;
 
 import exercise.lang.Func;
 import exercise.lang.AccFunc;
-import static exercise.lang.LambdaPractice.*;
-import exercise.lang.lambda.Customer;
-import exercise.lang.lambda.Discount;
-import exercise.lang.lambda.FunctionalFactory;
-import exercise.lang.lambda.FunctionalShop;
-import exercise.lang.lambda.ShopItem;
-import exercise.lang.lambda.ShopItemType;
-import java.util.concurrent.CopyOnWriteArraySet;
+import static exercise.lang.eightmarket.LambdaPractice.*;
+import exercise.lang.eightmarket.Customer;
+import exercise.lang.eightmarket.Discount;
+import exercise.lang.eightmarket.FunctionalFactory;
+import exercise.lang.eightmarket.FunctionalShop;
+import exercise.lang.eightmarket.ShopItem;
+import exercise.lang.eightmarket.ShopItemType;
 
 public class TestLambdaPractice {
 
@@ -211,4 +211,24 @@ public class TestLambdaPractice {
 		assertThat(actual, is(expected));
 	}
 	
+	@Test
+	public void average_特定の品種の合計購入額を求める() {
+		FunctionalShop shop = new FunctionalShop(new Discount(1.0));
+
+		shop.addShopItem("Apple", 300, ShopItemType.FLUIT);
+		shop.addShopItem("Orange", 200, ShopItemType.FLUIT);
+		shop.addShopItem("Meron", 1000, ShopItemType.FLUIT);
+		shop.addShopItem("Potato", 500, ShopItemType.GRAIN);
+		shop.addShopItem("Pen", 100, ShopItemType.STATIONERY);
+		
+		Customer customer = new Customer(HashSet::new);
+		customer.buy(shop, "Apple");
+		customer.buy(shop, "Orange");
+		customer.buy(shop, "Pen"); /* Not "FLUIT" */
+		
+		double actual = customer.sumPurchaseAmount(ShopItemType.FLUIT);
+		double expected = 500;
+		
+		assertThat(actual, is(expected));
+	}
 }

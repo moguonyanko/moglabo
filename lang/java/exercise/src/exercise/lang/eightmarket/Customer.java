@@ -1,4 +1,4 @@
-package exercise.lang.lambda;
+package exercise.lang.eightmarket;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -35,6 +35,12 @@ public class Customer {
 			.getAsDouble();
 
 		return avg;
+	}
+
+	public double sumPurchaseAmount(ShopItemType type) {
+		
+		return 0;
+
 	}
 
 	public void buy(FunctionalShop shop, String itemName) {
