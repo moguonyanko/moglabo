@@ -1,8 +1,10 @@
-package exercise.lang.eight;
+package exercise.function;
 
+import exercise.lang.Taxable;
+import exercise.lang.Favorable;
 import java.util.Objects;
 
-public class ShopItem implements Taxable, Favorable {
+public class ShopItem implements Taxable, Favorable, Comparable<ShopItem> {
 
 	private final String name;
 	private final int price;
@@ -43,7 +45,9 @@ public class ShopItem implements Taxable, Favorable {
 
 		ShopItem other = (ShopItem) obj;
 
-		return name.equals(other.name) && price == other.price;
+		return this.getType().equals(other.getType()) && 
+			name.equals(other.name) && 
+			price == other.price;
 	}
 
 	@Override
@@ -61,6 +65,11 @@ public class ShopItem implements Taxable, Favorable {
 
 	public ShopItemType getType() {
 		return type;
+	}
+
+	@Override
+	public int compareTo(ShopItem o) {
+		return this.getName().compareTo(o.getName());
 	}
 
 }

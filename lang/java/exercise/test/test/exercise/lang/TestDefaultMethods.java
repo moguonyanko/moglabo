@@ -1,4 +1,4 @@
-package test.exercise.lang.eight;
+package test.exercise.lang;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -8,11 +8,11 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import exercise.lang.eight.Excise;
-import exercise.lang.eight.Favorable;
-import exercise.lang.eight.ShopItem;
-import exercise.lang.eight.Tax;
-import exercise.lang.eight.Taxable;
+import exercise.lang.Excise;
+import exercise.lang.Favorable;
+import exercise.function.ShopItem;
+import exercise.lang.Tax;
+import exercise.lang.Taxable;
 
 public class TestDefaultMethods {
 	

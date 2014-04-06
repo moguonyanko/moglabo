@@ -1,4 +1,4 @@
-package exercise.lang.eight;
+package exercise.function;
 
 @FunctionalInterface
 public interface AccFunc<T, TResult> {

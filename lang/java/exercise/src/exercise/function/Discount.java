@@ -1,4 +1,4 @@
-package exercise.lang.eight;
+package exercise.function;
 
 public class Discount {
 	

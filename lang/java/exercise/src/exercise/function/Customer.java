@@ -1,22 +1,21 @@
-package exercise.lang.eight;
+package exercise.function;
 
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-public class Customer {
+public class Customer<T extends Collection<ShopItem>> {
 
-	private final Collection<ShopItem> myBag;
+	private final T myBag;
+	private final Supplier<T> bagFactory;
 
-	public Customer(Supplier<? extends Collection> bagFactory) {
+	public Customer(Supplier<T> bagFactory) {
 		this.myBag = bagFactory.get();
+		this.bagFactory = bagFactory;
 	}
 
-	public Customer(Collection<ShopItem> myBag) {
-		this.myBag = myBag;
-	}
-
-	public Collection<ShopItem> getItems() {
+	public T getBoughtItems() {
 		return myBag;
 	}
 
@@ -47,8 +46,20 @@ public class Customer {
 		return sumValue;
 	}
 
-	public void buy(FunctionalShop shop, String itemName) {
-		this.myBag.add(shop.getShopItem(itemName));
+	public void buy(FunctionalShop shop, ShopItem item) {
+		ShopItem savedItem = shop.orderItem(item);
+		
+		if(savedItem != null){
+			this.myBag.add(savedItem);
+		}
+	}
+	
+	public T getBoughtItems(ShopItemType type){
+		T items = myBag.stream()
+			.filter(item -> item.getType().equals(type))
+			.collect(Collectors.toCollection(bagFactory));
+
+		return items;
 	}
 
 }

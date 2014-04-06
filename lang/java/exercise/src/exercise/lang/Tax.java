@@ -1,4 +1,4 @@
-package exercise.lang.eight;
+package exercise.lang;
 
 public interface Tax {
 	double getRate();
