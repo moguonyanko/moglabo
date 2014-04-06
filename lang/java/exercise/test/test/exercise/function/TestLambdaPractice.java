@@ -244,7 +244,7 @@ public class TestLambdaPractice {
 	
 	
 	@Test
-	public void collect_購入した品物の一覧を名前順に整列して取得する() {
+	public void comparator_購入した品物の一覧を名前順に整列して取得する() {
 		shop.clearItems();
 		
 		shop.addShopItem(orange);
