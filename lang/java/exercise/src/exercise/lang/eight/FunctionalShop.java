@@ -1,4 +1,4 @@
-package exercise.lang.eightmarket;
+package exercise.lang.eight;
 
 import java.util.HashMap;
 import java.util.HashSet;

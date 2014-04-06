@@ -1,4 +1,4 @@
-package test.exercise.lang.eightmarket;
+package test.exercise.lang.eight;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -11,15 +11,15 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
-import exercise.lang.Func;
-import exercise.lang.AccFunc;
-import static exercise.lang.eightmarket.LambdaPractice.*;
-import exercise.lang.eightmarket.Customer;
-import exercise.lang.eightmarket.Discount;
-import exercise.lang.eightmarket.FunctionalFactory;
-import exercise.lang.eightmarket.FunctionalShop;
-import exercise.lang.eightmarket.ShopItem;
-import exercise.lang.eightmarket.ShopItemType;
+import exercise.lang.eight.Func;
+import exercise.lang.eight.AccFunc;
+import static exercise.lang.eight.LambdaPractice.*;
+import exercise.lang.eight.Customer;
+import exercise.lang.eight.Discount;
+import exercise.lang.eight.FunctionalFactory;
+import exercise.lang.eight.FunctionalShop;
+import exercise.lang.eight.ShopItem;
+import exercise.lang.eight.ShopItemType;
 
 public class TestLambdaPractice {
 

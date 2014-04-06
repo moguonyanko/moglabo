@@ -1,4 +1,4 @@
-package exercise.lang;
+package exercise.lang.eight;
 
 @FunctionalInterface
 public interface Func<T, TResult> {

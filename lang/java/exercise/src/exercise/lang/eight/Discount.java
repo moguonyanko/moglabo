@@ -1,4 +1,4 @@
-package exercise.lang.eightmarket;
+package exercise.lang.eight;
 
 public class Discount {
 	

@@ -1,4 +1,4 @@
-package exercise.lang.eightmarket;
+package exercise.lang.eight;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -28,19 +28,23 @@ public class Customer {
 	}
 
 	public double averagePurchaseAmount(ShopItemType type) {
-		double avg = myBag.stream()
+		double avgValue = myBag.stream()
 			.filter(item -> item.getType().equals(type))
 			.mapToInt(ShopItem::getPrice)
 			.average()
 			.getAsDouble();
 
-		return avg;
+		return avgValue;
 	}
 
 	public double sumPurchaseAmount(ShopItemType type) {
-		
-		return 0;
+		double sumValue = myBag.stream()
+			.filter(item -> item.getType().equals(type))
+			.mapToInt(ShopItem::getPrice)
+			//.reduce(0, (a, b) -> a + b);
+			.sum();
 
+		return sumValue;
 	}
 
 	public void buy(FunctionalShop shop, String itemName) {
