@@ -29,12 +29,26 @@ public class TestLambdaPractice {
 	
 	/* sample items */
 	private final ShopItem apple = new ShopItem("Apple", 300, ShopItemType.FLUIT);
-	private final ShopItem orange = new ShopItem("Orange", 200, ShopItemType.FLUIT);
+	private final ShopItem orange = new ShopItem("Orange", 100, ShopItemType.FLUIT);
 	private final ShopItem melon = new ShopItem("Melon", 200, ShopItemType.FLUIT);
 	private final ShopItem rice = new ShopItem("Rice", 1000, ShopItemType.GRAIN);
 	private final ShopItem potato = new ShopItem("Potato", 500, ShopItemType.GRAIN);
+	private final ShopItem mealie = new ShopItem("Mealie", 300, ShopItemType.GRAIN);
 	private final ShopItem pen = new ShopItem("Pen", 100, ShopItemType.STATIONERY);
-	private final ShopItem ruler = new ShopItem("Ruler", 100, ShopItemType.STATIONERY);
+	private final ShopItem ruler = new ShopItem("Ruler", 150, ShopItemType.STATIONERY);
+	private final ShopItem eraser = new ShopItem("Eraser", 50, ShopItemType.STATIONERY);
+	
+	private final ShopItem[] shopItems = {
+		apple,
+		orange,
+		melon,
+		rice,
+		potato,
+		mealie,
+		pen,
+		ruler,
+		eraser
+	};
 	
 	public TestLambdaPractice() {
 	}
@@ -49,13 +63,7 @@ public class TestLambdaPractice {
 
 	@Before
 	public void setUp() {
-		shop.addShopItem(apple);
-		shop.addShopItem(orange);
-		shop.addShopItem(melon);
-		shop.addShopItem(rice);
-		shop.addShopItem(potato);
-		shop.addShopItem(pen);
-		shop.addShopItem(ruler);
+		shop.addAllShopItems(shopItems);
 	}
 
 	@After
@@ -208,7 +216,7 @@ public class TestLambdaPractice {
 		customer.buy(shop, pen); /* Not "FLUIT" */
 		
 		double actual = customer.averagePurchaseAmount(ShopItemType.FLUIT);
-		double expected = 250;
+		double expected = 200;
 		
 		assertThat(actual, is(expected));
 	}
@@ -221,7 +229,7 @@ public class TestLambdaPractice {
 		customer.buy(shop, pen); /* Not "FLUIT" */
 		
 		double actual = customer.sumPurchaseAmount(ShopItemType.FLUIT);
-		double expected = 500;
+		double expected = 400;
 		
 		assertThat(actual, is(expected));
 	}
@@ -274,4 +282,20 @@ public class TestLambdaPractice {
 		
 		assertThat(actual, is(expected));
 	}
+	
+	@Test
+	public void groupingBy_品種ごとの平均価格を得る() {
+		Map<ShopItemType, Double> actual = shop.avaragePriceByType();
+		
+		Map<ShopItemType, Double> expected = new HashMap<>();
+		expected.put(ShopItemType.FLUIT, 
+			(apple.getPrice() + orange.getPrice() + melon.getPrice()) / 3.0);
+		expected.put(ShopItemType.GRAIN, 
+			(rice.getPrice() + potato.getPrice() + mealie.getPrice()) / 3.0);
+		expected.put(ShopItemType.STATIONERY, 
+			(pen.getPrice() + ruler.getPrice() + eraser.getPrice()) / 3.0);
+		
+		assertThat(actual, is(expected));
+	}
+	
 }

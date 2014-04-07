@@ -11,6 +11,7 @@ import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class FunctionalShop {
 
@@ -49,9 +50,15 @@ public class FunctionalShop {
 	}
 
 	public void addShopItem(String name, int price, ShopItemType type) {
-		this.addShopItem(new ShopItem(name, price, type));
+		addShopItem(new ShopItem(name, price, type));
 	}
 
+	public void addAllShopItems(ShopItem[] items) {
+		for(ShopItem item : items){
+			addShopItem(item);
+		}
+	}
+	
 	public void clearItems() {
 		allItems.clear();
 	}
@@ -100,6 +107,32 @@ public class FunctionalShop {
 
 	public Map<ShopItemType, List<ShopItem>> sortedItems() {
 		return this.sortedItems(ShopItem::compareTo);
+	}
+	
+	public Map<ShopItemType, Double> avaragePriceByType(){
+		Map<ShopItemType, Double> result = new HashMap<>();
+
+		/* groupingBy method test */
+		List<ShopItem> roster = new ArrayList<>();
+		allItems.keySet().stream().forEach((type) -> {
+			List<ShopItem> items = allItems.get(type);
+			roster.addAll(items);
+		});
+		
+		result = roster.stream().collect(
+			Collectors.groupingBy(ShopItem::getType, 
+				Collectors.averagingInt(ShopItem::getPrice))
+		);
+		
+		/* normal operation */
+//		allItems.keySet().stream().forEach((type) -> {
+//			List<ShopItem> items = allItems.get(type);
+//			int sumValue = items.stream().mapToInt(ShopItem::getPrice).sum();
+//			double avgValue = sumValue / items.size();
+//			result.put(type, avgValue);
+//		});
+		
+		return result;
 	}
 
 }
