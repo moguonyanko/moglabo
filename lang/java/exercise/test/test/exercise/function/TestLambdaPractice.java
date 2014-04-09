@@ -297,5 +297,32 @@ public class TestLambdaPractice {
 		
 		assertThat(actual, is(expected));
 	}
+
+	@Test
+	public void comparator_購入した品物の一覧を逆順に整列して取得する() {
+		Map<ShopItemType, List<ShopItem>> actual = 
+			shop.reservedItems();
+		
+		/* アルファベット逆順に品物が返されることを期待する。 */
+		Map<ShopItemType, List<ShopItem>> expected = new HashMap<>();
+		List<ShopItem> fluits = new ArrayList<>();
+		fluits.add(orange);
+		fluits.add(melon);
+		fluits.add(apple);
+		List<ShopItem> grains = new ArrayList<>();
+		grains.add(rice);
+		grains.add(potato);
+		grains.add(mealie);
+		List<ShopItem> stationeries = new ArrayList<>();
+		stationeries.add(ruler);
+		stationeries.add(pen);
+		stationeries.add(eraser);
+		
+		expected.put(ShopItemType.FLUIT, fluits);
+		expected.put(ShopItemType.GRAIN, grains);
+		expected.put(ShopItemType.STATIONERY, stationeries);
+		
+		assertThat(actual, is(expected));
+	}
 	
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
@@ -97,6 +98,7 @@ public class FunctionalShop {
 	public Map<ShopItemType, List<ShopItem>> sortedItems(final Comparator<ShopItem> c) {
 		Map<ShopItemType, List<ShopItem>> itemView = Collections.synchronizedMap(allItems);
 
+		/* Don't use parallelStream */
 		itemView.keySet().stream().map((type) -> 
 			itemView.get(type)).forEach((items) -> {
 				items.sort(c);
@@ -109,23 +111,29 @@ public class FunctionalShop {
 		return this.sortedItems(ShopItem::compareTo);
 	}
 	
-	public Map<ShopItemType, Double> avaragePriceByType(){
-		Map<ShopItemType, Double> result = new HashMap<>();
+	public Map<ShopItemType, List<ShopItem>> reservedItems() {
+		Comparator<ShopItem> c = ShopItem::compareTo;
+		Comparator<ShopItem> r = c.reversed();
+		
+		return this.sortedItems(r);
+	}
 
+	public Map<ShopItemType, Double> avaragePriceByType(){
 		/* groupingBy method test */
 		List<ShopItem> roster = new ArrayList<>();
-		allItems.keySet().stream().forEach((type) -> {
+		allItems.keySet().parallelStream().forEach((type) -> {
 			List<ShopItem> items = allItems.get(type);
 			roster.addAll(items);
 		});
 		
-		result = roster.stream().collect(
-			Collectors.groupingBy(ShopItem::getType, 
+		ConcurrentMap<ShopItemType, Double> result = roster.parallelStream().collect(
+			Collectors.groupingByConcurrent(ShopItem::getType, 
 				Collectors.averagingInt(ShopItem::getPrice))
 		);
 		
 		/* normal operation */
-//		allItems.keySet().stream().forEach((type) -> {
+//		ConcurrentMap<ShopItemType, Double> result = new ConcurrentHashMap<>();
+//		allItems.keySet().parallelStream().forEach((type) -> {
 //			List<ShopItem> items = allItems.get(type);
 //			int sumValue = items.stream().mapToInt(ShopItem::getPrice).sum();
 //			double avgValue = sumValue / items.size();
