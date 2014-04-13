@@ -324,5 +324,14 @@ public class TestLambdaPractice {
 		
 		assertThat(actual, is(expected));
 	}
-	
+
+	@Test
+	public void notnull_割引率にnullは許容されない() {
+		Discount discount = new Discount(0.5);
+		FunctionalShop _shop = new FunctionalShop(discount);
+		Discount actual = _shop.getDiscount();
+		Discount notExpected = null;
+		assertThat(actual, not(notExpected));
+	}
+
 }

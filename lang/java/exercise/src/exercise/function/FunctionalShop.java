@@ -13,6 +13,7 @@ import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javax.validation.constraints.NotNull;
 
 public class FunctionalShop {
 
@@ -21,7 +22,7 @@ public class FunctionalShop {
 
 	private Discount discount = new Discount(1.0);
 
-	public FunctionalShop(Discount discount) {
+	public FunctionalShop(@NotNull Discount discount) {
 		this.discount = discount;
 	}
 
@@ -143,4 +144,8 @@ public class FunctionalShop {
 		return result;
 	}
 
+	public Discount getDiscount() {
+		return discount;
+	}
+	
 }
