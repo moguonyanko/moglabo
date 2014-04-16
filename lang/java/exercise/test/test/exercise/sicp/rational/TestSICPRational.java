@@ -1,5 +1,6 @@
 package test.exercise.sicp.rational;
 
+import exercise.sicp.rational.Rational;
 import static org.hamcrest.CoreMatchers.is;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -8,8 +9,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import exercise.sicp.rational.Rational;
-import exercise.sicp.rational.RationalProcess;
+import exercise.sicp.rational.RationalNumber;
+import exercise.sicp.rational.Calculator;
+import java.util.function.Supplier;
 
 public class TestSICPRational {
 
@@ -34,11 +36,15 @@ public class TestSICPRational {
 
 	@Test
 	public void 有理数の可算() {
-		Rational r1 = new Rational(1, 3);
-		Rational r2 = new Rational(1, 2);
+		Rational r1 = new RationalNumber(1, 3);
+		Rational r2 = new RationalNumber(1, 2);
 
-		Rational actual = RationalProcess.addRat(r1, r2);
-		Rational expected = new Rational(5, 6);
+		//Supplier<RationalNumber> s = () -> { return new RationalNumber(a, b); };
+		
+		Calculator calculator = new Calculator();
+		
+		Rational actual = calculator.addRat(r1, r2);
+		Rational expected = new RationalNumber(5, 6);
 
 		assertThat(actual, is(expected));
 	}
