@@ -11,6 +11,7 @@ import static org.junit.Assert.*;
 
 import exercise.sicp.rational.RationalNumber;
 import exercise.sicp.rational.Calculator;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class TestSICPRational {
@@ -39,9 +40,9 @@ public class TestSICPRational {
 		Rational r1 = new RationalNumber(1, 3);
 		Rational r2 = new RationalNumber(1, 2);
 
-		//Supplier<RationalNumber> s = () -> { return new RationalNumber(a, b); };
-		
-		Calculator calculator = new Calculator();
+		BiFunction<Integer, Integer, RationalNumber> bi = 
+			(Integer a, Integer b) -> new RationalNumber(a, b);
+		Calculator calculator = new Calculator(bi);
 		
 		Rational actual = calculator.addRat(r1, r2);
 		Rational expected = new RationalNumber(5, 6);

@@ -1,21 +1,16 @@
 package exercise.sicp.rational;
 
-import java.util.function.Supplier;
+import java.util.function.BiFunction;
 
-public class Calculator {
+public class Calculator<T extends Rational> {
 	
-	private final MakeRat makeRat;
+	private final BiFunction<Integer, Integer, T> makeRat;
 
-	public Calculator() {
-		makeRat = (int n, int d) -> new RationalNumber(n, d);
+	public Calculator(BiFunction<Integer, Integer, T> maker) {
+		makeRat = maker;
 	}
 	
-	public <T extends Rational> Calculator(Supplier<T> s) {
-		T result = s.get(); /* Is there multi arguments recieved Supplier? */
-		makeRat = (int n, int d) -> new RationalNumber(n, d);
-	}
-	
-	public Rational addRat(Rational x, Rational y){
+	public T addRat(T x, T y){
 		int xn = x.numer();
 		int xd = x.denom();
 		int yn = y.numer();
@@ -24,7 +19,7 @@ public class Calculator {
 		int n = xn * yd + yn * xd;
 		int d = xd * yd;
 		
-		return makeRat.call(n, d);
+		return makeRat.apply(n, d);
 	}
 	
 }
