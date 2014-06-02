@@ -1,8 +1,7 @@
 package exercise.database;
 
-import com.mysql.jdbc.MySQLConnection;
+import com.mysql.jdbc.Connection;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -21,10 +20,10 @@ public class WrapperPractice {
 		/* usao is allowed 'SELECT' only */
 		String newUser = "usao", newPassword = "usao";
 
-		try (Connection con = DriverManager.getConnection(url, user, pass)) {
+		try (Connection con = (Connection)DriverManager.getConnection(url, user, pass)) {
 			
-			if(con.isWrapperFor(MySQLConnection.class)){
-				MySQLConnection myCon = con.unwrap(MySQLConnection.class);
+			if(con.isWrapperFor(Connection.class)){
+				Connection myCon = con.unwrap(Connection.class);
 				
 				myCon.changeUser(newUser, newPassword);
 				System.out.println("User changed " + newUser + " from " + user);
