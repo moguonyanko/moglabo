@@ -1,4 +1,4 @@
-package exercise.lang;
+package exercise.function;
 
 import java.util.*;
 
@@ -14,14 +14,14 @@ public class LambdaPractice {
 		return result;
 	}
 	
-	public static <T> T reduce(List<T> targets, Func<T, T> fn){
-		T result = null;
+	public static <T> T reduce(List<T> targets, AccFunc<T, T> fn){
+		T acc = null;
 		
 		for(T target : targets){
-			result = fn.call(target);
+			acc = fn.call(target, acc);
 		}
 		
-		return result;
+		return acc;
 	}
 
 }
