@@ -46,7 +46,8 @@ public class CalculatorTest {
 	@Test
 	public void sumで足し算を行うことが出来る() throws MalformedURLException {
 		Service calculatorService = Service.create(
-			new URL("http://localhost/wsdl"), new QName("http://localhost/wsdl", "CalculatorService"));
+			new URL("http://localhost:4204/Calculator?wsdl"), 
+			new QName("http://localhost/wsdl", "CalculatorService"));
 	
 		assertNotNull(calculatorService);
 		
