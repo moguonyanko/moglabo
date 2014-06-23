@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8" />
+		<title>New Element exercise</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	</head>
+	<body>
+		<hgroup>
+			<h1>New Element exercise</h1>
+			<h2>HTML5で新しく追加・変更された要素の練習ページです。</h2>
+		</hgroup>
+		
+		<article>
+			<h2>abbr</h2>
+			<p>abbr要素で略語を表現します。何の略かはツールチップに表示されます。</p>
+			<abbr title="World Wide Web">WWW</abbr>
+		</article>
+
+		<article>
+			<h2>figure, figcaption</h2>
+			<figure>
+				<h3>code</h3>
+				<code>
+					var greeting = function(name){
+						alert("Hello, " + name);
+					};
+				</code>
+				<h3>pre</h3>
+				<pre>
+					var greeting = function(name){
+						alert("Hello, " + name);
+					};
+				</pre>
+				<figcaption>
+					JavaScriptによるHelloWorldの一例です。
+				</figcaption>
+			</figure>
+		</article>
+		
+		<article>
+			<h2>mark</h2>
+			<p>mark要素は一般的には検索結果を<mark>ハイライト</mark>するための要素です。</p>
+		</article>
+		
+		<article>
+			<h2>time</h2>
+			<time datetime="2014-06-24">２０１４年６月２４日</time>
+		</article>
+		
+		<article>
+			<h2>details, summary</h2>
+			<details>
+				<summary>Relational JavaScript Language</summary>
+				<p>JavaScriptを拡張または代替しようとするプログラミング言語</p>
+				<ul>
+					<li>TypeScript</li>
+					<li>Dart</li>
+					<li>その他</li>
+				</ul>
+			</details>
+		</article>
+		
+		<article>
+			<h2>meter</h2>
+			<p>ディスクの使用領域などを表現するのに使用します。</p>
+			<meter value="0" min="0" max="100">未使用</meter>
+			<meter value="50" max="100">半分使用</meter>
+			<meter value="100" max="100">全て使用</meter>
+			<meter value="10" low="20" max="100">かなり少ない</meter>
+			<meter value="90" high="80" max="100">かなり多い</meter>
+			<meter value="70" optimum="70" max="100">丁度良い</meter>
+		</article>
+		
+	</body>
+</html>
