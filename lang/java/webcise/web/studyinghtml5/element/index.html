@@ -10,7 +10,7 @@
 			<h1>New Element exercise</h1>
 			<h2>HTML5で新しく追加・変更された要素の練習ページです。</h2>
 		</hgroup>
-		
+
 		<article>
 			<h2>abbr</h2>
 			<p>abbr要素で略語を表現します。何の略かはツールチップに表示されます。</p>
@@ -23,7 +23,7 @@
 				<h3>code</h3>
 				<code>
 					var greeting = function(name){
-						alert("Hello, " + name);
+					alert("Hello, " + name);
 					};
 				</code>
 				<h3>pre</h3>
@@ -37,17 +37,17 @@
 				</figcaption>
 			</figure>
 		</article>
-		
+
 		<article>
 			<h2>mark</h2>
 			<p>mark要素は一般的には検索結果を<mark>ハイライト</mark>するための要素です。</p>
 		</article>
-		
+
 		<article>
 			<h2>time</h2>
 			<time datetime="2014-06-24">２０１４年６月２４日</time>
 		</article>
-		
+
 		<article>
 			<h2>details, summary</h2>
 			<details>
@@ -60,7 +60,7 @@
 				</ul>
 			</details>
 		</article>
-		
+
 		<article>
 			<h2>meter</h2>
 			<p>ディスクの使用領域などを表現するのに使用します。</p>
@@ -71,6 +71,35 @@
 			<meter value="90" high="80" max="100">かなり多い</meter>
 			<meter value="70" optimum="70" max="100">丁度良い</meter>
 		</article>
-		
+
+		<article>
+			<h2>keygen</h2>
+			<form action="/webcise/KeyChecker" method="POST">
+				<fieldset>
+					<legend>鍵送信テスト</legend>
+					<label>
+						<keygen name="pubkey" challenge="challenge string" keytype="RSA" />
+					</label>
+				</fieldset>
+				<p><button type="submit">送信</button></p>
+			</form>
+		</article>
+
+		<article>
+			<h2>output</h2>
+			<form id="calcform" oninput="result.value = parseInt(x.value) * parseInt(y.value)">
+				<fieldset>
+					<legend>計算値入力</legend>
+					<label for="numberinput">number</label>
+					<input id="numberinput" type="number" name="x" value="10" min="0" max="100" step="5" />
+					<label for="rangeinput">range</label>
+					<input id="rangeinput" type="range" name="y" value="50" min="0" max="100" />
+				</fieldset>
+			</form>
+
+			<label for="calcresult">計算結果</label>
+			<output form="calcform" id="calcresult" name="result"></output>
+		</article>
+
 	</body>
 </html>
