@@ -6,10 +6,10 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	</head>
 	<body>
-		<hgroup>
+		<header>
 			<h1>New Element exercise</h1>
 			<h2>HTML5で新しく追加・変更された要素の練習ページです。</h2>
-		</hgroup>
+		</header>
 
 		<article>
 			<h2>abbr</h2>
@@ -101,5 +101,55 @@
 			<output form="calcform" id="calcresult" name="result"></output>
 		</article>
 
+		<article>
+			<h2>datalist</h2>
+			<form>
+				<p>言語入力</p>
+				<label>
+					<input type="text" value="" name="language" list="langlist" />
+				</label>
+				<datalist id="langlist">
+					<option>Java</option>
+					<option>C#</option>
+					<option>JavaScript</option>
+					<option>Python</option>
+					<option>Scheme</option>
+				</datalist>
+			</form>
+		</article>
+
+		<article>
+			<h2>ruby, rb, rt, rp</h2>
+			<p>
+				<ruby>
+					逸見<rp>(</rp><rt>へみ</rt><rp>)</rp>
+					横須賀<rp>(</rp><rt>よこすか</rt><rp>)</rp>
+					久里浜<rp>(</rp><rt>くりはま</rt><rp>)</rp>
+				</ruby>
+			</p>
+			<p>
+				<ruby>
+					東京<rp>(</rp><rt>とうきょう</rt><rp>)</rp>
+					博多<rp>(</rp><rt>はかた</rt><rp>)</rp>
+					札幌<rp>(</rp><rt>さっぽろ</rt><rp>)</rp>
+				</ruby>
+			</p>
+		</article>
+		
+		<article>
+			<h2>bdi</h2>
+			<p>文字の表記順を指定できます。</p>
+			<p dir="ltr">テキストの向きが<bdi>54321</bdi>左から右になる予定</p>
+		</article>
+
+		<article>
+			<h2>wbr</h2>
+			<p>改行位置を任意で指定することができます。</p>
+			<p>http://localhost<wbr />.localdomain/test<wbr />.app/index<wbr />.html</p>
+		</article>
+		
+		<footer>
+			<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
+		</footer>
 	</body>
 </html>
