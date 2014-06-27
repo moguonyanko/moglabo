@@ -45,7 +45,7 @@
 
 		<article>
 			<h2>time</h2>
-			<time datetime="2014-06-24">２０１４年６月２４日</time>
+			<p><time datetime="2014-06-24">２０１４年６月２４日</time></p>
 		</article>
 
 		<article>
@@ -74,7 +74,7 @@
 
 		<article>
 			<h2>keygen</h2>
-			<form action="/webcise/KeyChecker" method="POST">
+			<form action="/webcise/ParamChecker" method="POST">
 				<fieldset>
 					<legend>鍵送信テスト</legend>
 					<label>
@@ -135,11 +135,12 @@
 				</ruby>
 			</p>
 		</article>
-		
+
 		<article>
-			<h2>bdi</h2>
+			<h2>dir, bdi</h2>
 			<p>文字の表記順を指定できます。</p>
 			<p dir="ltr">テキストの向きが<bdi>54321</bdi>左から右になる予定</p>
+			<p dir="rtl">右から始まる文章</p>
 		</article>
 
 		<article>
@@ -147,7 +148,37 @@
 			<p>改行位置を任意で指定することができます。</p>
 			<p>http://localhost<wbr />.localdomain/test<wbr />.app/index<wbr />.html</p>
 		</article>
-		
+
+		<article>
+			<h2>input</h2>
+			<form id="inputtestform" action="/webcise/ParamChecker" method="POST">
+				<fieldset>
+					<legend>入力値のチェック</legend>
+					<p><label>Eメール	<input type="email" value="" name="email" placeholder="test@test.co.jp" /></label></p>
+					<p><label>電話番号
+						<input type="tel" value="" name="tel" placeholder="000-1234-5678" 
+							   pattern="[0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]" />
+					</label></p>
+					<p><label>色<input type="color" value="" name="color" /></label></p>
+					<p><label>URL
+						<input type="url" value="" name="url" 
+								placeholder="http://test/" title="正しいURLを入力してください。" />
+					</label></p>
+					<p><label>
+						<strong>*パスワード</strong>
+						<input type="password" 
+							value="" name="password" required="" autocomplete="off" />
+					</label></p>
+					<p><label>検索<input type="search" value="" name="search" /></label></p>
+					<p><label>週<input type="week" value="" name="week" /></label></p>
+					<p><label>月<input type="month" value="" name="month" /></label></p>
+					<p><label>日付<input type="datetime" value="" name="datetime" /></label></p>
+					<p><label>日付(ローカル)<input type="datetime-local" value="" name="datetime-local" /></label></p>
+				</fieldset>
+			</form>
+			<button form="inputtestform" type="submit">送信</button>
+		</article>
+
 		<footer>
 			<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
 		</footer>
