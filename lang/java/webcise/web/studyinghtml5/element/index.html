@@ -176,11 +176,23 @@
 					<p><label>日付(ローカル)<input type="datetime-local" value="" name="datetime-local" /></label></p>
 				</fieldset>
 			</form>
-			<button form="inputtestform" type="submit">送信</button>
+			<p>リクエストの結果を別のページに出力します。</p>
+			<iframe name="responsepage" src="response.html" width="300" height="300"></iframe>
+			<button form="inputtestform" formtarget="responsepage" type="submit">送信</button>
+		</article>
+		
+		<article>
+			<h2>progress</h2>
+			<progress id="sampleprogress" max="100" value="0">
+				<span id="progressvalue">0</span><span>％</span>
+			</progress>
+			<button id="progressswitch">切替</button>
 		</article>
 
 		<footer>
 			<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
 		</footer>
+		
+		<script src="element.js"></script>
 	</body>
 </html>
