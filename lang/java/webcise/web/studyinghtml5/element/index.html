@@ -4,6 +4,7 @@
 		<meta charset="UTF-8" />
 		<title>New Element exercise</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" type="text/css" href="element.css" />
 	</head>
 	<body>
 		<header>
@@ -243,6 +244,49 @@
 				<p>入力可能もしくは編集可能な要素内の英単語に対してスペルチェックを行います。</p>
 				<label>スペルチェック確認<input type="text" value="" spellcheck="true" /></label>
 				<p contenteditable="true" spellcheck="true">Applo</p>
+			</article>
+			
+			<!-- Chrome35やSafari7は未対応 -->
+			<article>
+				<h2>scoped</h2>
+				<div class="scopedcontainer">
+					<p>scope属性対応ブラウザならばスタイルが適用されない</p>
+				</div>
+				<div class="scopedcontainer">
+					<!-- scoped stylesheetは親要素の先頭に記述する。 -->
+					<style scoped="scoped">
+						.scopedcontainer {
+							background-color: red;
+						}
+					</style>
+					<p>スタイルが適用される</p>
+				</div>
+			</article>
+			
+			<article>
+				<h2>reversed, start</h2>
+				<p>value属性が指定されていると逆順で表示されない</p>
+				<ol reversed="">
+					<!-- valueは数値のみ。reversedよりもliのvalueが優先される。 -->
+					<li value="1">国語</li>
+					<li value="2">数学</li>
+					<li value="3">英語</li>
+					<li value="4">社会</li>
+					<li value="5">理科</li>
+				</ol>
+				<p>value属性が指定されていなければ逆順で表示される</p>
+				<ol reversed="">
+					<li>国語</li>
+					<li>数学</li>
+					<li>英語</li>
+					<li>社会</li>
+					<li>理科</li>
+				</ol>
+				<ol start="10">
+					<li>Apple</li>
+					<li>Orange</li>
+					<li>Melon</li>
+				</ol>
 			</article>
 			
 		</section>

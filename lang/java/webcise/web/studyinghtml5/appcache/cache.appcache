@@ -1,0 +1,14 @@
+CACHE MANIFEST
+
+#キャッシュ対象ファイルを指定します。
+CACHE:
+index.html
+appcache.css
+
+#キャッシュしないファイルを指定します。
+NETWORK:
+*
+
+FALLBACK:
+*.html fallback.html
+*.css fallback.css
