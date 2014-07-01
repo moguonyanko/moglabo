@@ -7,12 +7,12 @@
 		<link rel="stylesheet" type="text/css" href="element.css" />
 	</head>
 	<body>
-		<header>
+		<header role="banner">
 			<h1>New element and attribute exercise</h1>
 			<h2>HTML5で新しく追加された要素や属性の練習ページです。</h2>
 		</header>
 
-		<section>
+		<section role="application">
 			<h1>HTML5で追加された要素や属性</h1>
 			
 			<article>
@@ -78,7 +78,7 @@
 
 			<article>
 				<h2>keygen</h2>
-				<form action="/webcise/ParamChecker" method="POST">
+				<form role="form" action="/webcise/ParamChecker" method="POST">
 					<fieldset>
 						<legend>鍵送信テスト</legend>
 						<label>
@@ -91,7 +91,7 @@
 
 			<article>
 				<h2>output</h2>
-				<form id="calcform" oninput="result.value = parseInt(x.value) * parseInt(y.value)">
+				<form id="calcform" role="form" oninput="result.value = parseInt(x.value) * parseInt(y.value)">
 					<fieldset>
 						<legend>計算値入力</legend>
 						<label for="numberinput">number</label>
@@ -107,7 +107,7 @@
 
 			<article>
 				<h2>datalist</h2>
-				<form>
+				<form role="form">
 					<p>言語入力</p>
 					<label>
 						<input type="text" value="" name="language" list="langlist" />
@@ -160,7 +160,7 @@
 
 			<article>
 				<h2>input</h2>
-				<form id="inputtestform" action="/webcise/ParamChecker" method="POST">
+				<form id="inputtestform" role="search" action="/webcise/ParamChecker" method="POST">
 					<fieldset>
 						<legend>入力値のチェック</legend>
 						<p><label>Eメール	<input type="email" value="" name="email" placeholder="test@test.co.jp" /></label></p>
@@ -291,7 +291,7 @@
 			
 		</section>
 
-		<footer>
+		<footer role="contentinfo">
 			<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
 		</footer>
 		
