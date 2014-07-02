@@ -289,6 +289,20 @@
 				</ol>
 			</article>
 			
+			<article>
+				<h2>itemscope, itemprop, itemtype</h2>
+				<section itemscope="" itemtype="http://schema.org/Person">
+					<h2 itemprop="name">Hoge</h2>
+					<div itemprop="location">
+						<p itemprop="name">Hoge Center</p>
+						<div itemprop="address" itemscope="" 
+							 itemtype="http://schema.org/PostalAddress">
+							<p itemprop="streetAddress">12345 Hoge Institute</p>
+						</div>
+					</div>
+				</section>
+			</article>
+			
 		</section>
 
 		<footer role="contentinfo">
