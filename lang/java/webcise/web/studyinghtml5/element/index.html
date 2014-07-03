@@ -4,6 +4,7 @@
 		<meta charset="UTF-8" />
 		<title>New Element exercise</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="../../favicon.ico" />
 		<link rel="stylesheet" type="text/css" href="element.css" />
 	</head>
 	<body>
@@ -14,7 +15,7 @@
 
 		<section role="application">
 			<h1>HTML5で追加された要素や属性</h1>
-			
+
 			<article>
 				<h2>abbr</h2>
 				<p>abbr要素で略語を表現します。何の略かはツールチップに表示されます。</p>
@@ -151,7 +152,7 @@
 				<h2>contenteditable</h2>
 				<p>文章の内容を変更することが出来ます。</p>
 			</article>
-			
+
 			<article>
 				<h2>wbr</h2>
 				<p>改行位置を任意で指定することができます。</p>
@@ -165,19 +166,19 @@
 						<legend>入力値のチェック</legend>
 						<p><label>Eメール	<input type="email" value="" name="email" placeholder="test@test.co.jp" /></label></p>
 						<p><label>電話番号
-							<input type="tel" value="" name="tel" placeholder="000-1234-5678" 
-								   pattern="[0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]" />
-						</label></p>
+								<input type="tel" value="" name="tel" placeholder="000-1234-5678" 
+									   pattern="[0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]" />
+							</label></p>
 						<p><label>色<input type="color" value="" name="color" /></label></p>
 						<p><label>URL
-							<input type="url" value="" name="url" 
-									placeholder="http://test/" title="正しいURLを入力してください。" />
-						</label></p>
+								<input type="url" value="" name="url" 
+									   placeholder="http://test/" title="正しいURLを入力してください。" />
+							</label></p>
 						<p><label>
-							<strong>*パスワード</strong>
-							<input type="password" 
-								value="" name="password" required="" autocomplete="off" />
-						</label></p>
+								<strong>*パスワード</strong>
+								<input type="password" 
+									   value="" name="password" required="" autocomplete="off" />
+							</label></p>
 						<p><label>検索<input type="search" value="" name="search" /></label></p>
 						<p><label>週<input type="week" value="" name="week" /></label></p>
 						<p><label>月<input type="month" value="" name="month" /></label></p>
@@ -197,11 +198,11 @@
 				</progress>
 				<button id="progressswitch">切替</button>
 			</article>
-			
+
 			<article>
 				<h2>menu</h2>
 				<p>コンテキストメニューに追加する選択肢をボタンとして定義します</p>
-				
+
 				<div contextmenu="menusamplecontainer">ここを右クリック</div>
 				<menu id="menusamplecontainer">
 					<button onclick="alert('button1');">button1</button>
@@ -209,7 +210,7 @@
 					<button onclick="alert('button3');">button3</button>
 				</menu>	
 			</article>
-			
+
 			<article>
 				<h2>draggable, dropzone</h2>
 				<p>HTMLのみではドラッグアンドドロップできません。</p>
@@ -220,7 +221,7 @@
 					ここにドロップします。
 				</div>
 			</article>
-			
+
 			<article>
 				<h2>hidden</h2>
 				<p>
@@ -229,7 +230,7 @@
 				</p>
 				<p hidden="">この文章は見せません。</p>
 			</article>
-			
+
 			<article>
 				<h2>async</h2>
 				<p>
@@ -238,15 +239,15 @@
 				</p>
 				<script async="async" src="async.js"></script>
 			</article>
-			
+
 			<article>
 				<h2>spellcheck</h2>
 				<p>入力可能もしくは編集可能な要素内の英単語に対してスペルチェックを行います。</p>
 				<label>スペルチェック確認<input type="text" value="" spellcheck="true" /></label>
 				<p contenteditable="true" spellcheck="true">Applo</p>
 			</article>
-			
-			<!-- Chrome35やSafari7は未対応 -->
+
+			<!-- Chrome35やSafari7は未対応。Firefox30は対応されている。 -->
 			<article>
 				<h2>scoped</h2>
 				<div class="scopedcontainer">
@@ -262,7 +263,7 @@
 					<p>スタイルが適用される</p>
 				</div>
 			</article>
-			
+
 			<article>
 				<h2>reversed, start</h2>
 				<p>value属性が指定されていると逆順で表示されない</p>
@@ -288,7 +289,7 @@
 					<li>Melon</li>
 				</ol>
 			</article>
-			
+
 			<article>
 				<h2>itemscope, itemprop, itemtype</h2>
 				<section itemscope="" itemtype="http://schema.org/Person">
@@ -302,13 +303,30 @@
 					</div>
 				</section>
 			</article>
-			
+
+			<article>
+				<h2>data-*</h2>
+				<ul id="customdatalist" contenteditable="true">
+					<li data-age="26" data-from="Tokyo">Foo</li>
+					<li data-age="41" data-from="Osaka">Bar</li>
+					<li data-age="14" data-from="Yokohama">Baz</li>
+				</ul>
+				<form role="form">
+					<label for="newage">新しい年齢</label>:<input id="newage" type="text" value="100" />
+				</form>
+				<button id="setdataset">dataset変更</button>
+				<button id="displaydataset">dataset出力</button>
+				<p>
+					<textarea id="outputarea" cols="50" rows="5" placeholder="ここにdatasetが出力されます。"></textarea>
+				</p>
+			</article>
+
 		</section>
 
 		<footer role="contentinfo">
 			<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
 		</footer>
-		
+
 		<script src="element.js" async="async"></script>
 	</body>
 </html>
