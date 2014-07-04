@@ -59,38 +59,63 @@
 
 		function setDatasset(element) {
 			var newDatas = {};
-			
+
 			newDatas.age = newAge.value;
-			
-			for(var name in newDatas){
+
+			for (var name in newDatas) {
 				element.dataset[name] = newDatas[name];
 			}
 		}
-		
+
 		function outputDataset() {
 			outputArea.value = "";
-			
+
+			/* Arrayオブジェクトのメソッドは利用不可 */
 			//customDatas.forEach(displayData);
-			for(var i = 0, max = customDatas.length; i < max; i++){
+			for (var i = 0, max = customDatas.length; i < max; i++) {
 				displayDataset(customDatas[i], i, customDatas);
 			}
 		}
-		
-		function updateDataset(){
-			for(var i = 0, max = customDatas.length; i < max; i++){
+
+		function updateDataset() {
+			for (var i = 0, max = customDatas.length; i < max; i++) {
 				setDatasset(customDatas[i]);
 			}
 		}
-		
+
 		this.init = function() {
 			dispDatasetBtn.addEventListener("click", outputDataset, false);
 			setDataBtn.addEventListener("click", updateDataset, false);
 		};
 	}
 
+	function Hidden() {
+		var hiddenArea = ref("hiddenarea"),
+			hiddenChanger = ref("hiddenstylechanger"),
+			newDisplayStyle = "flex",
+			/**
+			 * Chrome35においてhidden属性が指定された要素の
+			 * displayプロパティはnoneになっている。
+			 */
+			orgDispStyle = hiddenArea.style.display;
+
+		function changeStyle() {
+			if(hiddenArea.style.display === newDisplayStyle){
+				hiddenArea.style.display = orgDispStyle;
+			}else{
+				hiddenArea.style.display = newDisplayStyle;	
+			}
+		}
+
+		this.init = function() {
+			hiddenChanger.addEventListener("click", changeStyle, false);
+		};
+	}
+
 	var myModules = {
 		progress: Progress,
-		dataset : Dataset
+		dataset: Dataset,
+		hidden : Hidden
 	};
 
 	function init() {
