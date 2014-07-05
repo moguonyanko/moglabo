@@ -7,6 +7,58 @@
 		<link rel="shortcut icon" href="../../favicon.ico" />
 	</head>
 	<body>
-		<h1>CSS3 exercise</h1>
+		<header role="banner">
+			<h1>CSS3 exercise</h1>
+		</header>
+
+		<section role="main">
+			<h2>CSSサンプル集</h2>
+
+			<article>
+				<h2>フレキシブルボックスレイアウト</h2>
+
+				<div>
+					<style scoped="scoped">
+						#flexcontainer {
+							width: 500px;
+							border: black 1px dotted;
+							display: flex;
+						}
+
+						#flexsubcontainer1 {
+							width: 25%;
+							background-color: aquamarine;
+						}
+
+						#flexsubcontainer2 {
+							width: 50%;
+							background-color: coral;
+						}
+
+						#flexsubcontainer3 {
+							width: 25%;
+							background-color: yellow;
+						}
+					</style>
+					<div id="flexcontainer">
+						<div id="flexsubcontainer1">
+							<p>フレキシブル</p>
+						</div>
+						<div id="flexsubcontainer2">
+							<p>ボックス</p>
+						</div>
+						<div id="flexsubcontainer3">
+							<p>レイアウト</p>
+						</div>
+					</div>
+				</div>
+
+			</article>
+
+		</section>
+
+		<footer role="contentinfo">
+			<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
+		</footer>
 	</body>
 </html>
