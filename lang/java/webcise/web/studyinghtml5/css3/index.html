@@ -58,6 +58,77 @@
 
 			</article>
 
+			<article>
+				<h2>opacity</h2>
+				<div>
+					<style scoped="scoped">
+						#opacitycontainer {
+							width: 100px;
+							height: 100px;
+							background-color: red;
+							opacity: 0.5;
+						}
+					</style>
+					<div id="opacitycontainer">
+						<p>透過テスト</p>
+					</div>
+				</div>
+			</article>
+
+			<article>
+				<h2>boxshadow</h2>
+				<div>
+					<style scoped="scoped">
+						#shadowcontainer {
+							width: 100px;
+							height: 100px;
+							background-color: blue;
+							box-shadow: 2px 2px grey;
+						}
+					</style>
+					<div id="shadowcontainer">
+						<p>影をつける</p>
+					</div>
+				</div>
+			</article>
+
+			<article>
+				<h2>liner-gradient, radial-gradient</h2>
+				<div>
+					<style scoped="scoped">
+						#linergradientbox {
+							width: 100px;
+							height: 100px;
+							background: linear-gradient(
+								to bottom right,
+								red 0%,
+								yellow 25%,
+								green 60%,
+								blue 80%
+								);
+						}
+
+						#radialgradientbox {
+							width: 100px;
+							height: 100px;
+							background: radial-gradient(
+								circle closest-corner,
+								at 15% 50%,
+								red 0%,
+								yellow 45%,
+								blue 90%
+								);
+						}
+					</style>
+					<div id="linergradientbox">
+						<p>線形</p>
+					</div>
+					<div id="radialgradientbox">
+						<p>円形</p>
+					</div>
+				</div>
+			</article>
+
 		</section>
 
 		<footer role="contentinfo">
