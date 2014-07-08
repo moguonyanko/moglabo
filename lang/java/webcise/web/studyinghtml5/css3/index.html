@@ -15,8 +15,7 @@
 			<h2>CSSサンプル集</h2>
 
 			<article>
-				<h2>フレキシブルボックスレイアウト</h2>
-
+				<h2>flex</h2>
 				<div>
 					<style scoped="scoped">
 						#flexcontainer {
@@ -55,7 +54,6 @@
 						</div>
 					</div>
 				</div>
-
 			</article>
 
 			<article>
@@ -93,7 +91,7 @@
 			</article>
 
 			<article>
-				<h2>liner-gradient, radial-gradient</h2>
+				<h2>gradient</h2>
 				<div>
 					<style scoped="scoped">
 						#linergradientbox {
@@ -125,6 +123,56 @@
 					</div>
 					<div id="radialgradientbox">
 						<p>円形</p>
+					</div>
+				</div>
+			</article>
+			
+			<article>
+				<h2>text</h2>
+				<div>
+					<style scoped="scoped">
+						.transformedtext {
+							background-color: oldlace;
+							width: 500px;
+							text-transform: capitalize;
+							text-align: end;
+							word-spacing: 2em;
+							letter-spacing: 0.5em;
+						}
+						
+						.wrapcode {
+							background-color: floralwhite;
+							white-space: pre;
+						}
+						
+						.wordbreaker {
+							background-color: floralwhite;
+							width: 100px;
+							/*word-break: break-all;*/
+							word-break: keep-all;
+							text-indent: 1em;
+						}
+						
+						.hyphensarea {
+							width: 100px;
+							-webkit-hyphens: auto;
+						}
+					</style>
+					<p class="transformedtext">javascript language</p>
+					<div class="wrapcode">
+						var hello = function(){
+							console.log("hello");
+						};
+					</div>
+					<div class="wordbreaker">
+						<p>いろはにほへとちりぬるを
+						わかよたれそつねならむ INSERT SAMPLE TEXT</p>
+						
+						<p>うへのおくやまけふこえて
+						あさきゆめみしえひもせす</p>
+					</div>
+					<div class="hyphensarea">
+						I am a shudent. My name is foo. Java&shy;Script language is not fun. 
 					</div>
 				</div>
 			</article>
