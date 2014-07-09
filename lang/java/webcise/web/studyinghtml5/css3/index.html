@@ -126,7 +126,7 @@
 					</div>
 				</div>
 			</article>
-			
+
 			<article>
 				<h2>text</h2>
 				<div>
@@ -139,12 +139,12 @@
 							word-spacing: 2em;
 							letter-spacing: 0.5em;
 						}
-						
+
 						.wrapcode {
 							background-color: floralwhite;
 							white-space: pre;
 						}
-						
+
 						.wordbreaker {
 							background-color: floralwhite;
 							width: 100px;
@@ -152,7 +152,7 @@
 							word-break: keep-all;
 							text-indent: 1em;
 						}
-						
+
 						.hyphensarea {
 							width: 100px;
 							-webkit-hyphens: auto;
@@ -161,18 +161,71 @@
 					<p class="transformedtext">javascript language</p>
 					<div class="wrapcode">
 						var hello = function(){
-							console.log("hello");
+						console.log("hello");
 						};
 					</div>
 					<div class="wordbreaker">
 						<p>いろはにほへとちりぬるを
-						わかよたれそつねならむ INSERT SAMPLE TEXT</p>
-						
+							わかよたれそつねならむ INSERT SAMPLE TEXT</p>
+
 						<p>うへのおくやまけふこえて
-						あさきゆめみしえひもせす</p>
+							あさきゆめみしえひもせす</p>
 					</div>
 					<div class="hyphensarea">
 						I am a shudent. My name is foo. Java&shy;Script language is not fun. 
+					</div>
+				</div>
+			</article>
+
+			<article>
+				<h2>text-decoration</h2>
+				<div>
+					<style scoped="scoped">
+						.textdecorater {
+							text-decoration: underline;
+							text-decoration-line: underline;
+							text-decoration-style: wavy;
+							text-decoration-color: red;
+						}
+
+						.textshadowconatiner {
+							background-color: darkslategrey;
+							width: 500px;
+							text-align: center;
+							font-size: 200%;
+						}
+						
+						.normalshadowtext {
+							color: red;
+							text-shadow: 4px 4px 4px black,
+										 8px 8px 8px lightslategray;
+						}
+						
+						.glowshadowtext {
+							color: blue;
+							text-shadow: 0px 0px 10px white,
+										 0px 0px 10px white,
+										 0px 0px 10px white,
+										 0px 0px 10px white
+							
+						}
+						
+						.lineheighttester {
+							width: 100px;
+							background-color: lightsteelblue;
+							font-size: 16px;
+							line-height: 32px;
+						}
+					</style>
+					<div class="textdecorater">
+						<p>JavaScript language</p>
+					</div>
+					<div class="textshadowconatiner">
+						<p class="normalshadowtext">Hello world!</p>
+						<p class="glowshadowtext">HTML5 and CSS3</p>
+					</div>
+					<div class="lineheighttester">
+						<p>あかさたなはまやらわをん</p>
 					</div>
 				</div>
 			</article>
