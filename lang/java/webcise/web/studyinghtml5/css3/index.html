@@ -194,27 +194,72 @@
 							text-align: center;
 							font-size: 200%;
 						}
-						
+
 						.normalshadowtext {
 							color: red;
 							text-shadow: 4px 4px 4px black,
-										 8px 8px 8px lightslategray;
+								8px 8px 8px lightslategray;
 						}
-						
+
 						.glowshadowtext {
 							color: blue;
 							text-shadow: 0px 0px 10px white,
-										 0px 0px 10px white,
-										 0px 0px 10px white,
-										 0px 0px 10px white
-							
+								0px 0px 10px white,
+								0px 0px 10px white,
+								0px 0px 10px white
+
 						}
-						
+
 						.lineheighttester {
 							width: 100px;
 							background-color: lightsteelblue;
 							font-size: 16px;
 							line-height: 32px;
+						}
+
+						.verticalaligncontainer {
+							width: 20em;
+							height: 100px;
+							background-color: grey;
+						}
+
+						.verticalaligncontainer p {
+							vertical-align: bottom;
+							direction: rtl;
+						}
+						
+						.verticalaligncontainer p span {
+							unicode-bidi: bidi-override;
+						}
+						
+						.referencearea p::before {
+							content: open-quote;
+						}
+						
+						.referencearea p::after {
+							content: close-quote;
+						}
+						
+						.referencearea p::before,
+						.referencearea p::after {
+							color: red;
+						}
+
+						.referencearea span::before {
+							content: open-quote;
+						}
+						
+						.referencearea span::after {
+							content: close-quote;
+						}
+						
+						.referencearea span::before,
+						.referencearea span::after {
+							color: blue;
+						}
+						
+						.referencearea p {
+							quotes: "【" "】" "《" "》";
 						}
 					</style>
 					<div class="textdecorater">
@@ -226,6 +271,12 @@
 					</div>
 					<div class="lineheighttester">
 						<p>あかさたなはまやらわをん</p>
+					</div>
+					<div class="verticalaligncontainer">
+						<p>JavaScript<span>語言</span>　Language</p>
+					</div>
+					<div class="referencearea">
+						<p>引用テストの<span>文字列</span>です</p>
 					</div>
 				</div>
 			</article>
