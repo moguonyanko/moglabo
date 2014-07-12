@@ -227,19 +227,19 @@
 							vertical-align: bottom;
 							direction: rtl;
 						}
-						
+
 						.verticalaligncontainer p span {
 							unicode-bidi: bidi-override;
 						}
-						
+
 						.referencearea p::before {
 							content: open-quote;
 						}
-						
+
 						.referencearea p::after {
 							content: close-quote;
 						}
-						
+
 						.referencearea p::before,
 						.referencearea p::after {
 							color: red;
@@ -248,16 +248,16 @@
 						.referencearea span::before {
 							content: open-quote;
 						}
-						
+
 						.referencearea span::after {
 							content: close-quote;
 						}
-						
+
 						.referencearea span::before,
 						.referencearea span::after {
 							color: blue;
 						}
-						
+
 						.referencearea p {
 							quotes: "【" "】" "《" "》";
 						}
@@ -277,6 +277,84 @@
 					</div>
 					<div class="referencearea">
 						<p>引用テストの<span>文字列</span>です</p>
+					</div>
+				</div>
+			</article>
+
+			<article>
+				<h2>フォント</h2>
+				<div>
+					<style scoped="scoped">
+						@import url(http://fonts.googleapis.com/css?family=Gloria+Hallelujah);
+
+						@font-face {
+							font-family: 'webfontsample';
+							src: local('Hiragino Kaku Gothic Pro'),
+								local('Meiryo'),
+								local('monospace');
+							src: url(./league-gothic/webfonts/leaguegothic-italic-webfont.woff) format('woff'),
+								url(./boku/bokutachi.otf) format('opentype'),
+								url(./quicksand/Quicksand-Regular.otf) format('opentype');
+
+							font-size: xx-large;
+							font-style: italic;
+							font-stretch: ultra-expanded;
+							font-variant: small-caps;
+						}
+
+						.fontstylesample {
+							width: 200px;
+							word-break: keep-all;
+						}
+						
+						.fontstylesample h3 {
+							background-color: yellowgreen;
+						}
+						
+						.fontstylesample p {
+							background-color: lemonchiffon;
+						}
+						
+						.fontstylesample p:first-of-type {
+							font-family: 'webfontsample';
+						}
+						
+						.fontstylesample p:nth-of-type(2) {
+							font-family: 'Gloria Hallelujah';
+							font-stretch: ultra-condensed;
+						}
+						
+						.fontstylesample p:last-of-type {   
+							font: italic small-caps 900 xx-large / 32px monospace;
+						}
+						
+						.fontstylesample span:only-of-type {
+							font: oblique normal bold small / 16px sans-serif;
+							background-color: lightsalmon;
+						}
+					</style>
+					<div class="fontstylesample">
+						<h3>サンプル１</h3>
+						<p>
+							I am a student.
+							JavaScript Language
+							HTML5 and CSS3
+							本日もお疲れ様でした。
+							明日も頑張りましょう。
+						</p>
+						<h3>サンプル２</h3>
+						<p>
+							あいうえおかきくけこさしすせそ
+							My name is foobar.
+							おはようこんにちはこんばんは
+						</p>
+						<h3>サンプル３</h3>
+						<p>
+							せり なずな ごぎょう はこべら 
+							ほとけのざ すずな すずしろ
+						</p>
+						<span>サンプルはここまで</span>
+						<!--<span>span style off</span>-->
 					</div>
 				</div>
 			</article>
