@@ -285,7 +285,7 @@
 				<h2>フォント</h2>
 				<div>
 					<style scoped="scoped">
-						@import url(http://fonts.googleapis.com/css?family=Gloria+Hallelujah);
+						/*@import url(http://fonts.googleapis.com/css?family=Gloria+Hallelujah);*/
 
 						@font-face {
 							font-family: 'webfontsample';
@@ -320,7 +320,8 @@
 						}
 						
 						.fontstylesample p:nth-of-type(2) {
-							font-family: 'Gloria Hallelujah';
+							font-family: 'webfontsample';
+							/*font-family: 'Gloria Hallelujah';*/
 							font-stretch: ultra-condensed;
 						}
 						
@@ -355,6 +356,52 @@
 						</p>
 						<span>サンプルはここまで</span>
 						<!--<span>span style off</span>-->
+					</div>
+				</div>
+			</article>
+			
+			<article>
+				<h2>背景</h2>
+				<div>
+					<style scoped="scoped">
+						.backgroundsample {
+							width: 700px;
+							height: 500px;
+							overflow: auto;
+							background-image: url(./background0.jpg), url(./background2.jpg);
+							background-repeat: space no-repeat, repeat round;
+							background-position: center center, right 50px bottom 100px;
+							background-color: orange;
+							background-attachment: local;
+							background-clip: content-box, padding-box;
+							background-origin: border-box, content-box;
+							background-size: auto, cover;
+							border: 5px rgba(255,153,0,0.5) solid;
+						}
+						
+						.backgroundsample div {
+							position: relative;
+							width: 1000px;
+							height: 1000px;
+						}
+						
+						.backgroundsample p:first-of-type {
+							position: relative;
+							top: 47.5%;
+							line-height: 32px; 
+							text-align: center;
+							font-size: 150%;
+							text-shadow: 0px 0px 15px white,
+								0px 0px 15px white,
+								0px 0px 15px white,
+								0px 0px 15px white;
+							background-color: rgba(102,51,204,0.75);
+						}
+					</style>
+					<div class="backgroundsample">
+						<div>
+							<p>背景テスト</p>
+						</div>
 					</div>
 				</div>
 			</article>
