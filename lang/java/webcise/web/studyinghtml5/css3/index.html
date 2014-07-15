@@ -306,29 +306,29 @@
 							width: 200px;
 							word-break: keep-all;
 						}
-						
+
 						.fontstylesample h3 {
 							background-color: yellowgreen;
 						}
-						
+
 						.fontstylesample p {
 							background-color: lemonchiffon;
 						}
-						
+
 						.fontstylesample p:first-of-type {
 							font-family: 'webfontsample';
 						}
-						
+
 						.fontstylesample p:nth-of-type(2) {
 							font-family: 'webfontsample';
 							/*font-family: 'Gloria Hallelujah';*/
 							font-stretch: ultra-condensed;
 						}
-						
+
 						.fontstylesample p:last-of-type {   
 							font: italic small-caps 900 xx-large / 32px monospace;
 						}
-						
+
 						.fontstylesample span:only-of-type {
 							font: oblique normal bold small / 16px sans-serif;
 							background-color: lightsalmon;
@@ -359,7 +359,7 @@
 					</div>
 				</div>
 			</article>
-			
+
 			<article>
 				<h2>背景</h2>
 				<div>
@@ -378,13 +378,13 @@
 							background-size: auto, cover;
 							border: 5px rgba(255,153,0,0.5) solid;
 						}
-						
+
 						.backgroundsample div {
 							position: relative;
 							width: 1000px;
 							height: 1000px;
 						}
-						
+
 						.backgroundsample p:first-of-type {
 							position: relative;
 							top: 47.5%;
@@ -401,6 +401,51 @@
 					<div class="backgroundsample">
 						<div>
 							<p>背景テスト</p>
+						</div>
+					</div>
+				</div>
+			</article>
+
+			<article>
+				<h2>罫線</h2>
+				<div>
+					<style scoped="scoped">
+						.bordersample div:first-of-type {
+							width: 500px;
+							height: 300px;
+							background-color: plum;
+							border: solid plum 3px;
+							border-radius: 20px 5px 50px 20px;
+							/*border-radius: 20px / 40px 1px / 100px 50px / 5px 10px / 20px;*/
+							box-shadow: 10px 10px 10px 0px aqua,
+								30px 30px 20px 5px blue inset;
+						}
+						
+						.bordersample div:nth-of-type(2) {
+							width: 200px;
+							height: 200px;
+							margin: 30px;
+							background-color: blue;
+							border: solid blue 3px;
+							border-radius: 200px;
+							box-shadow: 0px 0px 40px 10px dodgerblue,
+								0px 0px 40px 10px aqua;
+						}
+						
+						.bordersample div:nth-of-type(2) p {
+							position: relative;
+							top: 50%;
+							line-height: 8px;
+							margin: 0;
+							text-align: center;
+						}
+					</style>
+					<div class="bordersample">
+						<div>
+							<p>罫線テスト1</p>
+						</div>
+						<div>
+							<p>罫線テスト2</p>
 						</div>
 					</div>
 				</div>
