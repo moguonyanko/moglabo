@@ -420,7 +420,7 @@
 							box-shadow: 10px 10px 10px 0px aqua,
 								30px 30px 20px 5px blue inset;
 						}
-						
+
 						.bordersample div:nth-of-type(2) {
 							width: 200px;
 							height: 200px;
@@ -431,7 +431,7 @@
 							box-shadow: 0px 0px 40px 10px dodgerblue,
 								0px 0px 40px 10px aqua;
 						}
-						
+
 						.bordersample div:nth-of-type(2) p {
 							position: relative;
 							top: 50%;
@@ -447,6 +447,86 @@
 						<div>
 							<p>罫線テスト2</p>
 						</div>
+					</div>
+				</div>
+			</article>
+
+			<article>
+				<h2>リスト</h2>
+				<div>
+					<style scoped="scoped">
+						.listsample {
+							width: 500px;
+							border: solid black 3px;
+							border-radius: 10px;
+						}
+
+						.listsample ul:first-of-type {
+							list-style-type: cjk-heavenly-stem;
+						}
+
+						.listsample ul:nth-of-type(2) {
+							list-style-image: url(../../favicon.ico);
+							list-style-position: inside;
+						}
+
+
+					</style>
+					<div class="listsample">
+						<ul>
+							<li>りんご</li>
+							<li>みかん</li>
+							<li>ばなな</li>
+							<li>めろん</li>
+							<li>すいか</li>
+						</ul>
+						<ul>
+							<li>Java<br /> language</li>
+							<li>C<br /> language</li>
+							<li>Python<br /> language</li>
+						</ul>
+					</div>
+				</div>
+			</article>
+
+			<article>
+				<h2>カウンター</h2>
+				<div>
+					<style scoped="scoped">
+						.countersample {
+							width: 300px;
+							border: 2px solid greenyellow;
+							/*counter-reset: samplecount -1;*/
+						}
+						
+						.countersample h3::before {
+							content: counter(headercount);
+							color: blue;
+						}
+						
+						.countersample h3 {
+							counter-increment: headercount;
+							counter-reset: samplecount -1;
+						}
+						
+						.countersample p::before {
+							content: counter(samplecount, cjk-earthly-branch);
+							color: red;
+						}
+						
+						.countersample p {
+							counter-increment: samplecount 2;
+						}
+					</style>
+					<div class="countersample">
+						<h3>&nbsp;group</h3>
+						<p>&nbsp;test</p>
+						<p>&nbsp;test</p>
+						<p>&nbsp;test</p>
+						<h3>&nbsp;group</h3>
+						<p>&nbsp;test</p>
+						<p>&nbsp;test</p>
+						<p>&nbsp;test</p>
 					</div>
 				</div>
 			</article>
