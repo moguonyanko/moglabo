@@ -469,8 +469,6 @@
 							list-style-image: url(../../favicon.ico);
 							list-style-position: inside;
 						}
-
-
 					</style>
 					<div class="listsample">
 						<ul>
@@ -527,6 +525,90 @@
 						<p>&nbsp;test</p>
 						<p>&nbsp;test</p>
 						<p>&nbsp;test</p>
+					</div>
+				</div>
+			</article>
+			
+			<article>
+				<h2>テーブル</h2>
+				<div>
+					<style scoped="scoped">
+						.tablesample {
+							width: 800px;
+							height: 400px;
+							border: solid red 3px;
+							border-radius: 10px;
+							background-color: rgba(200,200,200,0.3);
+						}
+						
+						.tablesample table:first-of-type {
+							position: relative;
+							top: 5%;
+							width: 95%;
+							margin-left: auto;
+							margin-right: auto;
+							table-layout: fixed;
+							/*table-layout: auto;*/
+							caption-side: bottom;
+							border: double 5px black;
+							/*border-collapse: collapse;*/
+							border-spacing: 10px 10px;
+							/*empty-cells: hide;*/
+						}
+						
+						.tablesample th {
+							border: solid 6px green;
+						}
+						
+						.tablesample td {
+							border: dotted 5px orange;
+							empty-cells: hide;
+						}
+						
+						.tablesample table th:first-of-type {
+							width: 200px;
+						}
+						
+						.tablesample table th:nth-of-type(2) {
+							width: 300px;
+						}
+						
+						.tablesample table th:last-of-type {
+							/*border: none;*/
+						}
+					</style>
+					<div class="tablesample">
+						<table>
+							<caption>サンプル表</caption>
+							<tr>
+								<th>りんご</th>
+								<td>果物</td>
+							</tr>
+							<tr>
+								<th>きゅうり</th>
+								<td>野菜</td>
+							</tr>
+							<tr>
+								<th></th>
+								<td>野菜</td>
+							</tr>
+							<tr>
+								<th>みかん</th>
+								<td>果物</td>
+							</tr>
+							<tr>
+								<th>バナナ</th>
+								<td>果物</td>
+							</tr>
+							<tr>
+								<th>ドーナツ</th>
+								<td></td>
+							</tr>
+							<tr>
+								<th>キャベツ</th>
+								<td>野菜</td>
+							</tr>
+						</table>
 					</div>
 				</div>
 			</article>
