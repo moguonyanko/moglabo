@@ -15,7 +15,7 @@
 			<h2>CSSサンプル集</h2>
 
 			<article>
-				<h2>flex</h2>
+				<h2>フレキシブルレイアウト</h2>
 				<div>
 					<style scoped="scoped">
 						#flexcontainer {
@@ -57,7 +57,7 @@
 			</article>
 
 			<article>
-				<h2>opacity</h2>
+				<h2>透過</h2>
 				<div>
 					<style scoped="scoped">
 						#opacitycontainer {
@@ -74,14 +74,14 @@
 			</article>
 
 			<article>
-				<h2>boxshadow</h2>
+				<h2>ボックスのドロップシャドウ</h2>
 				<div>
 					<style scoped="scoped">
 						#shadowcontainer {
 							width: 100px;
 							height: 100px;
 							background-color: blue;
-							box-shadow: 2px 2px grey;
+							box-shadow: 5px 5px grey;
 						}
 					</style>
 					<div id="shadowcontainer">
@@ -91,12 +91,12 @@
 			</article>
 
 			<article>
-				<h2>gradient</h2>
+				<h2>グラデーション</h2>
 				<div>
 					<style scoped="scoped">
 						#linergradientbox {
-							width: 100px;
-							height: 100px;
+							width: 400px;
+							height: 200px;
 							background: linear-gradient(
 								to bottom right,
 								red 0%,
@@ -107,14 +107,15 @@
 						}
 
 						#radialgradientbox {
-							width: 100px;
-							height: 100px;
+							width: 400px;
+							height: 200px;
 							background: radial-gradient(
-								circle closest-corner,
-								at 15% 50%,
+								ellipse farthest-side 
+								at 75% 50%,
 								red 0%,
-								yellow 45%,
-								blue 90%
+								orange 65%,
+								yellow 85%,
+								rgba(10,10,10,0.25) 95%
 								);
 						}
 					</style>
@@ -128,7 +129,7 @@
 			</article>
 
 			<article>
-				<h2>text</h2>
+				<h2>テキスト</h2>
 				<div>
 					<style scoped="scoped">
 						.transformedtext {
@@ -178,7 +179,7 @@
 			</article>
 
 			<article>
-				<h2>text-decoration</h2>
+				<h2>テキスト装飾</h2>
 				<div>
 					<style scoped="scoped">
 						.textdecorater {
@@ -609,6 +610,80 @@
 								<td>野菜</td>
 							</tr>
 						</table>
+					</div>
+				</div>
+			</article>
+			
+			<article>
+				<h2>マルチカラムレイアウト</h2>
+				<div>
+					<style scoped="scoped">
+						.multicolumnsample {
+							width: 800px;
+							height: 400px;
+							border: 2px solid grey;
+							border-radius: 10px;
+							/*column-count: 2;*/
+							/*-webkit-column-count: 2;*/
+							/*-moz-column-count: 2;*/
+							/*column-width: 200px;*/
+							/*-webkit-column-width: 200px;*/
+							/*-moz-column-width: 200px;*/
+							columns: 200px 3;
+							-webkit-columns: 200px 3;
+							-moz-columns: 200px 3;
+							column-gap: 40px;
+							-webkit-column-gap: 40px;
+							-moz-column-gap: 40px;
+							column-rule: double 4px green;
+							-webkit-column-rule: double 4px green;
+							-moz-column-rule: double 4px green;
+						}
+						
+						.multicolumnsample h3::before {
+							content: counter(headercount);
+							color: red;
+						}
+						
+						.multicolumnsample h3 {
+							counter-increment: headercount;
+							background-color: rgba(10,10,10,0.2);
+							column-span: all;
+							-webkit-column-span: all;
+							-moz-column-span: all;
+						}
+					</style>
+					<div class="multicolumnsample">
+						<h3>サンプル文章</h3>
+						<p>
+							いろはにほへとちりぬるを
+							わかよたれそつねならむ
+							うへのおくやまへふこえて
+							あさきゆめみしえひもせす
+							いろはにほへとちりぬるを
+							わかよたれそつねならむ
+							うへのおくやまへふこえて
+							あさきゆめみしえひもせす
+							いろはにほへとちりぬるを
+							わかよたれそつねならむ
+							うへのおくやまへふこえて
+							あさきゆめみしえひもせす
+						</p>
+						<h3>サンプル文章</h3>
+						<p>
+							いろはにほへとちりぬるを
+							わかよたれそつねならむ
+							うへのおくやまへふこえて
+							あさきゆめみしえひもせす
+							いろはにほへとちりぬるを
+							わかよたれそつねならむ
+							うへのおくやまへふこえて
+							あさきゆめみしえひもせす
+							いろはにほへとちりぬるを
+							わかよたれそつねならむ
+							うへのおくやまへふこえて
+							あさきゆめみしえひもせす
+						</p>
 					</div>
 				</div>
 			</article>
