@@ -497,22 +497,22 @@
 							border: 2px solid greenyellow;
 							/*counter-reset: samplecount -1;*/
 						}
-						
+
 						.countersample h3::before {
 							content: counter(headercount);
 							color: blue;
 						}
-						
+
 						.countersample h3 {
 							counter-increment: headercount;
 							counter-reset: samplecount -1;
 						}
-						
+
 						.countersample p::before {
 							content: counter(samplecount, cjk-earthly-branch);
 							color: red;
 						}
-						
+
 						.countersample p {
 							counter-increment: samplecount 2;
 						}
@@ -529,7 +529,7 @@
 					</div>
 				</div>
 			</article>
-			
+
 			<article>
 				<h2>テーブル</h2>
 				<div>
@@ -541,7 +541,7 @@
 							border-radius: 10px;
 							background-color: rgba(200,200,200,0.3);
 						}
-						
+
 						.tablesample table:first-of-type {
 							position: relative;
 							top: 5%;
@@ -556,24 +556,24 @@
 							border-spacing: 10px 10px;
 							/*empty-cells: hide;*/
 						}
-						
+
 						.tablesample th {
 							border: solid 6px green;
 						}
-						
+
 						.tablesample td {
 							border: dotted 5px orange;
 							empty-cells: hide;
 						}
-						
+
 						.tablesample table th:first-of-type {
 							width: 200px;
 						}
-						
+
 						.tablesample table th:nth-of-type(2) {
 							width: 300px;
 						}
-						
+
 						.tablesample table th:last-of-type {
 							/*border: none;*/
 						}
@@ -613,7 +613,7 @@
 					</div>
 				</div>
 			</article>
-			
+
 			<article>
 				<h2>マルチカラムレイアウト</h2>
 				<div>
@@ -639,12 +639,12 @@
 							-webkit-column-rule: double 4px green;
 							-moz-column-rule: double 4px green;
 						}
-						
+
 						.multicolumnsample h3::before {
 							content: counter(headercount);
 							color: red;
 						}
-						
+
 						.multicolumnsample h3 {
 							counter-increment: headercount;
 							background-color: rgba(10,10,10,0.2);
@@ -685,6 +685,134 @@
 							あさきゆめみしえひもせす
 						</p>
 					</div>
+				</div>
+			</article>
+
+			<article>
+				<h2>変形</h2>
+				<div>
+					<style scoped="scoped">
+						.transformcontainer {
+							position: relative;
+							width: 90%;
+							border: solid 5px grey;
+							border-radius: 10px;
+							display: flex;
+							flex-wrap: wrap;
+						}
+
+						.transformsample {
+							width: 200px;
+							height: 200px;
+							margin: 10px;
+							flex: 1 0 200px;
+						}
+
+						.transformsample p:first-of-type {
+							position: relative;
+							top: 50%;
+							text-align: center;
+							font-size: 120%;
+							line-height: 18px;
+							/*
+							width: 20em;
+							margin-left: auto;
+							margin-right: auto;
+							*/
+						}
+
+						#transformsample0 {
+							background-color: bisque;
+						}
+
+						#transformsample1 {
+							background-color: yellowgreen;
+						}
+
+						#transformsample2 {
+							background-color: salmon;
+						}
+
+						#transformsample3 {
+							background-color: violet;
+						}
+
+						#transformsample4 {
+							background-color: khaki;
+						}
+
+						#transformsample5 {
+							background-color: deepskyblue;
+						}
+
+						#transformsample6 {
+							background-color: yellow;
+						}
+
+						#transformsample0 p:first-of-type {
+							background-color: lightgoldenrodyellow;
+						}
+
+						#transformsample1 p:first-of-type {
+							transform: rotate(45deg) scale(0.5, 2) translate(50px, 50px);
+							background-color: green;
+						}
+
+						#transformsample2 p:first-of-type {
+							transform: translate(50px, 50px) rotate(45deg) scale(0.5, 2);
+							background-color: gold;
+						}
+
+						#transformsample3 p:first-of-type {
+							transform: skewX(30deg) skewY(30deg);
+							background-color: royalblue;
+						}
+
+						#transformsample4 p:first-of-type {
+							transform: matrix(1.5, 1, -1, 0.75, 20, 20);
+							background-color: tomato;
+						}
+
+						#transformsample5 p:first-of-type {
+							transform: rotate(45deg) scale(0.5, 2) translate(50px, 50px);
+							transform-origin: right bottom;
+							background-color: aqua;
+						}
+
+						#transformsample6 p:first-of-type {
+							transform: perspective(200px) 
+								/*scale3d(1.2, 0.75, 0.75)*/ 
+								/*translate3d(10px, 10px, 150px)*/ 
+								rotateX(45deg) rotateY(-45deg);
+							transform-origin: center bottom 0%;
+							background-color: hotpink;
+						}
+					</style>
+					<div class="transformcontainer">
+						<div id="transformsample0" class="transformsample">
+							<p>変形無し</p>
+						</div>
+						<div id="transformsample1" class="transformsample">
+							<p>変形テスト1</p>
+						</div>
+						<div id="transformsample2" class="transformsample">
+							<p>変形テスト2</p>
+						</div>
+						<div id="transformsample3" class="transformsample">
+							<p>変形テスト3</p>
+						</div>
+						<div id="transformsample4" class="transformsample">
+							<p>変形テスト4</p>
+						</div>
+						<div id="transformsample5" class="transformsample">
+							<p>変形テスト5</p>
+						</div>
+						<div id="transformsample6" class="transformsample">
+							<p>変形テスト6</p>
+						</div>
+					</div>
+					<p>変形テスト1と2は変形処理の順番が異なるだけ。</p>
+					<p>変形テスト1と5は変形処理の原点が異なるだけ。</p>
 				</div>
 			</article>
 
