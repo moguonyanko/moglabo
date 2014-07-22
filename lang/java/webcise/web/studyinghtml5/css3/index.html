@@ -904,6 +904,109 @@
 					</div>
 				</div>
 			</article>
+			
+			<article>
+				<h2>アニメーション</h2>
+				<div>
+					<style scoped="scoped">
+						@-webkit-keyframes coloranime1 {
+							0% {
+								background-color: orange;
+								opacity: 0;
+							}
+							50% {
+								background-color: red;
+							}
+							100% {
+								background-color: gold;
+								opacity: 1;
+							}
+						}
+						
+						@-webkit-keyframes fontsizeanime1 {
+							0% {
+								font-size: 200%;
+							}
+							50% {
+								font-size: 150%;
+							}
+							100% {
+								font-size: 100%;
+							}
+						}
+						
+						div.animationcontainer {
+							border: 3px solid green;
+							background-color: yellowgreen;
+							border-radius: 10px;
+							display: flex;
+							flex-wrap: wrap;
+						}
+						
+						div.animationcontainer div {
+							width: 40%;
+							margin-right: auto;
+							margin-left: auto;
+							font-size: 120%;
+							text-align: center;
+							border-radius: 10px;
+							border: green solid 3px;
+							flex: 1 0 250px;
+						}
+						
+						div.animationcontainer div:first-of-type p {
+							background-color: yellow;
+							-webkit-animation-name: coloranime1;
+							-webkit-animation-duration: 5s;
+							animation-timing-function: linear;
+						}
+						
+						div.animationcontainer div:first-of-type p:hover {
+							-webkit-animation-name: fontsizeanime1;
+							-webkit-animation-duration: 1s;
+							-webkit-animation-iteration-count: infinite;
+							-webkit-animation-direction: alternate;
+						}
+						
+						div.animationcontainer div:nth-of-type(2) p {
+							background-color: skyblue;
+							-webkit-animation: coloranime1 5s 3s;
+							-webkit-animation-fill-mode: forwards;
+						}
+						
+						div.animationcontainer div:nth-of-type(3) p {
+							background-color: tomato;
+							-webkit-animation: coloranime1 5s 3s linear infinite,
+								fontsizeanime1 5s 1s ease-in-out infinite alternate;
+						}
+
+						div.animationcontainer div:nth-of-type(4) p {
+							background-color: hotpink;
+							-webkit-animation: fontsizeanime1 1s linear infinite alternate;
+							-webkit-animation-play-state: running;
+							-webkit-animation-fill-mode: backwards;
+						}
+						
+						div.animationcontainer div:nth-of-type(4) p:hover {
+							-webkit-animation-play-state: paused;
+						}
+					</style>
+					<div class="animationcontainer">
+						<div>
+							<p>アニメーションテスト1</p>
+						</div>
+						<div>
+							<p>アニメーションテスト2</p>
+						</div>
+						<div>
+							<p>アニメーションテスト3</p>
+						</div>
+						<div>
+							<p>アニメーションテスト4</p>
+						</div>
+					</div>
+				</div>
+			</article>
 
 		</section>
 
