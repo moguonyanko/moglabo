@@ -934,7 +934,7 @@
 								font-size: 100%;
 							}
 						}
-
+						
 						div.animationcontainer {
 							height: 200px;
 							border: 3px solid green;
@@ -1015,11 +1015,13 @@
 					<style scoped="scoped">
 						div.selectorsample {
 							width: 100%;
+							/*width: 1000px;*/
 							display: flex;
 							flex-wrap: wrap;
 						}
 
 						div.selectorsample div {
+							flex: 1 0 250px;
 							background-color: rgba(204, 204, 153, 0.2);
 							border: dotted 2px brown;
 							border-radius: 10px;
@@ -1079,6 +1081,77 @@
 						div.selectorsample div.disabledsample :disabled{
 							background-color: red;
 						}
+						
+						/* 以下の記述は無効である。:rootは単体でしか効かない。 */
+						div.selectorsample div.rootsample:root {
+							background-color: violet;
+						}
+						
+						div.selectorsample div.childsample :first-child {
+							background-color: red;
+						}
+						
+						div.selectorsample div.childsample :nth-child(2) {
+							background-color: skyblue;
+						}
+						
+						div.selectorsample div.childsample :last-child {
+							background-color: blueviolet;
+						}
+
+						div.selectorsample div.childsample :nth-last-child(3) {
+							font-style: italic;
+							font-weight: bold;
+						}
+						
+						div.selectorsample div.childsample div :only-child {
+							border: solid 3px black;
+							background-color: yellow;
+						}
+						
+						div.selectorsample div.childsample div em:only-child {
+							letter-spacing: 5px;
+						}
+						
+						div.selectorsample div.typesample :first-of-type {
+							background-color: red;
+						}
+						
+						div.selectorsample div.typesample :nth-of-type(2) {
+							background-color: skyblue;
+						}
+						
+						div.selectorsample div.typesample :last-of-type {
+							background-color: blueviolet;
+						}
+
+						div.selectorsample div.typesample :nth-last-of-type(3) {
+							font-style: italic;
+							font-weight: bold;
+						}
+						
+						div.selectorsample div.typesample div :only-of-type {
+							border: solid 3px black;
+							background-color: yellow;
+						}
+						
+						div.selectorsample div.typesample div em:only-of-type {
+							letter-spacing: 5px;
+						}
+						
+						div.selectorsample div.notsample :not(p){
+							background-color: yellowgreen;
+						}
+						
+						div.selectorsample div.notsample :not(:first-of-type){
+							font-style: italic;
+							font-weight: bold;
+						}
+						
+						/* 以下の記法は無効。 */
+						div.selectorsample div.notsample :not(p:first-of-type){
+							background-color: red;
+						}
 					</style>
 					<div class="selectorsample">
 						<div>
@@ -1111,6 +1184,40 @@
 						<div class="disabledsample">
 							<button disabled="disabled">無効スタイル</button>
 							<button>有効スタイル</button>
+						</div>
+						<div class="rootsample">
+							<p>rootのスタイル</p>
+						</div>
+						<div class="childsample">
+							<p>first</p>
+							<div>sample div</div>
+							<div>
+								<em>caution</em>
+								<span>only child and type test</span>
+							</div>
+							<p>second</p>
+							<p>third</p>
+						</div>
+						<div class="typesample">
+							<p>first</p>
+							<div>sample div</div>
+							<div>
+								<em>caution</em>
+								<span>only child and type test</span>
+							</div>
+							<p>second</p>
+							<p>third</p>
+						</div>
+						<div class="notsample">
+							<p>p 1</p>
+							<div>
+								div 1
+							</div>
+							<p>p 2</p>
+							<div>
+								div 2
+							</div>
+							<p>p 3</p>
 						</div>
 					</div>
 				</div>
