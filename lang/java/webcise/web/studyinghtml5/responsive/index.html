@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Responsive Web Design</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="../../favicon.ico" />
+	</head>
+	<body>
+		<header role="banner">
+			<h1>Responsive Web Design</h1>
+			<h2>レスポンシブWebデザインに関連した部品の調査用ページです。</h2>
+		</header>
+
+		<section role="main">
+			<h2>レスポンシブWebデザインの関連部品</h2>
+
+			<article>
+				<h2>メディアクエリ</h2>
+				<div>
+					<style scoped="scoped">
+						.mediaquierysample {
+							width: 100%;
+							height: 25%;
+							border: black solid 2px;
+							border-radius: 10px;
+							background-color: beige;
+						}
+
+						.mediaquierysample div:first-of-type {
+							width: 30%;
+							text-align: center;
+							border: dotted black 2px;
+							border-radius: 10px;
+							background-color: darkgrey;
+						}
+
+						.mediaquierysample div:first-of-type p {
+							background-color: yellow;
+						}
+
+						@media screen and (max-width: 800px) {
+							.mediaquierysample div:first-of-type {
+								background-color: skyblue;
+							}
+						}
+
+						@media screen and (min-width: 801px) and (max-width: 1199px) {
+							.mediaquierysample div:first-of-type {
+								background-color: yellowgreen;
+							}
+						}
+
+						@media screen and (min-width: 1200px) {
+							.mediaquierysample div:first-of-type {
+								background-color: orangered;
+							}
+						}
+					</style>
+					<div class="mediaquierysample">
+						<div>
+							<p>サイズでスタイル変更</p>
+						</div>
+					</div>
+				</div>
+			</article>
+
+		</section>
+
+		<footer role="contentinfo">
+			<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
+		</footer>
+	</body>
+</html>
