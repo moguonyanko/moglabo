@@ -320,7 +320,7 @@
 					<textarea id="outputarea" cols="50" rows="5" placeholder="ここにdatasetが出力されます。"></textarea>
 				</p>
 			</article>
-			
+
 			<article>
 				<h2>hidden</h2>
 				<p>開発者向け情報領域を非表示にします。（内部的にはdisplay: noneを指定している。）</p>
@@ -328,6 +328,22 @@
 					<textarea cols="25" rows="5" placeholder="開発者向け情報" readonly="readonly"></textarea>
 				</div>
 				<button id="hiddenstylechanger">表示切替</button>
+			</article>
+
+			<article>
+				<h2>b, i, hr, s, small, u</h2>
+				<p>これらの要素はHTML5で意味合いが変更され再定義された。</p>
+				<div>
+					<ul>
+						<li><i>iは区別される要素。大抵italicで記述されます。</i></li>
+						<li><b>bは重要性は小さいが文体は変えたい要素。大抵太字になります。</b></li>
+						<li><s>sは正確でなくなった要素。大抵打ち消し線が表示されます。</s></li>
+						<li><u>uは伝わりにくい要素。下線が引かれます。</u></li>
+						<li>hrは意味的な気切りを示します。</li>
+					</ul>
+					<hr />
+					<small>smallはコピーライトなど注釈的な要素に対して使います。</small>
+				</div>
 			</article>
 
 		</section>
