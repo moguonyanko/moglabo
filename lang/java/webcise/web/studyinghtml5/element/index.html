@@ -345,6 +345,46 @@
 					<small>smallはコピーライトなど注釈的な要素に対して使います。</small>
 				</div>
 			</article>
+			
+			<article>
+				<h2>audio</h2>
+				<p>音楽を再生します。</p>
+				<div>
+					<style scoped="scoped">
+						.audiocontainer p:first-of-type {
+							width: 800px;
+							height: 200px;
+							background-color: rgba(204, 255, 51, 0.5);
+							border: 2px solid darkolivegreen;
+							border-radius: 10px;
+							columns: 100px 3;
+							-webkit-columns: 100px 3;
+							-moz-columns: 100px 3;
+							column-gap: 40px;
+							-webkit-column-gap: 40px;
+							-moz-column-gap: 40px;
+							column-rule: double 4px green;
+							-webkit-column-rule: double 4px green;
+							-moz-column-rule: double 4px green;
+						}
+					</style>
+					<div class="audiocontainer">
+						<p>
+							最近のFirefoxは.mp3に対応しているので
+							.mp3フォーマットのオーディオファイルを用意すれば主要ブラウザでは
+							同じ音楽を再生できるはずである。Safariは7.0.5でも.oggには対応していない。
+							preload="metadata"ではページ読み込み時と
+							音楽再生開始時の2回オーディオファイルのダウンロードが発生する。
+							preload="none"ではページ読み込み時にダウンロードが発生しないが
+							再生時間が分からない。
+						</p>
+						<audio controls="controls" preload="metadata">
+							<source src="./media/tam-z02_loop.ogg" />
+							<source src="./media/tam-z01.mp3" />
+						</audio>
+					</div>
+				</div>
+			</article>
 
 		</section>
 
