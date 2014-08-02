@@ -1027,7 +1027,12 @@
 							border-radius: 10px;
 							margin: 10px;
 						}
-
+						
+						div.selectorsample div p[data-attr] {
+							border: solid 1px black;
+							box-shadow: 10px 10px 10px darkgray;
+						}
+						
 						div.selectorsample div p[data-attr^="sel"] {
 							background-color: yellow;
 						}
@@ -1118,7 +1123,29 @@
 						div.selectorsample div.typesample div em:only-of-type {
 							letter-spacing: 5px;
 						}
+						
+						div.selectorsample div.childsample2 table {
+							width: 100%;
+						}
+						
+						div.selectorsample div.childsample2 table tr:first-child {
+							background-image: linear-gradient(
+								to right,
+								red 0%,
+								gold 20%,
+								orange 50%,
+								yellow 90%
+								);
+						}
 
+						div.selectorsample div.childsample2 table tr:first-of-type {
+							transform: skew(10deg);
+						}
+						
+						div.selectorsample div.childsample2 table :first-child {
+							border: 1px black solid;
+						}
+						
 						div.selectorsample div.notsample :not(p){
 							background-color: yellowgreen;
 						}
@@ -1177,6 +1204,23 @@
 							</div>
 							<p>second</p>
 							<p>third</p>
+						</div>
+						<div class="childsample2">
+							<table>
+								<caption>table要素関連のfirst-child</caption>
+								<tr>
+									<td>りんご</td>
+									<td>あまい</td>
+								</tr>
+								<tr>
+									<td>レモン</td>
+									<td>すっぱい</td>
+								</tr>
+								<tr>
+									<td>カレー</td>
+									<td>からい</td>
+								</tr>
+							</table>
 						</div>
 						<div class="typesample">
 							<p>first</p>
