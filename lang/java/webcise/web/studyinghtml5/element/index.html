@@ -24,6 +24,7 @@
 
 			<article>
 				<h2>figure, figcaption</h2>
+				<p>figureで図表や参考情報を表現します。figcaptionはそのタイトルです。</p>
 				<figure>
 					<h3>code</h3>
 					<code>
@@ -50,12 +51,14 @@
 
 			<article>
 				<h2>time</h2>
+				<p>time要素は人間と機械に可読な時刻表現を行うのに有用です。</p>
 				<p><time datetime="2014-06-24">２０１４年６月２４日</time></p>
 			</article>
 
 			<article>
 				<h2>details, summary</h2>
-				<details>
+				<p>details要素ではsummary要素に指定された要素だけを表示することはできます。</p>
+				<details open="open">
 					<summary>Relational JavaScript Language</summary>
 					<p>JavaScriptを拡張または代替しようとするプログラミング言語</p>
 					<ul>
@@ -68,7 +71,7 @@
 
 			<article>
 				<h2>meter</h2>
-				<p>ディスクの使用領域などを表現するのに使用します。</p>
+				<p>meter要素はディスクの使用領域などを表現するのに使用します。</p>
 				<meter value="0" min="0" max="100">未使用</meter>
 				<meter value="50" max="100">半分使用</meter>
 				<meter value="100" max="100">全て使用</meter>
@@ -79,6 +82,7 @@
 
 			<article>
 				<h2>keygen</h2>
+				<p>keygen要素は公開鍵を生成し，送信することが出来ます。</p>
 				<form role="form" action="/webcise/ParamChecker" method="POST">
 					<fieldset>
 						<legend>鍵送信テスト</legend>
@@ -92,6 +96,7 @@
 
 			<article>
 				<h2>output</h2>
+				<p>output要素ではform要素での計算結果を出力することができます。</p>
 				<form id="calcform" role="form" oninput="result.value = parseInt(x.value) * parseInt(y.value)">
 					<fieldset>
 						<legend>計算値入力</legend>
@@ -101,13 +106,13 @@
 						<input id="rangeinput" type="range" name="y" value="50" min="0" max="100" />
 					</fieldset>
 				</form>
-
 				<label for="calcresult">計算結果</label>
 				<output form="calcform" id="calcresult" name="result"></output>
 			</article>
 
 			<article>
 				<h2>datalist</h2>
+				<p>datalist要素で入力候補を表示できます。</p>
 				<form role="form">
 					<p>言語入力</p>
 					<label>
@@ -124,7 +129,8 @@
 			</article>
 
 			<article>
-				<h2>ruby, rb, rt, rp</h2>
+				<h2>ruby, rt, rp</h2>
+				<p>ruby, rt, rpで文字にルビを振ります。</p>
 				<p>
 					<ruby>
 						逸見<rp>(</rp><rt>へみ</rt><rp>)</rp>
@@ -143,20 +149,30 @@
 
 			<article>
 				<h2>dir, bdi</h2>
-				<p>文字の表記順を指定できます。</p>
+				<p>dir要素，bdi要素で文字の表記順を指定できます。</p>
 				<p dir="ltr">テキストの向きが<bdi>54321</bdi>左から右になる予定</p>
 				<p dir="rtl">右から始まる文章</p>
 			</article>
 
 			<article contenteditable="true">
 				<h2>contenteditable</h2>
-				<p>文章の内容を変更することが出来ます。</p>
+				<p>contenteditable属性が指定された要素は内容を変更することができます。</p>
 			</article>
 
 			<article>
 				<h2>wbr</h2>
-				<p>改行位置を任意で指定することができます。</p>
-				<p>http://localhost<wbr />.localdomain/test<wbr />.app/index<wbr />.html</p>
+				<p>wbr要素は文章に対する領域のサイズが足りないときの改行位置を任意で指定できます。</p>
+				<div>
+					<style scoped="scoped">
+						.wbrsample p {
+							background-color: yellow;
+							width: 100px;
+						}
+					</style>
+					<div class="wbrsample">
+						<p>http://localhost<wbr />.localdomain/test<wbr />.app/index<wbr />.html</p>
+					</div>
+				</div>
 			</article>
 
 			<article>
@@ -345,7 +361,7 @@
 					<small>smallはコピーライトなど注釈的な要素に対して使います。</small>
 				</div>
 			</article>
-			
+
 			<article>
 				<h2>audio</h2>
 				<p>音楽を再生します。</p>
@@ -390,7 +406,7 @@
 					</div>
 				</div>
 			</article>
-			
+
 			<article>
 				<h2>dialog</h2>
 				<p>dialog要素は2014/08時点では殆どサポートされていない。</p>
@@ -398,7 +414,7 @@
 					<p>sample dialog</p>
 				</dialog>
 			</article>
-			
+
 			<article>
 				<h2>cite</h2>
 				<p>情報の引用元を示します。</p>
