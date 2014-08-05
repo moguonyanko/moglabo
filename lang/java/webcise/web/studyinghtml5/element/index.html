@@ -177,6 +177,7 @@
 
 			<article>
 				<h2>input</h2>
+				<p>input要素の新しい属性は入力チェックや必須要素の確認を行います。</p>
 				<form id="inputtestform" role="search" action="/webcise/ParamChecker" method="POST">
 					<fieldset>
 						<legend>入力値のチェック</legend>
@@ -190,11 +191,13 @@
 								<input type="url" value="" name="url" 
 									   placeholder="http://test/" title="正しいURLを入力してください。" />
 							</label></p>
-						<p><label>
+						<p>
+							<label>
 								<strong>*パスワード</strong>
 								<input type="password" 
 									   value="" name="password" required="" autocomplete="off" />
-							</label></p>
+							</label>
+						</p>
 						<p><label>検索<input type="search" value="" name="search" /></label></p>
 						<p><label>週<input type="week" value="" name="week" /></label></p>
 						<p><label>月<input type="month" value="" name="month" /></label></p>
@@ -209,6 +212,7 @@
 
 			<article>
 				<h2>progress</h2>
+				<p>progress要素で進捗を示すバーを表示することができます。</p>
 				<progress id="sampleprogress" max="100" value="0">
 					<span id="progressvalue">0</span><span>％</span>
 				</progress>
@@ -218,7 +222,6 @@
 			<article>
 				<h2>menu</h2>
 				<p>コンテキストメニューに追加する選択肢をボタンとして定義します</p>
-
 				<div contextmenu="menusamplecontainer">ここを右クリック</div>
 				<menu id="menusamplecontainer">
 					<button onclick="alert('button1');">button1</button>
@@ -229,7 +232,10 @@
 
 			<article>
 				<h2>draggable, dropzone</h2>
-				<p>HTMLのみではドラッグアンドドロップできません。</p>
+				<p>
+					draggable要素はdropzoneにドラッグアンドドロップできます。
+					しかしHTMLのみではドラッグアンドドロップできません。
+				</p>
 				<div draggable="true">
 					ドラッグできます。
 				</div>
@@ -242,7 +248,9 @@
 				<h2>hidden</h2>
 				<p>
 					必要な要素ではあるが状況によっては非表示にしておきたい要素に指定します。
-					ユーザー定義スタイルシート対策？
+					!important付きのユーザー定義スタイルシート対策？
+					未認証ユーザーには見せたくない情報を隠すため？
+					そもそもそういった情報を含んだ要素はむやみにページに追加するべきでない。
 				</p>
 				<p hidden="">この文章は見せません。</p>
 			</article>
@@ -251,9 +259,10 @@
 				<h2>async</h2>
 				<p>
 					スクリプトは非同期に実行されます。インラインスクリプトには効果無し。
-					ブラウザによっては元々非同期だったような気がする。
+					appendChildによる追加ならば元々非同期だったような気がする。
+					しかし処理の重いスクリプトを読み込むと固まってしまった。
 				</p>
-				<script async="async" src="async.js"></script>
+				<script async="async" src="heavyprocess.js"></script>
 			</article>
 
 			<article>
@@ -266,6 +275,7 @@
 			<!-- Chrome35やSafari7は未対応。Firefox30は対応されている。 -->
 			<article>
 				<h2>scoped</h2>
+				<p>scoped属性で適用するスタイルのスコープを定義できます。</p>
 				<div class="scopedcontainer">
 					<p>scoped属性対応ブラウザならばスタイルが適用されない</p>
 				</div>
@@ -282,6 +292,7 @@
 
 			<article>
 				<h2>reversed, start</h2>
+				<p>reversed属性はリストを逆順にできます。start属性は開始番号を指定できます。</p>
 				<p>value属性が指定されていると逆順で表示されない</p>
 				<ol reversed="">
 					<!-- valueは数値のみ。reversedよりもliのvalueが優先される。 -->
@@ -308,8 +319,9 @@
 
 			<article>
 				<h2>itemscope, itemprop, itemtype</h2>
+				<p>マイクロデータで文書のメタデータを伝えます。</p>
 				<section itemscope="" itemtype="http://schema.org/Person">
-					<h2 itemprop="name">Hoge</h2>
+					<p itemprop="name">Hoge</p>
 					<div itemprop="location">
 						<p itemprop="name">Hoge Center</p>
 						<div itemprop="address" itemscope="" 
@@ -319,9 +331,20 @@
 					</div>
 				</section>
 			</article>
+			
+			<article>
+				<h2>RDFa</h2>
+				<p>RDFaでも文書のメタデータを扱えます。XMLとしても解釈できます。</p>
+				<div vocab="http://schema.org/" typeof="Person">
+					<p property="name">Hoge</p>
+					<p property="telephone">xxx-xxx-xxxx</p>
+					<a property="url" href="http://dummy/">My Site</a>
+				</div>
+			</article>
 
 			<article>
 				<h2>data-*</h2>
+				<p>カスタムデータで自由に属性を追加できます。</p>
 				<ul id="customdatalist" contenteditable="true">
 					<li data-age="26" data-from="Tokyo">Foo</li>
 					<li data-age="41" data-from="Osaka">Bar</li>
@@ -339,7 +362,7 @@
 
 			<article>
 				<h2>hidden</h2>
-				<p>開発者向け情報領域を非表示にします。（内部的にはdisplay: noneを指定している。）</p>
+				<p>開発者向け情報領域を非表示にします。（Chromeの場合，内部でdisplay: noneを指定している。）</p>
 				<div id="hiddenarea" hidden="hidden">
 					<textarea cols="25" rows="5" placeholder="開発者向け情報" readonly="readonly"></textarea>
 				</div>
