@@ -12,6 +12,10 @@
 				background-color: rgba(100, 255, 50, 0.5);
 				border: yellowgreen solid 2px;
 				border-radius: 10px 10px 1px 1px;
+				/**
+				 * word-break: keep-allは相対指定のサイズと相性が悪い。 
+				 * ブラウザサイズ変更時にコンテナの外側に文字がはみ出してしまう。
+				 */
 				word-break: keep-all;
 				/*
 				columns: 300px 2;
@@ -37,13 +41,17 @@
 
 		<article>
 			<h2>フレキシブルレイアウト</h2>
-			<p>flexで要素を横並びに配置しやすくなります。</p>
+			<p>
+				flexで要素を横並びに配置しやすくなります。
+				flex-wrapで要素を改行して表示するかどうかを指定できます。
+			</p>
 			<div>
 				<style scoped="scoped">
 					#flexcontainer {
 						width: 800px;
 						border: black 1px dotted;
 						display: flex;
+						flex-wrap: wrap;
 					}
 
 					#flexsubcontainer1 {
@@ -325,6 +333,10 @@
 
 		<article>
 			<h2>フォント</h2>
+			<p>
+				@font-faceでWebフォントの設定を行います。
+				localでローカルに存在するフォントを指定できます。
+			</p>
 			<div>
 				<style scoped="scoped">
 					/*@import url(http://fonts.googleapis.com/css?family=Gloria+Hallelujah);*/
@@ -404,6 +416,12 @@
 
 		<article>
 			<h2>背景</h2>
+			<p>
+				複数の背景画像を指定することができます。
+				背景の表示位置やサイズ，表示エリアの範囲を指定できます。
+				背景画像の繰り返し方法は縦と横にそれぞれ指定できます。
+				rgba関数で透過色を背景に指定することができます。
+			</p>
 			<div>
 				<style scoped="scoped">
 					.backgroundsample {
@@ -450,6 +468,7 @@
 
 		<article>
 			<h2>罫線</h2>
+			<p>border-radiusで罫線を角丸にできます。</p>
 			<div>
 				<style scoped="scoped">
 					.bordersample div:first-of-type {
@@ -495,6 +514,10 @@
 
 		<article>
 			<h2>リスト</h2>
+			<p>
+				リストマークには様々な文字や画像を指定することができます。
+				list-style-positionでリストマークの表示位置を変更することができます。
+			</p>
 			<div>
 				<style scoped="scoped">
 					.listsample {
@@ -531,6 +554,10 @@
 
 		<article>
 			<h2>カウンター</h2>
+			<p>
+				contentプロパティとcounter関数で::before疑似要素の位置にカウンタを表示できます。
+				counter-incrementで増やし方，counter-resetで初期値を指定できます。
+			</p>
 			<div>
 				<style scoped="scoped">
 					.countersample {
@@ -573,6 +600,10 @@
 
 		<article>
 			<h2>テーブル</h2>
+			<p>
+				caption-sideでキャプションの表示位置を指定できます。
+				table-layoutでセルのサイズを固定することができます。
+			</p>
 			<div>
 				<style scoped="scoped">
 					.tablesample {
@@ -657,6 +688,13 @@
 
 		<article>
 			<h2>マルチカラムレイアウト</h2>
+			<p>
+				column-countで列の数を指定してマルチカラムレイアウトにできます。
+				column-widthでカラム1つのサイズを指定します。
+				column-gapでカラムの間の幅を指定できます。
+				column-ruleでカラムの仕切りのスタイルを指定できます。
+				column-spanでカラムの見出しの表現を指定できます。
+			</p>
 			<div>
 				<style scoped="scoped">
 					.multicolumnsample {
