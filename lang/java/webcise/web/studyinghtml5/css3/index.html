@@ -769,6 +769,7 @@
 
 		<article>
 			<h2>変形</h2>
+			<p>transformで要素を移動，回転，拡大，傾斜させます。</p>
 			<div>
 				<style scoped="scoped">
 					.transformcontainer {
@@ -897,6 +898,10 @@
 
 		<article>
 			<h2>トランジション</h2>
+			<p>
+				transitionで特定の変化を任意の時間で実行させます。
+				transition-delayで変化の開始を遅延させることもできます。
+			</p>
 			<div>
 				<style scoped="scoped">
 					div.transitioncontainer {
@@ -986,6 +991,12 @@
 
 		<article>
 			<h2>アニメーション</h2>
+			<p>
+				keyframesでアニメーションを定義します。
+				animation-delayではアニメーションの遅延時間を指定できます、
+				animation-iteration-countでアニメーションの実行回数を指定できます。
+				animation-play-stateでアニメーションを途中で停止することもできます。
+			</p>
 			<div>
 				<style scoped="scoped">
 					@-webkit-keyframes coloranime1 {
@@ -1090,6 +1101,12 @@
 
 		<article>
 			<h2>セレクタ</h2>
+			<p>
+				:indeterminateは不確定な状態を示す疑似クラスです。
+				間接セレクタは後続の兄弟要素全てをスタイル適用の対象にします。
+				:notで指定したセレクタの否定を指定する疑似クラスです。
+				::before疑似要素とcounterで要素の前にカウンタを表示することができます。
+			</p>
 			<div>
 				<style scoped="scoped">
 					div.selectorsample {
@@ -1138,7 +1155,7 @@
 						background-color: yellowgreen;
 					}
 
-					#checkedsample:checked ~ p:before {
+					#checkedsample:checked ~ p::before {
 						content: counter(checkedcounter);
 						color: royalblue;
 					}
