@@ -4,6 +4,8 @@
 		<meta charset="UTF-8" />
 		<title>New Element exercise</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- ページ内の相対URLの基点を指定します。 -->
+		<base target="_blank" href="http://localhost/webcise/studyinghtml5/element/" />
 		<link rel="shortcut icon" href="../../favicon.ico" />
 		<link rel="stylesheet" type="text/css" href="element.css" />
 	</head>
@@ -26,10 +28,13 @@
 				<h2>figure, figcaption</h2>
 				<p>figureで図表や参考情報を表現します。figcaptionはそのタイトルです。</p>
 				<figure>
+					<figcaption>
+						JavaScriptによるHelloWorldの一例です。
+					</figcaption>
 					<h3>code</h3>
 					<code>
 						var greeting = function(name){
-						alert("Hello, " + name);
+							alert("Hello, " + name);
 						};
 					</code>
 					<h3>pre</h3>
@@ -38,9 +43,6 @@
 							alert("Hello, " + name);
 						};
 					</pre>
-					<figcaption>
-						JavaScriptによるHelloWorldの一例です。
-					</figcaption>
 				</figure>
 			</article>
 
@@ -178,7 +180,7 @@
 			<article>
 				<h2>input</h2>
 				<p>input要素の新しい属性は入力チェックや必須要素の確認を行います。</p>
-				<form id="inputtestform" role="search" action="/webcise/ParamChecker" method="POST">
+				<form id="inputtestform" role="search" action="/webcise/ParamChecker" method="GET">
 					<fieldset>
 						<legend>入力値のチェック</legend>
 						<p><label>Eメール	<input type="email" value="" name="email" placeholder="test@test.co.jp" /></label></p>
@@ -207,7 +209,11 @@
 				</form>
 				<p>リクエストの結果を別のページに出力します。</p>
 				<iframe name="responsepage" src="response.html" width="300" height="300"></iframe>
-				<button form="inputtestform" formtarget="responsepage" type="submit">送信</button>
+				<!-- formnovalidateを指定するとrequiredを無視され入力チェックが行われない。 -->
+				<button form="inputtestform" formtarget="responsepage" type="submit"
+						formaction="/webcise/ParamChecker?testnumber=12345" 
+						formmethod="POST">送信
+				</button>
 			</article>
 
 			<article>
@@ -331,7 +337,7 @@
 					</div>
 				</section>
 			</article>
-			
+
 			<article>
 				<h2>RDFa</h2>
 				<p>RDFaでも文書のメタデータを扱えます。XMLとしても解釈できます。</p>
@@ -442,6 +448,17 @@
 				<h2>cite</h2>
 				<p>情報の引用元を示します。</p>
 				<cite>Mozilla Developper Network</cite>
+			</article>
+
+			<article>
+				<h2>グローバル属性</h2>
+				<div contenteditable="true">
+					<dl>
+						<dt>定義リスト</dt>
+						<dd>定義データ</dd>
+						<dd><a href="tel:xxx-xxxx-xxxx">ダミー連絡先</a></dd>
+					</dl>
+				</div>
 			</article>
 
 		</section>
