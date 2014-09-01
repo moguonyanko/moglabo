@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.is;
 
 import exercise.function.FuncTools;
+import java.util.function.Function;
 
 public class TestFuncTools {
 	
@@ -40,4 +41,17 @@ public class TestFuncTools {
 		
 		assertThat(actual, is(expected));
 	}
+
+	@Test
+	public void memoはメモ化した関数を返す() {
+		int n = 10;
+		
+		Function<Integer, Integer> memoFib = FuncTools.memo(FuncTools::fib);
+		
+		int actual = memoFib.apply(n);
+		int expected = 55;
+		
+		assertThat(actual, is(expected));
+	}
+
 }
