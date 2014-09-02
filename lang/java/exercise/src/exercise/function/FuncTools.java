@@ -14,10 +14,28 @@ public class FuncTools {
 		}
 	}
 
+	/**
+	 * @todo
+	 * メモ化できていない。
+	 */
 	public static Function<Integer, Integer> memo(final Function<Integer, Integer> fn) {
-		final Map<Integer, Integer> note = new HashMap<>();
-		final Function<Integer, Integer> f = (n) -> note.containsKey(n) ? 
-			note.get(n) : note.put(n, fn.apply(n));
+		class Note{
+			private final Map<Integer, Integer> memoNote = new HashMap<>();
+			
+			private Integer checkout(Integer key, Integer n){
+				if(memoNote.containsKey(key)){
+					return memoNote.get(key);
+				}else{
+					Integer v = fn.apply(n);
+					memoNote.put(key, v);
+					return v;
+				}
+			}
+		}
+		
+		Note note = new Note();
+		
+		Function<Integer, Integer> f = (n) -> note.checkout(n, n);
 		
 		return f;
 	}
