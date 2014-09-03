@@ -6,6 +6,13 @@ import java.util.function.Function;
 
 public class FuncTools {
 
+	/**
+	 * @todo
+	 * FuncTools.fibが呼び出されたときにNote::getValueされるようにしないと
+	 * メモ化の効果が現れない。
+	 * @param n
+	 * @return 
+	 */
 	public static int fib(int n) {
 		if (n <= 2) {
 			return 1;
@@ -14,29 +21,29 @@ public class FuncTools {
 		}
 	}
 
-	/**
-	 * @todo
-	 * メモ化できていない。
-	 */
-	public static Function<Integer, Integer> memo(final Function<Integer, Integer> fn) {
-		class Note{
-			private final Map<Integer, Integer> memoNote = new HashMap<>();
-			
-			private Integer checkout(Integer key, Integer n){
-				if(memoNote.containsKey(key)){
-					return memoNote.get(key);
-				}else{
-					Integer v = fn.apply(n);
-					memoNote.put(key, v);
-					return v;
-				}
+	static class Note {
+
+		private final Map<Integer, Integer> memoNote = new HashMap<>();
+		private final Function<Integer, Integer> fn;
+
+		public Note(Function<Integer, Integer> fn) {
+			this.fn = fn;
+		}
+
+		private Integer getValue(Integer key) {
+			if (memoNote.containsKey(key)) {
+				return memoNote.get(key);
+			} else {
+				Integer value = fn.apply(key);
+				memoNote.put(key, value);
+				return value;
 			}
 		}
-		
-		Note note = new Note();
-		
-		Function<Integer, Integer> f = (n) -> note.checkout(n, n);
-		
-		return f;
 	}
+
+	public static Function<Integer, Integer> memoize(Function<Integer, Integer> fn) {
+		Note note = new Note(fn);
+		return note::getValue;
+	}
+
 }

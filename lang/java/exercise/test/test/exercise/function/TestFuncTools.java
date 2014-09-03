@@ -46,7 +46,7 @@ public class TestFuncTools {
 	public void memoはメモ化した関数を返す() {
 		int n = 10;
 		
-		Function<Integer, Integer> memoFib = FuncTools.memo(FuncTools::fib);
+		Function<Integer, Integer> memoFib = FuncTools.memoize(FuncTools::fib);
 		
 		int actual = memoFib.apply(n);
 		int expected = 55;
