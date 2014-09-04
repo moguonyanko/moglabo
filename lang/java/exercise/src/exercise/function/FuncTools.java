@@ -40,10 +40,29 @@ public class FuncTools {
 			}
 		}
 	}
+	
+	static class MemoFunction {
+		private final Map<String, Note> fnHash = new HashMap<>();
 
-	public static Function<Integer, Integer> memoize(Function<Integer, Integer> fn) {
-		Note note = new Note(fn);
-		return note::getValue;
+		public MemoFunction(String fnName, Note note) {
+			fnHash.put(fnName, note);
+		}
+		
+		public Function<Integer, Integer> memo(String fnName){
+			return fnHash.get(fnName)::getValue;
+		}
+		
+		public void clear(String fnName){
+			fnHash.remove(fnName);
+		}
 	}
 
+	public static Function<Integer, Integer> memo(Function<Integer, Integer> fn) {
+		Note note = new Note(fn);
+		String fnName = fn.getClass().getName();
+		MemoFunction mf = new MemoFunction(fnName, note);
+		
+		return mf.memo(fnName);
+	}
+	
 }
