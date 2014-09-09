@@ -10,10 +10,16 @@ import org.junit.Assert;
 
 public class TestSort {
 	
+	private static final int SORT_TARGET_VALUES_SIZE = 256;
+
 	@Test
 	public void sortの互換性をテストする_Arrays(){
-		Integer[] sample = new Integer[]{1, 2, 3, 4, 5};
-		Integer[] expected = new Integer[]{5, 4, 3, 2, 1};
+		Integer[] sample = new Integer[SORT_TARGET_VALUES_SIZE];
+		Integer[] expected = new Integer[SORT_TARGET_VALUES_SIZE];
+		for(int i = 0; i < SORT_TARGET_VALUES_SIZE;){
+			sample[i] = i;
+			expected[i] = SORT_TARGET_VALUES_SIZE - ++i;
+		}
 		
 		Arrays.sort(sample, new Comparator<Integer>() {
 			@Override
@@ -30,8 +36,15 @@ public class TestSort {
 	
 	@Test
 	public void sortの互換性をテストする_Collections(){
-		List<Integer> sample = Arrays.asList(new Integer[]{1, 2, 3, 4, 5});
-		List<Integer> expected = Arrays.asList(new Integer[]{5, 4, 3, 2, 1});
+		Integer[] srcSample = new Integer[SORT_TARGET_VALUES_SIZE];
+		Integer[] srcExpected = new Integer[SORT_TARGET_VALUES_SIZE];
+		for(int i = 0; i < SORT_TARGET_VALUES_SIZE;){
+			srcSample[i] = i;
+			srcExpected[i] = SORT_TARGET_VALUES_SIZE - ++i;
+		}
+		
+		List<Integer> sample = Arrays.asList(srcSample);
+		List<Integer> expected = Arrays.asList(srcExpected);
 		
 		Collections.sort(sample, new Comparator<Integer>() {
 			@Override
