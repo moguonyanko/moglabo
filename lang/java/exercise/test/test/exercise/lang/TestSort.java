@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.Assert;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
 
 public class TestSort {
 	
@@ -57,6 +59,23 @@ public class TestSort {
 		
 		Assert.assertEquals(expected, sample);
 		//assertThat(sample, is(expected));
+	}
+	
+	@Test
+	public void 不可解なコンパレータの挙動を調べる(){
+		Integer[] actual = {3, 1, 4, 1, 5, 9};
+		//Integer[] expected = Arrays.copyOf(actual, actual.length);
+		Integer[] expected = {1, 1, 3, 4, 5, 9};
+		
+		Arrays.sort(actual, new Comparator<Integer>() {
+			@Override
+			public int compare(Integer i1, Integer i2) {
+				return i1 < i2 ? -1 : (i2 > i1 ? 1 : 0);
+			}
+		});		
+		//Arrays.sort(actual, (Integer i1, Integer i2) -> i1 < i2 ? -1 : (i2 > i1 ? 1 : 0));
+		
+		assertThat(Arrays.toString(actual), is(Arrays.toString(expected)));
 	}
 	
 }
