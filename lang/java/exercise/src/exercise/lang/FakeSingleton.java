@@ -18,9 +18,10 @@ public class FakeSingleton extends Exception {
 	public String getName() {
 		return name;
 	}
-	
-	private Object readResolve(){
-		return INSTANCE;
-	}
+
+	/* 本当にシングルトンにするには以下のコメントアウトを解除する。 */
+//	private Object readResolve(){
+//		return INSTANCE;
+//	}
 	
 }
