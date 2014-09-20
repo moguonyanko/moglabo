@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class FuncTools {
-
+	
 	/**
 	 * @todo
 	 * FuncTools.fibが呼び出されたときにNote::getValueされるようにしないと
