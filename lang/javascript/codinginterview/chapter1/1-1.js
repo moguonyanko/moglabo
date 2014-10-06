@@ -15,7 +15,10 @@ function isUniqueChars(str) {
 	return true;
 }
 
+/**
+ * Run tests.
+ */
 var sample = 'abcdefg';
-console.log(isUniqueChars(sample));
+console.assert(isUniqueChars(sample) === true);
 var sample2 = 'abccdefg';
-console.log(isUniqueChars(sample2));
+console.assert(isUniqueChars(sample2) === false);
