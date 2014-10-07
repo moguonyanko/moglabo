@@ -1,3 +1,5 @@
+#!/usr/local/bin/node
+
 function isUniqueChars(str) {
 	if (str.length > 256) {
 		return false;

@@ -1,3 +1,5 @@
+#!/usr/local/bin/node
+
 function sort(str){
 	return str.split('').sort().join('');
 }
