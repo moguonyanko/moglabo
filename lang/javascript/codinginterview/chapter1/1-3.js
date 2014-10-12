@@ -13,7 +13,7 @@ function permutation(str1, str2){
 }
 
 /**
- * Run test.
+ * test
  */
 console.assert(permutation('abcde', 'edcba') === true);
 console.assert(permutation('abcdea', 'edcba') === false);

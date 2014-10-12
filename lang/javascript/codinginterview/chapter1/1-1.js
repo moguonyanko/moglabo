@@ -18,7 +18,7 @@ function isUniqueChars(str) {
 }
 
 /**
- * Run tests.
+ * test
  */
 var sample = 'abcdefg';
 console.assert(isUniqueChars(sample) === true);
