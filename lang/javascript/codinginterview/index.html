@@ -4,10 +4,45 @@
 		<title>Codeing Interview</title>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="favicon.ico" />
+		<style>
+			main .CodeRunners button {
+				
+			}
+		</style>
 	</head>
 	<body>
 		<header>
 			<h1>CodeingInterview</h1>
 		</header>
+
+		<main>
+			<h2>Code Runner</h2>
+			<div class="CodeRunners">
+				<button value="./chapter2/2-1.js">2-1</button>
+			</div>
+		</main>
+
+		<script src="./common.js"></script>
+
+		<script>
+			(function (win, doc) {
+				'use strict';
+
+				var runners = doc.querySelectorAll('main .CodeRunners button'),
+					runTest = function (evt) {
+						var src = evt.target.value;
+
+						var testScriptEle = doc.createElement('script');
+						testScriptEle.src = src;
+						doc.body.appendChild(testScriptEle);
+					};
+
+				for (var i = 0, max = runners.length; i < max; i++) {
+					var runner = runners[i];
+					runner.addEventListener('click', runTest, false);	
+				}
+			}(window, document));
+		</script>
 	</body>
 </html>
