@@ -1,6 +1,6 @@
 (function (win, doc) {
 	'use strict';
-	
+
 	function print(txt) {
 		console.log(txt);
 	}
@@ -29,6 +29,18 @@
 			loadFunc(pathes[i]);
 		}
 	}
+	
+	function isFunction(f){
+		return typeof f === 'function';
+	}
+	
+	function isEquals(obj1, obj2){
+		if(isFunction(obj1.equals) && isFunction(obj2.equals)){
+			return obj1.equals(obj2) && obj2.equals(obj1);
+		}else{
+			return false;
+		}
+	}
 
 	win.gomapre = {
 		print: print,
@@ -36,16 +48,14 @@
 		assertEquals: function (expected, actual) {
 			print('start test');
 
-			try {
-				console.assert(expected === actual);
-			} catch (err) {
+			if (expected === actual || isEquals(expected, actual)) {
+				print('OK');
+			} else {
 				print('NG');
 				print('expected ... ' + expected.toString());
 				print('actual ... ' + actual.toString());
-				throw err;
+				throw new Error('Fail tests.');
 			}
-
-			print('OK');
 		}
 	};
 }(window, document));

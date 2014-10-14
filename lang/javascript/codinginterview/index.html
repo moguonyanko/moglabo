@@ -5,11 +5,7 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="shortcut icon" href="favicon.ico" />
-		<style>
-			main .CodeRunners button {
-				
-			}
-		</style>
+		<link rel="stylesheet" href="./main.css" />
 	</head>
 	<body>
 		<header>
@@ -20,29 +16,11 @@
 			<h2>Code Runner</h2>
 			<div class="CodeRunners">
 				<button value="./chapter2/2-1.js">2-1</button>
+				<button value="./chapter2/2-2.js">2-2</button>
 			</div>
 		</main>
 
-		<script src="./common.js"></script>
-
-		<script>
-			(function (win, doc) {
-				'use strict';
-
-				var runners = doc.querySelectorAll('main .CodeRunners button'),
-					runTest = function (evt) {
-						var src = evt.target.value;
-
-						var testScriptEle = doc.createElement('script');
-						testScriptEle.src = src;
-						doc.body.appendChild(testScriptEle);
-					};
-
-				for (var i = 0, max = runners.length; i < max; i++) {
-					var runner = runners[i];
-					runner.addEventListener('click', runTest, false);	
-				}
-			}(window, document));
-		</script>
+		<script src="./prepare.js"></script>
+		<script src="./gomapre.js"></script>
 	</body>
 </html>
