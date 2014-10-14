@@ -1,7 +1,7 @@
 (function (g) {
 	'use strict';
 
-	g.load('/javascript/codinginterview/chapter2/linkedlist.js',
+	g.load('./chapter2/linkedlist.js',
 		function () {
 			function deleteDups(n) {
 				var table = {},
