@@ -1,12 +1,16 @@
 @charset "UTF-8";
 
+main {
+	width: 100%;
+}
+
 main .CodeRunners {
 	display: flex;
 	flex-wrap: wrap;
 }
 
 main .CodeRunners button {
-	flex: 1 0 200px;
+	flex: 1 0 300px;
 	height: 100px;
 	font-size: 150%;
 }

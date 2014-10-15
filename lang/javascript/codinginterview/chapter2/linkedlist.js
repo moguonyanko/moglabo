@@ -1,6 +1,6 @@
 (function (win, doc, g) {
 	'use strict';
-	
+
 	function LinkedListNode(data, next, prev) {
 		this.data = data;
 		this.next = next;
@@ -41,6 +41,17 @@
 			}
 
 			return node;
+		},
+		equals: function (other) {
+			if (!other) {
+				return false;
+			}
+
+			if (!(other instanceof LinkedListNode)) {
+				return false;
+			}
+
+			return this.dump() === other.dump();
 		}
 	};
 
