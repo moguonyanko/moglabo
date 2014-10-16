@@ -41,7 +41,7 @@
 			return false;
 		}
 	}
-
+	
 	win.gomapre = {
 		print: print,
 		load: load,

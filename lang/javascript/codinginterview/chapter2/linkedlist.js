@@ -9,18 +9,18 @@
 
 	LinkedListNode.prototype = {
 		toString: function () {
-			return this.data.toString();
+			return this.dump();
 		},
 		dump: function () {
 			var head = this.getHead(),
 				content = [];
 
 			while (head.next) {
-				content.push(head.toString());
+				content.push(head.data.toString());
 				head = head.next;
 			}
 
-			content.push(head.toString());
+			content.push(head.data.toString());
 
 			return content.join('');
 		},

@@ -6,6 +6,9 @@
 			var src = evt.target.value;
 
 			var testScriptEle = doc.createElement('script');
+			testScriptEle.onload = function(){
+				doc.body.removeChild(testScriptEle);
+			};
 			testScriptEle.src = src;
 			doc.body.appendChild(testScriptEle);
 		};
