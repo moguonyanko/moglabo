@@ -28,7 +28,7 @@
 			var sample = [1, 2, 2, 3, 4, 4, 4, 5];
 			var sampleNode = g.linkedlist.makeLinkedList(sample);
 			var resultNode = deleteDups(sampleNode);
-			var expected = [1, 2, 3, 4, 5].join(''),
+			var expected = [1, 2, 3, 4, 5].join(','),
 				actual = resultNode.dump();
 
 			g.assertEquals(expected, actual);

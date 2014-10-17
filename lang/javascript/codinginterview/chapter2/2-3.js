@@ -21,6 +21,6 @@
 
 			deleteNode(sampleNode.next.next);
 
-			g.assertEquals(expected.next.next, sampleNode);
+			g.assertEquals(expected, sampleNode);
 		});
 }(gomapre));

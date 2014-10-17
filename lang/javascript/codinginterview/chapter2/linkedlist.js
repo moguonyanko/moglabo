@@ -22,7 +22,7 @@
 
 			content.push(head.data.toString());
 
-			return content.join('');
+			return content.join(',');
 		},
 		getHead: function () {
 			var node = this;
@@ -51,7 +51,19 @@
 				return false;
 			}
 
-			return this.dump() === other.dump();
+			var self = this,
+				another = other;
+
+			while (self && another) {
+				if (self.data !== another.data) {
+					return false;
+				}
+				
+				self = self.next;
+				another = another.next;
+			}
+
+			return !self && !another;
 		}
 	};
 

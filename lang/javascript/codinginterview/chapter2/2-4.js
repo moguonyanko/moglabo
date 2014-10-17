@@ -18,14 +18,14 @@
 					}
 					node = next;
 				}
-				
-				if(!beforeStart){
+
+				if (!beforeStart) {
 					return afterStart;
 				}
-				
+
 				var tail = beforeStart.getTail();
 				tail.next = afterStart;
-				
+
 				return beforeStart;
 			}
 
@@ -36,10 +36,6 @@
 			var sampleNode = g.linkedlist.makeLinkedList([5, 4, 3, 2, 1]);
 			var actual = partition(sampleNode, 3);
 
-			while(expected && actual){
-				g.assertEquals(expected.data, actual.data);
-				expected = expected.next;
-				actual = actual.next;
-			}
+			g.assertEquals(expected, actual);
 		});
 }(gomapre));
