@@ -1,7 +1,7 @@
 (function (win, doc) {
 	'use strict';
 
-	var runners = doc.querySelectorAll('main .CodeRunners button'),
+	var runners = doc.querySelectorAll('main .TestStarter button'),
 		runTest = function (evt) {
 			var src = evt.target.value;
 

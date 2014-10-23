@@ -4,12 +4,12 @@ main {
 	width: 100%;
 }
 
-main .CodeRunners {
+main .Chapters .TestStarter {
 	display: flex;
 	flex-wrap: wrap;
 }
 
-main .CodeRunners button {
+main .Chapters .TestStarter button {
 	flex: 1 0 300px;
 	height: 100px;
 	font-size: 150%;
