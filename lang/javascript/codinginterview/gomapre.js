@@ -29,26 +29,31 @@
 			loadFunc(pathes[i]);
 		}
 	}
-	
-	function isFunction(f){
+
+	function isFunction(f) {
 		return typeof f === 'function';
 	}
-	
-	function isEquals(obj1, obj2){
-		if(isFunction(obj1.equals) && isFunction(obj2.equals)){
-			return obj1.equals(obj2) && obj2.equals(obj1);
-		}else{
+
+	function isEquals(obj1, obj2) {
+		if (obj1 === obj2) {
+			return true;
+		}
+
+		if (isFunction(obj1.equals)) {
+			return obj1.equals(obj2);
+		} else {
 			return false;
 		}
 	}
-	
+
 	win.gomapre = {
 		print: print,
 		load: load,
+		isEquals: isEquals,
 		assertEquals: function (expected, actual) {
 			print('start test');
 
-			if (expected === actual || isEquals(expected, actual)) {
+			if (this.isEquals(expected, actual)) {
 				print('OK');
 			} else {
 				print('NG');
