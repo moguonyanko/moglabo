@@ -61,17 +61,20 @@
 	/**
 	 * test
 	 */
-	var towerSize = 3,
-		towers = [];
+	var testConfig = {
+		towerSize : 3,
+		diskSize : 5
+	};
+	
+	var towers = [];
 
-	for (var towerIdx = 0; towerIdx < towerSize; towerIdx++) {
+	for (var towerIdx = 0; towerIdx < testConfig.towerSize; towerIdx++) {
 		towers.push(new Tower(towerIdx));
 	}
 
-	var diskSize = 5,
-		expected = new Tower(towerSize - 1);
+	var expected = new Tower(testConfig.towerSize - 1);
 
-	for (var diskIdx = 0; diskIdx < diskSize; diskIdx++) {
+	for (var diskIdx = 0; diskIdx < testConfig.diskSize; diskIdx++) {
 		towers[0].add(diskIdx);
 		expected.add(diskIdx);
 	}
@@ -80,7 +83,7 @@
 		dest = towers[2],
 		buff = towers[1];
 
-	src.moveDisks(diskSize, dest, buff);
+	src.moveDisks(testConfig.diskSize, dest, buff);
 
 	var actual = dest;
 
