@@ -34,6 +34,24 @@
 		return typeof f === 'function';
 	}
 
+	function isEqualsArray(a1, a2) {
+		if (a1.length !== a2.length) {
+			return false;
+		}
+
+		for (var i = 0; i < a1.length; i++) {
+			if (a1[i] !== a2[i]) {
+				if (!isFunction(a1[i].equals)) {
+					return false;
+				} else if (!a1[i].equals(a2[i])) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
 	function isEquals(obj1, obj2) {
 		if (obj1 === obj2) {
 			return true;
@@ -41,9 +59,14 @@
 
 		if (isFunction(obj1.equals)) {
 			return obj1.equals(obj2);
-		} else {
-			return false;
 		}
+
+
+		if (Array.isArray(obj1) && Array.isArray(obj2)) {
+			return isEqualsArray(obj1, obj2);
+		}
+
+		return false;
 	}
 
 	win.gomapre = {
