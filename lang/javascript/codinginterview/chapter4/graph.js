@@ -7,13 +7,13 @@
 		this.right = right;
 	}
 
-	function makeGraph(src) {
+	function makeTree(src) {
 		var root = new TreeNode(src.value, src.left, src.right);
 		return root;
 	}
 
-	function makeSampleGraph() {
-		var sample = makeGraph(
+	function makeSampleBalanceTree() {
+		var sample = makeTree(
 			{
 				root: {
 					value: 4,
@@ -70,7 +70,7 @@
 
 	g.graph = {
 		TreeNode: TreeNode,
-		makeGraph: makeGraph,
-		makeSampleGraph: makeSampleGraph
+		makeTree: makeTree,
+		makeSampleBalanceTree: makeSampleBalanceTree
 	};
 }(window, document, gomapre));
