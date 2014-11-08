@@ -1,14 +1,14 @@
 (function (win, doc, g) {
 	'use strict';
 
-	function TreeNode(value, left, right) {
-		this.value = value;
+	function TreeNode(data, left, right) {
+		this.data = data;
 		this.left = left;
 		this.right = right;
 	}
 
 	function makeTree(src) {
-		var root = new TreeNode(src.value, src.left, src.right);
+		var root = new TreeNode(src.data, src.left, src.right);
 		return root;
 	}
 
@@ -16,47 +16,47 @@
 		var sample = makeTree(
 			{
 				root: {
-					value: 4,
+					data: 4,
 					left: {
-						value: 3,
+						data: 3,
 						left: {
-							value: 2,
+							data: 2,
 							left: {
-								value: 1
+								data: 1
 							},
 							right: {
-								value: 3
+								data: 3
 							}
 						},
 						right: {
-							value: 4,
+							data: 4,
 							left: {
-								value: 3
+								data: 3
 							},
 							right: {
-								value: 5
+								data: 5
 							}
 						}
 					},
 					right: {
-						value: 5,
+						data: 5,
 						left: {
-							value: 4,
+							data: 4,
 							left: {
-								value: 3
+								data: 3
 							},
 							right: {
-								value: 5
+								data: 5
 							}
 
 						},
 						right: {
-							value: 6,
+							data: 6,
 							left: {
-								value: 5
+								data: 5
 							},
 							right: {
-								value: 7
+								data: 7
 							}
 
 						}
@@ -68,9 +68,43 @@
 		return sample;
 	}
 
+	function makeSampleBinarySearchTree() {
+		var sample = makeTree(
+			{
+				root: {
+					data: 20,
+					left: {
+						data: 10,
+						left: {
+							data: 5,
+							left: {
+								data: 3
+							},
+							right: {
+								data: 7
+							}
+						},
+						right: {
+							data: 15,
+							right: {
+								data: 17
+							}
+						}
+					},
+					right: {
+						data: 30
+					}
+				}
+			}
+		);
+
+		return sample;
+	}
+
 	g.graph = {
 		TreeNode: TreeNode,
 		makeTree: makeTree,
-		makeSampleBalanceTree: makeSampleBalanceTree
+		makeSampleBalanceTree: makeSampleBalanceTree,
+		makeSampleBinarySearchTree: makeSampleBinarySearchTree
 	};
 }(window, document, gomapre));
