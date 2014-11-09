@@ -7,13 +7,28 @@
 		this.right = right;
 	}
 
-	function makeTree(src) {
+	function makeTreeNode(src) {
 		var root = new TreeNode(src.data, src.left, src.right);
 		return root;
 	}
+	
+	/**
+	 * @todo
+	 * implement now
+	 * 
+	 */
+	function makeTreeHelper(src){
+		if(src.left){
+			return makeTreeHelper(src.left.data);
+		}else if(src.right){
+			return makeTreeHelper(src.right.data);
+		}else{
+			return makeTreeNode(src);
+		}
+	}
 
 	function makeSampleBalanceTree() {
-		var sample = makeTree(
+		var sample = makeTreeNode(
 			{
 				root: {
 					data: 4,
@@ -69,7 +84,7 @@
 	}
 
 	function makeSampleBinarySearchTree() {
-		var sample = makeTree(
+		var sample = makeTreeNode(
 			{
 				root: {
 					data: 20,
@@ -103,7 +118,7 @@
 
 	g.graph = {
 		TreeNode: TreeNode,
-		makeTree: makeTree,
+		makeTree: makeTreeNode,
 		makeSampleBalanceTree: makeSampleBalanceTree,
 		makeSampleBinarySearchTree: makeSampleBinarySearchTree
 	};
