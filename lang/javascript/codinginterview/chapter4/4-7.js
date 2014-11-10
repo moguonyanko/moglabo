@@ -3,6 +3,10 @@
 
 	g.load('./chapter4/graph.js',
 		function () {
+			/**
+			 * @todo
+			 * implement
+			 */
 			function commonAncestor() {
 				return null;
 			}
