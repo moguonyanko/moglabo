@@ -34,13 +34,14 @@
 			return this.x === other.x && this.y === other.y;
 		},
 		toString: function () {
-			return this.x + ":" + this.y;
+			return this.x + "_" + this.y;
 		}
 	};
 
 	function Path() {
 		this.pIndexes = {};
 		this.points = [];
+		this.results = {};
 	}
 
 	Path.prototype = {
@@ -58,13 +59,27 @@
 				delete this.pIndexes[pKey];
 			}
 		},
-		toString: function(){
+		contains: function (p) {
+			var pKey = p.toString();
+			return pKey in this.results;
+		},
+		saveResult: function (p, success) {
+			this.results[p.toString()] = success;
+		},
+		getResult: function (p) {
+			return this.results[p.toString()];
+		},
+		toString: function () {
 			return this.points.toString();
 		}
 	};
 
 	function getPath(x, y, path) {
 		var p = new Point(x, y);
+		if (path.contains(p)) {
+			return path.getResult(p);
+		}
+
 		path.add(p);
 
 		if (x === 0 && y === 0) {
@@ -85,6 +100,7 @@
 		if (!success) {
 			path.remove(p);
 		}
+		path.saveResult(p, success);
 
 		return success;
 	}
@@ -101,7 +117,8 @@
 	var actual = getPath(lastX, lastY, path);
 
 	g.assertEquals(expected, actual);
-	
-	//g.print(path);
+
+	/* check result path */
+	g.print(path);
 
 }(gomapre));
