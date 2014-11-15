@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8" />
+		<title>JavaScript(Core and Client)</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="../favicon.ico" />
+	</head>
+	<body>
+		<header role="banner">
+			<h1>JavaScript(Core and Client)</h1>
+			<p>コア及びクライアントサイドのJavaScriptの練習サイトです。</p>
+		</header>
+
+		<main>
+			<section>
+				<h2>クロージャ</h2>
+				<section>
+					<h3>thisの扱い</h3>
+					<button class="ClosureButton">0</button>
+					<button class="ClosureButton">0</button>
+					<button class="ClosureButton">0</button>
+					<script>
+						(function (doc) {
+							var btns = doc.querySelectorAll(".ClosureButton");
+
+							for (var i = 0; i < btns.length; i++) {
+								btns[i].onclick = (function (x) {
+									return function () {
+										this.innerHTML = x + 1;
+									};
+								}(i));
+								
+//								btns[i].onclick = (function (x, that) {
+//									return function () {
+//										that.innerHTML = x + 1;
+//									};
+//								}(i, btns[i]));
+							}
+						}(document));
+					</script>
+				</section>
+			</section>
+		</main>
+
+		<footer role="contentinfo">
+			<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
+		</footer>
+	</body>
+</html>
