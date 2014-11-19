@@ -69,21 +69,30 @@
 		return false;
 	}
 
+	function addAll(list, src) {
+		for (var i = 0, len = src.length; i < len; i++) {
+			list.push(src[i]);
+		}
+	}
+
+	function assertEquals(expected, actual) {
+		print('start test');
+
+		if (this.isEquals(expected, actual)) {
+			print('OK');
+		} else {
+			print('NG');
+			print('expected ... ' + expected.toString());
+			print('actual ... ' + actual.toString());
+			throw new Error('Fail tests.');
+		}
+	}
+
 	win.gomapre = {
 		print: print,
 		load: load,
 		isEquals: isEquals,
-		assertEquals: function (expected, actual) {
-			print('start test');
-
-			if (this.isEquals(expected, actual)) {
-				print('OK');
-			} else {
-				print('NG');
-				print('expected ... ' + expected.toString());
-				print('actual ... ' + actual.toString());
-				throw new Error('Fail tests.');
-			}
-		}
+		assertEquals: assertEquals,
+		addAll: addAll
 	};
 }(window, document));
