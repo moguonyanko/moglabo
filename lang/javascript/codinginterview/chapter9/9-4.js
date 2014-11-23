@@ -16,10 +16,10 @@
 				var subset = allSubsets[i];
 				var newSubset = [];
 				g.addAll(newSubset, subset);
-				
+
 				/* 現在のindexで参照される部分集合を追加する。 */
 				newSubset.push(item);
-				
+
 				moreSubsets.push(newSubset);
 			}
 
@@ -38,9 +38,7 @@
 		[], [1], [2], [3], [1, 2], [1, 3], [2, 2], [2, 3], [1, 2, 3]
 	];
 	var actual = getSubsets(sample, 0);
-
-	g.assertEquals(expected, actual);
 	
-	g.print(actual);
+	g.assertEquals(expected, actual);
 
 }(gomapre));

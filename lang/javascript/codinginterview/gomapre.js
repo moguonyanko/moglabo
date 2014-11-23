@@ -74,6 +74,57 @@
 			list.push(src[i]);
 		}
 	}
+	
+	/**
+	 * @todo
+	 * Only JSONable object.
+	 */
+	function deepCopy(src){
+		return JSON.parse(JSON.stringify(src));
+	}
+
+	function Set(values) {
+		this.dict = {};
+		
+		var _values = deepCopy(values);
+
+		if (isFunction(_values.sort)) {
+			_values.sort();
+		}
+
+		for (var i = 0; i < _values.length; i++) {
+			var val = _values[i];
+			this.dict[val.toString()] = true;
+		}
+	}
+
+	Set.prototype = {
+		equals: function (other) {
+			if (other === undefined || other === null) {
+				return false;
+			}
+
+			if (!(other instanceof Set)) {
+				return false;
+			}
+			
+			var _other = deepCopy(other);
+
+			if (isFunction(_other.sort)) {
+				_other.sort();
+			}
+
+			for (var i = 0; i < _other.length; i++) {
+				var val = _other[i];
+				
+				if(!this.dict[val]){
+					return false;
+				}
+			}
+			
+			return true;
+		}
+	};
 
 	function assertEquals(expected, actual) {
 		print('start test');
@@ -93,6 +144,7 @@
 		load: load,
 		isEquals: isEquals,
 		assertEquals: assertEquals,
-		addAll: addAll
+		addAll: addAll,
+		Set : Set
 	};
 }(window, document));
