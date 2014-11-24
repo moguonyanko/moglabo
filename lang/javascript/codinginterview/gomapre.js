@@ -41,9 +41,19 @@
 
 		for (var i = 0; i < a1.length; i++) {
 			if (a1[i] !== a2[i]) {
-				if (!isFunction(a1[i].equals)) {
-					return false;
-				} else if (!a1[i].equals(a2[i])) {
+				var isEql = false;
+				
+
+				if (isFunction(a1[i].equals)) {
+					isEql = a1[i].equals(a2[i]);
+				}
+				
+				if (Array.isArray(a1[i]) && Array.isArray(a2[i])) {
+					isEql = isEqualsArray(a1[i], a2[i]);
+				}
+
+				
+				if(!isEql){
 					return false;
 				}
 			}
@@ -74,26 +84,20 @@
 			list.push(src[i]);
 		}
 	}
-	
+
 	/**
 	 * @todo
 	 * Only JSONable object.
 	 */
-	function deepCopy(src){
+	function deepCopy(src) {
 		return JSON.parse(JSON.stringify(src));
 	}
 
 	function Set(values) {
 		this.dict = {};
-		
-		var _values = deepCopy(values);
 
-		if (isFunction(_values.sort)) {
-			_values.sort();
-		}
-
-		for (var i = 0; i < _values.length; i++) {
-			var val = _values[i];
+		for (var i = 0; i < values.length; i++) {
+			var val = values[i];
 			this.dict[val.toString()] = true;
 		}
 	}
@@ -107,21 +111,15 @@
 			if (!(other instanceof Set)) {
 				return false;
 			}
-			
-			var _other = deepCopy(other);
 
-			if (isFunction(_other.sort)) {
-				_other.sort();
-			}
+			for (var i = 0; i < other.length; i++) {
+				var val = other[i];
 
-			for (var i = 0; i < _other.length; i++) {
-				var val = _other[i];
-				
-				if(!this.dict[val]){
+				if (!this.dict[val]) {
 					return false;
 				}
 			}
-			
+
 			return true;
 		}
 	};
@@ -145,6 +143,6 @@
 		isEquals: isEquals,
 		assertEquals: assertEquals,
 		addAll: addAll,
-		Set : Set
+		Set: Set
 	};
 }(window, document));

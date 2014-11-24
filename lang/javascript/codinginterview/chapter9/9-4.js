@@ -35,10 +35,13 @@
 	 */
 	var sample = [1, 2, 3];
 	var expected = [
-		[], [1], [2], [3], [1, 2], [1, 3], [2, 2], [2, 3], [1, 2, 3]
+		[], [3], [2], [3, 2], [1], [3, 1], [2, 1], [3, 2, 1]
 	];
 	var actual = getSubsets(sample, 0);
-	
+
 	g.assertEquals(expected, actual);
+
+	//g.print(expected);
+	//g.print(actual);
 
 }(gomapre));
