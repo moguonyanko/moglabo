@@ -91,6 +91,43 @@
 		  when (and (>= p 0) (< p *board-hexnum*))
 		  collect p)))
 
+(defun board-attack (board player src dst dice)
+  ;srcマスからdstマスに対して攻撃を行う。
+  (board-array (loop for pos from 0
+					 for hex across board
+					 collect (cond ((eq pos src) (list player 1))
+								   ((eq pos dst) (list player (1- dice)))
+								   (t hex)))))
+
+(defun add-new-dice (board player spare-dice)
+  ;ゲーム盤を走査してサイコロの補給を行う。
+  (labels ((f (lst n)
+			  (cond ((null lst) nil)
+					((zerop n) lst)
+					(t (let ((cur-player (caar lst))
+							 (cur-dice (cadar lst)))
+						 (if (and (eq cur-player player) (< cur-dice *max-dice*))
+						   (cons (list cur-player (1+ cur-dice))
+								 (f (cdr lst) (1- n)))
+						   (cons (car lst) (f (cdr lst) n))))))))
+	(board-array (f (coerce board 'list) spare-dice))))
+
+(defun play-vs-human (tree)
+  ;2人のプレイヤーでゲームを実行する。
+  (print-info tree)
+  (if (caddr tree)
+	(play-vs-human (handle-human tree))
+	(announce-winner (cadr tree))))
+
+(defun print-info (tree)
+  ;現在のゲームの状態を出力する。
+  (fresh-line)
+  (format t "current player = ~a" (player-letter (car tree)))
+  (draw-board (cadr tree)))
+
+
+
+
 
 
 
