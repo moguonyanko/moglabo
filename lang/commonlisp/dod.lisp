@@ -125,6 +125,45 @@
   (format t "current player = ~a" (player-letter (car tree)))
   (draw-board (cadr tree)))
 
+(defun handle-human (tree)
+  ;プレイヤーが選択できる指し手を表示して選択結果を読み込む。
+  (fresh-line)
+  (princ "choose your move:")
+  (let ((moves (caddr tree)))
+	(loop for move in moves
+		  for n from 1
+		  do (let ((action (car move)))
+			   (fresh-line)
+			   (format t "~a. " n)
+			   (if action 
+				 (format t "~a -> ~a" (car action) (cadr action))
+				 (princ "end turn"))))
+	(fresh-line)
+	(cadr (nth (1- (read)) moves))))
+
+(defun winners (board)
+  ;マスの獲得数を調べてゲームの勝者を返す。
+  (let* ((tally (loop for hex across board
+					  collect (car hex)))
+		 (totals (mapcar (lambda (player)
+						   (cons player (count player tally)))
+						 (remove-duplicates tally)))
+		 (best (apply #'max (mapcar #'cdr totals))))
+	(mapcar #'car 
+			(remove-if (lambda (x)
+						 (not (eq (cdr x) best)))
+					   totals))))
+
+(defun announce-winner (board)
+  ;ゲームの勝者を表示する。
+  (fresh-line)
+  (let ((w (winners board)))
+	(if (> (length w) 1)
+	  (format t "The game is a tie between ~a" (mapcar #'player-letter w))
+	  (format t "The winner is ~a" (player-letter (car w))))))
+
+
+
 
 
 
