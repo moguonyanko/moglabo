@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Canvas</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="../favicon.ico" />
+		<style>
+			canvas {
+				border: 2px solid grey;
+				border-radius: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<header role="banner">
+			<h1>Canvas</h1>
+			<p>CanvasAPIの練習サイトです。</p>
+		</header>
+
+		<main>
+			<section>
+				<h2>テキスト</h2>
+				<canvas id="TextCanvas" width="400" height="300"></canvas>
+			</section>
+		</main>
+
+		<footer role="contentinfo">
+			<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
+		</footer>
+		
+		<script>
+			(function(win, doc){
+				
+				function testTextCanvas(){
+					var cvsEle = doc.getElementById("TextCanvas"),
+						g = cvsEle.getContext("2d");
+
+					g.font = "bold 32px 'Monospace'";
+					g.textAlign = "center";
+					g.textBaseline = "middle";
+					
+					/* 第2，第3引数は省略するとFirefox, Chromeではエラーになる。 */
+					g.fillText("Hello, Canvas!");
+					
+					/* fontプロパティ内に1つでも正しくない設定があると他の設定も無視される。 */
+					g.font = "16px 'serif'";
+					g.strokeStyle = "#0000FF";
+					
+					var greetText = "ごきげんよう";
+					/* 第4引数のmaxWidthは省略可能。 */
+					g.strokeText(greetText, 150, 55, 50);
+					var metrics = g.measureText(greetText);
+					g.font = "24px 'sans-serif'";
+					g.fillStyle = "#FF0000";
+					g.textBaseline = "ideographic";
+					/* TextMetricsにはwidthしかない。 */
+					g.fillText("TextMetricsのwidthは" + parseInt(metrics.width), 150, 85);
+					
+					/* 影付きの矩形 */
+					g.shadowOffsetX = 5;
+					g.shadowOffsetY = 5;
+					g.shadowBlur = 10;
+					g.shadowColor = "#000000";
+					g.fillStyle = "#AAAAAA";
+					g.fillRect(20, 100, 200, 100);
+					
+					/* 影付きのテキスト */
+					g.shadowColor = "#000000";
+					g.fillStyle = "#001111";
+					g.font = "italic 32px 'Arial'";
+					g.textBaseline = "middle";
+					g.fillText("キャンバス", 110, 150);
+				}
+				
+				
+				function init(){
+					testTextCanvas();
+				}
+				
+				init();
+				
+			}(window, document));
+		</script>
+	</body>
+</html>
