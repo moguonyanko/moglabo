@@ -41,6 +41,39 @@
 					</script>
 				</section>
 			</section>
+			<section>
+				<style scoped="scoped">
+					.NewClass {
+						color: red;
+						font-size: 150%;
+					}
+				</style>
+				<h2>クラスリスト</h2>
+				<p id="ClassListSampleElement" class="Hoge Foo Bar">サンプル</p>
+				<textarea id="ClassListResult" readonly="readonly" cols="40" rows="5">
+				</textarea>
+				<script>
+					(function(win, doc){
+						
+						var sample = doc.getElementById("ClassListSampleElement"),
+							result = doc.getElementById("ClassListResult");
+						
+						result.value = "";
+						
+						sample.classList.add("NewClass");
+						
+						for(var i = 0; i < sample.classList.length; i++){
+							result.value += sample.classList[i];
+							result.value += "\n";
+						}
+						
+						setTimeout(function(){
+							sample.classList.remove("NewClass");
+						}, 3000);
+						
+					}(window, document));
+				</script>
+			</section>
 		</main>
 
 		<footer role="contentinfo">
