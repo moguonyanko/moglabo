@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>History</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="../../favicon.ico" />
+		<style>
+			.HistoryTest0 {
+				background-color: green;
+				font-size: 150%;
+			}
+			
+			.HistoryTest1 {
+				background-color: red;
+				font-style: italic;
+			}
+		</style>
+	</head>
+	<body>
+		<header role="banner">
+			<h1>History</h1>
+			<p>HistoryAPIの練習サイトです。</p>
+		</header>
+		
+		<main>
+			<section>
+				<h2>履歴の追加と削除</h2>
+				<div>
+					<p id="HistorySampleElement" class="HistoryTest0">テストです</p>
+					<button id="HisotryPushButton">履歴追加</button>
+				</div>
+			</section>
+			<script>
+				(function(win, doc){
+					
+					var history = win.history,
+					count = 1;
+					
+					function addEventListener(){
+						var btn = doc.getElementById("HisotryPushButton");
+						btn.addEventListener("click", function(evt){
+							count++;
+							history.pushState(null, "History Test Now", 
+							"?stylechange");
+						}, false);
+						
+						win.addEventListener("popstate", function(){
+							var el = doc.getElementById("HistorySampleElement");
+							el.classList.remove(el.getAttribute("class"));
+							el.classList.add("HistoryTest" + (count % 2));
+						}, false);
+					}
+					
+					function init(){
+						addEventListener();
+					}
+					
+					init();
+					
+				}(window, document));
+			</script>
+		</main>
+	</body>
+</html>
