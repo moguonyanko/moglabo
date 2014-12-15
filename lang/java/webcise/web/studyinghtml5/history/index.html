@@ -35,20 +35,25 @@
 				(function(win, doc){
 					
 					var history = win.history,
-					count = 1;
+					count = 0;
 					
 					function addEventListener(){
 						var btn = doc.getElementById("HisotryPushButton");
 						btn.addEventListener("click", function(evt){
-							count++;
-							history.pushState(null, "History Test Now", 
-							"?stylechange");
+							history.pushState({
+								styleId : "HistoryTest" + (++count % 2)
+							}, "History Test Now", 
+							"?stylechange" + count);
 						}, false);
 						
-						win.addEventListener("popstate", function(){
+						win.addEventListener("popstate", function(evt){
 							var el = doc.getElementById("HistorySampleElement");
 							el.classList.remove(el.getAttribute("class"));
-							el.classList.add("HistoryTest" + (count % 2));
+							var stateData = evt.state;
+							/* 履歴を辿り切るとstateプロパティはnullになる。 */
+							if(stateData){
+								el.classList.add(stateData.styleId);
+							}
 						}, false);
 					}
 					
