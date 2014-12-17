@@ -7,13 +7,19 @@
 		<link rel="shortcut icon" href="../../favicon.ico" />
 		<style>
 			.HistoryTest0 {
-				background-color: green;
+				background-color: greenyellow;
 				font-size: 150%;
 			}
-			
+
 			.HistoryTest1 {
-				background-color: red;
+				background-color: gold;
 				font-style: italic;
+				border-radius: 5px;
+			}
+
+			#HistorySampleElement {
+				width: 25%;
+				text-align: center;
 			}
 		</style>
 	</head>
@@ -22,47 +28,75 @@
 			<h1>History</h1>
 			<p>HistoryAPIの練習サイトです。</p>
 		</header>
-		
+
 		<main>
 			<section>
-				<h2>履歴の追加と削除</h2>
+				<h2>履歴の追加と置換</h2>
 				<div>
-					<p id="HistorySampleElement" class="HistoryTest0">テストです</p>
-					<button id="HisotryPushButton">履歴追加</button>
+					<div id="HistorySampleElement" class="HistoryTest0">テストです</div>
+					<button id="HisotryPushButton" class="HistoryButton">履歴追加</button>
+					<button id="HisotryReplaceButton" class="HistoryButton">履歴置換</button>
+					<p>現在のLocationのhref</p>
+					<div id="HrefView"></div>
 				</div>
 			</section>
 			<script>
-				(function(win, doc){
-					
+				(function (win, doc) {
+
 					var history = win.history,
-					count = 0;
-					
-					function addEventListener(){
-						var btn = doc.getElementById("HisotryPushButton");
-						btn.addEventListener("click", function(evt){
+						count = 0;
+
+					function updateHrefView() {
+						var view = doc.getElementById("HrefView");
+						view.innerHTML = '<span>' + location.href + '</span>';
+					}
+
+					function addEventListener() {
+						var pushBtn = doc.getElementById("HisotryPushButton");
+						pushBtn.addEventListener("click", function (evt) {
 							history.pushState({
-								styleId : "HistoryTest" + (++count % 2)
-							}, "History Test Now", 
-							"?stylechange" + count);
+								styleId: "HistoryTest" + (++count % 2)
+							}, "Push History Test",
+								"?stylechange" + count);
 						}, false);
-						
-						win.addEventListener("popstate", function(evt){
+
+						var replaceBtn = doc.getElementById("HisotryReplaceButton");
+						replaceBtn.addEventListener("click", function (evt) {
+							/** 
+							 * replaceStateであれば履歴を汚染しないので
+							 * 戻るボタンですぐ前のページに戻したりできる。 
+							 */
+							history.replaceState({
+								styleId: "HistoryTest" + (++count % 2)
+							}, "Replce History Test",
+								"?stylechange" + count);
+						}, false);
+
+						win.addEventListener("popstate", function (evt) {
 							var el = doc.getElementById("HistorySampleElement");
-							el.classList.remove(el.getAttribute("class"));
+							var nowClass = el.getAttribute("class");
+							if (nowClass) {
+								el.classList.remove(nowClass);
+							}
 							var stateData = evt.state;
 							/* 履歴を辿り切るとstateプロパティはnullになる。 */
-							if(stateData){
+							if (stateData) {
 								el.classList.add(stateData.styleId);
 							}
 						}, false);
+
+						var btns = doc.querySelectorAll(".HistoryButton");
+						for (var i = 0, len = btns.length; i < len; i++) {
+							btns[i].addEventListener("click", updateHrefView, false);
+						}
 					}
-					
-					function init(){
+
+					function init() {
 						addEventListener();
 					}
-					
+
 					init();
-					
+
 				}(window, document));
 			</script>
 		</main>
