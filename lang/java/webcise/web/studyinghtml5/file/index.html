@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>File API</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<style>
+		</style>
+	</head>
+	<body>
+		<header role="banner">
+			<h1>File API</h1>
+			<p>File APIの練習サイトです。</p>
+		</header>
+
+		<main>
+			<section>
+				<h2>Fileのメタ情報を取得</h2>
+				<div>
+					<textarea id="FileMetaInfo" cols="30" rows="15"></textarea>
+				</div>
+				<p><input id="FileMetaTarget" type="file" /></p>
+				<p><button id="FileMetaInfoGetter">メタ情報取得</button></p>
+			</section>
+		</main>
+
+		<footer role="contentinfo">
+			<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
+		</footer>
+
+		<script>
+			(function (win, doc) {
+
+				function dispFileMetaInfo(evt) {
+					var infoArea = doc.getElementById("FileMetaInfo");
+					
+					/* @todo implement */
+					
+				}
+
+				function addEventListener() {
+					var infoGetter = doc.getElementById("FileMetaInfoGetter");
+					infoGetter.addEventListener("click", dispFileMetaInfo, false);
+				}
+
+				function init() {
+					addEventListener();
+				}
+
+				init();
+
+			}(window, document));
+		</script>
+	</body>
+</html>
