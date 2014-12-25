@@ -17,9 +17,10 @@
 			<section>
 				<h2>Fileのメタ情報を取得</h2>
 				<div>
-					<textarea id="FileMetaInfo" cols="30" rows="15"></textarea>
+					<textarea id="FileMetaInfo" cols="50" rows="10" readonly="readonly">
+					</textarea>
 				</div>
-				<p><input id="FileMetaTarget" type="file" /></p>
+				<p><input id="FileMetaTarget" type="file" multiple="multiple" /></p>
 				<p><button id="FileMetaInfoGetter">メタ情報取得</button></p>
 			</section>
 		</main>
@@ -31,16 +32,35 @@
 		<script>
 			(function (win, doc) {
 
-				function dispFileMetaInfo(evt) {
-					var infoArea = doc.getElementById("FileMetaInfo");
+				/* 引数からファイルの情報は得られない。 */
+				function handleFiles() {
+					var selectedFiles = this.files;
+
+					var dispFileMetaInfo = function (evt) {
+						var infoArea = doc.getElementById("FileMetaInfo");
+						infoArea.value = "";
+
+						var info = [];
+						if (selectedFiles) {
+							for (var i = 0; i < selectedFiles.length; i++) {
+								var file = selectedFiles[i];
+								info.push("ファイル名：" + file.name);
+								info.push("ファイルサイズ：" + file.size);
+								info.push("ファイルMIMEタイプ：" + file.type);
+								info.push("------------------------------");
+							}
+
+							infoArea.value += info.join("\n");
+						}
+					};
 					
-					/* @todo implement */
-					
+					var infoGetter = doc.getElementById("FileMetaInfoGetter");
+					infoGetter.onclick = dispFileMetaInfo;
 				}
 
 				function addEventListener() {
-					var infoGetter = doc.getElementById("FileMetaInfoGetter");
-					infoGetter.addEventListener("click", dispFileMetaInfo, false);
+					var fileInput = doc.getElementById("FileMetaTarget");
+					fileInput.addEventListener("change", handleFiles, false);
 				}
 
 				function init() {
