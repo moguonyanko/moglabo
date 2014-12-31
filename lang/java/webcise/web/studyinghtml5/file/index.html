@@ -15,13 +15,22 @@
 
 		<main>
 			<section>
-				<h2>Fileのメタ情報を取得</h2>
+				<h2>ファイルのメタ情報を取得</h2>
 				<div>
-					<textarea id="FileMetaInfo" cols="50" rows="10" readonly="readonly">
+					<textarea id="FileMetaInfo" cols="55" rows="10" readonly="readonly">
 					</textarea>
 				</div>
+				<p>メタ情報取得対象選択</p>
 				<p><input id="FileMetaTarget" type="file" multiple="multiple" /></p>
-				<p><button id="FileMetaInfoGetter">メタ情報取得</button></p>
+			</section>
+			<section>
+				<h2>Blob URLを利用して画像ファイルを描画</h2>
+				<div>
+					<div id="FileBlobContainer">
+					</div>
+				</div>
+				<p>描画対象画像選択</p>
+				<p><input id="FileBlobTarget" type="file" multiple="multiple" /></p>
 			</section>
 		</main>
 
@@ -32,35 +41,81 @@
 		<script>
 			(function (win, doc) {
 
-				/* 引数からファイルの情報は得られない。 */
-				function handleFiles() {
+				function getFileMetaInfo(files) {
+					var info = [];
+
+					if (files) {
+						for (var i = 0; i < files.length; i++) {
+							var file = files.item(i);
+							info.push("ファイル名：" + file.name);
+							info.push("ファイルサイズ：" + file.size);
+							info.push("ファイルMIMEタイプ：" + file.type);
+							info.push("最終更新日時：" + file.lastModifiedDate);
+							info.push("------------------------------");
+						}
+					}
+
+					return info;
+				}
+
+				function getBlobImage(blob) {
+					var img = new Image(),
+						url = win.URL.createObjectURL(blob);
+
+					img.onload = function () {
+						win.URL.revokeObjectURL(url);
+					};
+					img.src = url;
+
+					return img;
+				}
+
+				/**
+				 * イベントハンドラの引数からFileListオブジェクトは得られない。 
+				 */
+
+				function handleFileMetaInfo(evt) {
+					var selectedFiles = this.files;
+					var infoArea = doc.getElementById("FileMetaInfo");
+					infoArea.value = "";
+					var info = getFileMetaInfo(selectedFiles);
+					infoArea.value += info.join("\n");
+				}
+
+				function handleImageFile(evt) {
 					var selectedFiles = this.files;
 
-					var dispFileMetaInfo = function (evt) {
-						var infoArea = doc.getElementById("FileMetaInfo");
-						infoArea.value = "";
+					var imgContainer = doc.getElementById("FileBlobContainer"),
+						imgKeyword = "FileImage",
+						imgClassName = imgKeyword;
 
-						var info = [];
-						if (selectedFiles) {
-							for (var i = 0; i < selectedFiles.length; i++) {
-								var file = selectedFiles[i];
-								info.push("ファイル名：" + file.name);
-								info.push("ファイルサイズ：" + file.size);
-								info.push("ファイルMIMEタイプ：" + file.type);
-								info.push("------------------------------");
-							}
+					var oldImgs = doc.querySelectorAll("." + imgClassName);
 
-							infoArea.value += info.join("\n");
-						}
-					};
+					Array.prototype.forEach.call(oldImgs, function (img, idx, imgs) {
+						imgContainer.removeChild(img);
+					});
 					
-					var infoGetter = doc.getElementById("FileMetaInfoGetter");
-					infoGetter.onclick = dispFileMetaInfo;
+					var imgRegexp = /^image\//;
+
+					for (var i = 0, max = selectedFiles.length; i < max; i++) {
+						var file = selectedFiles.item(i);
+
+						if (imgRegexp.test(file.type)) {
+							var img = getBlobImage(file);
+							img.setAttribute("class", imgClassName);
+							imgContainer.appendChild(img);
+						}else{
+							console.log("画像ファイルではありません。 ... " + file.name);
+						}
+					}
 				}
 
 				function addEventListener() {
 					var fileInput = doc.getElementById("FileMetaTarget");
-					fileInput.addEventListener("change", handleFiles, false);
+					fileInput.addEventListener("change", handleFileMetaInfo, false);
+
+					var blobInput = doc.getElementById("FileBlobTarget");
+					blobInput.addEventListener("change", handleImageFile, false);
 				}
 
 				function init() {
