@@ -25,12 +25,11 @@
 			</section>
 			<section>
 				<h2>Blob URLを利用して画像ファイルを描画</h2>
-				<div>
-					<div id="FileBlobContainer">
-					</div>
-				</div>
 				<p>描画対象画像選択</p>
+				<label><input id="FileHalfCheck" type="checkbox" />画像を半分にスライス</label>
 				<p><input id="FileBlobTarget" type="file" multiple="multiple" /></p>
+				<div id="FileBlobContainer">
+				</div>
 			</section>
 		</main>
 
@@ -41,8 +40,9 @@
 		<script>
 			(function (win, doc) {
 
-				function getFileMetaInfo(files) {
-					var info = [];
+				function getFileMetaInfo(files, opt_separator) {
+					var info = [],
+						separator = opt_separator || "\n";
 
 					if (files) {
 						for (var i = 0; i < files.length; i++) {
@@ -51,14 +51,18 @@
 							info.push("ファイルサイズ：" + file.size);
 							info.push("ファイルMIMEタイプ：" + file.type);
 							info.push("最終更新日時：" + file.lastModifiedDate);
-							info.push("------------------------------");
+							info.push(separator);
 						}
 					}
 
-					return info;
+					return info.join(separator);
 				}
 
-				function getBlobImage(blob) {
+				function getBlobImage(blob, opt) {
+					if (opt && opt.half) {
+						blob = blob.slice(0, blob.size / 2, blob.type);
+					}
+
 					var img = new Image(),
 						url = win.URL.createObjectURL(blob);
 
@@ -79,7 +83,7 @@
 					var infoArea = doc.getElementById("FileMetaInfo");
 					infoArea.value = "";
 					var info = getFileMetaInfo(selectedFiles);
-					infoArea.value += info.join("\n");
+					infoArea.value += info;
 				}
 
 				function handleImageFile(evt) {
@@ -94,17 +98,20 @@
 					Array.prototype.forEach.call(oldImgs, function (img, idx, imgs) {
 						imgContainer.removeChild(img);
 					});
-					
-					var imgRegexp = /^image\//;
+
+					var imgRegexp = /^image\//,
+						half = doc.getElementById("FileHalfCheck").checked;
 
 					for (var i = 0, max = selectedFiles.length; i < max; i++) {
 						var file = selectedFiles.item(i);
 
 						if (imgRegexp.test(file.type)) {
-							var img = getBlobImage(file);
+							var img = getBlobImage(file, {
+								half: half
+							});
 							img.setAttribute("class", imgClassName);
 							imgContainer.appendChild(img);
-						}else{
+						} else {
 							console.log("画像ファイルではありません。 ... " + file.name);
 						}
 					}
