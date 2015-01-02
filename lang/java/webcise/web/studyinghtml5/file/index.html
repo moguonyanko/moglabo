@@ -31,6 +31,15 @@
 				<div id="FileBlobContainer">
 				</div>
 			</section>
+			<section>
+				<h2>画像ファイルのData URLを表示</h2>
+				<div>
+					<textarea id="FileDataURL" cols="120" rows="10" readonly="readonly">
+					</textarea>
+				</div>
+				<p>Data URL表示対象画像選択</p>
+				<p><input id="FileDataURLTarget" type="file" multiple="multiple" /></p>
+			</section>
 		</main>
 
 		<footer role="contentinfo">
@@ -74,6 +83,10 @@
 					return img;
 				}
 
+				function isImage(file) {
+					return /^image\//.test(file.type);
+				}
+
 				/**
 				 * イベントハンドラの引数からFileListオブジェクトは得られない。 
 				 */
@@ -99,13 +112,12 @@
 						imgContainer.removeChild(img);
 					});
 
-					var imgRegexp = /^image\//,
-						half = doc.getElementById("FileHalfCheck").checked;
+					var half = doc.getElementById("FileHalfCheck").checked;
 
 					for (var i = 0, max = selectedFiles.length; i < max; i++) {
 						var file = selectedFiles.item(i);
 
-						if (imgRegexp.test(file.type)) {
+						if (isImage(file)) {
 							var img = getBlobImage(file, {
 								half: half
 							});
@@ -117,12 +129,43 @@
 					}
 				}
 
+				function getDataURL(files, callback) {
+					for (var i = 0, max = files.length; i < max; i++) {
+						var file = files.item(i);
+
+						if (isImage(file)) {
+							/**
+							 * 1つのファイル読み込み毎にFileReaderオブジェクトを
+							 * 生成する必要がある。
+							 */
+							var reader = new FileReader();
+							reader.onload = callback;
+							reader.readAsDataURL(file);
+						}
+					}
+				}
+
+				function handleDataURL() {
+					var resultArea = doc.getElementById("FileDataURL");
+					resultArea.value = "";
+
+					var dispDataURL = function (evt) {
+						var result = evt.target.result;
+						resultArea.value += result + "\n<END>\n";
+					};
+
+					getDataURL(this.files, dispDataURL);
+				}
+
 				function addEventListener() {
 					var fileInput = doc.getElementById("FileMetaTarget");
 					fileInput.addEventListener("change", handleFileMetaInfo, false);
 
 					var blobInput = doc.getElementById("FileBlobTarget");
 					blobInput.addEventListener("change", handleImageFile, false);
+
+					var blobInput = doc.getElementById("FileDataURLTarget");
+					blobInput.addEventListener("change", handleDataURL, false);
 				}
 
 				function init() {
