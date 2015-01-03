@@ -4,6 +4,7 @@
 		<meta charset="UTF-8" />
 		<title>File API</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="../../favicon.ico" />
 		<style>
 		</style>
 	</head>
@@ -32,13 +33,17 @@
 				</div>
 			</section>
 			<section>
-				<h2>画像ファイルのData URLを表示</h2>
+				<h2>ファイルの内容を表示</h2>
 				<div>
-					<textarea id="FileDataURL" cols="120" rows="10" readonly="readonly">
+					<textarea id="FileReadResult" cols="120" rows="10" readonly="readonly">
 					</textarea>
 				</div>
 				<p>Data URL表示対象画像選択</p>
 				<p><input id="FileDataURLTarget" type="file" multiple="multiple" /></p>
+				<p>Text表示対象画像選択</p>
+				<p><input id="FileTextTarget" type="file" multiple="multiple" /></p>
+				<p>ArrayBuffer表示対象画像選択</p>
+				<p><input id="FileArrayBufferTarget" type="file" multiple="multiple" /></p>
 			</section>
 		</main>
 
@@ -48,6 +53,13 @@
 
 		<script>
 			(function (win, doc) {
+
+				function noop() {
+				}
+
+				function returnTrue() {
+					return true;
+				}
 
 				function getFileMetaInfo(files, opt_separator) {
 					var info = [],
@@ -85,6 +97,10 @@
 
 				function isImage(file) {
 					return /^image\//.test(file.type);
+				}
+
+				function isText(file) {
+					return /^text\//.test(file.type);
 				}
 
 				/**
@@ -129,32 +145,53 @@
 					}
 				}
 
-				function getDataURL(files, callback) {
+				/**
+				 * 1つのファイル読み込み毎にFileReaderオブジェクトを
+				 * 生成する必要がある。
+				 */
+				function readFile(files, funcName, opt) {
+					opt = opt || {};
+					opt.predicate = opt.predicate || returnTrue;
+
 					for (var i = 0, max = files.length; i < max; i++) {
 						var file = files.item(i);
 
-						if (isImage(file)) {
-							/**
-							 * 1つのファイル読み込み毎にFileReaderオブジェクトを
-							 * 生成する必要がある。
-							 */
+						if (opt.predicate(file)) {
 							var reader = new FileReader();
-							reader.onload = callback;
-							reader.readAsDataURL(file);
+							reader.onload = opt.onload || noop;
+							reader.onerror = opt.onerror || noop;
+							reader[funcName](file);
 						}
 					}
 				}
 
-				function handleDataURL() {
-					var resultArea = doc.getElementById("FileDataURL");
-					resultArea.value = "";
+				var readAs = {
+					dataURL: function (files, callback) {
+						readFile(files, "readAsDataURL", {
+							predicate: isImage,
+							onload: callback
+						});
+					},
+					text: function (files, callback) {
+						readFile(files, "readAsText", {
+							predicate: isText,
+							onload: callback
+						});
+					},
+					arrayBuffer: function (files, callback) {
+						readFile(files, "readAsArrayBuffer", {
+							onload: callback
+						});
+					}
+				};
 
-					var dispDataURL = function (evt) {
+				function handleReadFile(files, funcName) {
+					var resultArea = doc.getElementById("FileReadResult");
+					resultArea.value = "";
+					readAs[funcName](files, function (evt) {
 						var result = evt.target.result;
 						resultArea.value += result + "\n<END>\n";
-					};
-
-					getDataURL(this.files, dispDataURL);
+					});
 				}
 
 				function addEventListener() {
@@ -165,7 +202,19 @@
 					blobInput.addEventListener("change", handleImageFile, false);
 
 					var dataURLInput = doc.getElementById("FileDataURLTarget");
-					dataURLInput.addEventListener("change", handleDataURL, false);
+					dataURLInput.addEventListener("change", function (evt) {
+						handleReadFile(this.files, "dataURL");
+					}, false);
+
+					var textInput = doc.getElementById("FileTextTarget");
+					textInput.addEventListener("change", function (evt) {
+						handleReadFile(this.files, "text");
+					}, false);
+
+					var arrayBufferInput = doc.getElementById("FileArrayBufferTarget");
+					arrayBufferInput.addEventListener("change", function (evt) {
+						handleReadFile(this.files, "arrayBuffer");
+					}, false);
 				}
 
 				function init() {
