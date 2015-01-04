@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Navigation Timing</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="../../favicon.ico" />
+		<style>
+		</style>
+	</head>
+	<body>
+		<header role="banner">
+			<h1>Navigation Timing</h1>
+			<p>Navigation Timing関連の練習サイトです。</p>
+		</header>
+		<main>
+			<section>
+				<h2>各種時刻の確認</h2>
+				<div id="TimingView">
+
+				</div>
+			</section>
+		</main>
+
+		<script>
+			(function (win, doc) {
+				"use strict";
+
+				function el(id, node) {
+					return (node || doc).getElementById(id);
+				}
+
+				var timeView = el("TimingView");
+
+				function formatTimingInfo(info, opt_separator) {
+					var txt = [];
+					txt.push(info.name);
+					txt.push(opt_separator || ":");
+					txt.push(info.value);
+
+					var infoValue = txt.join("");
+
+					return infoValue;
+				}
+
+				function handleLoadPage(evt) {
+					timeView.innerHTML = "";
+
+					var timing = win.performance.timing,
+						fragment = doc.createDocumentFragment();
+					for (var name in timing) {
+						if (typeof timing[name] !== "function") {
+							var info = formatTimingInfo({
+								name: name,
+								value: timing[name]
+							});
+							var txtNode = doc.createTextNode(info),
+								newLine = doc.createElement("br");
+							fragment.appendChild(txtNode);
+							fragment.appendChild(newLine);
+						}
+					}
+					timeView.appendChild(fragment);
+				}
+
+				function addEventListener() {
+					win.addEventListener("load", handleLoadPage, false);
+				}
+
+				function init() {
+					addEventListener();
+				}
+
+				init();
+
+			}(window, document));
+		</script>
+	</body>
+</html>
