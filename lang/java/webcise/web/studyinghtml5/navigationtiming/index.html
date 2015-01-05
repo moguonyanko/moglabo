@@ -17,7 +17,11 @@
 			<section>
 				<h2>各種時刻の確認</h2>
 				<div id="TimingView">
-
+				</div>
+			</section>
+			<section>
+				<h2>ナビゲーションの種類の確認</h2>
+				<div id="NavigationTypeView">
 				</div>
 			</section>
 		</main>
@@ -30,7 +34,8 @@
 					return (node || doc).getElementById(id);
 				}
 
-				var timeView = el("TimingView");
+				var timeView = el("TimingView"),
+					naviView = el("NavigationTypeView");
 
 				function formatTimingInfo(info, opt_separator) {
 					var txt = [];
@@ -43,11 +48,10 @@
 					return infoValue;
 				}
 
-				function handleLoadPage(evt) {
-					timeView.innerHTML = "";
-
+				function handleTimingEvent(evt) {
 					var timing = win.performance.timing,
-						fragment = doc.createDocumentFragment();
+						fragment = doc.createDocumentFragment(),
+						timeContentId = "TimeContent";
 					for (var name in timing) {
 						if (typeof timing[name] !== "function") {
 							var info = formatTimingInfo({
@@ -60,11 +64,24 @@
 							fragment.appendChild(newLine);
 						}
 					}
-					timeView.appendChild(fragment);
+
+					var cont = doc.createElement("div");
+					cont.setAttribute("id", timeContentId);
+					cont.appendChild(fragment);
+					if (el(timeContentId)) {
+						timeView.replaceChild(cont, el(timeContentId));
+					} else {
+						timeView.appendChild(cont);
+					}
+				}
+				
+				function handleNavigationEvent(evt){
+					/* @todo implement */
 				}
 
 				function addEventListener() {
-					win.addEventListener("load", handleLoadPage, false);
+					win.addEventListener("load", handleTimingEvent, false);
+					win.addEventListener("load", handleNavigationEvent, false);
 				}
 
 				function init() {
