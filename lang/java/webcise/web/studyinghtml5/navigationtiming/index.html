@@ -2,30 +2,51 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<title>Navigation Timing</title>
+		<title>Navigation Timing and High Resolution Time</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="shortcut icon" href="../../favicon.ico" />
 		<style>
+			.InfoView {
+				width: 50%;
+				min-height: 10%;
+				max-height: 250px;
+				background-color: beige;
+				border: 2px solid beige;
+				border-radius: 10px;
+				overflow-y: scroll;
+			}
 		</style>
 	</head>
 	<body>
 		<header role="banner">
-			<h1>Navigation Timing</h1>
-			<p>Navigation Timing関連の練習サイトです。</p>
+			<h1>Navigation Timing and High Resolution Time</h1>
+			<p>Navigation TimingとHigh Resolution Timeの練習サイトです。</p>
 		</header>
 		<main>
 			<section>
 				<h2>各種時刻の確認</h2>
-				<div id="TimingView">
+				<p>PerformanceTimingオブジェクトから情報を取得できる。</p>
+				<div id="TimingView" class="InfoView">
 				</div>
 			</section>
 			<section>
-				<h2>ナビゲーションの種類の確認</h2>
-				<div id="NavigationTypeView">
+				<h2>ナビゲーションの種類やリダイレクト数の確認</h2>
+				<p>PerformanceNavigationオブジェクトから情報を取得できる。</p>
+				<div id="NavigationTypeView" class="InfoView">
+				</div>
+			</section>
+			<section>
+				<h2>高精度のタイムスタンプ</h2>
+				<p>navigationStartからの経過時間</p>
+				<div id="HighResolutionTimeView" class="InfoView">
 				</div>
 			</section>
 		</main>
 
+		<footer role="contentinfo">
+			<small>Copyright &copy; 2015 moguonyanko All rights reserved.</small>
+		</footer>
+		
 		<script>
 			(function (win, doc) {
 				"use strict";
@@ -33,9 +54,14 @@
 				function el(id, node) {
 					return (node || doc).getElementById(id);
 				}
+				
+				function log(txt){
+					console.log(txt);
+				}
 
 				var timeView = el("TimingView"),
-					naviView = el("NavigationTypeView");
+					naviView = el("NavigationTypeView"),
+					highView = el("HighResolutionTimeView");
 
 				function formatTimingInfo(info, opt_separator) {
 					var txt = [];
@@ -75,13 +101,51 @@
 					}
 				}
 				
-				function handleNavigationEvent(evt){
-					/* @todo implement */
+				var naviTypes = (function(){
+					var navi = win.performance.navigation;
+					
+					var types = {};
+					
+					types[navi.TYPE_NAVIGATE] = "アドレスバーまたはリンクから訪問された。";
+					types[navi.TYPE_RELOAD] = "ページが再読み込みされた。";
+					types[navi.TYPE_BACK_FORWARD] = "履歴を戻ったか進んだ。";
+					types[navi.TYPE_RESERVED] = "不明(予約)";
+					
+					return types;
+					
+				}());
+
+				function handleNavigationEvent(evt) {
+					var navi = win.performance.navigation,
+						naviType = naviTypes[navi.type],
+						redirectCount = navi.redirectCount;
+					
+					var info = naviType + " リダイレクト回数 -> " + redirectCount;
+					
+					var naviTypeNode = doc.createTextNode(info),
+						naviCont = doc.createElement("div"),
+						naviContId = "NavigationContent";
+					
+					naviCont.setAttribute("id", naviContId);
+					naviCont.appendChild(naviTypeNode);
+					
+					var oldCont = el(naviContId);
+					if(oldCont){
+						naviView.replaceChild(naviCont, oldCont);
+					}else{
+						naviView.appendChild(naviCont);
+					}
+				}
+				
+				function handleHighResoutionTime(evt){
+					var timeStamp = win.performance.now();
+					highView.innerHTML = timeStamp;
 				}
 
 				function addEventListener() {
 					win.addEventListener("load", handleTimingEvent, false);
 					win.addEventListener("load", handleNavigationEvent, false);
+					win.addEventListener("load", handleHighResoutionTime, false);
 				}
 
 				function init() {
