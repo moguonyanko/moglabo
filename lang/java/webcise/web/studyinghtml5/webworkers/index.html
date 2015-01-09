@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Web Workers</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="../../favicon.ico" />
+		<style>
+			canvas {
+				border: 2px solid black;
+			}
+		</style>
+	</head>	
+	<body>
+		<header role="banner">
+			<h1>Web Workers</h1>
+		</header>
+
+		<main role="main">
+			<section>
+				<h2>描画と重い計算の並列処理</h2>
+				<canvas id="WorkerCanvas" width="500" height="500"></canvas>
+				<input id="FibInput" type="text" value="10" />
+				<input id="FibResult" type="text" value="" readonly="readonly" />
+				<button id="DrawRunner">並列処理開始</button>
+			</section>
+		</main>
+
+		<footer role="contentinfo">
+			<small>Copyright &copy; 2015 moguonyanko All rights reserved.</small>
+		</footer>
+
+		<script>
+			(function (win, doc) {
+
+				var canvas = doc.getElementById("WorkerCanvas"),
+					g = canvas.getContext("2d");
+					
+				function runWorker(func, n){
+					var worker = new Worker("worker.js");
+					worker.onmessage = function(evt){
+						var result = evt.data;
+						func(result);
+					};
+					worker.postMessage(n);
+				}
+
+				/**
+				 * Workerの処理が重くても処理が止まらないことをテストするための関数。
+				 * requestAnimationFrameを使って描画を繰り返す。
+				 */
+				function drawShape() {
+				}
+				
+				function addEventListener(){
+					
+				}
+
+				function init() {
+					/**
+					 * 図形の描画とフィボナッチ数の計算を並列処理する。
+					 */
+					addEventListener();
+				}
+
+				init();
+
+			}(window, document));
+		</script>
+	</body>
+</html>
