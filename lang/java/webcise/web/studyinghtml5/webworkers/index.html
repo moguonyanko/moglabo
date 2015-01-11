@@ -7,7 +7,8 @@
 		<link rel="shortcut icon" href="../../favicon.ico" />
 		<style>
 			canvas {
-				border: 2px solid black;
+				border: 1px solid grey;
+				background-color: lightgrey;
 			}
 		</style>
 	</head>	
@@ -19,10 +20,18 @@
 		<main role="main">
 			<section>
 				<h2>描画と重い計算の並列処理</h2>
-				<canvas id="WorkerCanvas" width="500" height="500"></canvas>
-				<input id="FibInput" type="text" value="10" />
-				<input id="FibResult" type="text" value="" readonly="readonly" />
-				<button id="DrawRunner">並列処理開始</button>
+				<canvas id="WorkerCanvas" width="800" height="100"></canvas>
+				<div>
+					<input id="FibInput" type="text" value="30" />
+					<input id="FibResult" type="text" value="" readonly="readonly" />
+				</div>
+				<div>
+					<input id="EnableWorkers" type="checkbox" checked="checked" />
+					<label for="EnableWorkers">
+						<span>Web Workers有効</span>
+					</label>
+					<button id="ParallelRunner">並列処理開始</button>
+				</div>
 			</section>
 		</main>
 
@@ -35,31 +44,89 @@
 
 				var canvas = doc.getElementById("WorkerCanvas"),
 					g = canvas.getContext("2d");
-					
-				function runWorker(func, n){
+
+				var width = parseInt(canvas.width),
+					height = parseInt(canvas.height),
+					arcSize = 50;
+
+				var fibResult = doc.getElementById("FibResult");
+
+				var start = win.performance.now();
+
+				function runWorker(func, n) {
 					var worker = new Worker("worker.js");
-					worker.onmessage = function(evt){
+					worker.onmessage = function (evt) {
 						var result = evt.data;
 						func(result);
 					};
 					worker.postMessage(n);
 				}
 
+				function enableWorkers() {
+					var ele = doc.getElementById("EnableWorkers");
+					return ele.checked;
+				}
+
+				function draw(delta) {
+					var left = (delta * 0.1) % (width - arcSize);
+
+					g.fillStyle = "#0066CC";
+					g.setTransform(1, 0, 0, 1, left, 0);
+					g.clearRect(-width, 0, width * 2, height);
+					g.beginPath();
+					g.arc(arcSize, arcSize, arcSize, 0, Math.PI * 2, false);
+					g.fill();
+				}
+
 				/**
 				 * Workerの処理が重くても処理が止まらないことをテストするための関数。
 				 * requestAnimationFrameを使って描画を繰り返す。
 				 */
-				function drawShape() {
+				function drawCircle(now) {
+					draw(now - start);
+					win.requestAnimationFrame(drawCircle);
 				}
-				
-				function addEventListener(){
-					
+
+				/**
+				 * worker.jsにある関数と同じ負荷処理用の関数。
+				 */
+				function fib(n) {
+					if (n <= 1) {
+						return n;
+					}
+
+					return fib(n - 1) + fib(n - 2);
+				}
+
+				/**
+				 * 図形の描画とフィボナッチ数の計算を並列処理する。
+				 */
+				function handleParallelEvent(evt) {
+					drawCircle(start);
+
+					var fibParam = parseInt(doc.getElementById("FibInput").value);
+					fibResult.value = "計算中...";
+					if (!isNaN(fibParam)) {
+						if (enableWorkers()) {
+							runWorker(function (res) {
+								fibResult.value = res;
+							}, fibParam);
+						} else {
+							var res = fib(fibParam);
+							fibResult.value = res;
+						}
+					} else {
+						fibResult.value = "入力値が正の整数ではありません。";
+					}
+				}
+
+				function addEventListener() {
+					fibResult.value = "";
+					var runner = doc.getElementById("ParallelRunner");
+					runner.addEventListener("click", handleParallelEvent, false);
 				}
 
 				function init() {
-					/**
-					 * 図形の描画とフィボナッチ数の計算を並列処理する。
-					 */
 					addEventListener();
 				}
 
