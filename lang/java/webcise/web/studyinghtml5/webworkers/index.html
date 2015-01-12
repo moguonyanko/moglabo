@@ -88,17 +88,6 @@
 				}
 
 				/**
-				 * worker.jsにある関数と同じ負荷処理用の関数。
-				 */
-				function fib(n) {
-					if (n <= 1) {
-						return n;
-					}
-
-					return fib(n - 1) + fib(n - 2);
-				}
-
-				/**
 				 * 図形の描画とフィボナッチ数の計算を並列処理する。
 				 */
 				function handleParallelEvent(evt) {
@@ -134,5 +123,7 @@
 
 			}(window, document));
 		</script>
+		<!-- Workerで使われるスクリプトはWorker専用にしないとWindowオブジェクトが汚染される。 -->
+		<script src="worker.js"></script>
 	</body>
 </html>
