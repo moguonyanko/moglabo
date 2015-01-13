@@ -10,6 +10,10 @@
 				border: 1px solid grey;
 				background-color: lightgrey;
 			}
+			
+			#FibResult {
+				width: 25em;
+			}
 		</style>
 	</head>	
 	<body>
@@ -22,8 +26,8 @@
 				<h2>描画と重い計算の並列処理</h2>
 				<canvas id="WorkerCanvas" width="800" height="100"></canvas>
 				<div>
-					<input id="FibInput" type="text" value="30" />
-					<input id="FibResult" type="text" value="" readonly="readonly" />
+					<p><input id="FibInput" type="text" value="40" /></p>
+					<p><input id="FibResult" type="text" value="" readonly="readonly" /></p>
 				</div>
 				<div>
 					<input id="EnableWorkers" type="checkbox" checked="checked" />
@@ -56,10 +60,18 @@
 				function runWorker(func, n) {
 					var worker = new Worker("worker.js");
 					worker.onmessage = function (evt) {
-						var result = evt.data;
+						var result = evt.data.result;
 						func(result);
 					};
-					worker.postMessage(n);
+					/**
+					 * 複製できないプロパティ(例：関数)を持つオブジェクトを
+					 * postMessageの引数として渡すことはできない。
+					 */
+					worker.postMessage({
+						//handler: "download",
+						handler: "fib",
+						arg: n
+					});
 				}
 
 				function enableWorkers() {
@@ -97,8 +109,8 @@
 					fibResult.value = "計算中...";
 					if (!isNaN(fibParam)) {
 						if (enableWorkers()) {
-							runWorker(function (res) {
-								fibResult.value = res;
+							runWorker(function (result) {
+								fibResult.value = result;
 							}, fibParam);
 						} else {
 							var res = fib(fibParam);
@@ -123,7 +135,6 @@
 
 			}(window, document));
 		</script>
-		<!-- Workerで使われるスクリプトはWorker専用にしないとWindowオブジェクトが汚染される。 -->
 		<script src="worker.js"></script>
 	</body>
 </html>
