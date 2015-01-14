@@ -46,7 +46,12 @@ var messageHandler = {
 			result: result
 		});
 	},
-	download: download
+	download: download,
+	buffer: function (arg) {
+		self.postMessage({
+			result: "未実装"
+		});
+	}
 };
 
 self.onmessage = function (evt) {

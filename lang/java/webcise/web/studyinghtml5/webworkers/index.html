@@ -10,7 +10,7 @@
 				border: 1px solid grey;
 				background-color: lightgrey;
 			}
-			
+
 			#FibResult {
 				width: 25em;
 			}
@@ -25,15 +25,28 @@
 			<section>
 				<h2>描画と重い計算の並列処理</h2>
 				<canvas id="WorkerCanvas" width="800" height="100"></canvas>
+				<p>変換画像のスナップショット</p>
+				<canvas id="SnapshotCanvas" width="800" height="100"></canvas>
 				<div>
-					<p><input id="FibInput" type="text" value="40" /></p>
-					<p><input id="FibResult" type="text" value="" readonly="readonly" /></p>
+					<label>
+						計算の引数
+						<input id="FibInput" type="text" value="40" />
+					</label>
+					<label>
+						計算結果
+						<input id="FibResult" type="text" value="" readonly="readonly" />
+					</label>
 				</div>
 				<div>
 					<input id="EnableWorkers" type="checkbox" checked="checked" />
 					<label for="EnableWorkers">
 						<span>Web Workers有効</span>
 					</label>
+					<div>
+						<label><input name="ParallelType" type="radio" value="fib" checked="checked" />重い計算処理</label>
+						<label><input name="ParallelType" type="radio" value="download" />XMLHttpRequest</label>
+						<label><input name="ParallelType" type="radio" value="buffer" />ArrayBuffer</label>
+					</div>
 					<button id="ParallelRunner">並列処理開始</button>
 				</div>
 			</section>
@@ -57,6 +70,17 @@
 
 				var start = win.performance.now();
 
+				function getParallelType() {
+					var types = doc.getElementsByName("ParallelType");
+					for (var i = 0; i < types.length; i++) {
+						if (types[i].checked) {
+							return types[i].value;
+						}
+					}
+
+					return null;
+				}
+
 				function runWorker(func, n) {
 					var worker = new Worker("worker.js");
 					worker.onmessage = function (evt) {
@@ -68,8 +92,7 @@
 					 * postMessageの引数として渡すことはできない。
 					 */
 					worker.postMessage({
-						//handler: "download",
-						handler: "fib",
+						handler: getParallelType(),
 						arg: n
 					});
 				}
