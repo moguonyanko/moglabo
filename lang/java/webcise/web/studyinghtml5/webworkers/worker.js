@@ -17,7 +17,7 @@ function fib(n) {
 	return fib(n - 1) + fib(n - 2);
 }
 
-function download() {
+function download(data) {
 	var xhr = new XMLHttpRequest(),
 		async = false;
 
@@ -35,27 +35,70 @@ function download() {
 	}
 }
 
+function changeGrayPixel(view, i) {
+	var r = view[i],
+		g = view[i + 1],
+		b = view[i + 2],
+		a = view[i + 3];
+
+	var gray = 0.298912 * r + 0.586611 * g + 0.114478 * b;
+	gray = parseInt(gray, 10);
+
+	view[i] = gray;
+	view[i + 1] = gray;
+	view[i + 2] = gray;
+	view[i + 3] = a;
+}
+
 /**
  * 以下の関数群は本来は各々のスクリプトに分けるべきである。
  */
 var messageHandler = {
-	fib: function (arg) {
-		var n = parseInt(arg);
+	fib: function (data) {
+		var n = parseInt(data.arg);
 		var result = fib(n);
 		self.postMessage({
 			result: result
 		});
 	},
 	download: download,
-	buffer: function (arg) {
-		self.postMessage({
-			result: "未実装"
-		});
+	buffer: function (buf) {
+		var view = new Uint8ClampedArray(buf);
+		
+		/**
+		 * 副作用が無いのでグレースケール変換できない。 
+		 * またかなり遅くなる。
+		 */
+		//Array.prototype.forEach.call(view, changeGrayPixel);
+
+		/* グレースケール変換 */
+		for (var i = 0, len = view.length; i < len; i++) {
+			var r = view[i],
+				g = view[i + 1],
+				b = view[i + 2],
+				a = view[i + 3];
+
+			var gray = 0.298912 * r + 0.586611 * g + 0.114478 * b;
+			gray = parseInt(gray, 10);
+
+			view[i] = gray;
+			view[i + 1] = gray;
+			view[i + 2] = gray;
+			view[i + 3] = a;
+		}
+
+		self.postMessage(buf, [buf]);
 	}
 };
 
 self.onmessage = function (evt) {
-	var handlerName = evt.data.handler,
-		handler = messageHandler[handlerName];
-	handler(evt.data.arg);
+	var evtData = evt.data,
+		handlerName = evtData.handler;
+
+	if (handlerName) {
+		var handler = messageHandler[handlerName];
+		handler(evtData);
+	} else {
+		messageHandler.buffer(evtData);
+	}
 };

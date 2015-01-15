@@ -8,7 +8,7 @@
 		<style>
 			canvas {
 				border: 1px solid grey;
-				background-color: lightgrey;
+				background-color: aliceblue;
 			}
 
 			#FibResult {
@@ -81,11 +81,10 @@
 					return null;
 				}
 
-				function runWorker(func, n) {
+				function runWorker(func, arg) {
 					var worker = new Worker("worker.js");
 					worker.onmessage = function (evt) {
-						var result = evt.data.result;
-						func(result);
+						func(evt.data);
 					};
 					/**
 					 * 複製できないプロパティ(例：関数)を持つオブジェクトを
@@ -93,7 +92,7 @@
 					 */
 					worker.postMessage({
 						handler: getParallelType(),
-						arg: n
+						arg: arg
 					});
 				}
 
@@ -122,26 +121,83 @@
 					win.requestAnimationFrame(drawCircle);
 				}
 
+				var runWorker = {
+					fib: function () {
+						var fibParam = parseInt(doc.getElementById("FibInput").value);
+						fibResult.value = "計算中...";
+						if (!isNaN(fibParam)) {
+							if (enableWorkers()) {
+								var worker = new Worker("worker.js");
+								worker.onmessage = function (evt) {
+									fibResult.value = evt.data.result;
+								};
+								/**
+								 * 複製できないプロパティ(例：関数)を持つオブジェクトを
+								 * postMessageの引数として渡すことはできない。
+								 */
+								worker.postMessage({
+									handler: "fib",
+									arg: fibParam
+								});
+							} else {
+								var res = fib(fibParam);
+								fibResult.value = res;
+							}
+						} else {
+							fibResult.value = "入力値が正の整数ではありません。";
+						}
+					},
+					download: function () {
+						var worker = new Worker("worker.js");
+						worker.onmessage = function (evt) {
+							fibResult.value = evt.data.result;
+						};
+						worker.postMessage({
+							handler: "download",
+							arg: null
+						});
+					},
+					buffer: function () {
+						var imgData = g.getImageData(0, 0, width, height),
+							buf = imgData.data.buffer;
+						
+						var worker = new Worker("worker.js");
+						worker.onmessage = function (evt) {
+							var snapCanvas = doc.getElementById("SnapshotCanvas"),
+								g2 = snapCanvas.getContext("2d"),
+								w = parseInt(snapCanvas.width),
+								h = parseInt(snapCanvas.height),
+								imgData2 = g2.getImageData(0, 0, w, h);
+
+							var data = evt.data,
+								view = new Uint8ClampedArray(data);
+							
+							//Array.prototype.forEach.call(imgData2.data,
+							//	function (element, index) {
+							//		imgData2.data[index] = view[index];
+							//	});
+							
+							for(var index = 0, len = view.length; index < len; index++){
+								imgData2.data[index] = view[index];
+							}
+
+							g2.putImageData(imgData2, 0, 0);
+						};
+
+						worker.postMessage(buf, [buf]);
+					}
+				};
+
 				/**
-				 * 図形の描画とフィボナッチ数の計算を並列処理する。
+				 * 図形の描画と他の処理を並列処理する。
 				 */
 				function handleParallelEvent(evt) {
 					drawCircle(start);
 
-					var fibParam = parseInt(doc.getElementById("FibInput").value);
-					fibResult.value = "計算中...";
-					if (!isNaN(fibParam)) {
-						if (enableWorkers()) {
-							runWorker(function (result) {
-								fibResult.value = result;
-							}, fibParam);
-						} else {
-							var res = fib(fibParam);
-							fibResult.value = res;
-						}
-					} else {
-						fibResult.value = "入力値が正の整数ではありません。";
-					}
+					var type = getParallelType(),
+						parallelFunc = runWorker[type];
+
+					parallelFunc();
 				}
 
 				function addEventListener() {
