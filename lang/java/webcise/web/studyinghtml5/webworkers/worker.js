@@ -17,7 +17,7 @@ function fib(n) {
 	return fib(n - 1) + fib(n - 2);
 }
 
-function download(data) {
+function pollingDownload() {
 	var xhr = new XMLHttpRequest(),
 		async = false;
 
@@ -30,9 +30,12 @@ function download(data) {
 		 * postMessageの引数に渡すことができる。
 		 */
 		self.postMessage({
-			result: xhr.responseText
+			time: Date.now() || "時刻不明",
+			result: JSON.parse(xhr.responseText)
 		});
 	}
+	
+	self.setTimeout(pollingDownload, 1000);
 }
 
 function changeGrayPixel(view, i) {
@@ -61,7 +64,7 @@ var messageHandler = {
 			result: result
 		});
 	},
-	download: download,
+	download: pollingDownload,
 	buffer: function (buf) {
 		var view = new Uint8ClampedArray(buf);
 		
