@@ -17,12 +17,14 @@ function fib(n) {
 	return fib(n - 1) + fib(n - 2);
 }
 
-function pollingDownload() {
+function pollingDownload(data) {
+	var interval = parseInt(data.arg);
+	
 	var xhr = new XMLHttpRequest(),
 		async = false;
 
 	/* Worker内部では同期リクエストしてもWebページの動作をブロックしない。 */
-	xhr.open("GET", "sample.json", async);
+	xhr.open("GET", "sample.json?" + Date.now(), async);
 	xhr.send();
 	if (xhr.status === 200) {
 		/**
@@ -35,7 +37,9 @@ function pollingDownload() {
 		});
 	}
 	
-	self.setTimeout(pollingDownload, 1000);
+	self.setTimeout(function(){
+		pollingDownload(data);
+	}, interval);
 }
 
 function changeGrayPixel(view, i) {

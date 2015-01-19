@@ -164,16 +164,19 @@
 							fibResult.value = txt;
 						};
 						
+						var pollingInterval = 1000,
+							pollingLimit = 5;
+						
 						/* ダウンロードは定期的に繰り返される。 */
 						worker.postMessage({
 							handler: "download",
-							arg: null
+							arg: pollingInterval
 						});
 						
 						/* 一定時間後にworkerを終了する。workerは再利用不可。 */
 						setTimeout(function(){
 							worker.terminate();
-						}, 5000);
+						}, pollingInterval * pollingLimit);
 					},
 					buffer: function () {
 						var imgData = g.getImageData(0, 0, width, height),
