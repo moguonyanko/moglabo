@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja" manifest="cache.appcache">
+<html lang="ja">
 	<head>
 		<meta charset="UTF-8" />
 		<title>Application Cache Sample</title>
@@ -9,11 +9,61 @@
 	</head>
 	<body>
 		<h1>Application Cache Sample</h1>
-		
+
 		<p>アプリケーションキャッシュの動作確認を行います。</p>
-		
+
+		<div>
+			<textarea id="CacheReportArea" cols="50" rows="10"></textarea>
+			<p><button onclick="document.getElementById('CacheReportArea').value = ''">clear</button></p>
+		</div>
+
 		<footer role="contentinfo">
-			<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
+			<small>Copyright &copy; 2015 moguonyanko All rights reserved.</small>
 		</footer>
+
+		<script>
+			(function (win, doc) {
+
+				var cache = win.applicationCache,
+					reportArea = doc.getElementById("CacheReportArea");
+					
+				function displayCacheState(state, sep){
+					reportArea.value += state + (sep || "\n");
+				}
+				
+				function handleCacheEvent(evt){
+					displayCacheState(evt.type);
+					
+					/* loaded, totalはFirefox35には存在しない。 */
+					if("loaded" in evt){
+						displayCacheState(evt.loaded, "/");
+					}
+					if("total" in evt){
+						displayCacheState(evt.total);
+					}
+				}
+				
+				/**
+				 * 
+				 */
+				function addEventListener(){
+					cache.addEventListener("checking", handleCacheEvent, false);
+					cache.addEventListener("noupdate", handleCacheEvent, false);
+					cache.addEventListener("downloading", handleCacheEvent, false);
+					cache.addEventListener("progress", handleCacheEvent, false);
+					cache.addEventListener("cached", handleCacheEvent, false);
+					cache.addEventListener("updateready", handleCacheEvent, false);
+					cache.addEventListener("obsolute", handleCacheEvent, false);
+					cache.addEventListener("error", handleCacheEvent, false);
+				}
+						
+				function init(){
+					addEventListener();
+				}
+				
+				init();
+
+			}(window, document));
+		</script>
 	</body>
 </html>
