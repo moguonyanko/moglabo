@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8" />
+		<title>WebSocket Sample</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="../../favicon.ico" />
+	</head>
+	<body>
+		<h1>WebSocket Sample</h1>
+
+		<main>
+			<section>
+				<h2>WebSocketで通信テスト</h2>
+				<textarea id="ResultArea" cols="50" rows="10" readonly="readonly"></textarea>
+				<div>
+					<p><input id="GreetContent" type="text" value="Hello!" /></p>
+					<button id="ConnectRunner">通信</button>
+				</div>
+			</section>
+		</main>
+
+		<footer role="contentinfo">
+			<small>Copyright &copy; 2015 moguonyanko All rights reserved.</small>
+		</footer>
+		
+		<script>
+			(function(win, doc, loc){
+				
+				var resArea = doc.getElementById("ResultArea"),
+					greetCont = doc.getElementById("GreetContent"),
+					runner = doc.getElementById("ConnectRunner");
+				
+				function connectWebSocket(){
+					var host = loc.host,
+						port = 8080; //loc.port;
+					
+					var ws = new WebSocket("ws://" + host + ":" + port + "/webcise/greeting");
+					
+					/**
+					 * Firefox35ではステータスコードは101になる。 
+					 * さらにリクエストヘッダにno-cacheが指定される。
+					 */
+					ws.onopen = function(){
+						resArea.value += "接続完了\n";
+						ws.send(greetCont.value);
+					};
+					
+					ws.onmessage = function(evt){
+						var data = evt.data;
+						resArea.value += data + "\n";
+					};
+				}
+				
+				function addEventListener(){
+					runner.addEventListener("click", connectWebSocket, false);
+				}
+				
+				function init(){
+					addEventListener();
+				}
+				
+				init();
+				
+			}(window, document, location));
+		</script>
+	</body>
+</html>
