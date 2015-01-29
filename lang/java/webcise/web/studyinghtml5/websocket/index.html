@@ -36,13 +36,15 @@
 
 				var ws;
 
-				function sendMessage() {
-					if (!ws) {
-						var host = loc.host,
-							port = 8080; //loc.port;
-
-						ws = new WebSocket("ws://" + host + ":" + port + "/webcise/greeting");
+				function initConnection() {
+					if(ws){
+						return;
 					}
+					
+					var host = loc.host,
+						port = 8080; //loc.port;
+
+					ws = new WebSocket("ws://" + host + ":" + port + "/webcise/greeting");
 
 					/**
 					 * Firefox35ではステータスコードは101になる。 
@@ -53,10 +55,27 @@
 						ws.send(greetCont.value);
 					};
 
+					ws.onclose = function (evt) {
+						var reason = "code " + evt.code + " reason " + evt.reason;
+						resArea.value += reason + "で接続を閉じました。\n";
+						resArea.value += "意図的な切断" + (evt.wasClean ? "です。" : "ではありません。") + "\n";
+						ws = null;
+					};
+
 					ws.onmessage = function (evt) {
 						var data = evt.data;
 						resArea.value += data + "\n";
 					};
+
+					ws.onerror = function (evt) {
+						console.log(evt);
+					};
+				}
+
+				function sendMessage() {
+					if (!ws) {
+						initConnection();
+					}
 
 					if (ws.readyState === WebSocket.OPEN) {
 						ws.send(greetCont.value);
@@ -66,12 +85,6 @@
 				function closeConnection() {
 					if (ws) {
 						ws.close();
-						ws.onclose = function (evt) {
-							var reason = "code " + evt.code + " reason " + evt.reason;
-							resArea.value += reason + "で接続を閉じました。\n";
-							resArea.value += "意図的な切断" + (evt.wasClean ? "です。" : "ではありません。") + "\n";
-							ws = null;
-						};
 					}
 				}
 
