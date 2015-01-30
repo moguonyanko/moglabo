@@ -30,7 +30,7 @@
 										this.innerHTML = x + 1;
 									};
 								}(i));
-								
+
 //								btns[i].onclick = (function (x, that) {
 //									return function () {
 //										that.innerHTML = x + 1;
@@ -53,24 +53,88 @@
 				<textarea id="ClassListResult" readonly="readonly" cols="40" rows="5">
 				</textarea>
 				<script>
-					(function(win, doc){
-						
+					(function (win, doc) {
+
 						var sample = doc.getElementById("ClassListSampleElement"),
 							result = doc.getElementById("ClassListResult");
-						
+
 						result.value = "";
-						
+
 						sample.classList.add("NewClass");
-						
-						for(var i = 0; i < sample.classList.length; i++){
+
+						for (var i = 0; i < sample.classList.length; i++) {
 							result.value += sample.classList[i];
 							result.value += "\n";
 						}
-						
-						setTimeout(function(){
+
+						setTimeout(function () {
 							sample.classList.remove("NewClass");
 						}, 3000);
-						
+
+					}(window, document));
+				</script>
+			</section>
+			<section>
+				<h2>イベントリスナ</h2>
+				<textarea id="MultiListenerArea" readonly="readonly" cols="40" rows="5"></textarea>
+				<div>
+					<p>addEventListenerで同じリスナを何回追加しても1つしか追加されません。</p>
+					<p>リスナ追加回数:<input id="MultiListenerSize" type="text" value="5" /></p>
+					<button id="MultiListenerSample">イベント発火</button>
+					<button id="ClearListenerArea">リセット</button>
+				</div>
+				<script>
+					(function (win, doc) {
+
+						var area = doc.getElementById("MultiListenerArea"),
+							lisSiz = doc.getElementById("MultiListenerSize"),
+							btn = doc.getElementById("MultiListenerSample"),
+							clr = doc.getElementById("ClearListenerArea");
+
+						function outputTime() {
+							area.value += new Date().getTime() + "\n";
+						}
+
+						var listener = {
+							type: "click",
+							func: outputTime,
+							capture: false
+						};
+
+						function getListenerSize() {
+							var listenerSize = parseInt(lisSiz.value);
+							return !isNaN(listenerSize) ? listenerSize : 0;
+						}
+
+						function resetListener() {
+							var listenerSize = getListenerSize();
+
+							for (var i = 0; i < listenerSize; i++) {
+								btn.addEventListener(listener.type,
+									listener.func, listener.capture);
+							}
+						}
+
+						function clear() {
+							area.value = "";
+
+							var listenerSize = getListenerSize();
+
+							for (var i = 0; i < listenerSize; i++) {
+								btn.removeEventListener(listener.type,
+									listener.func, listener.capture);
+							}
+
+							resetListener();
+						}
+
+						function init() {
+							resetListener();
+							clr.addEventListener("click", clear, false);
+						}
+
+						init();
+
 					}(window, document));
 				</script>
 			</section>
