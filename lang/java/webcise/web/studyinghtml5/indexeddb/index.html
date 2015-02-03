@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Indexed Database Sample</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="../../favicon.ico" />
+	</head>
+	<body>
+		<h1>Indexed Database Sample</h1>
+
+		<main>
+			<section>
+				<h2>Indexed Databaseへの接続・切断・削除</h2>
+				<div>
+					<button id="OpenDB">接続</button>
+					<button id="CloseDB">切断</button>
+					<button id="DeleteDB">DB削除</button>
+				</div>
+			</section>
+		</main>
+
+		<footer role="contentinfo">
+			<small>Copyright &copy; 2015 moguonyanko All rights reserved.</small>
+		</footer>
+
+		<script>
+			(function (win, doc) {
+
+				var idb = win.indexedDB;
+
+				var dbName = "sampleDB";
+
+				var version = 1;
+
+				function log(txt) {
+					console.log(txt);
+				}
+
+				function el(id) {
+					return doc.getElementById(id);
+				}
+
+				function openDB() {
+					var openRequest = idb.open(dbName, version);
+
+					openRequest.onerror = function (evt) {
+						log(evt);
+					};
+					
+					/**
+					 * 同じ名前で同じバージョンのIndexedDBが既に存在すれば
+					 * onupgradeneededプロパティに設定されたハンドラは呼び出されない。
+					 */
+					openRequest.onupgradeneeded = function (evt) {
+						log(evt);
+					};
+
+					function setupClose(db) {
+						var closeDB = function () {
+							/**
+							 * closeは同期メソッド。
+							 */
+							db.close();
+							log("CLOSE DATABASE");
+						};
+						
+						addClickListener("CloseDB", closeDB);
+					}
+
+					function setupDelete() {
+						var deleteDB = function () {
+							/**
+							 * IndexedDBがcloseされるまではdeleteは実行待ち状態になる。
+							 */
+							var deleteRequest = idb.deleteDatabase(dbName);
+
+							deleteRequest.onerror = function (evt) {
+								log(evt);
+							};
+
+							deleteRequest.onsuccess = function (evt) {
+								log(evt);
+							};
+						};
+						
+						addClickListener("DeleteDB", deleteDB);
+					}
+
+					openRequest.onsuccess = function (evt) {
+						log(evt);
+						var db = evt.target.result;
+						setupClose(db);
+						setupDelete();
+					};
+				}
+
+				function addClickListener(id, fn) {
+					el(id).addEventListener("click", fn, false);
+				}
+
+				function addEvent() {
+					addClickListener("OpenDB", openDB);
+				}
+
+				function init() {
+					addEvent();
+				}
+
+				init();
+
+
+			}(window, document));
+		</script>
+
+	</body>
+</html>
