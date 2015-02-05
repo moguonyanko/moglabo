@@ -31,7 +31,7 @@
 
 				var dbName = "sampleDB";
 
-				var version = 1;
+				var version = 2;
 
 				function log(txt) {
 					console.log(txt);
@@ -47,13 +47,30 @@
 					openRequest.onerror = function (evt) {
 						log(evt);
 					};
-					
+
 					/**
 					 * 同じ名前で同じバージョンのIndexedDBが既に存在すれば
 					 * onupgradeneededプロパティに設定されたハンドラは呼び出されない。
 					 */
 					openRequest.onupgradeneeded = function (evt) {
-						log(evt);
+						var db = evt.target.result;
+
+						var storeParams = {
+							keyPath: "id",
+							autoIncrement: true
+						};
+
+						var store = db.createObjectStore(dbName, storeParams);
+
+						var indexParams = {
+							unique: false
+						},
+						indexName = "storeIndex",
+						indexColumn = "name";
+
+						store.createIndex(indexName, indexColumn, indexParams);
+						
+						log(store);
 					};
 
 					function setupClose(db) {
@@ -64,7 +81,7 @@
 							db.close();
 							log("CLOSE DATABASE");
 						};
-						
+
 						addClickListener("CloseDB", closeDB);
 					}
 
@@ -83,7 +100,7 @@
 								log(evt);
 							};
 						};
-						
+
 						addClickListener("DeleteDB", deleteDB);
 					}
 
