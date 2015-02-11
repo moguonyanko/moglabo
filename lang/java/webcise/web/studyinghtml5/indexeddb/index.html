@@ -13,10 +13,19 @@
 			<section>
 				<h2>Indexed Databaseへの接続・切断・削除</h2>
 				<div>
-					<button id="OpenDB">接続</button>
-					<button id="AddRecord">レコード追加</button>
-					<button id="CloseDB">切断</button>
-					<button id="DeleteDB">DB削除</button>
+					<p>DB操作</p>
+					<div>
+						<button id="OpenDB">接続</button>
+						<button id="AddRecord">レコード追加</button>
+						<button id="CloseDB">切断</button>
+						<button id="DeleteDB">DB削除</button>
+					</div>
+				</div>
+				<div>
+					<p>データベース情報</p>
+					<div>
+						<textarea id="InfoArea" rows="10" cols="50"></textarea>
+					</div>
 				</div>
 			</section>
 		</main>
@@ -34,12 +43,20 @@
 
 				var version = 2;
 
-				function log(txt) {
-					console.log(txt);
-				}
-
 				function el(id) {
 					return doc.getElementById(id);
+				}
+
+				function log(txt) {
+					//var content = [];
+					//for (var name in txt) {
+					//	if (txt.hasOwnProperty(name)) {
+					//		content.push(name + ":" + txt[name]);
+					//	}
+					//}
+					//el("InfoArea").value += "\n" + content.join("\n");
+					el("InfoArea").value += txt + "\n";
+					console.log(txt);
 				}
 
 				function openDB() {
@@ -67,10 +84,10 @@
 							unique: false
 						},
 						indexName = "storeIndex",
-						indexColumn = "name";
+							indexColumn = "name";
 
 						store.createIndex(indexName, indexColumn, indexParams);
-						
+
 						log(store);
 					};
 
@@ -104,27 +121,34 @@
 
 						addClickListener("DeleteDB", deleteDB);
 					}
-					
-					function setupAddRecord(db){
-						var addRecord = function(){
+
+					function setupAddRecord(db) {
+						var addRecord = function () {
+							/* DBがCLOSEだとトランザクション開始不可能 */
 							var transaction = db.transaction([dbName], "readwrite");
 							var store = transaction.objectStore(dbName);
-							
+
+							/**
+							 * putと異なり上書きせず追加する。 
+							 * Keyが衝突するとエラーになる。
+							 */
 							var addReq = store.add({
 								name: "foo",
 								age: 20
+							//	,
+							//	id: 1
 							});
-							
-							addReq.onsuccess = function(evt){
+
+							addReq.onsuccess = function (evt) {
 								log(evt);
 							};
-							
-							addReq.onerror = function(evt){
+
+							addReq.onerror = function (evt) {
 								log(evt);
 							};
 						};
-						
-						addClickListener("addRecord", addRecord);
+
+						addClickListener("AddRecord", addRecord);
 					}
 
 					openRequest.onsuccess = function (evt) {
