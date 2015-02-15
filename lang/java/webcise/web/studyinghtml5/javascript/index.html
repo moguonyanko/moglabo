@@ -50,26 +50,42 @@
 				</style>
 				<h2>クラスリスト</h2>
 				<p id="ClassListSampleElement" class="Hoge Foo Bar">サンプル</p>
+				<button id="ToggleClass">Toggle class</button>
 				<textarea id="ClassListResult" readonly="readonly" cols="40" rows="5">
 				</textarea>
 				<script>
 					(function (win, doc) {
 
 						var sample = doc.getElementById("ClassListSampleElement"),
+							sampleClass = "NewClass",
+							toggler = doc.getElementById("ToggleClass"),
 							result = doc.getElementById("ClassListResult");
 
-						result.value = "";
-
-						sample.classList.add("NewClass");
-
-						for (var i = 0; i < sample.classList.length; i++) {
-							result.value += sample.classList[i];
-							result.value += "\n";
+						function addEvent(ele, type, fn, cap) {
+							ele.addEventListener(type, fn, cap);
 						}
 
-						setTimeout(function () {
-							sample.classList.remove("NewClass");
-						}, 3000);
+						function init() {
+							result.value = "";
+
+							sample.classList.add(sampleClass);
+
+							for (var i = 0; i < sample.classList.length; i++) {
+								result.value += sample.classList[i];
+								result.value += "\n";
+							}
+
+							addEvent(toggler, "click", function () {
+								sample.classList.toggle(sampleClass);
+							});
+
+							setTimeout(function () {
+								sample.classList.remove(sampleClass);
+							}, 3000);
+						}
+						
+						init();
+
 
 					}(window, document));
 				</script>
