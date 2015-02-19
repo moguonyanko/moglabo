@@ -154,6 +154,31 @@
 					}(window, document));
 				</script>
 			</section>
+			<section>
+				<h2>配列</h2>
+				<div>
+					
+				</div>
+				<script>
+					(function(w, d){
+						
+						function addAll(ary, eles){
+							Array.prototype.push.apply(ary, eles);
+							return ary;
+						}
+						
+						/**
+						 * deleteしてもlengthは変化無し。
+						 * indexの位置が疎になる。
+						 */
+						function sparseArray(ary, index){
+							delete ary[index];
+							return ary;
+						}
+						
+					}(window, document));
+				</script>
+			</section>
 		</main>
 
 		<footer role="contentinfo">
