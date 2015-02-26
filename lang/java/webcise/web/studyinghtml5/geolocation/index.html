@@ -31,7 +31,7 @@
 				}
 
 				function getCurrentPosition(callback) {
-					geo.getCurrentPosition(function (pos) {
+					var onsuccess = function (pos) {
 						var lon = pos.coords.longitude,
 							lat = pos.coords.latitude;
 
@@ -39,7 +39,17 @@
 							x: lon,
 							y: lat
 						});
-					});
+					},
+					onerror = function (evt) {
+						alert(evt.message + " CODE:" + evt.code);
+					},
+					options = {
+						enableHighAccuracy: true,
+						maximumAge: 60000, /* ミリ秒 */
+						timeout: 100000 /* ミリ秒 */
+					};
+
+					geo.getCurrentPosition(onsuccess, onerror, options);
 				}
 
 				function getPositionCallback(callback) {
