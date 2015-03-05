@@ -5,6 +5,14 @@
 		<title>JavaScript(Core and Client)</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="shortcut icon" href="../favicon.ico" />
+		<style>
+			section {
+				margin: 2px;
+				padding: 3px;
+				border: 1px solid lightgrey;
+				border-radius: 5px;
+			}
+		</style>
 	</head>
 	<body>
 		<header role="banner">
@@ -45,7 +53,8 @@
 				<style scoped="scoped">
 					.NewClass {
 						color: red;
-						font-size: 150%;
+						font-weight: bold;
+						/*font-size: 150%;*/
 					}
 				</style>
 				<h2>クラスリスト</h2>
@@ -245,6 +254,116 @@
 
 						win.bindNS = bindNS;
 
+					}(window, document));
+				</script>
+			</section>
+			<section>
+				<h2>コンストラクタ</h2>
+				<div id="ConstructorResult">
+					結果確認
+				</div>
+				<div>
+					<label>
+						<input type="radio" name="inheritFuncs" value="objectNew" checked="checked" />new Object
+					</label>
+					<label>
+						<input type="radio" name="inheritFuncs" value="objectCreate" />Object.create
+					</label>
+				</div>
+				<div>
+					<!-- テスト目的以外でonclickは使わないこと。 -->
+					<button onclick="constructorNS.construct();">サブクラス生成</button>
+				</div>
+				<script>
+					(function(win, doc){
+						
+						var resultArea = doc.getElementById("ConstructorResult");
+						
+						function print(obj){
+							console.log(obj);
+							
+							var result = [
+								"obj.constructor.name : " + obj.constructor.name
+							];
+							
+							if(obj.prototype){
+								result.push("obj.prototype.constructor.name : " + obj.prototype.constructor.name);
+							}else{
+								result.push("obj.prototype : " + obj.prototype);
+							}
+							
+							for(var prop in obj){
+								result.push(prop + " : " + obj[prop]);
+							}
+							
+							/**
+							 * innerHTMLはサードパーティ製ライブラリとは組み合わせて
+							 * 使わないこと。
+							 * ライブラリによってページのDOMを勝手に編集されている場合，
+							 * ライブラリが追加した要素もまとめて消してしまうなど意図しない
+							 * 表示結果になることがある。
+							 */
+							resultArea.innerHTML = result.join("<br />");
+						}
+						
+						function Klass(superName){
+							this.superName = superName;
+						}
+						
+						function SubKlass(name, subName){
+							if(SubKlass.superKlass){
+								SubKlass.superKlass.call(this, name);
+							}
+							this.subName = subName;
+						}
+						
+						function setSuperKlass(superKlass, subKlass){
+							subKlass.superKlass = superKlass;
+						}
+						
+						function objectCreate(){
+							SubKlass.prototype = Object.create(Klass);
+							setSuperKlass(Klass, SubKlass);
+						}
+						
+						function objectNew(){
+							SubKlass.prototype = new Klass();
+							setSuperKlass(Klass, SubKlass);
+						}
+						
+						/**
+						 * @todo
+						 * Function.bindによる生成方法も追加する。
+						 */
+						var inherits = {
+							objectCreate : objectCreate,
+							objectNew : objectNew
+						};
+						
+						function doInherit(){
+							var inheritFunc = function(){};
+							
+							var methodEles = doc.getElementsByName("inheritFuncs");
+							for(var i = 0, size = methodEles.length; i < size; i++){
+								if(methodEles[i].checked){
+									inheritFunc = inherits[methodEles[i].value];
+									break;
+								}
+							}
+							
+							inheritFunc();
+						}
+						
+						function construct(){
+							doInherit();
+							var sub = new SubKlass("super", "sub");
+							print(sub);
+						}
+						
+						win.constructorNS = {
+							construct : construct
+						};
+						
 					}(window, document));
 				</script>
 			</section>
