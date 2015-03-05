@@ -322,7 +322,7 @@
 						}
 						
 						function objectCreate(){
-							SubKlass.prototype = Object.create(Klass);
+							SubKlass.prototype = Object.create(Klass.prototype);
 							setSuperKlass(Klass, SubKlass);
 						}
 						
