@@ -121,9 +121,9 @@
 						}
 
 						var listener = {
-							type: "click",
-							func: outputTime,
-							capture: false
+							type : "click",
+							func : outputTime,
+							capture : false
 						};
 
 						function getListenerSize() {
@@ -181,8 +181,8 @@
 						var resArea = doc.getElementById("ArrayResultArea");
 
 						var sampleArgs = {
-							addAll: [sampleArray, ["A", "B", "C"]],
-							sparseArray: [sampleArray, 5]
+							addAll : [sampleArray, ["A", "B", "C"]],
+							sparseArray : [sampleArray, 5]
 						};
 
 						arrayNS.addAll = function (ary, eles) {
@@ -246,8 +246,8 @@
 						function init() {
 							bindNS.log = log;
 							/* 配列は部分適用時に文字列に変換される。 */
-							bindNS.fnArray = func1.bind({x: 1}, [2, 3], 10);
-							bindNS.fnNumber = func1.bind({x: 1}, 2, 3);
+							bindNS.fnArray = func1.bind({x : 1}, [2, 3], 10);
+							bindNS.fnNumber = func1.bind({x : 1}, 2, 3);
 						}
 
 						init();
@@ -279,11 +279,11 @@
 					<button onclick="constructorNS.getSubName();">サブクラス::getName</button>
 				</div>
 				<script>
-					(function(win, doc){
-						
+					(function (win, doc) {
+
 						var resultArea = doc.getElementById("ConstructorResult");
-						
-						function display(content){
+
+						function display(content) {
 							/**
 							 * innerHTMLはサードパーティ製ライブラリとは組み合わせて
 							 * 使わないこと。
@@ -293,115 +293,233 @@
 							 */
 							resultArea.innerHTML = content;
 						}
-						
-						function log(obj){
+
+						function log(obj) {
 							console.log(obj);
 						}
-						
-						function dumpObject(obj){
+
+						function dumpObject(obj) {
 							var result = [
 								"obj.constructor.name : " + obj.constructor.name
 							];
-							
-							if(obj.prototype){
+
+							if (obj.prototype) {
 								result.push("obj.prototype.constructor.name : " + obj.prototype.constructor.name);
-							}else{
+							} else {
 								result.push("obj.prototype : " + obj.prototype);
 							}
-							
-							for(var prop in obj){
+
+							for (var prop in obj) {
 								result.push(prop + " : " + obj[prop]);
 							}
-							
+
 							display(result.join("<br />"));
 						}
-						
-						function SuperClass(superName){
+
+						function SuperClass(superName) {
 							this.superName = superName;
 						}
-						
-						SuperClass.prototype.getName = function(){
+
+						SuperClass.prototype.getName = function () {
 							return this.superName;
 						};
-						
-						function SubClass(name, subName){
-							if(SubClass.superClass){
+
+						function SubClass(name, subName) {
+							if (SubClass.superClass) {
 								SubClass.superClass.call(this, name);
 							}
 							this.subName = subName;
 						}
-						
+
 						/* @todo 継承できておらず呼び出されない？ */
-						SubClass.prototype.getName = function(){
+						SubClass.prototype.getName = function () {
 							var superName = SubClass.superClass.prototype.getName.apply(this, arguments);
 							var subName = this.subName;
-							
+
 							return [superName, subName].join(" ");
 						};
-						
-						function setSuperClass(superClass, subClass){
+
+						function setSuperClass(superClass, subClass) {
 							subClass.superClass = superClass;
 						}
-						
-						function objectCreate(superClass, subClass){
+
+						function objectCreate(superClass, subClass) {
 							subClass.prototype = Object.create(superClass.prototype);
 						}
-						
-						function objectNew(superClass, subClass){
+
+						function objectNew(superClass, subClass) {
 							subClass.prototype = new superClass();
 						}
-						
-						function functionBind(superClass, subClass){
+
+						function functionBind(superClass, subClass) {
 							/* bindが返す関数はコンストラクタではない。 */
 							subClass.prototype = superClass.bind();
 						}
-						
+
 						var inherits = {
 							objectCreate : objectCreate,
 							objectNew : objectNew,
 							functionBind : functionBind
 						};
-						
-						function doInherit(superClass, subClass){
+
+						function doInherit(superClass, subClass) {
 							var inheritFunc = null;
-							
+
 							var methodEles = doc.getElementsByName("inheritFuncs");
-							for(var i = 0, size = methodEles.length; i < size; i++){
-								if(methodEles[i].checked){
+							for (var i = 0, size = methodEles.length; i < size; i++) {
+								if (methodEles[i].checked) {
 									inheritFunc = inherits[methodEles[i].value];
 									break;
 								}
 							}
-							
-							if(inheritFunc){
+
+							if (inheritFunc) {
 								inheritFunc(superClass, subClass);
 								setSuperClass(superClass, subClass);
 							}
 						}
-						
-						function constructSubInstance(superName, subName){
+
+						function constructSubInstance(superName, subName) {
 							doInherit(SuperClass, SubClass);
 							var sub = new SubClass(superName, subName);
 							return sub;
 						}
-						
-						function dumpSubInstance(){
+
+						function dumpSubInstance() {
 							var sub = constructSubInstance("Foo", "Taro");
 							dumpObject(sub);
 							log(sub);
 						}
-						
-						function getSubName(){
+
+						function getSubName() {
 							var sub = constructSubInstance("Foo", "Taro");
 							display("SubName : " + sub.getName());
 							log(sub);
 						}
-						
+
 						win.constructorNS = {
 							dumpSubInstance : dumpSubInstance,
 							getSubName : getSubName
 						};
-						
+
+					}(window, document));
+				</script>
+			</section>
+			<section>
+				<h2>アクセッサメソッドとオブジェクト属性</h2>
+				<div>
+					<textarea id="ResultAccessorArea" cols="30" rows="10"></textarea>
+				</div>
+				<div>
+					<p><label>name<input id="InputNameAccessorValue" type="text" value="HOGE" /></label></p>
+					<p><label>mode<input id="InputModeAccessorValue" type="text" value="special" /></label></p>
+					<p><label>option<input id="InputOptionAccessorValue" type="text" value="ARGUMENTS" /></label></p>
+					<button onclick="accessorNS.printName();">setName→getName</button>
+					<button onclick="accessorNS.printMode();">setMode→getMode</button>
+					<button onclick="accessorNS.printOption();">setOption→getOption</button>
+					<button onclick="accessorNS.dumpObject();">dump</button>
+					<button onclick="document.getElementById('ResultAccessorArea').value = '';">クリア</button>
+				</div>
+				<script>
+					(function (win, doc) {
+
+						var area = doc.getElementById("ResultAccessorArea"),
+							inputNameEle = doc.getElementById("InputNameAccessorValue"),
+							inputModeEle = doc.getElementById("InputModeAccessorValue"),
+							inputOptionEle = doc.getElementById("InputOptionAccessorValue");
+
+						function log(txt) {
+							console.log(txt);
+						}
+
+						function print(txt) {
+							area.value += txt + "\n";
+						}
+
+						var sample = (function () {
+							/**
+							 * アクセッサメソッドと異なるプロパティ名で
+							 * 定義しないと再帰エラーになる。
+							 */
+							var _sample = {
+								get name() {
+									print("called name getter");
+									return this._name;
+								},
+								set name(name) {
+									/**
+									 * このスコープで未定義値を参照すると
+									 * strictモードでなくてもエラーになる。 
+									 */
+									print("called name setter ... " + name);
+									this._name = name;
+								},
+								get mode() {
+									print("called mode getter");
+									return this._mode;
+								},
+								set mode(mode) {
+									print("called mode setter ... " + mode);
+									this._mode = mode;
+								}
+							};
+
+							/**
+							 * アクセッサメソッドで参照するプロパティを
+							 * 書き込み可，列挙不可，再定義不可として定義する。
+							 */
+							Object.defineProperties(_sample, {
+								_name : {
+									value : "HOGE", writable : true, enumerable : false, configurable : false
+								},
+								_mode : {
+									value : "normal", writable : true, enumerable : false, configurable : false
+								},
+								option : {
+									get : function(){
+										print("called option getter");
+										return this._option;
+									},
+									set : function(option){
+										print("called option setter ... " + option);
+										this._option = option;
+									}
+									/* getter, setterと一緒にプロパティ属性を指定するとエラーになる。(Firefox36) */
+									//,value : "OPTIONS", writable : true, enumerable : false, configurable : false
+								}
+							});
+
+							return _sample;
+						}());
+
+						function init() {
+						}
+
+						init();
+
+						win.accessorNS = {
+							printName : function () {
+								sample.name = inputNameEle.value;
+								print(sample.name);
+							},
+							printMode : function () {
+								sample.mode = inputModeEle.value;
+								print(sample.mode);
+							},
+							printOption : function () {
+								sample.option = inputOptionEle.value;
+								print(sample.option);
+							},
+							dumpObject : function(){
+								/* 各プロパティのgetterが2回ずつ呼び出される。 */
+								log(sample);
+								/* 以下は無視される。 */
+								delete sample._name;
+								delete sample._mode;
+								delete sample.option;
+							}
+						};
+
 					}(window, document));
 				</script>
 			</section>
