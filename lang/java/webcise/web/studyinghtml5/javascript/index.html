@@ -408,17 +408,24 @@
 			<section>
 				<h2>アクセッサメソッドとオブジェクト属性</h2>
 				<div>
-					<textarea id="ResultAccessorArea" cols="30" rows="10"></textarea>
+					<textarea id="ResultAccessorArea" cols="60" rows="10"></textarea>
 				</div>
 				<div>
 					<p><label>name<input id="InputNameAccessorValue" type="text" value="HOGE" /></label></p>
 					<p><label>mode<input id="InputModeAccessorValue" type="text" value="special" /></label></p>
 					<p><label>option<input id="InputOptionAccessorValue" type="text" value="ARGUMENTS" /></label></p>
-					<button onclick="accessorNS.printName();">setName→getName</button>
-					<button onclick="accessorNS.printMode();">setMode→getMode</button>
-					<button onclick="accessorNS.printOption();">setOption→getOption</button>
-					<button onclick="accessorNS.dumpObject();">dump</button>
-					<button onclick="document.getElementById('ResultAccessorArea').value = '';">クリア</button>
+					<div>
+						<button onclick="accessorNS.printName();">setName→getName</button>
+						<button onclick="accessorNS.printMode();">setMode→getMode</button>
+						<button onclick="accessorNS.printOption();">setOption→getOption</button>
+					</div>
+					<div>
+						<button onclick="accessorNS.dumpObject();">dump</button>
+						<button onclick="accessorNS.objectMethodTest();">Object method test</button>
+					</div>
+					<div>
+						<button onclick="document.getElementById('ResultAccessorArea').value = '';">クリア</button>
+					</div>
 				</div>
 				<script>
 					(function (win, doc) {
@@ -442,6 +449,7 @@
 							 * 定義しないと再帰エラーになる。
 							 */
 							var _sample = {
+								/* 参照されるプロパティ名は関数名と同じになる。 */
 								get name() {
 									print("called name getter");
 									return this._name;
@@ -470,6 +478,10 @@
 							 */
 							Object.defineProperties(_sample, {
 								_name : {
+									/**
+									 * 「データプロパティ」で指定できるのは
+									 * 以下の4つのプロパティである。
+									 */
 									value : "HOGE", writable : true, enumerable : false, configurable : false
 								},
 								_mode : {
@@ -483,15 +495,78 @@
 									set : function(option){
 										print("called option setter ... " + option);
 										this._option = option;
-									}
-									/* getter, setterと一緒にプロパティ属性を指定するとエラーになる。(Firefox36) */
-									//,value : "OPTIONS", writable : true, enumerable : false, configurable : false
+									},
+									/**
+									 * 「アクセッサプロパティ」でget, set以外に
+									 * 指定できるのはenumerabelとconfigurableのみ。
+									 * writableやvalueを指定するとエラーになる。
+									 */
+									enumerable : false, configurable : false
 								}
 							});
 
 							return _sample;
 						}());
 
+						function objectMethodTest(){
+							/**
+							 * Object.create(null)で生成したオブジェクトは
+							 * prototypeプロパティを持たないので
+							 * in演算子でプロパティの列挙を行う際にhasOwnProperty
+							 * によるチェックを行う必要が無い。
+							 * enumerableがfalseだと当然そのプロパティは
+							 * 列挙されなくなる。
+							 * オブジェクトリテラルによる擬似配列のlengthを
+							 * 要素の列挙前に削除することがあったが，enumerableを
+							 * falseにすればよかっただけである。
+							 */
+							var obj0 = Object.create(null);
+							Object.defineProperty(obj0, "name", {
+								value : "not writable and not configurable object0",
+								writable : false,
+								enumerable : true,
+								configurable : false
+							});
+							
+							/**
+							 * writableがtrueであること以外はobj0, obj1と同じ
+							 * オブジェクト属性になる。
+							 */
+							var obj1 = Object.create(null);
+							obj1.name = "seal object1";
+							Object.seal(obj1);
+							
+							/**
+							 * obj0と同じオブジェクト属性になる。
+							 */
+							var obj2 = Object.create(null);
+							obj2.name = "freeze object2";
+							Object.freeze(obj2);
+							
+							var objs = [obj0, obj1, obj2];
+							
+							objs.forEach(function(o){
+								log(o);
+								/**
+								 * オブジェクトがオブジェクトリテラルや
+								 * コンストラクタ関数で生成された時に
+								 * オブジェクトのプロパティを列挙する場合は，
+								 * Object.keysを使えば継承されたプロパティが
+								 * 列挙されないため安全である。
+								 */
+								Object.keys(o).forEach(function(k){
+									print(k + " → " + o[k]);
+									var desc = Object.getOwnPropertyDescriptor(o, k);
+									Object.keys(desc).forEach(function(d){
+										print(d + " : " + desc[d]);
+									});
+								});
+								//for(var prop in o){
+								//	print(o[prop]);
+								//}
+							});
+						}
+						
 						function init() {
 						}
 
@@ -517,7 +592,8 @@
 								delete sample._name;
 								delete sample._mode;
 								delete sample.option;
-							}
+							},
+							objectMethodTest : objectMethodTest
 						};
 
 					}(window, document));
