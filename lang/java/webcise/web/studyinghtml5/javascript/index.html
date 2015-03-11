@@ -13,6 +13,18 @@
 				border-radius: 5px;
 			}
 		</style>
+		<script>
+			(function(win){
+				"use strict";
+				
+				win.commonNS = win.my = {
+					log : function(txt){
+						console.log(txt);
+					}
+				};
+				
+			}(window));
+		</script>
 	</head>
 	<body>
 		<header role="banner">
@@ -596,6 +608,97 @@
 							objectMethodTest : objectMethodTest
 						};
 
+					}(window, document));
+				</script>
+			</section>
+			<section>
+				<style scoped="scoped">
+					.InnerFrameContainer {
+						border: 1px solid black;
+						border-radius: 5px;
+					}
+				</style>
+				<h2>複数のウインドウとフレーム</h2>
+				<div>
+					<p>テストフレーム</p>
+					<div class="InnerFrameContainer">
+						<iframe id="SubInnerFrame0" src="sub0.html" name="sub0" width="100%" height="100"></iframe>
+					</div>
+					<div class="InnerFrameContainer">
+						<iframe id="SubInnerFrame1" src="sub1.html" name="sub1" width="100%" height="100"></iframe>
+					</div>
+				</div>
+				<div>
+					<textarea id="ResultInnerFrameArea" cols="60" rows="10"></textarea>
+				</div>
+				<div>
+					<button onclick="frameNS.dumpFrames();">iframe情報一覧</button>
+					<button onclick="frameNS.openWindows();">開いたウインドウの調査</button>
+				</div>
+				<div>
+					<button onclick="document.getElementById('ResultInnerFrameArea').value = '';">クリア</button>
+				</div>
+				<script>
+					(function(win, doc){
+						"use strict";
+						
+						var area = doc.getElementById("ResultInnerFrameArea");
+						
+						function println(txt){
+							my.log(frames);
+							area.value += txt + "\n";
+						}
+						
+						function dumpFrames(){
+							var frames = win.frames;
+							
+							Array.prototype.forEach.call(frames, function(frm, i){
+								/**
+								 * 後ろの===は先に書かれた+に優先度で負けるので，
+								 * 意図した結果を得るには()で囲む必要がある。 
+								 */
+								println("frames[" + frm.name + "] === frames[" + i + "] ... " + (frm === frames[i]));
+								
+								/* src属性を使ってquerySelectorするのは許されない？エラーになる。 */
+								//var frmEle = doc.querySelector(".InnerFrameContainer iframe[src=" + frm.name + ".html]");
+								var frmEle = doc.getElementById("SubInnerFrame" + i);
+								println("iframe.contentWindow === iframe ... " + (frmEle.contentWindow === frm));
+							});
+						}
+						
+						function openWindows(){
+							var style = "width=400,height=300,status=yes,resizable=yes",
+								replaceHistory = true;
+							
+							/**
+							 * 同一ページを読み込んだiframeがDOMツリー上に存在する時は
+							 * そのページをwindow.openで開くことができない。
+							 * openの戻り値(Windowオブジェクト)は得られる。
+							 */
+							var w0 = win.open("sub0.html", "sub0", style, replaceHistory);
+							var w1 = win.open("sub1.html", "sub1", style, replaceHistory);
+							
+							println("w0.opener === window ... " + (w0.opener === win));
+							println("w1.opener === window ... " + (w0.opener === win));
+						}
+						
+						/**
+						 * フレームをまたいだ状態でオブジェクトの型を調べる。
+						 * instanceof の挙動を調べる。
+						 */
+						function checkTypeViaFrames(){
+							/* @todo implement */
+						}
+						
+						function init(){
+							
+						}
+						
+						win.frameNS = {
+							dumpFrames : dumpFrames,
+							openWindows : openWindows
+						};
+						
 					}(window, document));
 				</script>
 			</section>
