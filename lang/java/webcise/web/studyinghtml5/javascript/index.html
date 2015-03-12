@@ -20,6 +20,12 @@
 				win.commonNS = win.my = {
 					log : function(txt){
 						console.log(txt);
+					},
+					println : function(ele, txt){
+						ele.value += txt + "\n";
+					},
+					ref : function(id, doc){
+						return (doc || document).getElementById(id);
 					}
 				};
 				
@@ -634,6 +640,7 @@
 				<div>
 					<button onclick="frameNS.dumpFrames();">iframe情報一覧</button>
 					<button onclick="frameNS.openWindows();">開いたウインドウの調査</button>
+					<button onclick="frameNS.checkInstanceViaFrames();">フレーム毎のインスタンス調査</button>
 				</div>
 				<div>
 					<button onclick="document.getElementById('ResultInnerFrameArea').value = '';">クリア</button>
@@ -643,6 +650,9 @@
 						"use strict";
 						
 						var area = doc.getElementById("ResultInnerFrameArea");
+						
+						var sample = [1,2,3,4,5],
+							sampleConstructor = Array;
 						
 						function println(txt){
 							my.log(frames);
@@ -682,12 +692,36 @@
 							println("w1.opener === window ... " + (w0.opener === win));
 						}
 						
+						function checkInstance(){
+							return sample instanceof sampleConstructor;
+						}
+						
+						function checkInstanceOf(obj){
+							return obj instanceof sampleConstructor;
+						}
+						
 						/**
 						 * フレームをまたいだ状態でオブジェクトの型を調べる。
 						 * instanceof の挙動を調べる。
 						 */
-						function checkTypeViaFrames(){
-							/* @todo implement */
+						function checkInstanceViaFrames(){
+							var frames = win.frames;
+							
+							var frm0 = frames.sub0,
+								frm1 = frames.sub1;
+							
+							my.println(area, checkInstance());
+							my.println(area, frm0.sub0NS.checkInstance());
+							my.println(area, frm1.sub1NS.checkInstance());
+							
+							/**
+							 * 別のフレームのオブジェクトをinstanceofで型チェックしても
+							 * 予想した結果は得られない。Arrayのような組み込みオブジェクト
+							 * であってもフレームが異なれば異なるインスタンスとして
+							 * 扱われてしまう。
+							 */
+							my.println(area, checkInstanceOf(frm0.sub0NS.getArray()));
+							my.println(area, checkInstanceOf(frm1.sub1NS.getArray()));
 						}
 						
 						function init(){
@@ -696,8 +730,57 @@
 						
 						win.frameNS = {
 							dumpFrames : dumpFrames,
-							openWindows : openWindows
+							openWindows : openWindows,
+							checkInstanceViaFrames : checkInstanceViaFrames
 						};
+						
+					}(window, document));
+				</script>
+			</section>
+			<section>
+				<style scoped="scoped">
+				</style>
+				<h2>データ型</h2>
+				<div>
+					<textarea id="ResultDataTypeArea" cols="60" rows="10"></textarea>
+				</div>
+				<div>
+					<button id="InstanceChecker">instanceofによる型の確認</button>
+				</div>
+				<div>
+					<button onclick="my.ref('ResultDataTypeArea').value = '';">クリア</button>
+				</div>
+				<script>
+					(function(win, doc){
+						
+						var resultArea = my.ref("ResultDataTypeArea"),
+							typeChecker = my.ref("InstanceChecker");
+						
+						function checkInstance(){
+							/**
+							 * +演算子がinstanceof演算子より先に評価されないように
+							 * instanceof演算子の式を()で囲むことは必須。
+							 */
+							var result = [
+								"1 instanceof Number ... " + (1 instanceof Number),
+								"Number(1) instanceof Number ... " + (Number(1) instanceof Number),
+								"new Number(1) instanceof Number ... " + (new Number(1) instanceof Number),
+								"\"\" instanceof String ... " + ("" instanceof String),
+								"String(\"\") instanceof String ... " + (String("") instanceof String),
+								"new String(\"\") instanceof String ... " + (new String("") instanceof String)
+							];
+							
+							return result.join("\n");
+						}
+						
+						function init(){
+							typeChecker.addEventListener("click", function(){
+								var checkResult = checkInstance();
+								my.println(resultArea, checkResult);
+							}, false);
+						}
+						
+						init();
 						
 					}(window, document));
 				</script>

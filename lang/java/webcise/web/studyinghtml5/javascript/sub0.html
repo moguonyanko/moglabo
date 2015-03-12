@@ -6,5 +6,21 @@
 	</head>
 	<body>
 		<h1>Sub Page 0</h1>
+		<script>
+			(function(win){
+				
+				var sampleArray = [1,2,3,4,5];
+				
+				win.sub0NS = {
+					checkInstance : function(){
+						return sampleArray instanceof Array;
+					},
+					getArray : function(){
+						return sampleArray;
+					}
+				};
+				
+			}(window));
+		</script>
 	</body>
 </html>
