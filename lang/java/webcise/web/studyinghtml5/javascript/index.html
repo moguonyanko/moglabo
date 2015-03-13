@@ -26,6 +26,14 @@
 					},
 					ref : function(id, doc){
 						return (doc || document).getElementById(id);
+					},
+					refs : function(name, doc){
+						/**
+						 * デフォルト値としては配列ではなくNodeListを返すべき。 
+						 * しかしNodeListのコンストラクタは呼び出せない。
+						 * 空のNodeListを意図的に返すにはどうすればよいか？
+						 */
+						return (doc || document).getElementsByName(name) || [];
 					}
 				};
 				
@@ -781,6 +789,87 @@
 						}
 						
 						init();
+						
+					}(window, document));
+				</script>
+			</section>
+			<section>
+				<style scoped="scoped">
+				</style>
+				<h2>正規表現</h2>
+				<div>
+					<textarea id="RegExpResultArea" cols="60" rows="10"></textarea>
+				</div>
+				<div>
+					<label for="RegExpSampleValue">サンプル文字列</label>
+					<span><input id="RegExpSampleValue" type="text" value="JavaScript Lisp Java Python" /></span>
+					<label for="RegExpSamplePattern">パターン</label>
+					<span><input id="RegExpSamplePattern" type="text" value="java" /></span>
+					<div>
+						<span>フラグ</span>
+						<label><input type="checkbox" name="RegExpSampleFlag" value="g" checked="checked" />global</label>
+						<label><input type="checkbox" name="RegExpSampleFlag" value="i" checked="checked" />ignoreCase</label>
+						<label><input type="checkbox" name="RegExpSampleFlag" value="m" checked="checked" />multiline</label>
+					</div>
+				</div>
+				<div>
+					<button onclick="regexpNS.match();">String::match</button>
+					<button onclick="regexpNS.split();">String::split</button>
+				</div>
+				<div>
+					<button onclick="my.ref('RegExpResultArea').value = '';">クリア</button>
+				</div>
+				<script>
+					(function(win, doc){
+						
+						var area = my.ref("RegExpResultArea"),
+							sampleValueEle = my.ref("RegExpSampleValue"),
+							samplePatternEle = my.ref("RegExpSamplePattern"),
+							sampleFlagEles = my.refs("RegExpSampleFlag");
+						
+						function getFlag(){
+							var results = Array.prototype.map.call(
+								sampleFlagEles, 
+								function(ele){
+									if(ele.checked){
+										return ele.value;
+									}else{
+										return "";
+									}
+								});
+							
+							return results.join("");
+						}
+						
+						function getPattern(opt_flag){
+							var flag = opt_flag || getFlag();
+							return new RegExp(samplePatternEle.value, flag);
+						}
+						
+						function getValue(){
+							return sampleValueEle.value;
+						}
+						
+						function match(value, pattern){
+							return value.match(pattern);
+						}
+						
+						function split(value, pattern){
+							return value.split(pattern);
+						}
+						
+						win.regexpNS = {
+							match : function(){
+								var res = match(getValue(), getPattern());
+								my.log(res);
+								my.println(area, res);
+							},
+							split : function(){
+								var res = split(getValue(), getPattern());
+								my.log(res);
+								my.println(area, res);
+							}
+						};
 						
 					}(window, document));
 				</script>
