@@ -905,12 +905,15 @@
 						x = <span id="DataTransformResult2" class="DataTransformResult"></span></p>
 					
 					<p>
-						論理値やnullも<strong>文字列変換されない状況では</strong>数値に変換される。
+						論理値やnullも<strong>文字列変換されない状況では</strong>数値に変換される。<br />
+						trueは1，falseとnullは0に変換される。
 					</p>
 					<p class="DataTransformRow">x = true + false + null;<br />
 						x = <span id="DataTransformResult3" class="DataTransformResult"></span></p>
 					<p class="DataTransformRow">x = true + "false" + null;<br />
 						x = <span id="DataTransformResult4" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = Math.pow(null, false);<br />
+						x = <span id="DataTransformResult11" class="DataTransformResult"></span></p>
 					
 					<p>
 						undefinedはNaNに変換される。NaNが1つでも含まれている式の結果はNaNになる。
@@ -942,6 +945,26 @@
 						x = <span id="DataTransformResult9" class="DataTransformResult"></span></p>
 					<p class="DataTransformRow">x = new Sample2() + 1;<br />
 						x = <span id="DataTransformResult10" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = [] + 1;<br />
+						x = <span id="DataTransformResult12" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = [9] + 1;<br />
+						x = <span id="DataTransformResult13" class="DataTransformResult"></span></p>
+					
+					<p>
+						空文字と配列の変換は変換を行う関数によって結果が異なる。
+					</p>
+					<p class="DataTransformRow">x = Number("");<br />
+						x = <span id="DataTransformResult14" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = parseInt("");<br />
+						x = <span id="DataTransformResult15" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = Number([]);<br />
+						x = <span id="DataTransformResult16" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = parseInt([]);<br />
+						x = <span id="DataTransformResult17" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = Number([1]);<br />
+						x = <span id="DataTransformResult18" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = Number([1,2]);<br />
+						x = <span id="DataTransformResult19" class="DataTransformResult"></span></p>
 				</div>
 				<script>
 					(function(win, doc){
@@ -959,7 +982,7 @@
 						
 						Sample2.prototype = {
 							toString : function(){
-								return "&lt;valueOf is not implemented!&gt;";
+								return "&lt;valueOf is not implemented&gt;";
 							}
 						};
 						
@@ -983,6 +1006,9 @@
 							var res4 = true + "false" + null;
 							setValue("DataTransformResult4", res4);
 							
+							var res11 = Math.pow(null, false);
+							setValue("DataTransformResult11", res11);
+							
 							var res5 = 1 + undefined;
 							setValue("DataTransformResult5", res5);
 							
@@ -1000,6 +1026,30 @@
 							
 							var res10 = new Sample2() + 1;
 							setValue("DataTransformResult10", res10);
+							
+							var res12 = [] + 1;
+							setValue("DataTransformResult12", res12);
+							
+							var res13 = [9] + 1;
+							setValue("DataTransformResult13", res13);
+							
+							var res14 = Number("");
+							setValue("DataTransformResult14", res14);
+							
+							var res15 = parseInt("");
+							setValue("DataTransformResult15", res15);
+							
+							var res16 = Number([]);
+							setValue("DataTransformResult16", res16);
+							
+							var res17 = parseInt([]);
+							setValue("DataTransformResult17", res17);
+							
+							var res18 = Number([1]);
+							setValue("DataTransformResult18", res18);
+							
+							var res19 = Number([1,2]);
+							setValue("DataTransformResult19", res19);
 						}
 						
 						function init(){
