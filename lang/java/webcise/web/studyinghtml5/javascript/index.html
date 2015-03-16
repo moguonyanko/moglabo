@@ -874,6 +874,143 @@
 					}(window, document));
 				</script>
 			</section>
+			<section>
+				<style scoped="scoped">
+					.DataTransformRow {
+						padding: 3px;
+						border: lightgrey 1px solid;
+						border-radius: 5px;
+					}
+					
+					.DataTransformResult {
+						font-weight: bold;
+						border-bottom: solid 1px black;
+					}
+				</style>
+				<h2>演算子と型変換</h2>
+				<div>
+					<h3>数値</h3>
+					<p>
+						オペランドのどれかが文字列であればもう一方のオペランドも文字列に変換される。
+					</p>
+					<p class="DataTransformRow">x = "1" + 1;<br />
+						x = <span id="DataTransformResult0" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = 1 + "1";<br />
+						x = <span id="DataTransformResult1" class="DataTransformResult"></span></p>
+					
+					<p>
+						インクリメントでは必ず数値へ変換される。
+					</p>
+					<p class="DataTransformRow">x = "1";<br />x++;<br />
+						x = <span id="DataTransformResult2" class="DataTransformResult"></span></p>
+					
+					<p>
+						論理値やnullも<strong>文字列変換されない状況では</strong>数値に変換される。
+					</p>
+					<p class="DataTransformRow">x = true + false + null;<br />
+						x = <span id="DataTransformResult3" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = true + "false" + null;<br />
+						x = <span id="DataTransformResult4" class="DataTransformResult"></span></p>
+					
+					<p>
+						undefinedはNaNに変換される。NaNが1つでも含まれている式の結果はNaNになる。
+					</p>
+					<p class="DataTransformRow">x = 1 + undefined;<br />
+						x = <span id="DataTransformResult5" class="DataTransformResult"></span></p>
+					
+					<p>
+						JavaScriptの数値は全て浮動小数点数である。
+						計算結果が自動的に切り捨て切り上げされて整数になったりしない。<br />
+						整数のように見えても整数ではない(と考えるのが安全)。
+					</p>
+					<p class="DataTransformRow">x = 5 / 2;<br />
+						x = <span id="DataTransformResult6" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = 6.3 / 2.1;<br />
+						x = <span id="DataTransformResult7" class="DataTransformResult"></span></p>
+					
+					<p>
+						%演算子は小数に対しても動作する。結果の符号は最初のオペランドと同じになる。
+					</p>
+					<p class="DataTransformRow">x = 6.5 % -2.1;<br />
+						x = <span id="DataTransformResult8" class="DataTransformResult"></span></p>
+					
+					<p>
+						オペランドのオブジェクトがvalueOfを実装していればその戻り値を使って計算を行う。<br />
+						valueOfが実装されていなければオブジェクトはtoStringを使って文字列変換される。
+					</p>
+					<p class="DataTransformRow">x = new Sample() + 1;<br />
+						x = <span id="DataTransformResult9" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = new Sample2() + 1;<br />
+						x = <span id="DataTransformResult10" class="DataTransformResult"></span></p>
+				</div>
+				<script>
+					(function(win, doc){
+						"use strict";
+						
+						function Sample(){}
+						
+						Sample.prototype = {
+							valueOf : function(){
+								return 100;
+							}
+						};
+						
+						function Sample2(){}
+						
+						Sample2.prototype = {
+							toString : function(){
+								return "&lt;valueOf is not implemented!&gt;";
+							}
+						};
+						
+						function setValue(id, val){
+							my.ref(id).innerHTML = val;
+						}
+						
+						function runTest(){
+							var res0 = "1" + 1;
+							setValue("DataTransformResult0", res0);
+							var res1 = 1 + "1";
+							setValue("DataTransformResult1", res1);
+							
+							var res2 = "1";
+							res2++;
+							setValue("DataTransformResult2", res2);
+							
+							var res3 = true + false + null;
+							setValue("DataTransformResult3", res3);
+							
+							var res4 = true + "false" + null;
+							setValue("DataTransformResult4", res4);
+							
+							var res5 = 1 + undefined;
+							setValue("DataTransformResult5", res5);
+							
+							var res6 = 5 / 2;
+							setValue("DataTransformResult6", res6);
+							
+							var res7 = 6.3 / 2.1;
+							setValue("DataTransformResult7", res7);
+							
+							var res8 = 6.5 % -2.1;
+							setValue("DataTransformResult8", res8);
+							
+							var res9 = new Sample() + 1;
+							setValue("DataTransformResult9", res9);
+							
+							var res10 = new Sample2() + 1;
+							setValue("DataTransformResult10", res10);
+						}
+						
+						function init(){
+							runTest();
+						}
+						
+						init();
+						
+					}(window, document));
+				</script>
+			</section>
 		</main>
 
 		<footer role="contentinfo">
