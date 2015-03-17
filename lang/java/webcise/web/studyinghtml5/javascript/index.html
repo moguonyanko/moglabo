@@ -636,10 +636,13 @@
 				<div>
 					<p>テストフレーム</p>
 					<div class="InnerFrameContainer">
-						<iframe id="SubInnerFrame0" src="sub0.html" name="sub0" width="100%" height="100"></iframe>
+						<iframe id="SubInnerFrame0" src="sub0.html" name="sub0" width="300" height="100"></iframe>
+						<!-- width, heightに%指定できるのはHTML5以降 -->
+						<!--<iframe id="SubInnerFrame0" src="sub0.html" name="sub0" width="100%" height="100%"></iframe>-->
 					</div>
 					<div class="InnerFrameContainer">
-						<iframe id="SubInnerFrame1" src="sub1.html" name="sub1" width="100%" height="100"></iframe>
+						<iframe id="SubInnerFrame1" src="sub1.html" name="sub1" width="300" height="100"></iframe>
+						<!--<iframe id="SubInnerFrame1" src="sub1.html" name="sub1" width="100%" height="100%"></iframe>-->
 					</div>
 				</div>
 				<div>
@@ -697,7 +700,7 @@
 							var w1 = win.open("sub1.html", "sub1", style, replaceHistory);
 							
 							println("w0.opener === window ... " + (w0.opener === win));
-							println("w1.opener === window ... " + (w0.opener === win));
+							println("w1.opener === window ... " + (w1.opener === win));
 						}
 						
 						function checkInstance(){
@@ -886,25 +889,39 @@
 						font-weight: bold;
 						border-bottom: solid 1px black;
 					}
+					
+					.FormulaSummary {
+						width: 75%;
+					}
 				</style>
 				<h2>演算子と型変換</h2>
-				<div>
-					<h3>数値</h3>
-					<p>
-						オペランドのどれかが文字列であればもう一方のオペランドも文字列に変換される。
+				<div class="FormulaContainer">
+					<p class="FormulaSummary">
+						二項演算子の+演算子はオペランドの型の異なる場合<strong>文字列</strong>に変換して揃える。<br />
+						即ちオペランドのどれかが文字列であればもう一方のオペランドも文字列に変換される。
 					</p>
 					<p class="DataTransformRow">x = "1" + 1;<br />
 						x = <span id="DataTransformResult0" class="DataTransformResult"></span></p>
 					<p class="DataTransformRow">x = 1 + "1";<br />
 						x = <span id="DataTransformResult1" class="DataTransformResult"></span></p>
 					
-					<p>
-						インクリメントでは必ず数値へ変換される。
+					<p class="FormulaSummary">
+						単項算術演算子はオペランドを数値に変換する。<br />
+						インクリメント，デクリメントでも必ず数値へ変換される。<br />
+						nullやtrue, false，文字列など数値でない値はそのままインクリメントすると
+						エラーになってしまうが，一度別の変数に代入すればインクリメントできる。<br />
+						デクリメントも同様の振る舞いを示す。
 					</p>
 					<p class="DataTransformRow">x = "1";<br />x++;<br />
 						x = <span id="DataTransformResult2" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = null;<br />x++;<br />
+						x = <span id="DataTransformResult20" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = null;<br />
+						+x; //<span id="DataTransformResult27" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = null;<br />
+						-x; //<span id="DataTransformResult28" class="DataTransformResult"></span></p>
 					
-					<p>
+					<p class="FormulaSummary">
 						論理値やnullも<strong>文字列変換されない状況では</strong>数値に変換される。<br />
 						trueは1，falseとnullは0に変換される。
 					</p>
@@ -915,13 +932,13 @@
 					<p class="DataTransformRow">x = Math.pow(null, false);<br />
 						x = <span id="DataTransformResult11" class="DataTransformResult"></span></p>
 					
-					<p>
+					<p class="FormulaSummary">
 						undefinedはNaNに変換される。NaNが1つでも含まれている式の結果はNaNになる。
 					</p>
 					<p class="DataTransformRow">x = 1 + undefined;<br />
 						x = <span id="DataTransformResult5" class="DataTransformResult"></span></p>
 					
-					<p>
+					<p class="FormulaSummary">
 						JavaScriptの数値は全て浮動小数点数である。
 						計算結果が自動的に切り捨て切り上げされて整数になったりしない。<br />
 						整数のように見えても整数ではない(と考えるのが安全)。
@@ -931,13 +948,13 @@
 					<p class="DataTransformRow">x = 6.3 / 2.1;<br />
 						x = <span id="DataTransformResult7" class="DataTransformResult"></span></p>
 					
-					<p>
+					<p class="FormulaSummary">
 						%演算子は小数に対しても動作する。結果の符号は最初のオペランドと同じになる。
 					</p>
 					<p class="DataTransformRow">x = 6.5 % -2.1;<br />
 						x = <span id="DataTransformResult8" class="DataTransformResult"></span></p>
 					
-					<p>
+					<p class="FormulaSummary">
 						オペランドのオブジェクトがvalueOfを実装していればその戻り値を使って計算を行う。<br />
 						valueOfが実装されていなければオブジェクトはtoStringを使って文字列変換される。
 					</p>
@@ -950,7 +967,7 @@
 					<p class="DataTransformRow">x = [9] + 1;<br />
 						x = <span id="DataTransformResult13" class="DataTransformResult"></span></p>
 					
-					<p>
+					<p class="FormulaSummary">
 						空文字と配列の変換は変換を行う関数によって結果が異なる。
 					</p>
 					<p class="DataTransformRow">x = Number("");<br />
@@ -965,16 +982,44 @@
 						x = <span id="DataTransformResult18" class="DataTransformResult"></span></p>
 					<p class="DataTransformRow">x = Number([1,2]);<br />
 						x = <span id="DataTransformResult19" class="DataTransformResult"></span></p>
+					
+					<p class="FormulaSummary">
+						-演算子はオペランドの型の異なる場合<strong>数値</strong>に変換して揃える。<br />
+						数値にならない値はNaNに変換される。<br />
+						*演算子と/演算子も-演算子と同じように振る舞う。+演算子だけが文字列変換を優先する。
+					</p>
+					<p class="DataTransformRow">x = 1;<br />y = "1";<br />
+						x - y = <span id="DataTransformResult23" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = 1;<br />y = "one";<br />
+						x - y = <span id="DataTransformResult24" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = 2;<br />y = "2";<br />
+						x * y = <span id="DataTransformResult25" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = 2;<br />y = "2";<br />
+						x / y = <span id="DataTransformResult26" class="DataTransformResult"></span></p>
+					
+					<p class="FormulaSummary">
+						等値演算子(==)はオペランドの型の異なる場合<strong>数値</strong>に変換して揃える。<br />
+						比較演算子も同様に振る舞う。
+					</p>
+					<p class="DataTransformRow">x = 1;<br />y = "1";<br />
+						x == y; //<span id="DataTransformResult21" class="DataTransformResult"></span></p>
+					<p class="DataTransformRow">x = 1;<br />y = "2";<br />
+						x $gt; y; //<span id="DataTransformResult22" class="DataTransformResult"></span></p>
 				</div>
 				<script>
 					(function(win, doc){
 						"use strict";
 						
-						function Sample(){}
+						function Sample(){
+							this.value = 100;
+						}
 						
 						Sample.prototype = {
+							toString : function(){
+								return "&lt;toString is not called if valueOf exists&gt;";
+							},
 							valueOf : function(){
-								return 100;
+								return this.value;
 							}
 						};
 						
@@ -990,70 +1035,131 @@
 							my.ref(id).innerHTML = val;
 						}
 						
-						function runTest(){
-							var res0 = "1" + 1;
-							setValue("DataTransformResult0", res0);
-							var res1 = 1 + "1";
-							setValue("DataTransformResult1", res1);
-							
-							var res2 = "1";
-							res2++;
-							setValue("DataTransformResult2", res2);
-							
-							var res3 = true + false + null;
-							setValue("DataTransformResult3", res3);
-							
-							var res4 = true + "false" + null;
-							setValue("DataTransformResult4", res4);
-							
-							var res11 = Math.pow(null, false);
-							setValue("DataTransformResult11", res11);
-							
-							var res5 = 1 + undefined;
-							setValue("DataTransformResult5", res5);
-							
-							var res6 = 5 / 2;
-							setValue("DataTransformResult6", res6);
-							
-							var res7 = 6.3 / 2.1;
-							setValue("DataTransformResult7", res7);
-							
-							var res8 = 6.5 % -2.1;
-							setValue("DataTransformResult8", res8);
-							
-							var res9 = new Sample() + 1;
-							setValue("DataTransformResult9", res9);
-							
-							var res10 = new Sample2() + 1;
-							setValue("DataTransformResult10", res10);
-							
-							var res12 = [] + 1;
-							setValue("DataTransformResult12", res12);
-							
-							var res13 = [9] + 1;
-							setValue("DataTransformResult13", res13);
-							
-							var res14 = Number("");
-							setValue("DataTransformResult14", res14);
-							
-							var res15 = parseInt("");
-							setValue("DataTransformResult15", res15);
-							
-							var res16 = Number([]);
-							setValue("DataTransformResult16", res16);
-							
-							var res17 = parseInt([]);
-							setValue("DataTransformResult17", res17);
-							
-							var res18 = Number([1]);
-							setValue("DataTransformResult18", res18);
-							
-							var res19 = Number([1,2]);
-							setValue("DataTransformResult19", res19);
+						var formulas = {
+							DataTransformResult0 : function(){
+								return "1" + 1;
+							},
+							DataTransformResult1 : function(){
+								return 1 + "1";
+							},
+							DataTransformResult2 : function(){
+								var x = "1";
+								x++;
+								return x;
+							},
+							DataTransformResult3 : function(){
+								return true + false + null;
+							},
+							DataTransformResult4 : function(){
+								return true + "false" + null;
+							},
+							DataTransformResult11 : function(){
+								return Math.pow(null, false);
+							},
+							DataTransformResult5 : function(){
+								return 1 + undefined;
+							},
+							DataTransformResult6 : function(){
+								return 5 / 2;
+							},
+							DataTransformResult7 : function(){
+								return 6.3 / 2.1;
+							},
+							DataTransformResult8 : function(){
+								return 6.5 % -2.1;
+							},
+							DataTransformResult9 : function(){
+								return new Sample() + 1;
+							},
+							DataTransformResult10 : function(){
+								return new Sample2() + 1;
+							},
+							DataTransformResult12 : function(){
+								return [] + 1;
+							},
+							DataTransformResult13 : function(){
+								return [9] + 1;
+							},
+							DataTransformResult14 : function(){
+								return Number("");
+							},
+							DataTransformResult15 : function(){
+								return parseInt("");
+							},
+							DataTransformResult16 : function(){
+								return Number([]);
+							},
+							DataTransformResult17 : function(){
+								return parseInt([]);
+							},
+							DataTransformResult18 : function(){
+								return Number([1]);
+							},
+							DataTransformResult19 : function(){
+								return Number([1,2]);
+							},
+							DataTransformResult20 : function(){
+								var x = null;
+								x++;
+								return x;
+							},
+							DataTransformResult21 : function(){
+								var x = 1,
+									y = "1";
+								
+								return x == y;
+							},
+							DataTransformResult22 : function(){
+								var x = 1,
+									y = "2";
+								
+								return x < y;
+							},
+							DataTransformResult23 : function(){
+								var x = 1,
+									y = "1";
+								
+								return x - y;
+							},
+							DataTransformResult24 : function(){
+								var x = 1,
+									y = "one";
+								
+								return x - y;
+							},
+							DataTransformResult25 : function(){
+								var x = 2,
+									y = "2";
+								
+								return x * y;
+							},
+							DataTransformResult26 : function(){
+								var x = 2,
+									y = "2";
+								
+								return x / y;
+							},
+							DataTransformResult27 : function(){
+								var x = null;
+								
+								return +x;
+							},
+							DataTransformResult28 : function(){
+								var x = null;
+								
+								return -x;
+							}
+						};
+						
+						function setupFormulas(){
+							for(var name in formulas){
+								var result = formulas[name]();
+								setValue(name, result);
+							}
 						}
 						
 						function init(){
-							runTest();
+							setupFormulas();
 						}
 						
 						init();
