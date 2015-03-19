@@ -18,8 +18,8 @@
 				"use strict";
 
 				win.commonNS = win.my = {
-					log : function(txt) {
-						console.log(txt);
+					log : function() {
+						console.log.apply(null, arguments);
 					},
 					println : function(ele, txt, override) {
 						var prop;
@@ -1192,17 +1192,31 @@
 		</section>
 		<section>
 			<style scoped="">
-
+				#NowModeInfo {
+					border-bottom: solid 1px black;
+					text-align: center;
+				}
 			</style>
 			<h2>eval</h2>
 			<div>
-				<div id="NowModeInfo"></div>
+				<p id="NowModeInfo"></p>
+				<div>
+					<p>グローバルevalを使うための準備</p>
+					<pre>
+var globalEval = eval;						
+					</pre>
+					<p>グローバル変数</p>
+					<pre>
+x = "x not changed";
+y = "y not changed";
+					</pre>
+				</div>
 				<div>
 					<h3>直接eval</h3>
 					<pre>
 function direct(){
-	var x = "local x ";
-	eval("x += \"changed!\";");
+	var x = "local x not changed";
+	eval("x = \"x changed!\";");
 	return x;
 }
 					</pre>
@@ -1213,8 +1227,8 @@ function direct(){
 					<h3>グローバルeval</h3>
 					<pre>
 function indirect(){
-	var y = "local y ";
-	grobalEval("y += \"changed!\";");
+	var y = "local y not changed";
+	globalEval("y = \"y changed!\";");
 	return y;
 }
 					</pre>
@@ -1224,28 +1238,42 @@ function indirect(){
 			</div>
 			<script>
 				(function nostrict(win, doc) {
-					var grobalEval = eval;
+					var globalEval = eval;
 					
-					/* strictモードでは以下の行はエラーになる。 */
-					x = "global x ";
-					y = "grobal y ";
+					function initGlobalValue(){
+						/* strictモードでは以下の行はエラーになる。 */
+						x = "x not changed";
+						y = "y not changed";
+					}
 
 					function direct() {
-						var x = "local x ";
-						eval("x += \"changed!\";");
+						var x = "local x not changed";
+						eval("x = \"<strong>x changed!</strong>\";");
 						return x;
 					}
 
 					function indirect() {
-						var y = "local y ";
-						grobalEval("y += \"changed!\";");
+						var y = "local y not changed";
+						/* グローバル変数を変更してしまうeval */
+						globalEval("y = \"<strong>y changed!</strong>\";");
+						/* 戻り値はローカル変数の値になる。 */
 						return y;
 					}
 
 					function display(id, fn) {
 						var res = fn();
-						my.log(res);
-						my.println(my.ref(id), res, true);
+						
+						var results = [
+							res,
+							/* グローバル変数が変更されているかを確認する。 */
+							"global x=" + x + ", global y=" + y + ""
+						];
+						
+						var info = results.join(":");
+						
+						my.log(info);
+						my.println(my.ref(id), info, true);
+						initGlobalValue();
 					}
 
 					function isStrict(){
@@ -1256,10 +1284,12 @@ function indirect(){
 						var info = my.ref("NowModeInfo");
 						
 						if(isStrict()){
-							my.println(info, "strictモードです。");
+							my.println(info, "strictモードで実行中");
 						}else{
-							my.println(info, "strictモードではありません。");
+							my.println(info, "非strictモードで実行中");
 						}
+						
+						initGlobalValue();
 					}
 
 					init();
