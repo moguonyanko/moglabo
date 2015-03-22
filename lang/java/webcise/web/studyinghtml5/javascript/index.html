@@ -37,6 +37,7 @@
 						}
 					},
 					ref : function(id, doc) {
+						/* @todo contentDocumentを使うべき？ */
 						return (doc || document).getElementById(id);
 					},
 					refs : function(name, doc) {
@@ -675,6 +676,7 @@
 				<button onclick="frameNS.dumpFrames();">iframe情報一覧</button>
 				<button onclick="frameNS.openWindows();">開いたウインドウの調査</button>
 				<button onclick="frameNS.checkInstanceViaFrames();">フレーム毎のインスタンス調査</button>
+				<button onclick="frameNS.displaySubContainer();">サブウインドウの要素取得</button>
 			</div>
 			<div>
 				<button onclick="document.getElementById('ResultInnerFrameArea').value = '';">クリア</button>
@@ -687,6 +689,8 @@
 
 					var sample = [1, 2, 3, 4, 5],
 						sampleConstructor = Array;
+						
+					var subWin0;
 
 					function println(txt) {
 						my.log(frames);
@@ -759,14 +763,20 @@
 					}
 
 					function init() {
-
+						//subWin0 = win.open("sub0.html");
 					}
 
 					win.frameNS = {
 						dumpFrames : dumpFrames,
 						openWindows : openWindows,
-						checkInstanceViaFrames : checkInstanceViaFrames
+						checkInstanceViaFrames : checkInstanceViaFrames,
+						displaySubContainer : function(){
+							var container = win.frames.sub1.sub1NS.getContainer();
+							my.println(area, container);
+						}
 					};
+					
+					init();
 
 				}(window, document));
 			</script>
