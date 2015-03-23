@@ -37,7 +37,6 @@
 						}
 					},
 					ref : function(id, doc) {
-						/* @todo contentDocumentを使うべき？ */
 						return (doc || document).getElementById(id);
 					},
 					refs : function(name, doc) {
@@ -771,8 +770,10 @@
 						openWindows : openWindows,
 						checkInstanceViaFrames : checkInstanceViaFrames,
 						displaySubContainer : function(){
-							var container = win.frames.sub1.sub1NS.getContainer();
-							my.println(area, container);
+							var container = win.frames.sub0.sub0NS.getContainer();
+							if(container){
+								my.println(area, container.getAttribute("id"));
+							}
 						}
 					};
 					

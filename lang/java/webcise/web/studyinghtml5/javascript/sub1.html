@@ -22,8 +22,8 @@
 						return sampleArray;
 					},
 					getContainer : function(){
-						var my = win.frameElement.my;
-						return my.ref("SubCountainer1");
+						var my = win.top.my;
+						return my.ref("SubCountainer1", document);
 					}
 				};
 				
