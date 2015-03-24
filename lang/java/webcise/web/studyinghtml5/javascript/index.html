@@ -13,47 +13,7 @@
 				border-radius: 5px;
 			}
 		</style>
-		<script>
-			(function(win) {
-				"use strict";
-
-				win.commonNS = win.my = {
-					log : function() {
-						console.log.apply(null, arguments);
-					},
-					println : function(ele, txt, override) {
-						var prop;
-
-						if ("value" in ele) {
-							prop = "value";
-						} else {
-							prop = "innerHTML";
-						}
-
-						if (override) {
-							ele[prop] = txt + "\n";
-						} else {
-							ele[prop] += txt + "\n";
-						}
-					},
-					ref : function(id, doc) {
-						return (doc || document).getElementById(id);
-					},
-					refs : function(name, doc) {
-						/**
-						 * デフォルト値としては配列ではなくNodeListを返すべき。 
-						 * しかしNodeListのコンストラクタは呼び出せない。
-						 * 空のNodeListを意図的に返すにはどうすればよいか？
-						 */
-						return (doc || document).getElementsByName(name) || [];
-					},
-					export : function(name, ns){
-						win[name] = ns;
-					}
-				};
-
-			}(window));
-		</script>
+		<script src="common.js"></script>
 	</head>
 	<body>
 		<header role="banner">
@@ -69,27 +29,7 @@
 				<button class="ClosureButton">0</button>
 				<button class="ClosureButton">0</button>
 				<button class="ClosureButton">0</button>
-				<script>
-					(function(doc) {
-						"use strict";
-
-						var btns = doc.querySelectorAll(".ClosureButton");
-
-						for (var i = 0; i < btns.length; i++) {
-							btns[i].onclick = (function(x) {
-								return function() {
-									this.innerHTML = x + 1;
-								};
-							}(i));
-
-//								btns[i].onclick = (function (x, that) {
-//									return function () {
-//										that.innerHTML = x + 1;
-//									};
-//								}(i, btns[i]));
-						}
-					}(document));
-				</script>
+				<script src="closure.js"></script>
 			</section>
 		</section>
 		<section>
@@ -105,43 +45,7 @@
 			<button id="ToggleClass">Toggle class</button>
 			<textarea id="ClassListResult" readonly="readonly" cols="40" rows="5">
 			</textarea>
-			<script>
-				(function(win, doc) {
-					"use strict";
-
-					var sample = doc.getElementById("ClassListSampleElement"),
-						sampleClass = "NewClass",
-						toggler = doc.getElementById("ToggleClass"),
-						result = doc.getElementById("ClassListResult");
-
-					function addEvent(ele, type, fn, cap) {
-						ele.addEventListener(type, fn, cap);
-					}
-
-					function init() {
-						result.value = "";
-
-						sample.classList.add(sampleClass);
-
-						for (var i = 0; i < sample.classList.length; i++) {
-							result.value += sample.classList[i];
-							result.value += "\n";
-						}
-
-						addEvent(toggler, "click", function() {
-							sample.classList.toggle(sampleClass);
-						});
-
-						setTimeout(function() {
-							sample.classList.remove(sampleClass);
-						}, 3000);
-					}
-
-					init();
-
-
-				}(window, document));
-			</script>
+			<script src="classlist.js"></script>
 		</section>
 		<section>
 			<h2>イベントリスナ</h2>
@@ -152,61 +56,7 @@
 				<button id="MultiListenerSample">イベント発火</button>
 				<button id="ClearListenerArea">リセット</button>
 			</div>
-			<script>
-				(function(win, doc) {
-					"use strict";
-
-					var area = doc.getElementById("MultiListenerArea"),
-						lisSiz = doc.getElementById("MultiListenerSize"),
-						btn = doc.getElementById("MultiListenerSample"),
-						clr = doc.getElementById("ClearListenerArea");
-
-					function outputTime() {
-						area.value += new Date().getTime() + "\n";
-					}
-
-					var listener = {
-						type : "click",
-						func : outputTime,
-						capture : false
-					};
-
-					function getListenerSize() {
-						var listenerSize = parseInt(lisSiz.value);
-						return !isNaN(listenerSize) ? listenerSize : 0;
-					}
-
-					function resetListener() {
-						var listenerSize = getListenerSize();
-
-						for (var i = 0; i < listenerSize; i++) {
-							btn.addEventListener(listener.type,
-								listener.func, listener.capture);
-						}
-					}
-
-					function clear() {
-						area.value = "";
-
-						var listenerSize = getListenerSize();
-
-						for (var i = 0; i < listenerSize; i++) {
-							btn.removeEventListener(listener.type,
-								listener.func, listener.capture);
-						}
-
-						resetListener();
-					}
-
-					function init() {
-						resetListener();
-						clr.addEventListener("click", clear, false);
-					}
-
-					init();
-
-				}(window, document));
-			</script>
+			<script src="eventlistener.js"></script>
 		</section>
 		<section>
 			<h2>配列</h2>
@@ -217,46 +67,7 @@
 				<button value="addAll" class="RunArrayFunc">addAll</button>
 				<button value="sparseArray" class="RunArrayFunc">sparseArray</button>
 			</div>
-			<script>
-				(function(win, doc) {
-					"use strict";
-
-					var arrayNS = {},
-						sampleArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-					var resArea = doc.getElementById("ArrayResultArea");
-
-					var sampleArgs = {
-						addAll : [sampleArray, ["A", "B", "C"]],
-						sparseArray : [sampleArray, 5]
-					};
-
-					arrayNS.addAll = function(ary, eles) {
-						Array.prototype.push.apply(ary, eles);
-						return ary;
-					};
-
-					/**
-					 * deleteしてもlengthは変化無し。
-					 * indexの位置が疎になる。
-					 */
-					arrayNS.sparseArray = function(ary, index) {
-						delete ary[index];
-						return ary;
-					};
-
-					var runners = doc.querySelectorAll(".RunArrayFunc");
-					Array.prototype.forEach.call(runners, function(el) {
-						el.addEventListener("click", function() {
-							var funcName = el.value,
-								args = sampleArgs[funcName];
-							var func = arrayNS[funcName].bind(null, args);
-							resArea.innerHTML = func().join(" ");
-						});
-					});
-
-				}(window, document));
-			</script>
+			<script src="array.js"></script>
 		</section>
 		<section>
 			<h2>部分適用</h2>
@@ -268,41 +79,7 @@
 				<button onclick="bindNS.log(bindNS.fnNumber());">数値を適用</button>
 				<button onclick="bindNS.log(new bindNS.fnNumber(100));">コンストラクタで適用</button>
 			</div>
-			<script>
-				(function(win, doc) {
-					"use strict";
-
-					var bindNS = {};
-
-					var area = doc.getElementById("BindResultArea");
-
-					function log(txt) {
-						//console.log(txt);
-						area.innerHTML = txt;
-					}
-
-					/**
-					 * 抽象的な関数を定義し，bindに渡す引数によって
-					 * 具象的な関数を再定義する。
-					 * 
-					 */
-					function func1(y, z) {
-						return this.x + y + z;
-					}
-
-					function init() {
-						bindNS.log = log;
-						/* 配列は部分適用時に文字列に変換される。 */
-						bindNS.fnArray = func1.bind({x : 1}, [2, 3], 10);
-						bindNS.fnNumber = func1.bind({x : 1}, 2, 3);
-					}
-
-					init();
-
-					win.bindNS = bindNS;
-
-				}(window, document));
-			</script>
+			<script src="partial.js"></script>
 		</section>
 		<section>
 			<h2>コンストラクタ</h2>
@@ -325,133 +102,7 @@
 				<button onclick="constructorNS.dumpSubInstance();">サブクラス生成</button>
 				<button onclick="constructorNS.getSubName();">サブクラス::getName</button>
 			</div>
-			<script>
-				(function(win, doc) {
-					"use strict";
-
-					var resultArea = doc.getElementById("ConstructorResult");
-
-					function display(content) {
-						/**
-						 * innerHTMLはサードパーティ製ライブラリとは組み合わせて
-						 * 使わないこと。
-						 * ライブラリによってページのDOMを勝手に編集されている場合，
-						 * ライブラリが追加した要素もまとめて消してしまうなど意図しない
-						 * 表示結果になることがある。
-						 */
-						resultArea.innerHTML = content;
-					}
-
-					function log(obj) {
-						console.log(obj);
-					}
-
-					function dumpObject(obj) {
-						var result = [
-							"obj.constructor.name : " + obj.constructor.name
-						];
-
-						if (obj.prototype) {
-							result.push("obj.prototype.constructor.name : " + obj.prototype.constructor.name);
-						} else {
-							result.push("obj.prototype : " + obj.prototype);
-						}
-
-						for (var prop in obj) {
-							result.push(prop + " : " + obj[prop]);
-						}
-
-						display(result.join("<br />"));
-					}
-
-					function SuperClass(superName) {
-						this.superName = superName;
-					}
-
-					SuperClass.prototype.getName = function() {
-						return this.superName;
-					};
-
-					function SubClass(name, subName) {
-						if (SubClass.superClass) {
-							SubClass.superClass.call(this, name);
-						}
-						this.subName = subName;
-					}
-
-					/* @todo 継承できておらず呼び出されない？ */
-					SubClass.prototype.getName = function() {
-						var superName = SubClass.superClass.prototype.getName.apply(this, arguments);
-						var subName = this.subName;
-
-						return [superName, subName].join(" ");
-					};
-
-					function setSuperClass(superClass, subClass) {
-						subClass.superClass = superClass;
-					}
-
-					function objectCreate(superClass, subClass) {
-						subClass.prototype = Object.create(superClass.prototype);
-					}
-
-					function objectNew(superClass, subClass) {
-						subClass.prototype = new superClass();
-					}
-
-					function functionBind(superClass, subClass) {
-						/* bindが返す関数はコンストラクタではない。 */
-						subClass.prototype = superClass.bind();
-					}
-
-					var inherits = {
-						objectCreate : objectCreate,
-						objectNew : objectNew,
-						functionBind : functionBind
-					};
-
-					function doInherit(superClass, subClass) {
-						var inheritFunc = null;
-
-						var methodEles = doc.getElementsByName("inheritFuncs");
-						for (var i = 0, size = methodEles.length; i < size; i++) {
-							if (methodEles[i].checked) {
-								inheritFunc = inherits[methodEles[i].value];
-								break;
-							}
-						}
-
-						if (inheritFunc) {
-							inheritFunc(superClass, subClass);
-							setSuperClass(superClass, subClass);
-						}
-					}
-
-					function constructSubInstance(superName, subName) {
-						doInherit(SuperClass, SubClass);
-						var sub = new SubClass(superName, subName);
-						return sub;
-					}
-
-					function dumpSubInstance() {
-						var sub = constructSubInstance("Foo", "Taro");
-						dumpObject(sub);
-						log(sub);
-					}
-
-					function getSubName() {
-						var sub = constructSubInstance("Foo", "Taro");
-						display("SubName : " + sub.getName());
-						log(sub);
-					}
-
-					win.constructorNS = {
-						dumpSubInstance : dumpSubInstance,
-						getSubName : getSubName
-					};
-
-				}(window, document));
-			</script>
+			<script src="constructor.js"></script>
 		</section>
 		<section>
 			<h2>アクセッサメソッドとオブジェクト属性</h2>
@@ -475,178 +126,7 @@
 					<button onclick="document.getElementById('ResultAccessorArea').value = '';">クリア</button>
 				</div>
 			</div>
-			<script>
-				(function(win, doc) {
-					"use strict";
-
-					var area = doc.getElementById("ResultAccessorArea"),
-						inputNameEle = doc.getElementById("InputNameAccessorValue"),
-						inputModeEle = doc.getElementById("InputModeAccessorValue"),
-						inputOptionEle = doc.getElementById("InputOptionAccessorValue");
-
-					function log(txt) {
-						console.log(txt);
-					}
-
-					function print(txt) {
-						area.value += txt + "\n";
-					}
-
-					var sample = (function() {
-						/**
-						 * アクセッサメソッドと異なるプロパティ名で
-						 * 定義しないと再帰エラーになる。
-						 */
-						var _sample = {
-							/* 参照されるプロパティ名は関数名と同じになる。 */
-							get name() {
-								print("called name getter");
-								return this._name;
-							},
-							set name(name) {
-								/**
-								 * このスコープで未定義値を参照すると
-								 * strictモードでなくてもエラーになる。 
-								 */
-								print("called name setter ... " + name);
-								this._name = name;
-							},
-							get mode() {
-								print("called mode getter");
-								return this._mode;
-							},
-							set mode(mode) {
-								print("called mode setter ... " + mode);
-								this._mode = mode;
-							}
-						};
-
-						/**
-						 * アクセッサメソッドで参照するプロパティを
-						 * 書き込み可，列挙不可，再定義不可として定義する。
-						 */
-						Object.defineProperties(_sample, {
-							_name : {
-								/**
-								 * 「データプロパティ」で指定できるのは
-								 * 以下の4つのプロパティである。
-								 */
-								value : "HOGE", writable : true, enumerable : false, configurable : false
-							},
-							_mode : {
-								value : "normal", writable : true, enumerable : false, configurable : false
-							},
-							option : {
-								get : function() {
-									print("called option getter");
-									return this._option;
-								},
-								set : function(option) {
-									print("called option setter ... " + option);
-									this._option = option;
-								},
-								/**
-								 * 「アクセッサプロパティ」でget, set以外に
-								 * 指定できるのはenumerabelとconfigurableのみ。
-								 * writableやvalueを指定するとエラーになる。
-								 */
-								enumerable : false, configurable : false
-							}
-						});
-
-						return _sample;
-					}());
-
-					function objectMethodTest() {
-						/**
-						 * Object.create(null)で生成したオブジェクトは
-						 * prototypeプロパティを持たないので
-						 * in演算子でプロパティの列挙を行う際にhasOwnProperty
-						 * によるチェックを行う必要が無い。
-						 * enumerableがfalseだと当然そのプロパティは
-						 * 列挙されなくなる。
-						 * オブジェクトリテラルによる擬似配列のlengthを
-						 * 要素の列挙前に削除することがあったが，enumerableを
-						 * falseにすればよかっただけである。
-						 */
-						var obj0 = Object.create(null);
-						Object.defineProperty(obj0, "name", {
-							value : "not writable and not configurable object0",
-							writable : false,
-							enumerable : true,
-							configurable : false
-						});
-
-						/**
-						 * writableがtrueであること以外はobj0, obj1と同じ
-						 * オブジェクト属性になる。
-						 */
-						var obj1 = Object.create(null);
-						obj1.name = "seal object1";
-						Object.seal(obj1);
-
-						/**
-						 * obj0と同じオブジェクト属性になる。
-						 */
-						var obj2 = Object.create(null);
-						obj2.name = "freeze object2";
-						Object.freeze(obj2);
-
-						var objs = [obj0, obj1, obj2];
-
-						objs.forEach(function(o) {
-							log(o);
-							/**
-							 * オブジェクトがオブジェクトリテラルや
-							 * コンストラクタ関数で生成された時に
-							 * オブジェクトのプロパティを列挙する場合は，
-							 * Object.keysを使えば継承されたプロパティが
-							 * 列挙されないため安全である。
-							 */
-							Object.keys(o).forEach(function(k) {
-								print(k + " → " + o[k]);
-								var desc = Object.getOwnPropertyDescriptor(o, k);
-								Object.keys(desc).forEach(function(d) {
-									print(d + " : " + desc[d]);
-								});
-							});
-							//for(var prop in o){
-							//	print(o[prop]);
-							//}
-						});
-					}
-
-					function init() {
-					}
-
-					init();
-
-					win.accessorNS = {
-						printName : function() {
-							sample.name = inputNameEle.value;
-							print(sample.name);
-						},
-						printMode : function() {
-							sample.mode = inputModeEle.value;
-							print(sample.mode);
-						},
-						printOption : function() {
-							sample.option = inputOptionEle.value;
-							print(sample.option);
-						},
-						dumpObject : function() {
-							/* 各プロパティのgetterが2回ずつ呼び出される。 */
-							log(sample);
-							/* 以下は無視される。 */
-							delete sample._name;
-							delete sample._mode;
-							delete sample.option;
-						},
-						objectMethodTest : objectMethodTest
-					};
-
-				}(window, document));
-			</script>
+			<script src="accessor.js"></script>
 		</section>
 		<section>
 			<style scoped="scoped">
@@ -680,107 +160,7 @@
 			<div>
 				<button onclick="document.getElementById('ResultInnerFrameArea').value = '';">クリア</button>
 			</div>
-			<script>
-				(function(win, doc) {
-					"use strict";
-
-					var area = doc.getElementById("ResultInnerFrameArea");
-
-					var sample = [1, 2, 3, 4, 5],
-						sampleConstructor = Array;
-						
-					var subWin0;
-
-					function println(txt) {
-						my.log(frames);
-						area.value += txt + "\n";
-					}
-
-					function dumpFrames() {
-						var frames = win.frames;
-
-						Array.prototype.forEach.call(frames, function(frm, i) {
-							/**
-							 * 後ろの===は先に書かれた+に優先度で負けるので，
-							 * 意図した結果を得るには()で囲む必要がある。 
-							 */
-							println("frames[" + frm.name + "] === frames[" + i + "] ... " + (frm === frames[i]));
-
-							/* src属性を使ってquerySelectorするのは許されない？エラーになる。 */
-							//var frmEle = doc.querySelector(".InnerFrameContainer iframe[src=" + frm.name + ".html]");
-							var frmEle = doc.getElementById("SubInnerFrame" + i);
-							println("iframe.contentWindow === iframe ... " + (frmEle.contentWindow === frm));
-						});
-					}
-
-					function openWindows() {
-						var style = "width=400,height=300,status=yes,resizable=yes",
-							replaceHistory = true;
-
-						/**
-						 * 同一ページを読み込んだiframeがDOMツリー上に存在する時は
-						 * そのページをwindow.openで開くことができない。
-						 * openの戻り値(Windowオブジェクト)は得られる。
-						 */
-						var w0 = win.open("sub0.html", "sub0", style, replaceHistory);
-						var w1 = win.open("sub1.html", "sub1", style, replaceHistory);
-
-						println("w0.opener === window ... " + (w0.opener === win));
-						println("w1.opener === window ... " + (w1.opener === win));
-					}
-
-					function checkInstance() {
-						return sample instanceof sampleConstructor;
-					}
-
-					function checkInstanceOf(obj) {
-						return obj instanceof sampleConstructor;
-					}
-
-					/**
-					 * フレームをまたいだ状態でオブジェクトの型を調べる。
-					 * instanceof の挙動を調べる。
-					 */
-					function checkInstanceViaFrames() {
-						var frames = win.frames;
-
-						var frm0 = frames.sub0,
-							frm1 = frames.sub1;
-
-						my.println(area, checkInstance());
-						my.println(area, frm0.sub0NS.checkInstance());
-						my.println(area, frm1.sub1NS.checkInstance());
-
-						/**
-						 * 別のフレームのオブジェクトをinstanceofで型チェックしても
-						 * 予想した結果は得られない。Arrayのような組み込みオブジェクト
-						 * であってもフレームが異なれば異なるインスタンスとして
-						 * 扱われてしまう。
-						 */
-						my.println(area, checkInstanceOf(frm0.sub0NS.getArray()));
-						my.println(area, checkInstanceOf(frm1.sub1NS.getArray()));
-					}
-
-					function init() {
-						//subWin0 = win.open("sub0.html");
-					}
-
-					win.frameNS = {
-						dumpFrames : dumpFrames,
-						openWindows : openWindows,
-						checkInstanceViaFrames : checkInstanceViaFrames,
-						displaySubContainer : function(){
-							var container = win.frames.sub0.sub0NS.getContainer();
-							if(container){
-								my.println(area, container.getAttribute("id"));
-							}
-						}
-					};
-					
-					init();
-
-				}(window, document));
-			</script>
+			<script src="frame.js"></script>
 		</section>
 		<section>
 			<style scoped="scoped">
@@ -795,41 +175,7 @@
 			<div>
 				<button onclick="my.ref('ResultDataTypeArea').value = '';">クリア</button>
 			</div>
-			<script>
-				(function(win, doc) {
-					"use strict";
-
-					var resultArea = my.ref("ResultDataTypeArea"),
-						typeChecker = my.ref("InstanceChecker");
-
-					function checkInstance() {
-						/**
-						 * +演算子がinstanceof演算子より先に評価されないように
-						 * instanceof演算子の式を()で囲むことは必須。
-						 */
-						var result = [
-							"1 instanceof Number ... " + (1 instanceof Number),
-							"Number(1) instanceof Number ... " + (Number(1) instanceof Number),
-							"new Number(1) instanceof Number ... " + (new Number(1) instanceof Number),
-							"\"\" instanceof String ... " + ("" instanceof String),
-							"String(\"\") instanceof String ... " + (String("") instanceof String),
-							"new String(\"\") instanceof String ... " + (new String("") instanceof String)
-						];
-
-						return result.join("\n");
-					}
-
-					function init() {
-						typeChecker.addEventListener("click", function() {
-							var checkResult = checkInstance();
-							my.println(resultArea, checkResult);
-						}, false);
-					}
-
-					init();
-
-				}(window, document));
-			</script>
+			<script src="datatype.js"></script>
 		</section>
 		<section>
 			<style scoped="scoped">
@@ -857,61 +203,7 @@
 			<div>
 				<button onclick="my.ref('RegExpResultArea').value = '';">クリア</button>
 			</div>
-			<script>
-				(function(win, doc) {
-					"use strict";
-
-					var area = my.ref("RegExpResultArea"),
-						sampleValueEle = my.ref("RegExpSampleValue"),
-						samplePatternEle = my.ref("RegExpSamplePattern"),
-						sampleFlagEles = my.refs("RegExpSampleFlag");
-
-					function getFlag() {
-						var results = Array.prototype.map.call(
-							sampleFlagEles,
-							function(ele) {
-								if (ele.checked) {
-									return ele.value;
-								} else {
-									return "";
-								}
-							});
-
-						return results.join("");
-					}
-
-					function getPattern(opt_flag) {
-						var flag = opt_flag || getFlag();
-						return new RegExp(samplePatternEle.value, flag);
-					}
-
-					function getValue() {
-						return sampleValueEle.value;
-					}
-
-					function match(value, pattern) {
-						return value.match(pattern);
-					}
-
-					function split(value, pattern) {
-						return value.split(pattern);
-					}
-
-					win.regexpNS = {
-						match : function() {
-							var res = match(getValue(), getPattern());
-							my.log(res);
-							my.println(area, res);
-						},
-						split : function() {
-							var res = split(getValue(), getPattern());
-							my.log(res);
-							my.println(area, res);
-						}
-					};
-
-				}(window, document));
-			</script>
+			<script src="regexp.js"></script>
 		</section>
 		<section>
 			<style scoped="scoped">
@@ -1042,167 +334,7 @@
 				<p class="DataTransformRow">x = 1;<br />y = "2";<br />
 					x $gt; y; //<span id="DataTransformResult22" class="DataTransformResult"></span></p>
 			</div>
-			<script>
-				(function(win, doc) {
-					"use strict";
-
-					function Sample() {
-						this.value = 100;
-					}
-
-					Sample.prototype = {
-						toString : function() {
-							return "&lt;toString is not called if valueOf exists&gt;";
-						},
-						valueOf : function() {
-							return this.value;
-						}
-					};
-
-					function Sample2() {
-					}
-
-					Sample2.prototype = {
-						toString : function() {
-							return "&lt;valueOf is not implemented&gt;";
-						}
-					};
-
-					function setValue(id, val) {
-						my.ref(id).innerHTML = val;
-					}
-
-					var formulas = {
-						DataTransformResult0 : function() {
-							return "1" + 1;
-						},
-						DataTransformResult1 : function() {
-							return 1 + "1";
-						},
-						DataTransformResult2 : function() {
-							var x = "1";
-							x++;
-							return x;
-						},
-						DataTransformResult3 : function() {
-							return true + false + null;
-						},
-						DataTransformResult4 : function() {
-							return true + "false" + null;
-						},
-						DataTransformResult11 : function() {
-							return Math.pow(null, false);
-						},
-						DataTransformResult5 : function() {
-							return 1 + undefined;
-						},
-						DataTransformResult6 : function() {
-							return 5 / 2;
-						},
-						DataTransformResult7 : function() {
-							return 6.3 / 2.1;
-						},
-						DataTransformResult8 : function() {
-							return 6.5 % -2.1;
-						},
-						DataTransformResult9 : function() {
-							return new Sample() + 1;
-						},
-						DataTransformResult10 : function() {
-							return new Sample2() + 1;
-						},
-						DataTransformResult12 : function() {
-							return [] + 1;
-						},
-						DataTransformResult13 : function() {
-							return [9] + 1;
-						},
-						DataTransformResult14 : function() {
-							return Number("");
-						},
-						DataTransformResult15 : function() {
-							return parseInt("");
-						},
-						DataTransformResult16 : function() {
-							return Number([]);
-						},
-						DataTransformResult17 : function() {
-							return parseInt([]);
-						},
-						DataTransformResult18 : function() {
-							return Number([1]);
-						},
-						DataTransformResult19 : function() {
-							return Number([1, 2]);
-						},
-						DataTransformResult20 : function() {
-							var x = null;
-							x++;
-							return x;
-						},
-						DataTransformResult21 : function() {
-							var x = 1,
-								y = "1";
-
-							return x == y;
-						},
-						DataTransformResult22 : function() {
-							var x = 1,
-								y = "2";
-
-							return x < y;
-						},
-						DataTransformResult23 : function() {
-							var x = 1,
-								y = "1";
-
-							return x - y;
-						},
-						DataTransformResult24 : function() {
-							var x = 1,
-								y = "one";
-
-							return x - y;
-						},
-						DataTransformResult25 : function() {
-							var x = 2,
-								y = "2";
-
-							return x * y;
-						},
-						DataTransformResult26 : function() {
-							var x = 2,
-								y = "2";
-
-							return x / y;
-						},
-						DataTransformResult27 : function() {
-							var x = null;
-
-							return +x;
-						},
-						DataTransformResult28 : function() {
-							var x = null;
-
-							return -x;
-						}
-					};
-
-					function setupFormulas() {
-						for (var name in formulas) {
-							var result = formulas[name]();
-							setValue(name, result);
-						}
-					}
-
-					function init() {
-						setupFormulas();
-					}
-
-					init();
-
-				}(window, document));
-			</script>
+			<script src="operator.js"></script>
 		</section>
 		<section>
 			<style scoped="">
@@ -1250,160 +382,59 @@ function indirect(){
 					<button onclick="evalNS.indirect();">評価</button>
 				</div>
 			</div>
-			<script>
-				(function nostrict(win, doc) {
-					var globalEval = eval;
-					
-					function initGlobalValue(){
-						/* strictモードでは以下の行はエラーになる。 */
-						x = "x not changed";
-						y = "y not changed";
-					}
-
-					function direct() {
-						var x = "local x not changed";
-						eval("x = \"<strong>x changed!</strong>\";");
-						return x;
-					}
-
-					function indirect() {
-						var y = "local y not changed";
-						/* グローバル変数を変更してしまうeval */
-						globalEval("y = \"<strong>y changed!</strong>\";");
-						/* 戻り値はローカル変数の値になる。 */
-						return y;
-					}
-
-					function display(id, fn) {
-						var res = fn();
-						
-						var results = [
-							res,
-							/* グローバル変数が変更されているかを確認する。 */
-							"global x=" + x + ", global y=" + y + ""
-						];
-						
-						var info = results.join(":");
-						
-						my.log(info);
-						my.println(my.ref(id), info, true);
-						initGlobalValue();
-					}
-
-					function isStrict(){
-						return this === undefined;
-					}
-
-					function init() {
-						var info = my.ref("NowModeInfo");
-						
-						if(isStrict()){
-							my.println(info, "strictモードで実行中");
-						}else{
-							my.println(info, "非strictモードで実行中");
-						}
-						
-						initGlobalValue();
-					}
-
-					init();
-
-					win.evalNS = {
-						direct : function() {
-							display("DirectEvalResultArea", direct);
-						},
-						indirect : function() {
-							display("IndirectEvalResultArea", indirect);
-						}
-					};
-
-				}(window, document));
-			</script>
+			<script src="eval.js"></script>
 		</section>
 		<section>
 			<h2>with</h2>
 			<p>with文の問題のために入力された名前は決して使われない。</p>
 			<div id="WithResultArea">結果確認</div>
 			<div>
-				<label>名前:<input id="WithSampleName" type="text" value="" /></label>
+				<label>名前:<input id="WithSampleName" type="text" value="INPUT NAME" /></label>
 				<button onclick="withNS.displayName();">名前確認</button>
 				<button onclick="withNS.changeObject();">メソッド変更</button>
 			</div>
-			<script>
-				(function(win, doc){
-					
-					var area = my.ref("WithResultArea"),
-						nameInput = my.ref("WithSampleName");
-					
-					function getName(){
-						return nameInput.value;
-					}
-					
-					function Sample(name, id){
-						this.name = name;
-						this.id = id;
-					}
-					
-					Sample.prototype = {
-						setName : function(name){
-							this.name = name;
-						},
-						getName : function(){
-							return this.name;
-						}
-					};
-					
-					function setupObject(name){
-						var sample = new Sample("NONAME", 1);
-						
-						with(sample){
-							/**
-							 * 引数のname変数ではなくオブジェクトに設定済みの
-							 * nameプロパティが使われ続ける。 
-							 */
-							setName(name);
-							/**
-							 * 意図せずSampleのメソッドが呼び出されてしまう。 
-							 * そのメソッドは変更されているかもしれない。
-							 */
-							my.log(getName());
-						}
-						
-						return sample;
-					}
-					
-					function changeSampleMethod(){
-						/**
-						 * setupObjectで呼び出しているつもりの無い
-						 * メソッドを変更してしまう。
-						 */
-						Sample.prototype.getName = function(){
-							return this.name + " CHANGED!!";
-						};
-					}
-					
-					(function init(){
-						
-						my.export("withNS", {
-							displayName : function(){
-								var sample = setupObject(getName());
-								my.println(area, sample.getName(), true);
-							},
-							changeObject : function(){
-								changeSampleMethod();
-								my.log("Sample.prototype.getName is changed!");
-							}
-						});
-						
-					}());
-					
-				}(window, document));
-			</script>
+			<script src="with.js"></script>
+		</section>
+		<section>
+			<h2>JSON</h2>
+			<p>parseやstringifyでは入力値をフィルタリングすることができる。</p>
+			<div>
+				<p>サンプルJSON</p>
+				<pre id="SampleJSONObject">
+var members = {
+	5114096: {
+		id: "5114096",
+		name: "FOO",
+		height: 180.5,
+		weight: 80.5,
+		age: 30,
+		favorite: ["apple", "orange", "melon"],
+		married: false,
+		note: null
+	},
+	1509355: {
+		id: "1509355",
+		name: "BAR",
+		height: 160.1,
+		weight: 73.8,
+		age: 45,
+		favorite: ["egg", "milk", "chocolate"],
+		married: true,
+		note: null
+	}
+};
+				</pre>
+			</div>
+			<div id="JSONResultArea">JSON結果</div>
+			<div>
+				<button id="DisplayParsedJSON">JSON取得</button>
+			</div>
+			<script src="json.js"></script>
 		</section>
 	</main>
 
 	<footer role="contentinfo">
-		<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
+		<small>Copyright &copy; 2014-2105 moguonyanko All rights reserved.</small>
 	</footer>
 </body>
 </html>
