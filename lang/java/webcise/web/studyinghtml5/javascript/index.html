@@ -396,38 +396,51 @@ function indirect(){
 			<script src="with.js"></script>
 		</section>
 		<section>
+			<style scoped="">
+				#JSONResultArea {
+					border: 1px solid lightgrey;
+				}
+			</style>
 			<h2>JSON</h2>
 			<p>parseやstringifyでは入力値をフィルタリングすることができる。</p>
 			<div>
 				<p>サンプルJSON</p>
 				<pre id="SampleJSONObject">
-var members = {
-	5114096: {
-		id: "5114096",
-		name: "FOO",
-		height: 180.5,
-		weight: 80.5,
-		age: 30,
-		favorite: ["apple", "orange", "melon"],
-		married: false,
-		note: null
+{
+	"5114096": {
+		"id": "5114096",
+		"name": "FOO",
+		"height": 180.5,
+		"weight": 80.5,
+		"age": 30,
+		"favorite": ["apple", "orange", "melon"],
+		"married": false,
+		"note": null
 	},
-	1509355: {
-		id: "1509355",
-		name: "BAR",
-		height: 160.1,
-		weight: 73.8,
-		age: 45,
-		favorite: ["egg", "milk", "chocolate"],
-		married: true,
-		note: null
+	"1509355": {
+		"id": "1509355",
+		"name": "BAR",
+		"height": 160.1,
+		"weight": 73.8,
+		"age": 45,
+		"favorite": ["egg", "milk", "chocolate"],
+		"married": true,
+		"note": null
 	}
-};
+}
 				</pre>
 			</div>
-			<div id="JSONResultArea">JSON結果</div>
+			<p>JSON結果</p>
+			<div id="JSONResultArea"></div>
 			<div>
-				<button id="DisplayParsedJSON">JSON取得</button>
+				<div>
+					<label><input name="JSONFilters" type="radio" value="weight" checked="checked" />weight</label>
+					<label><input name="JSONFilters" type="radio" value="none" />none</label>
+					<div>
+						<label>しきい値<input id="JSONBorderValue" type="text" value="80" /></label>
+					</div>
+				</div>
+				<button id="DisplayParsedJSON">JSON::parse→stringify</button>
 			</div>
 			<script src="json.js"></script>
 		</section>
