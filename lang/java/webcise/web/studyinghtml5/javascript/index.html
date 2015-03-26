@@ -398,13 +398,15 @@ function indirect(){
 		<section>
 			<style scoped="">
 				#JSONResultArea {
+					width: auto;
+					height: 200px;
 					border: 1px solid lightgrey;
 				}
 			</style>
 			<h2>JSON</h2>
 			<p>parseやstringifyでは入力値をフィルタリングすることができる。</p>
 			<div>
-				<p>サンプルJSON</p>
+				<h3>サンプルJSON</h3>
 				<pre id="SampleJSONObject">
 {
 	"5114096": {
@@ -425,22 +427,26 @@ function indirect(){
 		"age": 45,
 		"favorite": ["egg", "milk", "chocolate"],
 		"married": true,
-		"note": null
+		"note": {
+			"disease": "cold"
+		}
 	}
 }
 				</pre>
 			</div>
-			<p>JSON結果</p>
+			<h3>JSONのメソッド呼び出し結果</h3>
 			<div id="JSONResultArea"></div>
 			<div>
-				<div>
+				<div class="JSONOptionPanel">
 					<label><input name="JSONFilters" type="radio" value="weight" checked="checked" />weight</label>
 					<label><input name="JSONFilters" type="radio" value="none" />none</label>
 					<div>
 						<label>しきい値<input id="JSONBorderValue" type="text" value="80" /></label>
 					</div>
+					<label>nameとageのみ文字列化<input id="JSONPropertySqeezeCheck" type="checkbox" checked="checked" /></label>
 				</div>
 				<button id="DisplayParsedJSON">JSON::parse→stringify</button>
+				<button id="DisplayStringifiedJSON">プロパティを指定してJSON::stringify</button>
 			</div>
 			<script src="json.js"></script>
 		</section>
