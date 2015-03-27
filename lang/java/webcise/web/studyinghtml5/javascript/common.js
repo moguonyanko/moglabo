@@ -6,18 +6,21 @@
 			console.log.apply(null, arguments);
 		},
 		println : function(ele, txt, override) {
-			var prop;
+			var prop,
+				newLine;
 
 			if ("value" in ele) {
 				prop = "value";
+				newLine = "\n";
 			} else {
 				prop = "innerHTML";
+				newLine = "<br />";
 			}
 
 			if (override) {
-				ele[prop] = txt + "\n";
+				ele[prop] = txt + newLine;
 			} else {
-				ele[prop] += txt + "\n";
+				ele[prop] += txt + newLine;
 			}
 		},
 		ref : function(id, doc) {

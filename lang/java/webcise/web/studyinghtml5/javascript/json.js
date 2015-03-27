@@ -67,10 +67,11 @@
 	function getSampleSourceJSON(){
 		var container = m.ref("SampleJSONObject"),
 			/**
-			 * pre要素内の文字列はTextNodeのnodeValueとして
-			 * 保存されている。
+			 * pre要素内の文字列はtextContentプロパティか
+			 * TextNodeのnodeValueとして保存されている。
 			 */
-			jsonText = container.firstChild.nodeValue;
+			jsonText = container.textContent;
+			//jsonText = container.firstChild.nodeValue;
 			
 		return jsonText;
 	}

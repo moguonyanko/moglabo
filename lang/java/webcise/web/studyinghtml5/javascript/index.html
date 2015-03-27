@@ -450,6 +450,39 @@ function indirect(){
 			</div>
 			<script src="json.js"></script>
 		</section>
+		<section>
+			<style scoped="">
+				.NodeSample {
+					border: 1px solid lightgrey;
+					border-radius: 5px;
+					margin: 5px;
+				}
+				
+				#SampleElementNodeContainer {
+					height: 30%;
+					max-height: 500px;
+				}
+			</style>
+			<h2>Node</h2>
+			<div id="SampleElementNodeContainer" class="NodeSample">				
+				<p id="SampleTextNodeContainer" class="NodeSample">テキストノード</p>
+				<p id="SampleCommentNodeContainer" class="NodeSample"><!-- コメントノード --></p>
+				<pre id="SamlePreNode" class="NodeSample">
+					整形済みテキスト
+				</pre>
+				<input id="SampleInputNode" class="NodeSample" type="text" value="INPUT NODE" readonly="" />
+				<script id="SampleInlineScriptNode">
+					//(function(){ console.log("Inline script node!"); }());
+				</script>
+			</div>
+			<p>Node情報出力結果</p>
+			<textarea id="SampleNodeInfomationArea" readonly="readonly" cols="80" rows="5"></textarea>
+			<div>
+				<button id="NodeOutputExecuter">Node情報出力</button>
+				<button id="ClearNodeInfomation">クリア</button>
+			</div>
+			<script src="nodetest.js"></script>
+		</section>
 	</main>
 
 	<footer role="contentinfo">
