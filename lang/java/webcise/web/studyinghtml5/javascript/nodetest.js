@@ -25,7 +25,7 @@
 		}
 
 		pp("**********************************");
-		pp("ID:" + node.id);
+		pp("id:" + node.id);
 		pp("nodeName:" + node.nodeName);
 		pp("nodeType:" + node.nodeType + ", This is " + NODETYPECONST[node.nodeType]);
 		pp("nodeValue:" + node.nodeValue);
@@ -39,6 +39,12 @@
 		pp("textContent:" + node.textContent);
 		/* textから値が得られる時は同じ値がtextContentからも得られる。 */
 		pp("text:" + node.text);
+		/**
+		 * ownerDocumentにはDocumentFragmentやドキュメント追加前のノードでも
+		 * HTMLDocumentが保持されている。nullになるのはdocument.ownerDocument
+		 * だけかもしれない。
+		 */
+		pp("ownerDocument:" + node.ownerDocument);
 
 		if (node.hasChildNodes()) {
 			for (var i = 0, len = node.childNodes.length; i < len; i++) {
@@ -47,7 +53,7 @@
 		}
 	}
 
-	function outputContainerNodeInfomation() {
+	function outputNodeContainerInfomation() {
 		var sampleFragment = doc.createDocumentFragment();
 
 		var sampleScript = doc.createElement("script");
@@ -67,11 +73,82 @@
 		sampleRoot.removeChild(sampleScript);
 	}
 
+	function outputNodeEquality(node, otherNode) {
+		if (node && otherNode) {
+			var separator = " ... ";
+			
+			/**
+			 * 属性や子ノードが等しければ比較対象のノードがcloneNodeの
+			 * 戻り値だったとしてもNode::isEqualNodeはtrueを返す。
+			 * 即ち等しさの基準がisSameNodeや==演算子より緩い。
+			 */
+			pp(node.id + ":" + node.nodeName + " isEqualNode " +
+				otherNode.id + ":" + otherNode.nodeName + separator +
+				node.isEqualNode(otherNode));
+			/** 
+			 * Node::isSameNodeは本当に同じノードとの比較でない限り
+			 * trueを返さない。比較対象がcloneNodeの戻り値でもfalseとなる。
+			 * ==演算子で比較した時も同じ結果になる。
+			 * なおDOM level 4でNode::isSameNodeは削除されている。 
+			 * ただしIE11には実装されている。
+			 */
+			if(typeof node.isSameNode === "function"){
+				pp(node.id + ":" + node.nodeName + " isSameNode " +
+					otherNode.id + ":" + otherNode.nodeName + separator +
+					node.isSameNode(otherNode));
+			}
+			/**
+			 * ==演算子と===演算子の結果は常に等しくなる。
+			 * (暗黙の型変換が発生しないため？)
+			 */
+			pp(node.id + ":" + node.nodeName + " == " +
+				otherNode.id + ":" + otherNode.nodeName + separator +
+				(node == otherNode));
+			pp(node.id + ":" + node.nodeName + " === " +
+				otherNode.id + ":" + otherNode.nodeName + separator +
+				(node === otherNode));
+		}
+	}
+
+	function outputNodeContainerEquality(root) {
+		var children = root.childNodes;
+		for (var i = 0, len = children.length; i < len; i++) {
+			var node = children[i];
+			if (node.hasChildNodes()) {
+				outputNodeContainerEquality(node);
+			} else {
+				outputNodeEquality(node, node.nextSibling);
+			}
+		}
+	}
+
 	(function init() {
-		m.addListener(m.ref("NodeOutputExecuter"), "click", outputContainerNodeInfomation);
+		m.addListener(m.ref("NodeOutputExecuter"), "click", outputNodeContainerInfomation);
 
 		m.addListener(m.ref("ClearNodeInfomation"), "click", function() {
 			area.value = "";
+		});
+
+		m.addListener(m.ref("NodeEqualityTestExecuter"), "click", function() {
+			var container = m.ref("NodeEqualitySampleContainer");
+			pp("***** コンテナ以下のNodeの比較 *****");
+			outputNodeContainerEquality(container);
+			
+			var sampleNode = doc.createElement("span");
+			sampleNode.id  = "SampleTestNode";
+			var sampleChildNode = doc.createTextNode("SampleTestText");
+			sampleNode.appendChild(sampleChildNode);
+			pp("***** サンプルのNode自身と比較 *****");
+			outputNodeEquality(sampleNode, sampleNode);
+			pp("***** サンプルのNodeのcloneNode(true)と比較 *****");
+			var clonedTrueSampleNode = sampleNode.cloneNode(true);
+			outputNodeEquality(sampleNode, clonedTrueSampleNode);
+			pp("***** サンプルのNodeのcloneNode(false)と比較 *****");
+			var clonedFalseSampleNode = sampleNode.cloneNode(false);
+			outputNodeEquality(sampleNode, clonedFalseSampleNode);
+			pp("***** cloneNode(true)のidを変更して比較 *****");
+			clonedTrueSampleNode.id = "Cloned" + clonedTrueSampleNode.id;
+			outputNodeEquality(container, clonedTrueSampleNode);
 		});
 
 		m.export("nodetest", {

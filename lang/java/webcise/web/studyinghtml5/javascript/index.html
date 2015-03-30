@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" />
 		<title>JavaScript(Core and Client)</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="shortcut icon" href="../favicon.ico" />
+		<link rel="shortcut icon" href="../../favicon.ico" />
 		<style>
 			section {
 				margin: 2px;
@@ -464,6 +464,7 @@ function indirect(){
 				}
 			</style>
 			<h2>Node</h2>
+			<h3>Nodeのプロパティ確認</h3>
 			<div id="SampleElementNodeContainer" class="NodeSample">				
 				<p id="SampleTextNodeContainer" class="NodeSample">テキストノード</p>
 				<p id="SampleCommentNodeContainer" class="NodeSample"><!-- コメントノード --></p>
@@ -475,10 +476,22 @@ function indirect(){
 					//(function(){ console.log("Inline script node!"); }());
 				</script>
 			</div>
-			<p>Node情報出力結果</p>
+			<h3>Nodeの等しさ確認</h3>
+			<div id="NodeEqualitySampleContainer">
+				<input id="NodeEqualitySample1" type="text" value="Equality test" />
+				<input id="NodeEqualitySample2" type="text" value="Equality test" />
+				<input id="NodeEqualitySample3" type="text" value="Equality test" />
+				<div id="NodeEqualitySample4">
+					<span></span>
+					<span></span>
+					<span>Equality test</span>
+				</div>
+			</div>
+			<h3>Node情報出力結果</h3>
 			<textarea id="SampleNodeInfomationArea" readonly="readonly" cols="80" rows="5"></textarea>
 			<div>
 				<button id="NodeOutputExecuter">Node情報出力</button>
+				<button id="NodeEqualityTestExecuter">Nodeの等しさテストの結果出力</button>
 				<button id="ClearNodeInfomation">クリア</button>
 			</div>
 			<script src="nodetest.js"></script>
