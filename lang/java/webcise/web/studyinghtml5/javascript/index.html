@@ -457,7 +457,7 @@ function indirect(){
 					border-radius: 5px;
 					margin: 5px;
 				}
-				
+
 				#SampleElementNodeContainer {
 					height: 30%;
 					max-height: 500px;
@@ -495,6 +495,75 @@ function indirect(){
 				<button id="ClearNodeInfomation">クリア</button>
 			</div>
 			<script src="nodetest.js"></script>
+		</section>
+		<section>
+			<style scoped="">
+				.MainSampleEventContainer {
+					border: 1px solid lightsteelblue;
+					border-radius: 5px;
+				}
+				
+				.SampleEventContainer {
+					margin-top: 5px;
+					padding-top: 5px;
+					margin-right: 5px;
+					padding-right: 5px;
+					border-radius: 5px;
+					border-style: dotted;
+					border-width: 1px;
+					background-color: white;
+				}
+
+				.EmphasisStroke {
+					border-width: 2px;
+					border-style: solid;
+				}
+
+				.EmphasisFill {
+					background-color: rgba(100, 255, 50, 0.3);
+				}
+
+				#ParentEventContainer {
+					width: 300px;
+					height: 300px;
+					border-color: lightcoral;
+				}
+
+				#ChildEventContainer {
+					width: 500px;
+					height: 200px;
+					border-color: lightseagreen;
+				}
+
+				#GrandchildEventContainer {
+					width: 200px;
+					height: 300px;
+					border-color: limegreen;
+				}
+			</style>
+			<h2>イベント伝搬</h2>
+			<div class="MainSampleEventContainer">
+				<div id="ParentEventContainer" class="SampleEventContainer">
+					<span>親コンテナ(イベントリスナ登録対象要素)</span>
+					<div id="ChildEventContainer" class="SampleEventContainer">
+						<span>子コンテナ</span>
+						<div id="GrandchildEventContainer" class="SampleEventContainer">
+							<span>孫コンテナ</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<textarea id="EventInfoArea" readonly="readonly" cols="80" rows="5"></textarea>
+			</div>
+			<div>
+				<div>
+					<label><input id="EnableEventCapture" type="checkbox" />キャプチャリング</label>
+					<button id="EventListenerSetter">イベント設定</button>
+					<button id="ClearEventInfoArea">クリア</button>
+				</div>
+			</div>
+			<script src="evevtpropagation.js"></script>
 		</section>
 	</main>
 
