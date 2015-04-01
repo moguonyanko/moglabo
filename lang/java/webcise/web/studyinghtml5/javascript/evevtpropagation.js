@@ -59,6 +59,9 @@
 
 		m.addListener(m.ref("ClearEventInfoArea"), "click", function() {
 			resetContainerStyle();
+			var capture = enableCapture();
+			m.removeListener(parentContainer, "mousemove", changeContainerStroke, capture);
+			m.removeListener(parentContainer, "mousedown", changeContainerFill, capture);
 			resultArea.value = "";
 		});
 	}());
