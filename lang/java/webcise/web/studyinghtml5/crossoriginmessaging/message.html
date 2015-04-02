@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Message Page</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	</head>
+	<body>
+		<h1>Message Page</h1>
+		
+		<div id="ReceivedMessageContainer"></div>
+		
+		<script src="../common.js"></script>
+		<script>
+			(function(win, doc, m){
+				var container = m.ref("ReceivedMessageContainer", doc);
+				
+				function displayMessage(evt){
+					var data = evt.data;
+					m.println(container, data);
+				}
+				
+				(function(){
+					m.addListener(win, "message", displayMessage, false);
+				}());
+			}(window, document, my));
+		</script>
+	</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>クロスオリジンメッセージング</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	</head>
+	<body>
+		<h1>クロスオリジンメッセージング</h1>
+		
+		<iframe src="message.html" name="message" width="600" height="400"></iframe>
+		
+		<div>
+			<label><input id="MessageText" type="text" value="サンプルメッセージ" /></label>
+			<button id="MessageSender">メッセージ送信</button>
+		</div>
+		<script src="../common.js"></script>
+		<script>
+			(function(win, m){
+				function sendMessage(evt){
+					var msgWin = win.frames.message;
+					var msgTxt = m.ref("MessageText").value;
+					msgWin.postMessage(msgTxt, msgWin.location.href);
+				}
+				
+				(function(){
+					m.addListener(m.ref("MessageSender"), "click", sendMessage, false);
+				}());
+			}(window, my));
+		</script>
+	</body>
+</html>
