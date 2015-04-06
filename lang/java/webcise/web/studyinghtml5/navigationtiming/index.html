@@ -7,7 +7,7 @@
 		<link rel="shortcut icon" href="../../favicon.ico" />
 		<style>
 			.InfoView {
-				width: 50%;
+				width: 70%;
 				min-height: 10%;
 				max-height: 250px;
 				background-color: beige;
@@ -22,6 +22,7 @@
 			<h1>Navigation Timing and High Resolution Time</h1>
 			<p>Navigation TimingとHigh Resolution Timeの練習サイトです。</p>
 		</header>
+		
 		<main>
 			<section>
 				<h2>各種時刻の確認</h2>
@@ -41,120 +42,64 @@
 				<div id="HighResolutionTimeView" class="InfoView">
 				</div>
 			</section>
+			<section>
+				<h2>ユーザーがページ読み込み完了までに体感する待ち時間</h2>
+				<p>
+					ユーザーが別のページから移動してきて現在のページの読み込まれるまでの待ち時間です。<br />
+					「ユーザー待ち時間」とでも呼ぶべきか？
+				</p>
+				<div>
+					<button id="UserWatedTimeGetter">待ち時間取得</button>
+				</div>
+				<div id="UserWaitedTimeResultArea" class="InfoView"></div>
+			</section>
+			<section>
+				<h2>ページロード完了時間</h2>
+				<div class="InfoView">
+					<p><label>Performance.now()=<input id="PerformanceNowResultArea" type="text" value="" />マイクロ秒</label></p>
+					<p><label>PerformanceTiming.loadEventEnd=<input id="LoadEventEndResultArea" type="text" value="" />ミリ秒</label></p>
+				</div>
+			</section>
+			<section>
+				<h2>ページのDOM解析完了までに掛かる時間</h2>
+				<p>
+					PerformanceTiming.domLoadingとPerformanceTiming.domCompleteの差をDOM解析完了時間としている。<br />
+					このDOM解析完了時間をユーザー待ち時間に近づけると，
+					ユーザーがページを操作しようとする時間と<br />
+					ページが操作されても問題の無い時間が近づくので
+					ユーザビリティの改善に繋がると思われる。<br />
+					しかし非同期に読み込まれたスクリプトやXMLHttpRequestの非同期処理が未完了である場合は<br />
+					DOMの解析が完了していてもページは正常に動作しないかもしれない。
+				</p>
+				<div>
+					<button id="DomLoadTimeGetter">DOM解析時間取得</button>
+				</div>
+				<div id="DomLoadedTimeResultArea" class="InfoView"></div>
+			</section>
+			<section>
+				<h2>DOMContentLoadedとload</h2>
+				<p>
+					非同期に読み込まれたスクリプトやXMLHttpRequestの非同期処理が重い場合は<br />
+					DOMContentLoadedイベントとloadイベントの間の差が大きくなる。
+				</p>
+				<div>
+					<button id="LoadTimeGetter">ロード関連イベント完了時間取得</button>
+				</div>
+				<div class="InfoView">
+					<p><label>DOMContentLoaded(PerformanceTiming.domContentLoadedEventEnd)=
+							<input id="DomContentLoadedResultArea" type="text" value="" />ミリ秒</label></p>
+					<p><label>load(PerformanceTiming.loadEventEnd)=
+							<input id="LoadResultArea" type="text" value="" />ミリ秒</label></p>
+				</div>
+			</section>
 		</main>
 
 		<footer role="contentinfo">
 			<small>Copyright &copy; 2015 moguonyanko All rights reserved.</small>
 		</footer>
 		
-		<script>
-			(function (win, doc) {
-				"use strict";
-
-				function el(id, node) {
-					return (node || doc).getElementById(id);
-				}
-				
-				function log(txt){
-					console.log(txt);
-				}
-
-				var timeView = el("TimingView"),
-					naviView = el("NavigationTypeView"),
-					highView = el("HighResolutionTimeView");
-
-				function formatTimingInfo(info, opt_separator) {
-					var txt = [];
-					txt.push(info.name);
-					txt.push(opt_separator || ":");
-					txt.push(info.value);
-
-					var infoValue = txt.join("");
-
-					return infoValue;
-				}
-
-				function handleTimingEvent(evt) {
-					var timing = win.performance.timing,
-						fragment = doc.createDocumentFragment(),
-						timeContentId = "TimeContent";
-					for (var name in timing) {
-						if (typeof timing[name] !== "function") {
-							var info = formatTimingInfo({
-								name: name,
-								value: timing[name]
-							});
-							var txtNode = doc.createTextNode(info),
-								newLine = doc.createElement("br");
-							fragment.appendChild(txtNode);
-							fragment.appendChild(newLine);
-						}
-					}
-
-					var cont = doc.createElement("div");
-					cont.setAttribute("id", timeContentId);
-					cont.appendChild(fragment);
-					if (el(timeContentId)) {
-						timeView.replaceChild(cont, el(timeContentId));
-					} else {
-						timeView.appendChild(cont);
-					}
-				}
-				
-				var naviTypes = (function(){
-					var navi = win.performance.navigation;
-					
-					var types = {};
-					
-					types[navi.TYPE_NAVIGATE] = "アドレスバーまたはリンクから訪問された。";
-					types[navi.TYPE_RELOAD] = "ページが再読み込みされた。";
-					types[navi.TYPE_BACK_FORWARD] = "履歴を戻ったか進んだ。";
-					types[navi.TYPE_RESERVED] = "不明(予約)";
-					
-					return types;
-					
-				}());
-
-				function handleNavigationEvent(evt) {
-					var navi = win.performance.navigation,
-						naviType = naviTypes[navi.type],
-						redirectCount = navi.redirectCount;
-					
-					var info = naviType + " リダイレクト回数 -> " + redirectCount;
-					
-					var naviTypeNode = doc.createTextNode(info),
-						naviCont = doc.createElement("div"),
-						naviContId = "NavigationContent";
-					
-					naviCont.setAttribute("id", naviContId);
-					naviCont.appendChild(naviTypeNode);
-					
-					var oldCont = el(naviContId);
-					if(oldCont){
-						naviView.replaceChild(naviCont, oldCont);
-					}else{
-						naviView.appendChild(naviCont);
-					}
-				}
-				
-				function handleHighResoutionTime(evt){
-					var timeStamp = win.performance.now();
-					highView.innerHTML = timeStamp;
-				}
-
-				function addEventListener() {
-					win.addEventListener("load", handleTimingEvent, false);
-					win.addEventListener("load", handleNavigationEvent, false);
-					win.addEventListener("load", handleHighResoutionTime, false);
-				}
-
-				function init() {
-					addEventListener();
-				}
-
-				init();
-
-			}(window, document));
-		</script>
+		<script src="../common.js"></script>
+		<script src="async.js" async=""></script>
+		<script src="navigationtiming.js"></script>
 	</body>
 </html>
