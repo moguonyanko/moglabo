@@ -1,9 +1,13 @@
 (function(win, doc, m) {
 	"use strict";
 
-	var coordinateContainers = {
+	var coordinatesContainers = {
 		"c0" : m.ref("CoordinatesParentContainer"),
 		"c0-0" : m.ref("CoordinatesChildContainer")
+	},
+	coordinatesContainerTexts = {
+		"c0" : m.ref("CoordinatesParentContainerText"),
+		"c0-0" : m.ref("CoordinatesChildContainerText")
 	};
 
 	function displayCoordinatesResults(coords) {
@@ -19,45 +23,43 @@
 			y : w.pageYOffset
 		};
 	}
+	
+	function getContainerId(){
+		var ContainerTypeEles = m.refs("ContainerType");
 
-	function getTargetContainer() {
-		var ContainertypeEles = m.refs("ContainerType"),
-			container = null;
-
-		for (var i = 0, len = ContainertypeEles.length; i < len; i++) {
-			var typeEle = ContainertypeEles[i];
+		for (var i = 0, len = ContainerTypeEles.length; i < len; i++) {
+			var typeEle = ContainerTypeEles[i];
 			if (typeEle.checked) {
-				container = coordinateContainers[typeEle.value];
-				break;
+				return typeEle.value;
 			}
 		}
-
-		return container;
+		
+		return null;
 	}
 
-	function getContainerCoordinates(coordinateType) {
-		var container = getTargetContainer(),
-			coordinates = {};
+	function getTargetContainer() {
+		var containerId = getContainerId();
+		return coordinatesContainers[containerId];
+	}
 
-		if (container) {
-			/**
-			 * getBoundingClientRectの戻り値のプロパティは
-			 * 整数ではなく浮動小数点数になることもある。
-			 */
-			var box = container.getBoundingClientRect();
+	function getTargetContainerText() {
+		var containerId = getContainerId();
+		return coordinatesContainerTexts[containerId];
+	}
 
-			coordinates.x = box.left;
-			coordinates.y = box.top;
+	function getContainerCoordinates(box, coordinateType) {
+		var coordinates = {};
+		coordinates.x = box.left;
+		coordinates.y = box.top;
 
-			/**
-			 * ビューポート座標にスクロールバーの座標を加算して
-			 * ドキュメント座標に変換する。
-			 */
-			if (coordinateType === "document") {
-				var offsets = getScrollOffsets();
-				coordinates.x += offsets.x;
-				coordinates.y += offsets.y;
-			}
+		/**
+		 * ビューポート座標にスクロールバーの座標を加算して
+		 * ドキュメント座標に変換する。
+		 */
+		if (coordinateType === "document") {
+			var offsets = getScrollOffsets();
+			coordinates.x += offsets.x;
+			coordinates.y += offsets.y;
 		}
 
 		return coordinates;
@@ -75,12 +77,36 @@
 	}
 
 	function displayContainerCoordinates(evt) {
-		var coords = getContainerCoordinates(getCoordinatesType());
+		/**
+		 * getBoundingClientRectの戻り値のプロパティは
+		 * 整数ではなく浮動小数点数になることもある。
+		 */
+		var container = getTargetContainer(),
+			box = container.getBoundingClientRect(),
+			type = getCoordinatesType();
+		var coords = getContainerCoordinates(box, type);
+		displayCoordinatesResults(coords);
+	}
+
+	function displayContainerTextCoordinates(evt) {
+		var text = getTargetContainerText(),
+			/**
+			 * インライン要素が2行に渡っていた場合，getClientRectsメソッドは
+			 * 各行のDOMRectオブジェクトを配列に含めて返す。
+			 */
+			rects = text.getClientRects();
+		
+		m.log("座標取得対象のインライン要素は" + rects.length + "行で表示されています。");
+		
+		var box = rects[0],
+			type = getCoordinatesType();
+		var coords = getContainerCoordinates(box, type);
 		displayCoordinatesResults(coords);
 	}
 
 	(function() {
 		m.addListener(m.ref("ContainerCoordinatesGetter"), "click", displayContainerCoordinates, false);
+		m.addListener(m.ref("ContainerTextCoordinatesGetter"), "click", displayContainerTextCoordinates, false);
 	}());
 
 }(window, document, my));

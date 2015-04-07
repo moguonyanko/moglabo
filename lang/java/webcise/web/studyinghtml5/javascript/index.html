@@ -567,6 +567,20 @@ function indirect(){
 		</section>
 		<section>
 			<style scoped="">
+				.ContainerText {
+					border: 1px solid green;
+					background-color: rgba(0, 255, 0, 0.3);
+				}
+				
+				.CoordinatesResultArea {
+					width: 50%;
+					padding: 5px;
+					margin: 5px;
+					background-color: khaki;
+					border: 1px solid khaki;
+					border-radius: 5px;
+				}
+				
 				#CoordinatesParentContainer {
 					width: 300px;
 					height: 200px;
@@ -589,31 +603,41 @@ function indirect(){
 				座標は現在のスクロール位置や対象要素のボーダーの幅で変化します。
 			</p>
 			<div id="CoordinatesParentContainer">
-				親コンテナ(width: 300px, height: 200px)
+				<span id="CoordinatesParentContainerText" class="ContainerText">親コンテナ(width: 300px, height: 200px)</span>
 				<div id="CoordinatesChildContainer">
-					子コンテナ(width: 200px, height: 100px)
+					<span id="CoordinatesChildContainerText" class="ContainerText">子コンテナ(width: 200px, height: 100px)</span>
 				</div>
 			</div>
 			<div>
-				<div>
-					<p>座標取得結果</p>
+				<div class="CoordinatesResultArea">
+					<h3>座標取得結果</h3>
 					<label>X=<input id="CoordinatesResultX" type="text" value="" readonly="" /></label>
 					<label>Y=<input id="CoordinatesResultY" type="text" value="" readonly="" /></label>
 				</div>
 				<div>
+					<h3>座標取得設定</h3>
 					<div>
 						<p>座標取得対象コンテナ</p>
 						<label><input type="radio" name="ContainerType" value="c0" checked="checked" />親コンテナ</label>
 						<label><input type="radio" name="ContainerType" value="c0-0" />子コンテナ</label>
 					</div>
 					<div>
-						<p>各コンテナの左上のデバイス座標</p>
+						<p>座標種別</p>
 						<label><input type="radio" name="CoordinatesType" value="document" checked="checked" />ドキュメント座標</label>
 						<label><input type="radio" name="CoordinatesType" value="viewport" />ビューポート座標(ウインドウ座標)取得</label>
-						<button id="ContainerCoordinatesGetter">コンテナのドキュメント座標取得</button>
+					</div>
+				</div>
+				<div>
+					<div>
+						<h3>各コンテナ(ブロック要素)の左上のデバイス座標</h3>
+						<button id="ContainerCoordinatesGetter">コンテナの座標取得</button>
 					</div>
 					<div>
-						<p>ポインタ(マウスや指)の座標取得</p>
+						<h3>各コンテナのテキスト(インライン要素)の左上のデバイス座標</h3>
+						<button id="ContainerTextCoordinatesGetter">コンテナのテキストの座標取得</button>
+					</div>
+					<div>
+						<h3>ポインタ(マウスや指)の座標取得</h3>
 						<label><input id="EnablePointerCoordinatesGetter" type="checkbox" />ポインタ座標取得</label>
 					</div>
 				</div>
