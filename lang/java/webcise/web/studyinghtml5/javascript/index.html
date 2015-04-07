@@ -502,7 +502,7 @@ function indirect(){
 					border: 1px solid lightsteelblue;
 					border-radius: 5px;
 				}
-				
+
 				.SampleEventContainer {
 					margin-top: 5px;
 					padding-top: 5px;
@@ -564,6 +564,61 @@ function indirect(){
 				</div>
 			</div>
 			<script src="evevtpropagation.js"></script>
+		</section>
+		<section>
+			<style scoped="">
+				#CoordinatesParentContainer {
+					width: 300px;
+					height: 200px;
+					border: solid 3px red;
+					background-color: rgba(255, 0, 0, 0.3);
+				}
+
+				#CoordinatesChildContainer {
+					position: relative;
+					left: 10px;
+					width: 200px;
+					height: 100px;
+					border: solid 3px blue;
+					background-color: rgba(0, 0, 255, 0.3);
+				}
+			</style>
+			<h2>ドキュメント座標とビューポート座標</h2>
+			<p>
+				ブラウザ上で得られる様々な座標を検証します。<br />
+				座標は現在のスクロール位置や対象要素のボーダーの幅で変化します。
+			</p>
+			<div id="CoordinatesParentContainer">
+				親コンテナ(width: 300px, height: 200px)
+				<div id="CoordinatesChildContainer">
+					子コンテナ(width: 200px, height: 100px)
+				</div>
+			</div>
+			<div>
+				<div>
+					<p>座標取得結果</p>
+					<label>X=<input id="CoordinatesResultX" type="text" value="" readonly="" /></label>
+					<label>Y=<input id="CoordinatesResultY" type="text" value="" readonly="" /></label>
+				</div>
+				<div>
+					<div>
+						<p>座標取得対象コンテナ</p>
+						<label><input type="radio" name="ContainerType" value="c0" checked="checked" />親コンテナ</label>
+						<label><input type="radio" name="ContainerType" value="c0-0" />子コンテナ</label>
+					</div>
+					<div>
+						<p>各コンテナの左上のデバイス座標</p>
+						<label><input type="radio" name="CoordinatesType" value="document" checked="checked" />ドキュメント座標</label>
+						<label><input type="radio" name="CoordinatesType" value="viewport" />ビューポート座標(ウインドウ座標)取得</label>
+						<button id="ContainerCoordinatesGetter">コンテナのドキュメント座標取得</button>
+					</div>
+					<div>
+						<p>ポインタ(マウスや指)の座標取得</p>
+						<label><input id="EnablePointerCoordinatesGetter" type="checkbox" />ポインタ座標取得</label>
+					</div>
+				</div>
+			</div>
+			<script src="coordinate.js"></script>
 		</section>
 	</main>
 
