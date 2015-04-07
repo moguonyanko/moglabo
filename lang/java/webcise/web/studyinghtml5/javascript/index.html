@@ -568,10 +568,10 @@ function indirect(){
 		<section>
 			<style scoped="">
 				.ContainerText {
-					border: 1px solid green;
+					border: 2px solid green;
 					background-color: rgba(0, 255, 0, 0.3);
 				}
-				
+
 				.CoordinatesResultArea {
 					width: 50%;
 					padding: 5px;
@@ -580,32 +580,77 @@ function indirect(){
 					border: 1px solid khaki;
 					border-radius: 5px;
 				}
-				
-				#CoordinatesParentContainer {
+
+				.CoordinatesContainer {
+					border-width: 5px;
+				}
+
+				.SizeResultArea {
+					width: 50%;
+					background-color: beige;
+				}
+
+				#CoordinatesParentContainer0 {
 					width: 300px;
-					height: 200px;
-					border: solid 3px red;
+					height: 300px;
+					border-style: solid;
+					border-color: red;
 					background-color: rgba(255, 0, 0, 0.3);
 				}
 
-				#CoordinatesChildContainer {
+				#CoordinatesChildContainer0 {
 					position: relative;
 					left: 10px;
+					top: 5px;
 					width: 200px;
 					height: 100px;
-					border: solid 3px blue;
+					border-style: solid;
+					border-color: blue;
 					background-color: rgba(0, 0, 255, 0.3);
+				}
+
+				#CoordinatesChildContainer1 {
+					position: relative;
+					left: 20px;
+					top: 10px;
+					width: 250px;
+					height: 150px;
+					border-style: solid;
+					border-color: orange;
+					background-color: rgba(33, 33, 33, 0.3);
+					overflow: scroll;
+				}
+
+				#CoordinatesChildContainer1 .LongWidthSample {
+					white-space: nowrap;
+				}
+				
+				#CoordinatesChildContainer1 .LongHeightSample {
+					height: 500px;
 				}
 			</style>
 			<h2>ドキュメント座標とビューポート座標</h2>
 			<p>
-				ブラウザ上で得られる様々な座標を検証します。<br />
+				ブラウザ上で得られる様々な座標やサイズを検証します。<br />
 				座標は現在のスクロール位置や対象要素のボーダーの幅で変化します。
 			</p>
-			<div id="CoordinatesParentContainer">
-				<span id="CoordinatesParentContainerText" class="ContainerText">親コンテナ(width: 300px, height: 200px)</span>
-				<div id="CoordinatesChildContainer">
-					<span id="CoordinatesChildContainerText" class="ContainerText">子コンテナ(width: 200px, height: 100px)</span>
+			<div id="CoordinatesParentContainer0" class="CoordinatesContainer">
+				<span id="CoordinatesParentContainerText0" class="ContainerText">親コンテナ(width: 300px, height: 300px)</span>
+				<div id="CoordinatesChildContainer0" class="CoordinatesContainer">
+					<span id="CoordinatesChildContainerText0" class="ContainerText">子コンテナ0(width: 200px, height: 100px)</span>
+				</div>
+				<div id="CoordinatesChildContainer1" class="CoordinatesContainer">
+					<span id="CoordinatesChildContainerText1" class="ContainerText">
+						子コンテナ1(width: 250px, height: 150px) 複数行に渡って表示されるとサイズが変化する。
+					</span>
+					<span class="LongWidthSample">
+						test inline element 
+						test inline element 
+						test inline element 
+						test inline element 
+						test inline element
+					</span>
+					<div class="LongHeightSample">test block element(height: 500px)</div>
 				</div>
 			</div>
 			<div>
@@ -618,8 +663,9 @@ function indirect(){
 					<h3>座標取得設定</h3>
 					<div>
 						<p>座標取得対象コンテナ</p>
-						<label><input type="radio" name="ContainerType" value="c0" checked="checked" />親コンテナ</label>
-						<label><input type="radio" name="ContainerType" value="c0-0" />子コンテナ</label>
+						<label><input type="radio" name="ContainerType" value="c0" checked="checked" />親コンテナ0</label>
+						<label><input type="radio" name="ContainerType" value="c0-0" />子コンテナ0</label>
+						<label><input type="radio" name="ContainerType" value="c0-1" />子コンテナ1</label>
 					</div>
 					<div>
 						<p>座標種別</p>
@@ -637,8 +683,52 @@ function indirect(){
 						<button id="ContainerTextCoordinatesGetter">コンテナのテキストの座標取得</button>
 					</div>
 					<div>
-						<h3>ポインタ(マウスや指)の座標取得</h3>
-						<label><input id="EnablePointerCoordinatesGetter" type="checkbox" />ポインタ座標取得</label>
+						<h3>ポインタの座標取得</h3>
+						<label><input id="EnablePointerCoordinates" type="checkbox" />座標取得有効</label>
+					</div>
+					<div>
+						<h3>ビューポート(ウインドウ)のサイズ</h3>
+						<p>
+							WindowオブジェクトのinnerWidthプロパティとinnerHeightプロパティから
+							ビューポート(ウインドウ)のサイズを取得する。<br />
+							ここでいうビューポート(ウインドウ)とは表示領域のことである。
+						</p>
+						<div id="ViewportSizeResultArea" class="SizeResultArea">ウインドウサイズ結果</div>
+						<button id="ViewportSizeGetter">サイズ取得</button>
+					</div>
+					<div>
+						<h3>コンテナのサイズ</h3>
+						<p>
+							ElementのoffsetWidth, offsetHeightにはボーダーと(表示されていれば)スクロールバーの
+							サイズが含まれる。<br />
+							ElementのclientWidth, clientHeightにはそれらは含まれない。<br />
+							従ってスクロールバーが表示されるとそのElementのclientWidth, clientHeightはCSSで指定されたサイズよりも
+							小さくなる。<br />
+							ElementのscrollWidth, scrollHeightにはElementが領域からはみ出している部分を<br />
+							clientWidth, clientHeightに加算した値が保持される。<br />
+							はみ出していなければclientWidth, clientHeightと同じ値になる。
+						</p>
+						<div id="ContainerSizeResultArea" class="SizeResultArea">コンテナサイズ結果</div>
+						<label><input id="IncludeBorderSize" type="checkbox" />ボーダー・スクロールバーを含める</label>
+						<label><input id="IncludeInvisibleArea" type="checkbox">非表示領域を含める</label>
+						<button id="ContainerSizeGetter">サイズ取得</button>
+					</div>
+					<div>
+						<h3>コンテナのテキストのサイズ</h3>
+						<p>
+							インライン要素のclientWidth, clientHeightは常にゼロである。<br />
+							インライン要素のサイズを得たければElementのoffsetWidth, offsetHeightを使う。<br />
+							ボックス要素同様offsetWidth, offsetHeightにはボーダーのサイズが含まれる。<br />
+							インライン要素なのでスクロールバーを考慮する必要は無い。<br />
+							インライン要素が複数行で表示されている時，offsetHeightにはその表示状態を<br />
+							反映したサイズが保持されている。つまり行数が増えるほどoffsetHeightが増す。<br />
+							複数行で表示されていても1行で表示されている時のサイズが得たいときは<br />
+							ElementのscrollWidth, scrollHeightを使い，必要に応じボーダーのサイズを加算する。
+						</p>
+						<div id="ContainerTextSizeResultArea" class="SizeResultArea">コンテナのテキストのサイズ結果</div>
+						<label><input id="IncludeTextBorderSize" type="checkbox" />ボーダーとスクロールバーを含める</label>
+						<label><input id="IncludeMultiLineSize" type="checkbox" />複数行になっている場合を考慮する</label>
+						<button id="ContainerTextSizeGetter">サイズ取得</button>
 					</div>
 				</div>
 			</div>
