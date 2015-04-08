@@ -3,29 +3,38 @@
 
 	var commonNS, my;
 
+	function printText(ele, txt, override, newline) {
+		var prop,
+			newLineChar;
+
+		if ("value" in ele) {
+			prop = "value";
+			newLineChar = "\n";
+		} else {
+			prop = "innerHTML";
+			newLineChar = "<br />";
+		}
+
+		if (!newline) {
+			newLineChar = "";
+		}
+
+		if (override) {
+			ele[prop] = txt + newLineChar;
+		} else {
+			ele[prop] += txt + newLineChar;
+		}
+	}
+
 	if (!commonNS && !my) {
 		win.commonNS = win.my = {
 			log : function() {
 				console.log.apply(null, arguments);
 			},
 			println : function(ele, txt, override) {
-				var prop,
-					newLine;
-
-				if ("value" in ele) {
-					prop = "value";
-					newLine = "\n";
-				} else {
-					prop = "innerHTML";
-					newLine = "<br />";
-				}
-
-				if (override) {
-					ele[prop] = txt + newLine;
-				} else {
-					ele[prop] += txt + newLine;
-				}
+				printText(ele, txt, override, true);
 			},
+			print : printText,
 			ref : function(id, doc) {
 				return (doc || document).getElementById(id);
 			},

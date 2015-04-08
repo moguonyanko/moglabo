@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Drag and Drop API</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="../../favicon.ico" />
+		<style>
+			footer {
+				position: relative;
+				top: 5px;
+				border-top: solid 1px lightgray;
+			}
+
+			p.section-title {
+				background-color: snow;
+			}
+
+			div[draggable="true"] {
+
+			}
+
+			#drop-target-container {
+				width: 400px;
+				height: 400px;
+				background-color: rgba(0, 0, 255, 0.3);
+			}
+
+			#main-container {
+				position: relative;
+			}
+
+			#main-container section {
+				position: relative;
+				left: 5px;
+			}
+
+			#draggable-container {
+				position: relative;
+				left: 5px;
+				width: 200px;
+				height: 200px;
+				z-index: 1;
+				background-color: rgba(0, 255, 0, 0.3);
+			}
+		</style>
+	</head>
+	<body>
+		<header role="banner">
+			<h1>Drag and Drop API</h1>
+			<p>ドラッグアンドドロップのAPI練習ページです。</p>
+		</header>
+
+		<div id="main-container" role="main">
+			<section>
+				<h2>様々な要素のドラッグアンドドロップ</h2>
+				<p class="section-title">要素のドラッグ</p>
+				<div class="drag-targets">
+					<div id="draggable-container" draggable="true">
+						<p>ドラッグできます</p>
+					</div>
+				</div>
+
+				<div id="drop-target-container" dropzone="move">
+					<p>ここにドロップ</p>
+				</div>
+			</section>
+		</div>
+
+		<footer role="contentinfo">
+			<small>Copyright &copy; 2015 moguonyanko All rights reserved.</small>
+		</footer>		
+
+		<script src="../common.js"></script>
+		<script src="draganddrop.js"></script>
+	</body>
+</html>
