@@ -1,7 +1,8 @@
 (function(win) {
 	"use strict";
 
-	var commonNS, my;
+	var commonNS,
+		my;
 
 	function printText(ele, txt, override, newline) {
 		var prop,
@@ -26,11 +27,17 @@
 		}
 	}
 
+	function consoleLog() {
+		try {
+			console.log.apply(null, arguments);
+		} catch (err) {
+			console.log(arguments[0]);
+		}
+	}
+
 	if (!commonNS && !my) {
 		win.commonNS = win.my = {
-			log : function() {
-				console.log.apply(null, arguments);
-			},
+			log : consoleLog,
 			println : function(ele, txt, override) {
 				printText(ele, txt, override, true);
 			},

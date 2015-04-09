@@ -26,6 +26,10 @@
 				background-color: rgba(0, 0, 255, 0.3);
 			}
 
+			#drop-target-container:-moz-drag-over {
+				border: solid 3px red;
+			}
+			
 			#main-container {
 				position: relative;
 			}
@@ -54,7 +58,12 @@
 		<div id="main-container" role="main">
 			<section>
 				<h2>様々な要素のドラッグアンドドロップ</h2>
-				<p class="section-title">要素のドラッグ</p>
+				<p class="section-title">Elementのドラッグ</p>
+				<div>
+					<p>ドラッグ画像タイプ</p>
+					<label><input type="radio" name="drag-image-type" value="image" checked="checked" />Image</label>
+					<label><input type="radio" name="drag-image-type" value="canvas" />Canvas</label>
+				</div>
 				<div class="drag-targets">
 					<div id="draggable-container" draggable="true">
 						<p>ドラッグできます</p>
