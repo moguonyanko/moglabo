@@ -734,6 +734,71 @@ function indirect(){
 				</div>
 				<script src="coordinate.js"></script>
 			</section>
+			<section>
+				<style scoped="">
+					.emphasis-input {
+						font-weight: bold;
+					}
+					
+					.simple-input {
+						font-style: normal;
+					}
+					
+					.simple-input0 {
+						color: blue;
+						font-style: normal;
+					}
+					
+					.simple-input1 {
+						color: red;
+						font-style: normal;
+					}
+					
+					.input-container {
+						padding: 5px;
+						margin: 5px;
+						border: solid 1px lightgrey;
+						border-radius: 5px;
+					}
+					
+					#copy-text-area {
+						height: 100px;
+						background-color: snow;
+						border: solid snow 1px;
+						border-radius: 5px;
+					}
+					
+					#unicode-key-info {
+						height: 1em;
+					}
+				</style>
+				<h2>キーボードイベント</h2>
+				<div>
+					<div class="input-container">
+						<p>入力された文字</p>
+						<div id="copy-text-area">
+							入力文字の表示
+						</div>
+						<div>
+							<div id="unicode-key-info" class="input-container"></div>
+							<button id="clear-input-result">クリア</button>
+						</div>
+					</div>
+					<div class="input-container">
+						<div>
+							<p>入力可能文字</p>
+							<label><input type="radio" name="input-char-filter" value="alpha" />英字</label>
+							<label><input type="radio" name="input-char-filter" value="digit" />数字</label>
+							<label><input type="radio" name="input-char-filter" value="alphadigit" checked="checked" />英数字</label>
+						</div>
+						<label>入力テスト<input id="text-input-sample-area" type="text" value="" /></label>
+					</div>
+				</div>
+				<div class="input-container">
+					<label><input id="enable-input-char-diplay" type="checkbox" checked="checked" />入力テスト有効</label>
+				</div>
+				<script src="keyboard.js"></script>
+			</section>
 		</div>
 
 		<footer role="contentinfo">

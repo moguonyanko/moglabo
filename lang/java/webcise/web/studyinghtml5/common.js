@@ -63,6 +63,9 @@
 			removeListener : function(element, type, fn, capture) {
 				/* IE8以下には対応しない。 */
 				element.removeEventListener(type, fn, capture);
+			},
+			prevent : function(evt){
+				evt.preventDefault();
 			}
 		};
 	}
