@@ -11,219 +11,60 @@
 	<body>
 		<header role="banner">
 			<h1>File API</h1>
-			<p>File APIの練習サイトです。</p>
+			<p>File APIの練習サイトです。Blobの調査も兼ねています。</p>
 		</header>
 
-		<main>
+		<div role="main">
 			<section>
 				<h2>ファイルのメタ情報を取得</h2>
 				<div>
 					<textarea id="FileMetaInfo" cols="55" rows="10" readonly="readonly">
 					</textarea>
 				</div>
-				<p>メタ情報取得対象選択</p>
+				<h3>メタ情報取得対象選択</h3>
 				<p><input id="FileMetaTarget" type="file" multiple="multiple" /></p>
 			</section>
 			<section>
 				<h2>Blob URLを利用して画像ファイルを描画</h2>
-				<p>描画対象画像選択</p>
+				<h3>描画対象画像選択</h3>
 				<label><input id="FileHalfCheck" type="checkbox" />画像を半分にスライス</label>
-				<p><input id="FileBlobTarget" type="file" multiple="multiple" /></p>
+				<label><input id="FileBlobTarget" type="file" multiple="multiple" /></label>
 				<div id="FileBlobContainer">
 				</div>
 			</section>
 			<section>
-				<h2>ファイルの内容を読み込んで表示</h2>
+				<h2>ファイルの内容を出力</h2>
 				<div>
 					<textarea id="FileReadResult" cols="120" rows="10" readonly="readonly">
 					</textarea>
 				</div>
-				<p>Data URL表示対象画像ファイル選択</p>
-				<p><input id="FileDataURLTarget" type="file" multiple="multiple" /></p>
-				<p>Text表示対象テキストファイル選択</p>
-				<p><input id="FileTextTarget" type="file" multiple="multiple" /></p>
-				<p>ArrayBuffer表示対象ファイル選択</p>
-				<p><input id="FileArrayBufferTarget" type="file" multiple="multiple" /></p>
+				<h3>Data URLとして出力</h3>
+				<div>
+					<input id="FileDataURLTarget" accept="image/*" type="file" multiple="multiple" />
+				</div>
+				<h3>テキストファイルの内容をそのまま出力</h3>
+				<div>
+					<div>
+						<span>文字エンコーディング:</span>
+						<label><input type="radio" name="FileCharacterEncoding" value="UTF-8" />UTF-8</label>
+						<label><input type="radio" name="FileCharacterEncoding" value="Shift-JIS" checked="checked" />Shift-JIS</label>
+					</div>
+					<div>
+						<label><input id="FileTextTarget" accept="text/*" type="file" multiple="multiple" /></label>
+					</div>
+				</div>
+				<h3>ArrayBufferとして読み込みBlobに変換した後Blob URLを出力</h3>
+				<div>
+					<input id="FileArrayBufferTarget" type="file" multiple="multiple" />
+				</div>
 			</section>
-		</main>
+		</div>
 
 		<footer role="contentinfo">
-			<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
+			<small>Copyright &copy; 2014-2015 moguonyanko All rights reserved.</small>
 		</footer>
 
-		<script>
-			(function (win, doc) {
-
-				function noop() {
-				}
-
-				function returnTrue() {
-					return true;
-				}
-
-				function getFileMetaInfo(files, opt_separator) {
-					var info = [],
-						separator = opt_separator || "\n";
-
-					if (files) {
-						for (var i = 0; i < files.length; i++) {
-							var file = files.item(i);
-							info.push("ファイル名：" + file.name);
-							info.push("ファイルサイズ：" + file.size);
-							info.push("ファイルMIMEタイプ：" + file.type);
-							info.push("最終更新日時：" + file.lastModifiedDate);
-							info.push(separator);
-						}
-					}
-
-					return info.join(separator);
-				}
-
-				function getBlobImage(blob, opt) {
-					if (opt && opt.half) {
-						blob = blob.slice(0, blob.size / 2, blob.type);
-					}
-
-					var img = new Image(),
-						url = win.URL.createObjectURL(blob);
-
-					img.onload = function () {
-						win.URL.revokeObjectURL(url);
-					};
-					img.src = url;
-
-					return img;
-				}
-
-				function isImage(file) {
-					return /^image\//.test(file.type);
-				}
-
-				function isText(file) {
-					return /^text\//.test(file.type);
-				}
-
-				/**
-				 * イベントハンドラの引数からFileListオブジェクトは得られない。 
-				 */
-
-				function handleFileMetaInfo(evt) {
-					var selectedFiles = this.files;
-					var infoArea = doc.getElementById("FileMetaInfo");
-					infoArea.value = "";
-					var info = getFileMetaInfo(selectedFiles);
-					infoArea.value += info;
-				}
-
-				function handleImageFile(evt) {
-					var selectedFiles = this.files;
-
-					var imgContainer = doc.getElementById("FileBlobContainer"),
-						imgKeyword = "FileImage",
-						imgClassName = imgKeyword;
-
-					var oldImgs = doc.querySelectorAll("." + imgClassName);
-
-					Array.prototype.forEach.call(oldImgs, function (img, idx, imgs) {
-						imgContainer.removeChild(img);
-					});
-
-					var half = doc.getElementById("FileHalfCheck").checked;
-
-					for (var i = 0, max = selectedFiles.length; i < max; i++) {
-						var file = selectedFiles.item(i);
-
-						if (isImage(file)) {
-							var img = getBlobImage(file, {
-								half: half
-							});
-							img.setAttribute("class", imgClassName);
-							imgContainer.appendChild(img);
-						} else {
-							console.log("画像ファイルではありません。 ... " + file.name);
-						}
-					}
-				}
-
-				/**
-				 * 1つのファイル読み込み毎にFileReaderオブジェクトを
-				 * 生成する必要がある。
-				 */
-				function readFile(files, funcName, opt) {
-					opt = opt || {};
-					opt.predicate = opt.predicate || returnTrue;
-
-					for (var i = 0, max = files.length; i < max; i++) {
-						var file = files.item(i);
-
-						if (opt.predicate(file)) {
-							var reader = new FileReader();
-							reader.onload = opt.onload || noop;
-							reader.onerror = opt.onerror || noop;
-							reader[funcName](file);
-						}
-					}
-				}
-
-				var readAs = {
-					dataURL: function (files, callback) {
-						readFile(files, "readAsDataURL", {
-							predicate: isImage,
-							onload: callback
-						});
-					},
-					text: function (files, callback) {
-						readFile(files, "readAsText", {
-							predicate: isText,
-							onload: callback
-						});
-					},
-					arrayBuffer: function (files, callback) {
-						readFile(files, "readAsArrayBuffer", {
-							onload: callback
-						});
-					}
-				};
-
-				function handleReadFile(files, funcName) {
-					var resultArea = doc.getElementById("FileReadResult");
-					resultArea.value = "";
-					readAs[funcName](files, function (evt) {
-						var result = evt.target.result;
-						resultArea.value += result + "\n<END>\n";
-					});
-				}
-
-				function addEventListener() {
-					var fileInput = doc.getElementById("FileMetaTarget");
-					fileInput.addEventListener("change", handleFileMetaInfo, false);
-
-					var blobInput = doc.getElementById("FileBlobTarget");
-					blobInput.addEventListener("change", handleImageFile, false);
-
-					var dataURLInput = doc.getElementById("FileDataURLTarget");
-					dataURLInput.addEventListener("change", function (evt) {
-						handleReadFile(this.files, "dataURL");
-					}, false);
-
-					var textInput = doc.getElementById("FileTextTarget");
-					textInput.addEventListener("change", function (evt) {
-						handleReadFile(this.files, "text");
-					}, false);
-
-					var arrayBufferInput = doc.getElementById("FileArrayBufferTarget");
-					arrayBufferInput.addEventListener("change", function (evt) {
-						handleReadFile(this.files, "arrayBuffer");
-					}, false);
-				}
-
-				function init() {
-					addEventListener();
-				}
-
-				init();
-
-			}(window, document));
-		</script>
+		<script src="../common.js"></script>
+		<script src="file.js"></script>
 	</body>
 </html>

@@ -66,6 +66,28 @@
 			},
 			prevent : function(evt){
 				evt.preventDefault();
+			},
+			noop : function(){
+				/* Does nothing. */
+			},
+			alwaysTrue : function(){
+				return  true;
+			},
+			alwaysFalse : function(){
+				return false;
+			},
+			selected : function(eles, opt_pred){
+				var pred = opt_pred || function(ele){
+					return ele.checked;
+				};
+				
+				for(var i = 0, len = eles.length; i < len; i++){
+					if(pred(eles[i])){
+						return eles[i];
+					}
+				}
+				
+				return null;
 			}
 		};
 	}
