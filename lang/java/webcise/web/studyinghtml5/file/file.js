@@ -11,7 +11,7 @@
 			for (var i = 0; i < files.length; i++) {
 				var file = files.item(i);
 				info.push("ファイル名：" + file.name);
-				info.push("ファイルサイズ：" + file.size);
+				info.push("ファイルサイズ：" + file.size + "バイト");
 				info.push("ファイルMIMEタイプ：" + file.type);
 				info.push("最終更新日時：" + file.lastModifiedDate);
 				info.push(separator);
@@ -52,11 +52,29 @@
 
 	function isText(file) {
 		/**
-		 * テキストファイルのMIMEタイプは空文字になっている。
-		 * Firefox37, Chrome41, IE11において確認。
+		 * csvはtext/plainとして判別されずBlobオブジェクトのtypeプロパティは
+		 * 空文字になっている。
+		 * Firefox37, Chrome41, IE11において確認した。
+		 * 
+		 * BlobオブジェクトのtypeプロパティはBlobのMIMEタイプを
+		 * 返し，MIMEタイプが得られない時は空文字を返すということらしいが，
+		 * 実際はFileオブジェクトのnameプロパティの拡張子しか見ていないような
+		 * 動きをしている。例えば画像ファイルの拡張子を削除すると
+		 * そのBlobオブジェクトのtypeプロパティは空文字になる。
+		 * reference:
+		 * http://stackoverflow.com/questions/11182968/determining-unknown-content-types-with-the-html5-file-api
 		 */
 		if (file.type === "") {
-			return true;
+			if(new RegExp(".csv", "i").test(file.name)){
+				/* csvはテキストファイルだと見なす。 */
+				return true;
+			}else{
+				/**
+				 * csv以外でtypeプロパティが空文字なオブジェクトが
+				 * 渡されたときはテキストファイルだと見なさない。
+				 */
+				return false;
+			}
 		} else {
 			return /^text\//.test(file.type);
 		}
@@ -65,7 +83,6 @@
 	/**
 	 * イベントハンドラの引数からFileListオブジェクトは得られない。 
 	 */
-
 	function handleFileMetaInfo(evt) {
 		/**
 		 * イベントハンドラを登録した要素のfilesプロパティから
