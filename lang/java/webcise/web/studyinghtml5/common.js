@@ -64,30 +64,68 @@
 				/* IE8以下には対応しない。 */
 				element.removeEventListener(type, fn, capture);
 			},
-			prevent : function(evt){
+			prevent : function(evt) {
 				evt.preventDefault();
 			},
-			noop : function(){
+			noop : function() {
 				/* Does nothing. */
 			},
-			alwaysTrue : function(){
+			alwaysTrue : function() {
 				return  true;
 			},
-			alwaysFalse : function(){
+			alwaysFalse : function() {
 				return false;
 			},
-			selected : function(eles, opt_pred){
-				var pred = opt_pred || function(ele){
-					return ele.checked;
-				};
+			selected : function(eles, opts) {
+				opts = opts || {};
 				
-				for(var i = 0, len = eles.length; i < len; i++){
-					if(pred(eles[i])){
-						return eles[i];
+				var predicate = opts.predicate || function(ele) {
+					/**
+					 * Element.hasAttributeで要素の論理属性の状態を判別するには
+					 * その論理属性が最初から記述されていなければならない。
+					 * すなわちinput要素のchecked属性のようにユーザーの操作によって
+					 * on, offが変化するような属性には利用できない。
+					 * 最初にchecked属性を記述していた要素が常に選択されてしまう。
+					 */
+					return ele.checked;
+				},
+				getter = typeof opts.getter === "function" ?
+				opts.getter : 
+				function(ele) {
+					return ele.value;
+				};
+
+				for (var i = 0, len = eles.length; i < len; i++) {
+					if (predicate(eles[i])) {
+						return getter(eles[i]);
 					}
 				}
-				
+
 				return null;
+			},
+			freeze : function(obj, names) {
+				if (!names) {
+					/**
+					 * 不変(読み取り専用かつ編集不可)にするプロパティ名の配列が
+					 * 引数に渡されなかった時は全ての独自プロパティを不変にする。
+					 */
+					Object.freeze(obj);
+				} else {
+					for (var i = 0, len = names.length; i < len; i++) {
+						var name = names[i];
+
+						/* 設定可能でないプロパティは無視する。 */
+						if (Object.getOwnPropertyDescriptor(obj, name).configurable) {
+							Object.defineProperty(obj, name, {
+								writable : false,
+								configurable : false
+							});
+						}
+					}
+				}
+			},
+			extend : function(superClass, subClass){
+				subClass.prototype = Object.create(superClass.prototype);
 			}
 		};
 	}

@@ -5,84 +5,34 @@
 		<title>Web Storage Sample</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="shortcut icon" href="../../favicon.ico" />
+		<style>
+		</style>
 	</head>
 	<body>
 		<h1>Web Storage Sample</h1>
 
-		<main>
+		<div role="main">
 			<section>
-				<h2>Web Storageイベント</h2>
-				<textarea id="ResultArea" cols="50" rows="10" readonly="readonly"></textarea>
+				<h2>StorageEvent</h2>
+				<p>StorageEventの振る舞いを調べます。</p>
 				<div>
-					<button id="CountUpStorage">加算</button>
-					<button id="SaveStorage">保存</button>
-					<button id="RemoveStorage">削除</button>
+					<p>StorageEventから得た情報</p>
+					<textarea id="ResultArea" cols="50" rows="10" readonly="readonly"></textarea>
 				</div>
+				<div>
+					<button id="EventWindowOpener">イベント受信用ウインドウを開く</button>
+					<button id="EventFrameOpener">イベント受信用フレームを開く</button>
+					<button id="result-clearer">クリア</button>
+				</div>
+				<div id="EventFrameContainer"></div>
 			</section>
-		</main>
+		</div>
 
 		<footer role="contentinfo">
 			<small>Copyright &copy; 2015 moguonyanko All rights reserved.</small>
 		</footer>
 
-		<script>
-			(function (win, doc) {
-
-				var storage = win.localStorage,
-					keyName = "count";
-
-				var area = doc.getElementById("ResultArea"),
-					upperBtn = doc.getElementById("CountUpStorage"),
-					saveBtn = doc.getElementById("SaveStorage"),
-					removeBtn = doc.getElementById("RemoveStorage");
-
-				var count = 0;
-
-				function outputLog(txt) {
-					area.value += txt;
-				}
-
-				function addEvent() {
-					upperBtn.addEventListener("click", function () {
-						count++;
-					}, false);
-					saveBtn.addEventListener("click", function () {
-						storage.setItem(keyName, count);
-					}, false);
-					removeBtn.addEventListener("click", function () {
-						/**
-						 * removeItemするとnullがセットされる。 
-						 * undefinedではない。
-						 */
-						storage.removeItem(keyName);
-						count = 0;
-					}, false);
-
-					/**
-					 * ストレージを更新したタブでstorageイベントは発生しない。
-					 */
-					win.addEventListener("storage", function (evt) {
-						var log = [
-							"key:" + evt.key,
-							"old value:" + evt.oldValue,
-							"new value:" + evt.newValue,
-							"url:" + evt.url
-						];
-
-						console.log(evt);
-
-						outputLog(log.join("\n"));
-					}, false);
-				}
-
-				function init() {
-					addEvent();
-				}
-
-				init();
-
-			}(window, document));
-		</script>
-
+		<script src="../common.js"></script>
+		<script src="webstorage.js"></script>
 	</body>
 </html>
