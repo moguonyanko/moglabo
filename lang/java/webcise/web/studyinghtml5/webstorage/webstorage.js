@@ -14,14 +14,14 @@
 	function outputLog(txt) {
 		m.println(resultArea, txt);
 	}
-	
-	function getSuffix(){
+
+	function getSuffix() {
 		return "_" + Date.now();
 	}
 
 	function createEventFrame() {
 		var suf = getSuffix();
-		
+
 		var iframe = doc.createElement("iframe");
 		iframe.setAttribute("id", eventPageId + suf);
 		iframe.setAttribute("src", eventPageUrl);
@@ -29,6 +29,46 @@
 		iframe.setAttribute("width", eventPageWidth);
 		iframe.setAttribute("height", eventPageHeight);
 		return iframe;
+	}
+	
+	function StorageIterator(storageName, storage){
+		this.storageName = storageName;
+		this.storage = storage;
+		this.index = 0;
+	}
+	
+	StorageIterator.prototype = {
+		hasNext : function(){
+			return this.index + 1 <= this.storage.length;
+		},
+		next : function(){
+			var key = this.storage.key(this.index++);
+			return {
+				key : key,
+				value : this.storage.getItem(key)
+			};
+		}
+	};
+	
+	function getStorageInfo() {
+		var info = [],
+			storages = [
+				new StorageIterator("sessionStorage", win.sessionStorage),
+				new StorageIterator("localStorage", win.localStorage)
+			];
+
+		for (var i = 0; i < storages.length; i++) {
+			var storageIter = storages[i];
+			info.push("[" + storageIter.storageName + "]");
+			while(storageIter.hasNext()){
+				var keyValue = storageIter.next();
+				info.push("\n");
+				info.push(keyValue.key + ":" + keyValue.value);
+			}
+			info.push("\n");
+		}
+
+		return info.join("");
 	}
 
 	function addEvent() {
@@ -47,6 +87,11 @@
 		m.addListener(resultClearer, "click", function() {
 			m.print(resultArea, "", true);
 		}, false);
+		
+		m.addListener(m.ref("diplay-all-keyvalue"), "click", function(){
+			var info = getStorageInfo();
+			m.println(resultArea, info, true);
+		});
 
 		/**
 		 * ストレージを更新したウインドウやタブでstorageイベントは発生しない。
@@ -57,6 +102,10 @@
 		 * sessionStorageの場合はストレージの更新がフレームで行われた時しか発生しない。
 		 * つまり別のタブやウインドウでストレージを更新してもlocalStorageでなければ
 		 * storageイベントは発生しない。
+		 * 
+		 * sessionStorageに保存した値はブラウザを閉じると消える。
+		 * localStorageに保存した値はブラウザを閉じても残り続ける。
+		 * (Chromeのシークレットモードなどを利用している場合を除く。)
 		 * 
 		 * localStorageは複数のタブやウインドウで共有される。
 		 * ただし各タブやウインドウの読み込んだページのオリジンが全て同じである
