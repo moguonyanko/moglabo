@@ -9,174 +9,35 @@
 	<body>
 		<h1>Indexed Database Sample</h1>
 
-		<main>
+		<div role="main">
 			<section>
-				<h2>Indexed Databaseへの接続・切断・削除</h2>
+				<h2>Indexed Databaseへの要求</h2>
 				<div>
 					<p>DB操作</p>
 					<div>
-						<button id="OpenDB">接続</button>
 						<button id="AddRecord">レコード追加</button>
+						<button id="display-all-records">レコード一覧表示</button>
 						<button id="CloseDB">切断</button>
 						<button id="DeleteDB">DB削除</button>
 					</div>
 				</div>
 				<div>
+					<button id="result-clearer">結果クリア</button>
+				</div>
+				<div>
 					<p>データベース情報</p>
 					<div>
-						<textarea id="InfoArea" rows="10" cols="50"></textarea>
+						<textarea id="InfoArea" rows="10" cols="50" readonly=""></textarea>
 					</div>
 				</div>
 			</section>
-		</main>
+		</div>
 
 		<footer role="contentinfo">
 			<small>Copyright &copy; 2015 moguonyanko All rights reserved.</small>
 		</footer>
 
-		<script>
-			(function (win, doc) {
-
-				var idb = win.indexedDB;
-
-				var dbName = "sampleDB";
-
-				var version = 2;
-
-				function el(id) {
-					return doc.getElementById(id);
-				}
-
-				function log(txt) {
-					//var content = [];
-					//for (var name in txt) {
-					//	if (txt.hasOwnProperty(name)) {
-					//		content.push(name + ":" + txt[name]);
-					//	}
-					//}
-					//el("InfoArea").value += "\n" + content.join("\n");
-					el("InfoArea").value += txt + "\n";
-					console.log(txt);
-				}
-
-				function openDB() {
-					var openRequest = idb.open(dbName, version);
-
-					openRequest.onerror = function (evt) {
-						log(evt);
-					};
-
-					/**
-					 * 同じ名前で同じバージョンのIndexedDBが既に存在すれば
-					 * onupgradeneededプロパティに設定されたハンドラは呼び出されない。
-					 */
-					openRequest.onupgradeneeded = function (evt) {
-						var db = evt.target.result;
-
-						var storeParams = {
-							keyPath: "id",
-							autoIncrement: true
-						};
-
-						var store = db.createObjectStore(dbName, storeParams);
-
-						var indexParams = {
-							unique: false
-						},
-						indexName = "storeIndex",
-							indexColumn = "name";
-
-						store.createIndex(indexName, indexColumn, indexParams);
-
-						log(store);
-					};
-
-					function setupClose(db) {
-						var closeDB = function () {
-							/**
-							 * closeは同期メソッド。
-							 */
-							db.close();
-							log("CLOSE DATABASE");
-						};
-
-						addClickListener("CloseDB", closeDB);
-					}
-
-					function setupDelete() {
-						var deleteDB = function () {
-							/**
-							 * IndexedDBがcloseされるまではdeleteは実行待ち状態になる。
-							 */
-							var deleteRequest = idb.deleteDatabase(dbName);
-
-							deleteRequest.onerror = function (evt) {
-								log(evt);
-							};
-
-							deleteRequest.onsuccess = function (evt) {
-								log(evt);
-							};
-						};
-
-						addClickListener("DeleteDB", deleteDB);
-					}
-
-					function setupAddRecord(db) {
-						var addRecord = function () {
-							/* DBがCLOSEだとトランザクション開始不可能 */
-							var transaction = db.transaction([dbName], "readwrite");
-							var store = transaction.objectStore(dbName);
-
-							/**
-							 * putと異なり上書きせず追加する。 
-							 * Keyが衝突するとエラーになる。
-							 */
-							var addReq = store.add({
-								name: "foo",
-								age: 20
-							//	,
-							//	id: 1
-							});
-
-							addReq.onsuccess = function (evt) {
-								log(evt);
-							};
-
-							addReq.onerror = function (evt) {
-								log(evt);
-							};
-						};
-
-						addClickListener("AddRecord", addRecord);
-					}
-
-					openRequest.onsuccess = function (evt) {
-						log(evt);
-						var db = evt.target.result;
-						setupClose(db);
-						setupDelete();
-						setupAddRecord(db);
-					};
-				}
-
-				function addClickListener(id, fn) {
-					el(id).addEventListener("click", fn, false);
-				}
-
-				function addEvent() {
-					addClickListener("OpenDB", openDB);
-				}
-
-				function init() {
-					addEvent();
-				}
-
-				init();
-
-
-			}(window, document));
-		</script>
-
+		<script src="../common.js"></script>
+		<script src="indexeddb.js"></script>
 	</body>
 </html>
