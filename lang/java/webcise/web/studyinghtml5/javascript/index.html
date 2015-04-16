@@ -23,14 +23,48 @@
 
 		<div role="main">
 			<section>
+				<style scoped="">
+					.ClosureButton {
+						width: 200px;
+						height: 100px;
+					}
+					
+					#closure-sample-list li {
+						border: 1px green solid;
+						background-color: yellowgreen;
+						padding: 5px;
+						margin: 5px;
+						width: 100px;
+						cursor: pointer;
+					}
+					
+					#closure-sample-list li[data-list-value="3"] {
+						background-color: red;
+					}
+				</style>
 				<h2>クロージャ</h2>
 				<section>
 					<h3>thisの扱い</h3>
 					<button class="ClosureButton">0</button>
 					<button class="ClosureButton">0</button>
 					<button class="ClosureButton">0</button>
-					<script src="closure.js"></script>
 				</section>
+				<div>
+					<h3>クロージャとスコープチェーン</h3>
+					<p>
+						正常時は3番目だけがクリックで赤くなるように書かれている。
+					</p>
+					<ul id="closure-sample-list">
+						<li data-list-value="0">apple</li>
+						<li data-list-value="0">orange</li>
+						<li data-list-value="0">banana</li>
+					</ul>
+					<div>
+						<button id="success-listener-setter">正常リスナ設定</button>
+						<button id="fail-listener-setter">失敗リスナ設定</button>
+					</div>
+				</div>
+				<script src="closure.js"></script>
 			</section>
 			<section>
 				<style scoped="scoped">
@@ -739,35 +773,35 @@ function indirect(){
 					.emphasis-input {
 						font-weight: bold;
 					}
-					
+
 					.simple-input {
 						font-style: normal;
 					}
-					
+
 					.simple-input0 {
 						color: blue;
 						font-style: normal;
 					}
-					
+
 					.simple-input1 {
 						color: red;
 						font-style: normal;
 					}
-					
+
 					.input-container {
 						padding: 5px;
 						margin: 5px;
 						border: solid 1px lightgrey;
 						border-radius: 5px;
 					}
-					
+
 					#copy-text-area {
 						height: 100px;
 						background-color: snow;
 						border: solid snow 1px;
 						border-radius: 5px;
 					}
-					
+
 					#unicode-key-info {
 						height: 1em;
 					}
