@@ -833,6 +833,50 @@ function indirect(){
 				</div>
 				<script src="keyboard.js"></script>
 			</section>
+			<section>
+				<style id="stylesheet-sample" scoped="">
+					div.stylesheet-sample-container {
+						font-family: monospace;
+						border: solid 1px pink;
+						background-color: bisque;
+						width: 30%;
+						height: 5em;
+						margin: 5px;
+					}
+					
+					div.stylesheet-sample-container:hover {
+						border: 2px solid red;
+						background-color: lightpink;
+					}
+					
+					div.style-result-info-area {
+						border: solid lightgrey 1px;
+						width: 500pt;
+						height: 150pt;
+						overflow-y: scroll;
+					}
+				</style>
+				<h2>スタイルシートの制御</h2>
+				<p>スタイル変更対象コンテナ</p>
+				<div class="stylesheet-sample-container">
+					<p>スタイルシートの差し替えを動的に行うことができます。</p>
+				</div>
+				<h3>スタイル情報確認</h3>
+				<p>このセクションのcssTextの確認</p>
+				<div id="csstext-result-area" class="style-result-info-area"></div>
+				<p>スタイル変更対象コンテナの算出スタイル確認</p>
+				<div id="style-result-area" class="style-result-info-area"></div>
+				<div>
+					<label><input id="enable-pseudo-element-style" type="checkbox" />擬似要素のスタイル取得</label>
+					<button id="display-style-executer">スタイル一覧出力</button>
+					<div>
+						<button id="section-style-sheet-insert">セクション用スタイルシート追加</button>
+						<button id="section-style-sheet-delete">セクション用スタイルシート削除</button>
+					</div>
+					<button id="clear-style-result">クリア</button>
+				</div>
+				<script src="stylesheet.js"></script>
+			</section>
 		</div>
 
 		<footer role="contentinfo">
