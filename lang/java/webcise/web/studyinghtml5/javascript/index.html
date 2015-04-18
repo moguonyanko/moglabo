@@ -877,6 +877,24 @@ function indirect(){
 				</div>
 				<script src="stylesheet.js"></script>
 			</section>
+			<section>
+				<h2>型付け配列</h2>
+				<div>
+					<p>
+						pngファイルのサイズ(バイト)・幅(px)・高さ(px)・色深度を取得する。<br />
+						png以外の画像フォーマットのファイルを選択すると意図した値が得られない。
+					</p>
+					<label><input id="image-file-input" type="file" accept="imgae/png" /></label>
+				</div>
+				<div>
+					<textarea id="typed-array-result-area" 
+							  readonly="readonly" cols="80" rows="5"></textarea>
+				</div>
+				<div>
+					<button id="clear-typed-array-element">クリア</button>
+				</div>
+				<script src="typedarray.js"></script>
+			</section>
 		</div>
 
 		<footer role="contentinfo">
