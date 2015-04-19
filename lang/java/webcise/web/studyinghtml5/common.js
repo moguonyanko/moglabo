@@ -1,4 +1,4 @@
-(function(win) {
+(function(win, doc) {
 	"use strict";
 
 	var commonNS,
@@ -42,6 +42,9 @@
 				printText(ele, txt, override, true);
 			},
 			print : printText,
+			clear : function(ele){
+				this.print(ele, "", true);
+			},
 			ref : function(id, doc) {
 				return (doc || document).getElementById(id);
 			},
@@ -126,8 +129,15 @@
 			},
 			extend : function(superClass, subClass){
 				subClass.prototype = Object.create(superClass.prototype);
+			},
+			appendChildAll : function(parentEle, childEles){
+				var fragment = doc.createDocumentFragment();
+				Array.prototype.forEach.call(childEles, function(el){
+					fragment.appendChild(el);
+				});
+				parentEle.appendChild(fragment);				
 			}
 		};
 	}
 
-}(window));
+}(window, document));

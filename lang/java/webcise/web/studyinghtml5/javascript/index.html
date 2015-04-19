@@ -491,6 +491,15 @@ function indirect(){
 						border-radius: 5px;
 						margin: 5px;
 					}
+					
+					ul.nodelist-sample-list {
+						margin: 5px;
+						width: 300px;
+						height: 100px;
+						background-color: snow;
+						border: pink solid 1px;
+						border-radius: 5px;
+					}
 
 					#SampleElementNodeContainer {
 						height: 30%;
@@ -526,7 +535,21 @@ function indirect(){
 				<div>
 					<button id="NodeOutputExecuter">Node情報出力</button>
 					<button id="NodeEqualityTestExecuter">Nodeの等しさテストの結果出力</button>
-					<button id="ClearNodeInfomation">クリア</button>
+				</div>
+				<h3>生きているNodeList</h3>
+				<div>
+					<ul class="nodelist-sample-list">
+						<li>apple</li>
+						<li>orange</li>
+						<li>banana</li>
+					</ul>
+				</div>
+				<div>
+					<button id="sample-node-remover">li要素を削除した後その数結果表示</button>
+					<button id="sample-node-resetter">li要素復元</button>
+				</div>
+				<div>
+					<button id="node-result-clearer">クリア</button>
 				</div>
 				<script src="nodetest.js"></script>
 			</section>
