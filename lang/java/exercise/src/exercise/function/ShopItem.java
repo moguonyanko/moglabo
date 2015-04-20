@@ -1,8 +1,9 @@
 package exercise.function;
 
+import java.util.Objects;
+
 import exercise.lang.Taxable;
 import exercise.lang.Favorable;
-import java.util.Objects;
 
 public class ShopItem implements Taxable, Favorable, Comparable<ShopItem> {
 
@@ -58,9 +59,19 @@ public class ShopItem implements Taxable, Favorable, Comparable<ShopItem> {
 		return hash;
 	}
 
+	/**
+	 * 
+	 */
 	@Override
 	public int getAmount() {
-		return getPrice();
+		/**
+		 * インターフェースのデフォルトメソッドが衝突した時は
+		 * デフォルトメソッドをオーバーライドしなければコンパイルエラーになる。
+		 * 実装したクラス側でどちらのデフォルトメソッドを使うかは
+		 * superを経由して指定することができる。
+		 */
+		return Favorable.super.getAmount();
+		//return getPrice();
 	}
 
 	public ShopItemType getType() {
