@@ -121,13 +121,28 @@
 			}
 		}
 	}
-
-	(function init() {
+	
+	function checkNodeSize(){
+		var ul = doc.querySelector("ul.nodelist-sample-list"),
+			snapshotNodes = doc.querySelectorAll("ul.nodelist-sample-list li"),
+			livedNodes = ul.getElementsByTagName("li");
+		
+		for(var i = 0, len = snapshotNodes.length; i < len; i++){
+			snapshotNodes[i].parentNode.removeChild(snapshotNodes[i]);
+		}
+		
+		return {
+			snapshot : snapshotNodes.length,
+			lived : livedNodes.length,
+			toString : function(){
+				return "snapshot NodeList length:" + 
+					this.snapshot + ", lived NodeList length:" + this.lived;
+			}
+		};
+	}
+	
+	(function () {
 		m.addListener(m.ref("NodeOutputExecuter"), "click", outputNodeContainerInfomation);
-
-		m.addListener(m.ref("ClearNodeInfomation"), "click", function() {
-			area.value = "";
-		});
 
 		m.addListener(m.ref("NodeEqualityTestExecuter"), "click", function() {
 			var container = m.ref("NodeEqualitySampleContainer");
@@ -150,9 +165,25 @@
 			clonedTrueSampleNode.id = "Cloned" + clonedTrueSampleNode.id;
 			outputNodeEquality(container, clonedTrueSampleNode);
 		});
-
-		m.export("nodetest", {
-		});
+		
+		var savedNodes;
+		
+		m.addListener(m.ref("sample-node-remover"), "click", function(){
+			savedNodes = doc.querySelectorAll("ul.nodelist-sample-list li");
+			var result = checkNodeSize();
+			pp(result);
+		}, false);
+		
+		m.addListener(m.ref("sample-node-resetter"), "click", function(){
+			if(savedNodes){
+				var ul = doc.querySelector("ul.nodelist-sample-list");
+				m.appendChildAll(ul, savedNodes);
+			}
+		}, false);
+		
+		m.addListener(m.ref("node-result-clearer"), "click", function(){
+			m.clear(area);
+		}, false);
 	}());
 
 }(window, document, my));

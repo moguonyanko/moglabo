@@ -80,6 +80,10 @@ var messageHandler = {
 
 		/* グレースケール変換 */
 		for (var i = 0, len = view.length; i < len; i++) {
+			/**
+			 * Uint8ClampedArrayを使っているので固定サイズ(8ビット＝1バイト)単位で
+			 * バッファを読む。
+			 */
 			var r = view[i],
 				g = view[i + 1],
 				b = view[i + 2],

@@ -6,6 +6,9 @@
 	var dbName = "members",
 		indexSuffix = "Index";
 
+	/**
+	 * バージョン番号は1以上でなければエラーになる。
+	 */
 	var version = 5;
 
 	/**
