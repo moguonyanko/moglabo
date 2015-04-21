@@ -58,6 +58,30 @@
 					<button id="ParallelRunner">並列処理開始</button>
 				</div>
 			</section>
+			<section>
+				<h2>Workerで共有ライブラリの利用を試みる</h2>
+				<p>evalは使わないこと。</p>
+				<textarea id="worker-shared-result" cols="120" rows="10" readonly="readonly"></textarea>
+				<div>
+					<button id="shared-test-runner">共有確認</button>
+				</div>
+				<script id="worker-shared-library" type="javascript/worker">
+					function workerLibTest(sentence){
+						/* グローバルオブジェクトには触れない。 */
+						console.log(my);
+
+						self.postMessage({
+							sharedLibrary : my,
+							sentence : sentence + ", Worker!"
+						});
+					}
+					
+					self.onmessage = function(evt){
+						var data = evt.data;
+						workerLibTest(data.sentence);
+					};
+				</script>
+			</section>
 		</div>
 
 		<footer role="contentinfo">
@@ -67,5 +91,6 @@
 		<script src="../common.js"></script>
 		<script src="mainthread.js"></script>
 		<script src="worker.js"></script>
+		<script src="libshared.js"></script>
 	</body>
 </html>
