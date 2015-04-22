@@ -64,15 +64,15 @@
 				<textarea id="worker-shared-result" cols="120" rows="10" readonly="readonly"></textarea>
 				<div>
 					<div>
-						<label>左辺値<input id="lhs-value" type="text" value="1"></label>
-						<label>右辺値<input id="rhs-value" type="text" value="2"></label>
+						<label>左辺値<input id="lhs-value" type="number" value="1"></label>
+						<label>右辺値<input id="rhs-value" type="number" value="2"></label>
+						<label>メッセージ:<input id="worker-message" type="text" value="こんにちは" /></label>
 						<div>
 							<label><input name="calc-type" type="radio" value="add" checked="checked" />加算</label>
 							<label><input name="calc-type" type="radio" value="sub" />減算</label>
 							<label><input name="calc-type" type="radio" value="mul" />乗算</label>
 							<label><input name="calc-type" type="radio" value="div" />除算</label>
 						</div>
-						<label>メッセージ:<input id="worker-message" type="text" value="こんにちは" /></label>
 					</div>
 					<button id="shared-test-runner1">Blobによる共有(失敗)</button>
 					<button id="shared-test-runner2">importScriptsによる共有(成功)</button>
