@@ -12,7 +12,7 @@ public class Functions {
 		targets.forEach(dumpAction::accept);
 	}
 	
-	public static <T> List<T> modifyStrings(Collection<T> targets, 
+	public static <T> List<T> modifyStrings(List<T> targets, 
 		Function<T, T> action){
 		List<T> result = targets.stream().
 			map(action).collect(Collectors.toList());
@@ -26,5 +26,13 @@ public class Functions {
 	
 	public static List<String> toLowerCases(List<String> targets){
 		return modifyStrings(targets, String::toLowerCase);
+	}
+	
+	public static <T> Collection<T> extract(Collection<T> sources, T target){
+		Collection<T> result = sources.stream().
+			filter(source -> source.equals(target)).
+			collect(Collectors.toList());
+		
+		return result;
 	}
 }

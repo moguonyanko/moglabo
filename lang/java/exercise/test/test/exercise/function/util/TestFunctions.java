@@ -12,6 +12,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.util.Functions;
+import java.util.Collection;
 public class TestFunctions {
 
 	@BeforeClass
@@ -57,4 +58,12 @@ public class TestFunctions {
 		assertThat(actual, is(expected));
 	}
 	
+	@Test
+	public void 文字列群から特定の文字列を抽出する(){
+		List<String> sample = Arrays.asList("apple", "banana", "orange", "banana");
+		String target = "banana";
+		Collection<String> expected = Arrays.asList("banana", "banana");
+		Collection<String> actual = Functions.extract(sample, target);
+		assertThat(actual, is(expected));
+	}
 }
