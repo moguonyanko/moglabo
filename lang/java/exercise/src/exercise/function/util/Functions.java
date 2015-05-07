@@ -23,4 +23,8 @@ public class Functions {
 	public static List<String> toUpperCases(List<String> targets){
 		return modifyStrings(targets, String::toUpperCase);
 	}
+	
+	public static List<String> toLowerCases(List<String> targets){
+		return modifyStrings(targets, String::toLowerCase);
+	}
 }

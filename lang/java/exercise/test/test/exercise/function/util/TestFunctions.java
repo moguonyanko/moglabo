@@ -42,12 +42,19 @@ public class TestFunctions {
 	}
 	
 	@Test
+	public void 文字列群の大文字を小文字を変換する(){
+		List<String> sample = Arrays.asList("APPLE", "BANANA", "ORANGE");
+		List<String> expected = Arrays.asList("apple", "banana", "orange");
+		List<String> actual = Functions.toLowerCases(sample);
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
 	public void 文字列群の小文字を大文字に変換する(){
-		List<String> toUpperSample = Arrays.asList("apple", "banana", "orange");
-		List<String> toUpperExpected = Arrays.asList("APPLE", "BANANA", "ORANGE");
-		
-		List<String> toUpperActual = Functions.toUpperCases(toUpperSample);
-		assertThat(toUpperActual, is(toUpperExpected));
+		List<String> sample = Arrays.asList("apple", "banana", "orange");
+		List<String> expected = Arrays.asList("APPLE", "BANANA", "ORANGE");
+		List<String> actual = Functions.toUpperCases(sample);
+		assertThat(actual, is(expected));
 	}
 	
 }
