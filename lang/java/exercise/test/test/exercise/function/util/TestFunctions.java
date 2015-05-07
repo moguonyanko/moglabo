@@ -40,5 +40,14 @@ public class TestFunctions {
 			fail(e.getMessage());
 		}
 	}
-
+	
+	@Test
+	public void 文字列群の小文字を大文字に変換する(){
+		List<String> toUpperSample = Arrays.asList("apple", "banana", "orange");
+		List<String> toUpperExpected = Arrays.asList("APPLE", "BANANA", "ORANGE");
+		
+		List<String> toUpperActual = Functions.toUpperCases(toUpperSample);
+		assertThat(toUpperActual, is(toUpperExpected));
+	}
+	
 }
