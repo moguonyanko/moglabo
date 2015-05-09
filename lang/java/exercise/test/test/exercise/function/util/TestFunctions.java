@@ -2,6 +2,7 @@ package test.exercise.function.util;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Collection;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -12,7 +13,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.util.Functions;
-import java.util.Collection;
+
 public class TestFunctions {
 
 	@BeforeClass
@@ -64,6 +65,24 @@ public class TestFunctions {
 		String target = "banana";
 		Collection<String> expected = Arrays.asList("banana", "banana");
 		Collection<String> actual = Functions.extract(sample, target);
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 文字列群から特定の文字列を大文字小文字を無視して1つ取得する(){
+		List<String> sample = Arrays.asList("apple", "BANANA", "orange", "banana");
+		String target = "banana";
+		String expected = "BANANA";
+		String actual = Functions.findIgnoreCase(sample, target);
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 文字列群から特定の文字列を大文字小文字を無視して全て取得する(){
+		List<String> sample = Arrays.asList("apple", "BANANA", "orange", "banana");
+		String target = "banana";
+		List<String> expected = Arrays.asList("BANANA", "banana");
+		List<String> actual = Functions.findAllIgnoreCase(sample, target);
 		assertThat(actual, is(expected));
 	}
 }
