@@ -64,4 +64,19 @@ public class Functions {
 		
 		return result;
 	}
+	
+	public static <T> T maxElement(Collection<T> sources, Function<T, Integer> action){
+		Optional<T> result = sources.stream().
+			reduce((el1, el2) -> action.apply(el1) >= action.apply(el2) ? el1 : el2);
+		
+		return result.get();
+	}
+	
+	public static String join(Collection<String> sources, String separator, 
+		Function<String, String> action){
+		String result = sources.stream().
+			map(action).collect(Collectors.joining(separator));
+		
+		return result;
+	}
 }

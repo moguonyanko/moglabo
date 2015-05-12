@@ -42,47 +42,64 @@ public class TestFunctions {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
-	public void 文字列群の大文字を小文字を変換する(){
+	public void 文字列群の大文字を小文字を変換する() {
 		List<String> sample = Arrays.asList("APPLE", "BANANA", "ORANGE");
 		List<String> expected = Arrays.asList("apple", "banana", "orange");
 		List<String> actual = Functions.toLowerCases(sample);
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 文字列群の小文字を大文字に変換する(){
+	public void 文字列群の小文字を大文字に変換する() {
 		List<String> sample = Arrays.asList("apple", "banana", "orange");
 		List<String> expected = Arrays.asList("APPLE", "BANANA", "ORANGE");
 		List<String> actual = Functions.toUpperCases(sample);
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 文字列群から特定の文字列を抽出する(){
+	public void 文字列群から特定の文字列を抽出する() {
 		List<String> sample = Arrays.asList("apple", "banana", "orange", "banana");
 		String target = "banana";
 		Collection<String> expected = Arrays.asList("banana", "banana");
 		Collection<String> actual = Functions.extract(sample, target);
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 文字列群から特定の文字列を大文字小文字を無視して1つ取得する(){
+	public void 文字列群から特定の文字列を大文字小文字を無視して1つ取得する() {
 		List<String> sample = Arrays.asList("apple", "BANANA", "orange", "banana");
 		String target = "banana";
 		String expected = "BANANA";
 		String actual = Functions.findIgnoreCase(sample, target);
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 文字列群から特定の文字列を大文字小文字を無視して全て取得する(){
+	public void 文字列群から特定の文字列を大文字小文字を無視して全て取得する() {
 		List<String> sample = Arrays.asList("apple", "BANANA", "orange", "banana");
 		String target = "banana";
 		List<String> expected = Arrays.asList("BANANA", "banana");
 		List<String> actual = Functions.findAllIgnoreCase(sample, target);
+		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void 文字列群から最長の文字を取得する() {
+		List<String> sample = Arrays.asList("apple", "orange", "grapefruit", "banana");
+		String expected = "grapefruit";
+		String actual = Functions.maxElement(sample, (String name) -> name.length());
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 文字列群の各要素を修飾して連結した文字列を得る() {
+		List<String> sample = Arrays.asList("apple", "orange", "grapefruit", "banana");
+		String separator = ",";
+		String expected = "APPLE,ORANGE,GRAPEFRUIT,BANANA";
+		String actual = Functions.join(sample, separator, String::toUpperCase);
 		assertThat(actual, is(expected));
 	}
 }
