@@ -13,6 +13,8 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.util.Functions;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class TestFunctions {
 
@@ -30,6 +32,40 @@ public class TestFunctions {
 
 	@After
 	public void tearDown() {
+	}
+	
+	private class Student{
+		private final String name;
+		private final int score;
+
+		public Student(String name, int score) {
+			this.name = name;
+			this.score = score;
+		}
+		
+		public int scoreDiff(Student other){
+			return score - other.score;
+		}
+
+		@Override
+		public String toString() {
+			return name + ":" + score;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if(obj instanceof Student){
+				Student other = (Student)obj;
+				return name.equals(other.name) && scoreDiff(other) == 0;
+			}
+			
+			return false;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(name, score);
+		}
 	}
 
 	@Test
@@ -93,13 +129,36 @@ public class TestFunctions {
 		String actual = Functions.maxElement(sample, (String name) -> name.length());
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
 	public void 文字列群の各要素を修飾して連結した文字列を得る() {
 		List<String> sample = Arrays.asList("apple", "orange", "grapefruit", "banana");
 		String separator = ",";
 		String expected = "APPLE,ORANGE,GRAPEFRUIT,BANANA";
 		String actual = Functions.join(sample, separator, String::toUpperCase);
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void コンパレータを指定してオブジェクトを並べ替える() {
+		Collection<Student> sample = Arrays.asList(
+			new Student("Foo", 50),
+			new Student("Bar", 90),
+			new Student("Baz", 20),
+			new Student("Hoge", 70),
+			new Student("Fuga", 30)
+		);
+		
+		Collection<Student> expected = Arrays.asList(
+			new Student("Baz", 20),
+			new Student("Fuga", 30),
+			new Student("Foo", 50),
+			new Student("Hoge", 70),
+			new Student("Bar", 90)
+		);
+		
+		Collection<Student> actual = Functions.sorted(sample, Student::scoreDiff);
+		
 		assertThat(actual, is(expected));
 	}
 }
