@@ -92,7 +92,7 @@ public class Functions {
 		return result;
 	}
 	
-	public static <T, C extends Collection> Collection<T> sorted(Collection<T> sources, 
+	public static <T> Collection<T> sorted(Collection<T> sources, 
 		Comparator<T> comparator) {
 		/**
 		 * @todo
@@ -100,5 +100,34 @@ public class Functions {
 		 * 
 		 */
 		return sorted(sources, comparator, ArrayList::new);
+	}
+	
+	public static <T> Collection<T> reverseSorted(Collection<T> sources, 
+		Comparator<T> comparator) {
+		return sorted(sources, comparator.reversed(), ArrayList::new);
+	}
+	
+	public static <T> T minElement(Collection<T> sources, Comparator<T> comparator) {
+		T result = sources.stream().
+			min(comparator).get();
+
+		return result;
+	}
+	
+	public static <T> T maxElement(Collection<T> sources, Comparator<T> comparator) {
+		T result = sources.stream().
+			max(comparator).get();
+
+		return result;
+	}
+	
+	public static <T, C extends Collection> Collection<T> sorted(Collection<T> sources, 
+		Collection<Comparator<T>> comparators, Supplier<C> supplier) {
+		/**
+		 * @todo
+		 * コンパレータを縮約して最終的に必要なコンパレータを得る。
+		 */
+		
+		return null;
 	}
 }

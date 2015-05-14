@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.util.Functions;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Objects;
 
 public class TestFunctions {
@@ -45,6 +46,10 @@ public class TestFunctions {
 		
 		public int scoreDiff(Student other){
 			return score - other.score;
+		}
+
+		public int nameDiff(Student other){
+			return name.compareToIgnoreCase(other.name);
 		}
 
 		@Override
@@ -140,7 +145,7 @@ public class TestFunctions {
 	}
 	
 	@Test
-	public void コンパレータを指定してオブジェクトを並べ替える() {
+	public void コンパレータを指定してオブジェクトを昇順に並べ替える() {
 		Collection<Student> sample = Arrays.asList(
 			new Student("Foo", 50),
 			new Student("Bar", 90),
@@ -158,6 +163,114 @@ public class TestFunctions {
 		);
 		
 		Collection<Student> actual = Functions.sorted(sample, Student::scoreDiff);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void コンパレータを指定してオブジェクトを降順に並べ替える() {
+		Collection<Student> sample = Arrays.asList(
+			new Student("Foo", 50),
+			new Student("Bar", 90),
+			new Student("Baz", 20),
+			new Student("Hoge", 70),
+			new Student("Fuga", 30)
+		);
+		
+		Collection<Student> expected = Arrays.asList(
+			new Student("Bar", 90),
+			new Student("Hoge", 70),
+			new Student("Foo", 50),
+			new Student("Fuga", 30),
+			new Student("Baz", 20)
+		);
+		
+		Collection<Student> actual = Functions.reverseSorted(sample, Student::scoreDiff);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 大文字小文字を無視して昇順に並べ替える() {
+		Collection<Student> sample = Arrays.asList(
+			new Student("Foo", 50),
+			new Student("bar", 90),
+			new Student("Baz", 20),
+			new Student("Hoge", 70),
+			new Student("fuga", 30)
+		);
+		
+		Collection<Student> expected = Arrays.asList(
+			new Student("bar", 90),
+			new Student("Baz", 20),
+			new Student("Foo", 50),
+			new Student("fuga", 30),
+			new Student("Hoge", 70)
+		);
+		
+		Collection<Student> actual = Functions.sorted(sample, Student::nameDiff);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void コンパレータを指定して最小値を持つ要素を得る() {
+		Collection<Student> sample = Arrays.asList(
+			new Student("Foo", 50),
+			new Student("bar", 90),
+			new Student("Baz", 20),
+			new Student("Hoge", 70),
+			new Student("fuga", 30)
+		);
+		
+		Student expected = new Student("Baz", 20);
+		
+		Student actual = Functions.minElement(sample, Student::scoreDiff);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void コンパレータを指定して最大値を持つ要素を得る() {
+		Collection<Student> sample = Arrays.asList(
+			new Student("Foo", 50),
+			new Student("bar", 90),
+			new Student("Baz", 20),
+			new Student("Hoge", 70),
+			new Student("fuga", 30)
+		);
+		
+		Student expected = new Student("bar", 90);
+		
+		Student actual = Functions.maxElement(sample, Student::scoreDiff);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 大文字小文字を無視して昇順に並べ替えた後数値で昇順に並べ替える() {
+		Collection<Student> sample = Arrays.asList(
+			new Student("Foo", 50),
+			new Student("bar", 90),
+			new Student("Baz", 20),
+			new Student("Hoge", 70),
+			new Student("fuga", 30)
+		);
+		
+		Collection<Student> expected = Arrays.asList(
+			new Student("Baz", 20),
+			new Student("bar", 90),
+			new Student("fuga", 30),
+			new Student("Foo", 50),
+			new Student("Hoge", 70)
+		);
+		
+		Collection<Comparator<Student>> comps = Arrays.asList(
+			Student::nameDiff,
+			Student::scoreDiff
+		);
+		
+		Collection<Student> actual = Functions.sorted(sample, comps, ArrayList::new);
 		
 		assertThat(actual, is(expected));
 	}
