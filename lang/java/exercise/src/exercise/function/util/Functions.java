@@ -123,11 +123,15 @@ public class Functions {
 	
 	public static <T, C extends Collection> Collection<T> sorted(Collection<T> sources, 
 		Collection<Comparator<T>> comparators, Supplier<C> supplier) {
-		/**
-		 * @todo
-		 * コンパレータを縮約して最終的に必要なコンパレータを得る。
-		 */
+		if(!comparators.iterator().hasNext()){
+			return sources;
+		}
 		
-		return null;
+		Comparator<T> firstComparator = comparators.iterator().next();
+		
+		Comparator<T> comparator = comparators.stream().
+			reduce(firstComparator, (c1, c2) -> c1.thenComparing(c2));
+		
+		return sorted(sources, comparator, supplier);
 	}
 }

@@ -248,29 +248,33 @@ public class TestFunctions {
 	}
 	
 	@Test
-	public void 大文字小文字を無視して昇順に並べ替えた後数値で昇順に並べ替える() {
+	public void 大文字小文字を無視して昇順に並べ替え文字列が同じだった時は数値で昇順に並べ替える() {
 		Collection<Student> sample = Arrays.asList(
 			new Student("Foo", 50),
 			new Student("bar", 90),
+			new Student("bar", 45),
 			new Student("Baz", 20),
+			new Student("Hoge", 95),
 			new Student("Hoge", 70),
 			new Student("fuga", 30)
 		);
 		
 		Collection<Student> expected = Arrays.asList(
-			new Student("Baz", 20),
+			new Student("bar", 45),
 			new Student("bar", 90),
-			new Student("fuga", 30),
+			new Student("Baz", 20),
 			new Student("Foo", 50),
-			new Student("Hoge", 70)
+			new Student("fuga", 30),
+			new Student("Hoge", 70),
+			new Student("Hoge", 95)
 		);
 		
-		Collection<Comparator<Student>> comps = Arrays.asList(
+		Collection<Comparator<Student>> comparators = Arrays.asList(
 			Student::nameDiff,
 			Student::scoreDiff
 		);
 		
-		Collection<Student> actual = Functions.sorted(sample, comps, ArrayList::new);
+		Collection<Student> actual = Functions.sorted(sample, comparators, ArrayList::new);
 		
 		assertThat(actual, is(expected));
 	}
