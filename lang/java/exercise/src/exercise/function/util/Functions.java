@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 public class Functions {
 
@@ -31,7 +34,7 @@ public class Functions {
 	public static <T> List<T> modifyStrings(List<T> targets,
 		Function<T, T> action) {
 		List<T> result = targets.stream().
-			map(action).collect(Collectors.toList());
+			map(action).collect(toList());
 
 		return result;
 	}
@@ -47,7 +50,7 @@ public class Functions {
 	public static <T> Collection<T> extract(Collection<T> sources, T target) {
 		Collection<T> result = sources.stream().
 			filter(source -> source.equals(target)).
-			collect(Collectors.toList());
+			collect(toList());
 
 		return result;
 	}
@@ -63,7 +66,7 @@ public class Functions {
 	public static List<String> findAllIgnoreCase(List<String> sources, String target) {
 		List<String> result = sources.stream().
 			filter(equalsIgnoreCaseString.apply(target)).
-			collect(Collectors.toList());
+			collect(toList());
 
 		return result;
 	}
@@ -78,7 +81,7 @@ public class Functions {
 	public static String join(Collection<String> sources, String separator,
 		Function<String, String> action) {
 		String result = sources.stream().
-			map(action).collect(Collectors.joining(separator));
+			map(action).collect(joining(separator));
 
 		return result;
 	}
@@ -87,7 +90,7 @@ public class Functions {
 		Comparator<T> comparator, Supplier<C> supplier) {
 		Collection<T> result = sources.stream().
 			sorted(comparator).
-			collect(Collectors.toCollection(supplier));
+			collect(toCollection(supplier));
 
 		return result;
 	}
@@ -134,4 +137,52 @@ public class Functions {
 		
 		return sorted(sources, comparator, supplier);
 	}
+	
+	public static <T, U> Map<U, List<T>> groupBy(Collection<T> sources, Function<T, U> classifier){
+		Map<U, List<T>> result = sources.stream().
+			collect(groupingBy(classifier));
+		
+		return result;
+	}
+
+	public static <T, U, V> Map<U, List<V>> groupBy(Collection<T> sources, Function<T, U> classifier, 
+		Function<T, V> mapper){
+		Map<U, List<V>> result = sources.stream().
+			collect(groupingBy(classifier, mapping(mapper, toList())));
+		
+		return result;
+	}
+	
+	/**
+	 * @todo
+	 * minGroupByとmaxGroupByにこちらを呼び出させるようにする。
+	 * 
+	 */
+	public static <T, U, V> Map<U, T> groupBy(Collection<T> sources, Function<T, U> classifier, 
+		Comparator<T> comparator, T identify, BinaryOperator<T> op){
+		/**
+		 * Optionalオブジェクトをクライアント側に返さないようにidentifyを使っている。
+		 */
+		Map<U, T> result = sources.stream().
+			collect(groupingBy(classifier, reducing(identify, op)));
+		
+		return result;
+	}
+	
+	public static <T, U, V> Map<U, T> minGroupBy(Collection<T> sources, Function<T, U> classifier, 
+		Comparator<T> comparator, T identify){
+		Map<U, T> result = sources.stream().
+			collect(groupingBy(classifier, reducing(identify, BinaryOperator.minBy(comparator))));
+		
+		return result;
+	}
+	
+	public static <T, U, V> Map<U, T> maxGroupBy(Collection<T> sources, Function<T, U> classifier, 
+		Comparator<T> comparator, T identify){
+		Map<U, T> result = sources.stream().
+			collect(groupingBy(classifier, reducing(identify, BinaryOperator.maxBy(comparator))));
+		
+		return result;
+	}
+	
 }

@@ -15,7 +15,10 @@ import static org.hamcrest.CoreMatchers.*;
 import exercise.function.util.Functions;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class TestFunctions {
 
@@ -52,6 +55,14 @@ public class TestFunctions {
 			return name.compareToIgnoreCase(other.name);
 		}
 
+		public String getName() {
+			return name;
+		}
+
+		public int getScore() {
+			return score;
+		}
+		
 		@Override
 		public String toString() {
 			return name + ":" + score;
@@ -278,4 +289,113 @@ public class TestFunctions {
 		
 		assertThat(actual, is(expected));
 	}
+	
+	@Test
+	public void 数値毎にグループ化する() {
+		Collection<Student> sample = Arrays.asList(
+			new Student("A", 50),
+			new Student("B", 50),
+			new Student("C", 20),
+			new Student("D", 20),
+			new Student("E", 30),
+			new Student("F", 30),
+			new Student("G", 90),
+			new Student("H", 20),
+			new Student("I", 90),
+			new Student("J", 30)
+		);
+		
+		Map<Integer, List<Student>> expected = new HashMap<>();
+		expected.put(50, Arrays.asList(
+			new Student("A", 50),
+			new Student("B", 50)
+		));
+		expected.put(20, Arrays.asList(
+			new Student("C", 20),
+			new Student("D", 20),
+			new Student("H", 20)
+		));
+		expected.put(30, Arrays.asList(
+			new Student("E", 30),
+			new Student("F", 30),
+			new Student("J", 30)
+		));
+		expected.put(90, Arrays.asList(
+			new Student("G", 90),
+			new Student("I", 90)
+		));
+		
+		
+		Map<Integer, List<Student>> actual = Functions.groupBy(sample, Student::getScore);
+		
+		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void 数値毎にグループ化して特定のフィールドだけ得る() {
+		Collection<Student> sample = Arrays.asList(
+			new Student("A", 50),
+			new Student("B", 50),
+			new Student("C", 20),
+			new Student("D", 20),
+			new Student("E", 30),
+			new Student("F", 30),
+			new Student("G", 90),
+			new Student("H", 20),
+			new Student("I", 90),
+			new Student("J", 30)
+		);
+		
+		Map<Integer, List<String>> expected = new HashMap<>();
+		expected.put(50, Arrays.asList(
+			"A", "B"
+		));
+		expected.put(20, Arrays.asList(
+			"C", "D", "H"
+		));
+		expected.put(30, Arrays.asList(
+			"E", "F", "J"
+		));
+		expected.put(90, Arrays.asList(
+			"G", "I"
+		));
+		
+		Map<Integer, List<String>> actual = Functions.groupBy(sample, Student::getScore, Student::getName);
+		
+		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void 文字列の一部でグループ化し各グループの最小値を抽出する() {
+		Collection<Student> sample = Arrays.asList(
+			new Student("Mike", 50),
+			new Student("John", 50),
+			new Student("Mee", 20),
+			new Student("Cate", 30),
+			new Student("Ame", 60),
+			new Student("Joe", 30),
+			new Student("Tole", 80),
+			new Student("Hoge", 10),
+			new Student("Con", 40),
+			new Student("Agl", 30)
+		);
+		
+		Map<String, Student> expected = new HashMap<>();
+		expected.put("A", new Student("Agl", 30));
+		expected.put("C", new Student("Cate", 30));
+		expected.put("H", new Student("Hoge", 10));
+		expected.put("J", new Student("Joe", 30));
+		expected.put("M", new Student("Mee", 20));
+		expected.put("T", new Student("Tole", 80));
+		
+		int upperLimitTestScore = 100;
+		/* 縮約時の比較の基点に使うオブジェクト */
+		Student defaultStudent = new Student("baseperson", upperLimitTestScore);
+		
+		Function<Student, String> classifier = student -> student.getName().substring(0, 1);
+		Map<String, Student> actual = Functions.minGroupBy(sample, classifier, Student::scoreDiff, defaultStudent);
+		
+		assertThat(actual, is(expected));
+	}
+	
 }
