@@ -13,12 +13,18 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.util.Functions;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TestFunctions {
 
@@ -37,8 +43,9 @@ public class TestFunctions {
 	@After
 	public void tearDown() {
 	}
-	
-	private class Student{
+
+	private class Student {
+
 		private final String name;
 		private final int score;
 
@@ -46,12 +53,12 @@ public class TestFunctions {
 			this.name = name;
 			this.score = score;
 		}
-		
-		public int scoreDiff(Student other){
+
+		public int scoreDiff(Student other) {
 			return score - other.score;
 		}
 
-		public int nameDiff(Student other){
+		public int nameDiff(Student other) {
 			return name.compareToIgnoreCase(other.name);
 		}
 
@@ -62,7 +69,7 @@ public class TestFunctions {
 		public int getScore() {
 			return score;
 		}
-		
+
 		@Override
 		public String toString() {
 			return name + ":" + score;
@@ -70,11 +77,11 @@ public class TestFunctions {
 
 		@Override
 		public boolean equals(Object obj) {
-			if(obj instanceof Student){
-				Student other = (Student)obj;
+			if (obj instanceof Student) {
+				Student other = (Student) obj;
 				return name.equals(other.name) && scoreDiff(other) == 0;
 			}
-			
+
 			return false;
 		}
 
@@ -154,7 +161,7 @@ public class TestFunctions {
 		String actual = Functions.join(sample, separator, String::toUpperCase);
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
 	public void コンパレータを指定してオブジェクトを昇順に並べ替える() {
 		Collection<Student> sample = Arrays.asList(
@@ -164,7 +171,7 @@ public class TestFunctions {
 			new Student("Hoge", 70),
 			new Student("Fuga", 30)
 		);
-		
+
 		Collection<Student> expected = Arrays.asList(
 			new Student("Baz", 20),
 			new Student("Fuga", 30),
@@ -172,12 +179,12 @@ public class TestFunctions {
 			new Student("Hoge", 70),
 			new Student("Bar", 90)
 		);
-		
+
 		Collection<Student> actual = Functions.sorted(sample, Student::scoreDiff);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
 	public void コンパレータを指定してオブジェクトを降順に並べ替える() {
 		Collection<Student> sample = Arrays.asList(
@@ -187,7 +194,7 @@ public class TestFunctions {
 			new Student("Hoge", 70),
 			new Student("Fuga", 30)
 		);
-		
+
 		Collection<Student> expected = Arrays.asList(
 			new Student("Bar", 90),
 			new Student("Hoge", 70),
@@ -195,12 +202,12 @@ public class TestFunctions {
 			new Student("Fuga", 30),
 			new Student("Baz", 20)
 		);
-		
+
 		Collection<Student> actual = Functions.reverseSorted(sample, Student::scoreDiff);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
 	public void 大文字小文字を無視して昇順に並べ替える() {
 		Collection<Student> sample = Arrays.asList(
@@ -210,7 +217,7 @@ public class TestFunctions {
 			new Student("Hoge", 70),
 			new Student("fuga", 30)
 		);
-		
+
 		Collection<Student> expected = Arrays.asList(
 			new Student("bar", 90),
 			new Student("Baz", 20),
@@ -218,12 +225,12 @@ public class TestFunctions {
 			new Student("fuga", 30),
 			new Student("Hoge", 70)
 		);
-		
+
 		Collection<Student> actual = Functions.sorted(sample, Student::nameDiff);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
 	public void コンパレータを指定して最小値を持つ要素を得る() {
 		Collection<Student> sample = Arrays.asList(
@@ -233,14 +240,14 @@ public class TestFunctions {
 			new Student("Hoge", 70),
 			new Student("fuga", 30)
 		);
-		
+
 		Student expected = new Student("Baz", 20);
-		
+
 		Student actual = Functions.minElement(sample, Student::scoreDiff);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
 	public void コンパレータを指定して最大値を持つ要素を得る() {
 		Collection<Student> sample = Arrays.asList(
@@ -250,14 +257,14 @@ public class TestFunctions {
 			new Student("Hoge", 70),
 			new Student("fuga", 30)
 		);
-		
+
 		Student expected = new Student("bar", 90);
-		
+
 		Student actual = Functions.maxElement(sample, Student::scoreDiff);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
 	public void 大文字小文字を無視して昇順に並べ替え文字列が同じだった時は数値で昇順に並べ替える() {
 		Collection<Student> sample = Arrays.asList(
@@ -269,7 +276,7 @@ public class TestFunctions {
 			new Student("Hoge", 70),
 			new Student("fuga", 30)
 		);
-		
+
 		Collection<Student> expected = Arrays.asList(
 			new Student("bar", 45),
 			new Student("bar", 90),
@@ -279,17 +286,17 @@ public class TestFunctions {
 			new Student("Hoge", 70),
 			new Student("Hoge", 95)
 		);
-		
+
 		Collection<Comparator<Student>> comparators = Arrays.asList(
 			Student::nameDiff,
 			Student::scoreDiff
 		);
-		
+
 		Collection<Student> actual = Functions.sorted(sample, comparators, ArrayList::new);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
 	public void 数値毎にグループ化する() {
 		Collection<Student> sample = Arrays.asList(
@@ -304,7 +311,7 @@ public class TestFunctions {
 			new Student("I", 90),
 			new Student("J", 30)
 		);
-		
+
 		Map<Integer, List<Student>> expected = new HashMap<>();
 		expected.put(50, Arrays.asList(
 			new Student("A", 50),
@@ -324,10 +331,9 @@ public class TestFunctions {
 			new Student("G", 90),
 			new Student("I", 90)
 		));
-		
-		
+
 		Map<Integer, List<Student>> actual = Functions.groupBy(sample, Student::getScore);
-		
+
 		assertThat(actual, is(expected));
 	}
 
@@ -345,7 +351,7 @@ public class TestFunctions {
 			new Student("I", 90),
 			new Student("J", 30)
 		);
-		
+
 		Map<Integer, List<String>> expected = new HashMap<>();
 		expected.put(50, Arrays.asList(
 			"A", "B"
@@ -359,9 +365,9 @@ public class TestFunctions {
 		expected.put(90, Arrays.asList(
 			"G", "I"
 		));
-		
+
 		Map<Integer, List<String>> actual = Functions.groupBy(sample, Student::getScore, Student::getName);
-		
+
 		assertThat(actual, is(expected));
 	}
 
@@ -379,7 +385,7 @@ public class TestFunctions {
 			new Student("Con", 40),
 			new Student("Agl", 30)
 		);
-		
+
 		Map<String, Student> expected = new HashMap<>();
 		expected.put("A", new Student("Agl", 30));
 		expected.put("C", new Student("Cate", 30));
@@ -387,15 +393,38 @@ public class TestFunctions {
 		expected.put("J", new Student("Joe", 30));
 		expected.put("M", new Student("Mee", 20));
 		expected.put("T", new Student("Tole", 80));
-		
+
 		int upperLimitTestScore = 100;
 		/* 縮約時の比較の基点に使うオブジェクト */
 		Student defaultStudent = new Student("baseperson", upperLimitTestScore);
-		
+
 		Function<Student, String> classifier = student -> student.getName().substring(0, 1);
 		Map<String, Student> actual = Functions.minGroupBy(sample, classifier, Student::scoreDiff, defaultStudent);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
+	@Test
+	public void パスの一覧を表示する() {
+		Path sample = Paths.get(".");
+
+		try {
+			Functions.comsumePath(sample, System.out::println);
+		} catch (IOException exception) {
+			fail(exception.getMessage());
+		}
+	}
+
+	@Test
+	public void 条件を満たすパスだけ取得する() {
+		Path sample = Paths.get(".");
+
+		try {
+			Collection<Path> actual = Functions.collectPaths(sample, Files::isReadable);
+			assertTrue(actual.size() > 0);
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+	}
+
 }
