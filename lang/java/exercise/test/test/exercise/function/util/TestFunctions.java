@@ -13,6 +13,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.util.Functions;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -427,4 +428,16 @@ public class TestFunctions {
 		}
 	}
 
+	@Test
+	public void 指定したパス以下で条件を満たすファイルを全て取得する() {
+		Path startPath = Paths.get(".");
+
+		try {
+			Collection<File> actual = Functions.collectFiles(startPath, File::isFile);
+			assertTrue(actual.size() > 0);
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
 }

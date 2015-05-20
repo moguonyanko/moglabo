@@ -1,5 +1,6 @@
 package exercise.function.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -183,11 +184,22 @@ public class Functions {
 		Files.list(path).forEach(consumer);
 	}
 
-	public static Collection<Path> collectPaths(Path path, Predicate<Path> predicate)
+	public static List<Path> collectPaths(Path path, Predicate<Path> predicate)
 		throws IOException {
-		Collection<Path> result = Files.list(path).filter(predicate).collect(toList());
+		List<Path> result = Files.list(path).filter(predicate).collect(toList());
+		
+		return result;
+	}
+	
+	public static List<File> collectFiles(Path path, Predicate<File> predicate)
+		throws IOException {
+		List<File> result = Stream.of(path.toFile().listFiles())
+			.flatMap(file -> predicate.test(file) ? 
+				Stream.of(file) : 
+				Stream.of(file.listFiles()))
+			.collect(toList());
 
 		return result;
 	}
-
+	
 }
