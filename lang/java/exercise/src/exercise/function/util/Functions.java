@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -16,9 +15,10 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
-import static java.util.stream.Collectors.*;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
+import static java.util.stream.Collectors.*;
 
 public class Functions {
 
@@ -187,19 +187,57 @@ public class Functions {
 	public static List<Path> collectPaths(Path path, Predicate<Path> predicate)
 		throws IOException {
 		List<Path> result = Files.list(path).filter(predicate).collect(toList());
-		
+
 		return result;
 	}
-	
+
 	public static List<File> collectFiles(Path path, Predicate<File> predicate)
 		throws IOException {
 		List<File> result = Stream.of(path.toFile().listFiles())
-			.flatMap(file -> predicate.test(file) ? 
-				Stream.of(file) : 
-				Stream.of(file.listFiles()))
+			.flatMap(file -> predicate.test(file)
+				? Stream.of(file)
+				: Stream.of(file.listFiles()))
 			.collect(toList());
 
 		return result;
+	}
+
+	/**
+	 * @todo
+	 * mapToLongとmapToDouble以外は同じ。統一したい。
+	 * 
+	 */
+	public static <T> long sum(Collection<T> sources, 
+		Predicate<T> predicate,	ToLongFunction<T> mapper) {
+		long result = sources.stream()
+			.filter(predicate)
+			.mapToLong(mapper)
+			.sum();
+
+		return result;
+	}
+
+	public static <T> double sum(Collection<T> sources, 
+		Predicate<T> predicate,	ToDoubleFunction<T> mapper) {
+		double result = sources.stream()
+			.filter(predicate)
+			.mapToDouble(mapper)
+			.sum();
+
+		return result;
+	}
+	
+	public static <T> T getDecoratedValue(T target, Function<T, T>... decoraters){
+		/**
+		 * setterを持ったオブジェクトはgetDecoratedValueのようなメソッドで
+		 * まとめてsetterを呼び出すことにより，setterの呼び忘れや呼ぶ順序を
+		 * 意識させられることを避けられる。
+		 */
+		Function<T, T> reducedDecorator = Stream.of(decoraters)
+			.reduce((decorator, nextDecorator) -> decorator.compose(nextDecorator))
+			.orElseGet(Function::identity);
+		
+		return reducedDecorator.apply(target);
 	}
 	
 }

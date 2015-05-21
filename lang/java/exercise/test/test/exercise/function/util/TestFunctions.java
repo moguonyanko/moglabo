@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TestFunctions {
 
@@ -45,7 +43,7 @@ public class TestFunctions {
 	public void tearDown() {
 	}
 
-	private class Student {
+	private static class Student {
 
 		private final String name;
 		private final int score;
@@ -89,6 +87,51 @@ public class TestFunctions {
 		@Override
 		public int hashCode() {
 			return Objects.hash(name, score);
+		}
+	}
+	
+	private static class MiniPrinter {
+		private final String value;
+		private final String prefix;
+		private final String suffix;
+		
+		public static class Builder{
+			private final String value;
+			private String prefix = "";
+			private String suffix = "";
+
+			public Builder(String value) {
+				this.value = value;
+			}
+			
+			public Builder prefix(String prefix){
+				this.prefix = prefix;
+				return this;
+			}
+			
+			public Builder suffix(String suffix){
+				this.suffix = suffix;
+				return this;
+			}
+			
+			public MiniPrinter build(){
+				return new MiniPrinter(this);
+			}
+
+			public String getValue() {
+				return value;
+			}
+		}
+
+		public MiniPrinter(Builder builder) {
+			this.value = builder.value;
+			this.prefix = builder.prefix;
+			this.suffix = builder.suffix;
+		}
+
+		@Override
+		public String toString() {
+			return prefix + value + suffix;
 		}
 	}
 
@@ -438,6 +481,39 @@ public class TestFunctions {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+	}
+	
+	@Test
+	public void 条件を満たす要素の数値を合計した整数値を得る(){
+		Collection<Student> sample = Arrays.asList(
+			new Student("Mike", 50),
+			new Student("Mee", 20),
+			new Student("Cate", 30),
+			new Student("Ame", 60),
+			new Student("Con", 40),
+			new Student("Agl", 40)
+		);
+		
+		long expected = 100;
+		long actual = Functions.sum(sample, s -> s.getName().charAt(0) == 'A', 
+			Student::getScore);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 複数の関数によって修飾された文字列を得る(){
+		String pref = "+++";
+		String suff = "---";
+		String expected = "+++sample---";
+		
+		String actual = Functions.getDecoratedValue(
+			new MiniPrinter.Builder("sample"), 
+			bb -> {bb.prefix(pref); return bb;},
+			bb -> {bb.suffix(suff); return bb;}
+		).build().toString();
+		
+		assertThat(actual, is(expected));
 	}
 	
 }
