@@ -516,4 +516,12 @@ public class TestFunctions {
 		assertThat(actual, is(expected));
 	}
 	
+	@Test
+	public void FunctionalInterfaceでチェック例外を処理する(){
+		/**
+		 * @todo
+		 * implement
+		 */
+	}
+	
 }
