@@ -15,7 +15,7 @@ import java.util.Objects;
  *
  */
 @FunctionalInterface
-public interface CarefulFunction<T, R, X extends Throwable> {
+public interface CarefulFunction<T, R, X extends Exception> {
 
 	R apply(T t) throws X;
 
@@ -36,7 +36,7 @@ public interface CarefulFunction<T, R, X extends Throwable> {
 		return (T t) -> after.apply(apply(t));
 	}
 
-	static <T, X extends Throwable> CarefulFunction<T, T, X> identitiy() {
+	static <T, X extends Exception> CarefulFunction<T, T, X> identitiy() {
 		return t -> t;
 	}
 

@@ -1,5 +1,6 @@
 package test.exercise.function.util;
 
+import exercise.function.util.CarefulFunction;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Collection;
@@ -89,13 +90,15 @@ public class TestFunctions {
 			return Objects.hash(name, score);
 		}
 	}
-	
+
 	private static class MiniPrinter {
+
 		private final String value;
 		private final String prefix;
 		private final String suffix;
-		
-		public static class Builder{
+
+		public static class Builder {
+
 			private final String value;
 			private String prefix = "";
 			private String suffix = "";
@@ -103,18 +106,18 @@ public class TestFunctions {
 			public Builder(String value) {
 				this.value = value;
 			}
-			
-			public Builder prefix(String prefix){
+
+			public Builder prefix(String prefix) {
 				this.prefix = prefix;
 				return this;
 			}
-			
-			public Builder suffix(String suffix){
+
+			public Builder suffix(String suffix) {
 				this.suffix = suffix;
 				return this;
 			}
-			
-			public MiniPrinter build(){
+
+			public MiniPrinter build() {
 				return new MiniPrinter(this);
 			}
 
@@ -482,9 +485,9 @@ public class TestFunctions {
 			fail(ex.getMessage());
 		}
 	}
-	
+
 	@Test
-	public void 条件を満たす要素の数値を合計した整数値を得る(){
+	public void 条件を満たす要素の数値を合計した整数値を得る() {
 		Collection<Student> sample = Arrays.asList(
 			new Student("Mike", 50),
 			new Student("Mee", 20),
@@ -493,35 +496,62 @@ public class TestFunctions {
 			new Student("Con", 40),
 			new Student("Agl", 40)
 		);
-		
+
 		long expected = 100;
-		long actual = Functions.sum(sample, s -> s.getName().charAt(0) == 'A', 
+		long actual = Functions.sum(sample, s -> s.getName().charAt(0) == 'A',
 			Student::getScore);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 複数の関数によって修飾された文字列を得る(){
+	public void 複数の関数によって修飾された文字列を得る() {
 		String pref = "+++";
 		String suff = "---";
 		String expected = "+++sample---";
-		
+
 		String actual = Functions.getDecoratedValue(
-			new MiniPrinter.Builder("sample"), 
-			bb -> {bb.prefix(pref); return bb;},
-			bb -> {bb.suffix(suff); return bb;}
+			new MiniPrinter.Builder("sample"),
+			bb -> {
+				bb.prefix(pref);
+				return bb;
+			},
+			bb -> {
+				bb.suffix(suff);
+				return bb;
+			}
 		).build().toString();
-		
+
 		assertThat(actual, is(expected));
 	}
-	
-	@Test
-	public void FunctionalInterfaceでチェック例外を処理する(){
-		/**
-		 * @todo
-		 * implement
-		 */
+
+	private static class InvalidStringException extends Exception {
+
+		private final String value;
+
+		public InvalidStringException(String value) {
+			super("Invalid string:");
+			this.value = value;
+		}
+
+		@Override
+		public String toString() {
+			return getMessage() + value;
+		}
+
 	}
-	
+
+	@Test(expected = InvalidStringException.class)
+	public void FunctionalInterfaceでチェック例外を送出する() throws InvalidStringException {
+		CarefulFunction<String, String, InvalidStringException> upper = s -> {
+			if (s == null) {
+				throw new InvalidStringException(s);
+			}
+
+			return s.toUpperCase();
+		};
+
+		upper.apply(null);
+	}
+
 }
