@@ -240,4 +240,15 @@ public class Functions {
 		return reducedDecorator.apply(target);
 	}
 	
+	public static <T, R, X extends Exception> boolean assertThrows(Class<X> targetException, 
+		Function<T, R> function, T argument){
+		try{
+			function.apply(argument);
+		}catch(Exception ex){
+			return targetException.isInstance(ex);
+		}
+		
+		throw new IllegalArgumentException("Not throws exception. Check arguments.");
+	}
+	
 }

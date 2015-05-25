@@ -1,9 +1,19 @@
 package test.exercise.function.util;
 
-import exercise.function.util.CarefulFunction;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -14,17 +24,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.util.Functions;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
+import exercise.function.util.CarefulFunction;
 
 public class TestFunctions {
 
