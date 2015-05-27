@@ -25,6 +25,7 @@ import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.util.Functions;
 import exercise.function.util.CarefulFunction;
+import java.util.function.Supplier;
 
 public class TestFunctions {
 
@@ -552,6 +553,81 @@ public class TestFunctions {
 		};
 
 		upper.apply(null);
+	}
+
+	private static class HeavyObject {
+
+		public HeavyObject() {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException ex) {
+				System.err.println("Interrupted.");
+			}
+		}
+
+		@Override
+		public String toString() {
+			return "Heavy object created.";
+		}
+	}
+
+	@Test
+	public void 必要になるまでオブジェクトの生成を遅延する() {
+		class HeavyObjectUser {
+
+			private final String name;
+			private final int age;
+			/**
+			 * Supplierがキャッシュされる。
+			 */
+			private Supplier<HeavyObject> heavySupplier = () -> createHeavyObject();
+
+			private HeavyObject createHeavyObject() {
+				/**
+				 * Functions.getDelayCacheSupplier呼び出し以降は
+				 * DelayCacheSupplierにキャッシュされたオブジェクトが返される。
+				 */
+				if (!Functions.DelayCacheSupplier.class.isInstance(heavySupplier)) {
+					heavySupplier = Functions.getDelayCacheSupplier(HeavyObject::new);
+				}
+
+				return heavySupplier.get();
+			}
+
+			public HeavyObjectUser(String name, int age) {
+				this.name = name;
+				this.age = age;
+			}
+
+			public int getAge() {
+				return age;
+			}
+
+			public String getName() {
+				return name;
+			}
+
+			public HeavyObject getHeavyObject() {
+				return heavySupplier.get();
+			}
+		}
+
+		long timeoutThreshold = 100;
+		long startTime = System.currentTimeMillis();
+
+		HeavyObjectUser heavyUser = new HeavyObjectUser("HeavyUser", 50);
+		/* 遅延生成できていれば以下の2行は結果がすぐに得られる。 */
+		System.out.println("Heavy user name:" + heavyUser.getName());
+		System.out.println("Heavy user age:" + heavyUser.getAge());
+
+		long checkPointTime = System.currentTimeMillis();
+
+		if (checkPointTime - startTime > timeoutThreshold) {
+			fail("HeavyObject timeout! Threshold is " + timeoutThreshold + " ms.");
+		}
+
+		/* オブジェクトを遅延生成してその結果を確認する。 */
+		System.out.println("Heavy object state:" + heavyUser.getHeavyObject());
 	}
 
 }

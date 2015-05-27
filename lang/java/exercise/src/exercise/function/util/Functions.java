@@ -205,10 +205,10 @@ public class Functions {
 	/**
 	 * @todo
 	 * mapToLongとmapToDouble以外は同じ。統一したい。
-	 * 
+	 *
 	 */
-	public static <T> long sum(Collection<T> sources, 
-		Predicate<T> predicate,	ToLongFunction<T> mapper) {
+	public static <T> long sum(Collection<T> sources,
+		Predicate<T> predicate, ToLongFunction<T> mapper) {
 		long result = sources.stream()
 			.filter(predicate)
 			.mapToLong(mapper)
@@ -217,8 +217,8 @@ public class Functions {
 		return result;
 	}
 
-	public static <T> double sum(Collection<T> sources, 
-		Predicate<T> predicate,	ToDoubleFunction<T> mapper) {
+	public static <T> double sum(Collection<T> sources,
+		Predicate<T> predicate, ToDoubleFunction<T> mapper) {
 		double result = sources.stream()
 			.filter(predicate)
 			.mapToDouble(mapper)
@@ -226,8 +226,8 @@ public class Functions {
 
 		return result;
 	}
-	
-	public static <T> T getDecoratedValue(T target, Function<T, T>... decoraters){
+
+	public static <T> T getDecoratedValue(T target, Function<T, T>... decoraters) {
 		/**
 		 * setterを持ったオブジェクトはgetDecoratedValueのようなメソッドで
 		 * まとめてsetterを呼び出すことにより，setterの呼び忘れや呼ぶ順序を
@@ -236,19 +236,37 @@ public class Functions {
 		Function<T, T> reducedDecorator = Stream.of(decoraters)
 			.reduce((decorator, nextDecorator) -> decorator.compose(nextDecorator))
 			.orElseGet(Function::identity);
-		
+
 		return reducedDecorator.apply(target);
 	}
-	
-	public static <T, R, X extends Exception> boolean assertThrows(Class<X> targetException, 
-		Function<T, R> function, T argument){
-		try{
+
+	public static <T, R, X extends Exception> boolean assertThrows(Class<X> targetException,
+		Function<T, R> function, T argument) {
+		try {
 			function.apply(argument);
-		}catch(Exception ex){
+		} catch (Exception ex) {
 			return targetException.isInstance(ex);
 		}
-		
+
 		throw new IllegalArgumentException("Not throws exception. Check arguments.");
 	}
-	
+
+	public static class DelayCacheSupplier<T> implements Supplier<T> {
+
+		private final T heavyObject;
+
+		public DelayCacheSupplier(Supplier<T> supplier) {
+			this.heavyObject = supplier.get();
+		}
+
+		@Override
+		public T get() {
+			return heavyObject;
+		}
+	}
+
+	public static <T> Supplier<T> getDelayCacheSupplier(Supplier<T> supplier) {
+		return new DelayCacheSupplier(supplier);
+	}
+
 }
