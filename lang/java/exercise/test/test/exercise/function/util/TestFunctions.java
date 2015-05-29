@@ -25,6 +25,7 @@ import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.util.Functions;
 import exercise.function.util.CarefulFunction;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class TestFunctions {
@@ -588,6 +589,7 @@ public class TestFunctions {
 				 * DelayCacheSupplierにキャッシュされたオブジェクトが返される。
 				 */
 				if (!Functions.DelayCacheSupplier.class.isInstance(heavySupplier)) {
+					/* Functions.getDelayCacheSupplierがテスト対象である。 */
 					heavySupplier = Functions.getDelayCacheSupplier(HeavyObject::new);
 				}
 
@@ -628,6 +630,51 @@ public class TestFunctions {
 
 		/* オブジェクトを遅延生成してその結果を確認する。 */
 		System.out.println("Heavy object state:" + heavyUser.getHeavyObject());
+	}
+
+	private static boolean fastPredicate(int n) {
+		return n > 0;
+	}
+
+	private static boolean slowPredicate(int n) {
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException ex) {
+			throw new IllegalThreadStateException(ex.getMessage());
+		}
+
+		return n <= 0;
+	}
+
+	private static boolean getResult(boolean p1, boolean p2) {
+		return p1 && p2;
+	}
+
+	@Test
+	public void メソッドを遅延評価して実行時間を短縮する() {
+		boolean enableDelayEval = true;
+
+		long timeoutThreshold = 100;
+		long startTime = System.currentTimeMillis();
+
+		boolean result;
+		int arg = -1;
+
+		if (enableDelayEval) {
+			Map<Predicate<Integer>, Integer> predicates = new HashMap<>();
+			predicates.put((num) -> fastPredicate(num), arg);
+			predicates.put((str) -> slowPredicate(str), arg);
+			result = Functions.allMatchPredidates(predicates);
+		} else {
+			result = getResult(fastPredicate(arg), slowPredicate(arg));
+		}
+
+		long checkPointTime = System.currentTimeMillis();
+		if (checkPointTime - startTime > timeoutThreshold) {
+			fail("Slow predicate timeout! Threshold is " + timeoutThreshold + " ms.");
+		}
+
+		System.out.println("Delay predicates result:" + result);
 	}
 
 }

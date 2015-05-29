@@ -268,5 +268,22 @@ public class Functions {
 	public static <T> Supplier<T> getDelayCacheSupplier(Supplier<T> supplier) {
 		return new DelayCacheSupplier(supplier);
 	}
+	
+	/**
+	 * @todo
+	 * 引数の型をTで固定しないようにしたい。
+	 * 
+	 * @param <T>
+	 * @param predicates
+	 * @return 
+	 */
+	public static <T> boolean allMatchPredidates(Map<Predicate<T>, T> predicates){
+		/**
+		 * Stream::allMatchはfalseが返された時点で残りの述語の評価を中止し
+		 * 評価結果を返す。
+		 */
+		return predicates.keySet().stream()
+			.allMatch(p -> p.test(predicates.get(p)));
+	}
 
 }
