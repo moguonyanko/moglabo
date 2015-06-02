@@ -277,13 +277,24 @@ public class Functions {
 	 * @param predicates
 	 * @return 
 	 */
-	public static <T> boolean allMatchPredidates(Map<Predicate<T>, T> predicates){
+	public static <T> boolean allMatchPredidates(Predicate<T>... predicates){
 		/**
 		 * Stream::allMatchはfalseが返された時点で残りの述語の評価を中止し
 		 * 評価結果を返す。
+		 * このメソッドは述語の引数を受け取っていないのでPredicate::testの引数は
+		 * nullになっている。
 		 */
-		return predicates.keySet().stream()
-			.allMatch(p -> p.test(predicates.get(p)));
+		return Stream.of(predicates).allMatch(p -> p.test(null));
 	}
-
+	
+	public static <T, C extends Collection> Collection<T> applyDelayStream(Collection<T> src, 
+		Supplier<C> supplier){
+		/**
+		 * @todo 
+		 * implement
+		 */
+		
+		return null;
+	}
+	
 }
