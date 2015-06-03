@@ -28,7 +28,6 @@ import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.util.Functions;
 import exercise.function.util.CarefulFunction;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -705,12 +704,6 @@ public class TestFunctions {
 		}
 	}
 
-	private static List<Integer> concat(int n, List<Integer> src) {
-		List<Integer> dst = new ArrayList<>(src);
-		dst.add(n);
-		return dst;
-	}
-
 	private static int primeAfter(int n) {
 		int nextNumber = n + 1;
 
@@ -721,26 +714,16 @@ public class TestFunctions {
 		}
 	}
 
-	private static List<Integer> primes(int startNumber, int requestPrimeCount) {
-		/**
-		 * @todo
-		 * 以下の仕組みを抽象化しFunctions;;applyDelayStreamとして提供する。
-		 */
-		List<Integer> result = Stream.iterate(primeAfter(startNumber - 1), TestFunctions::primeAfter)
-			.limit(requestPrimeCount)
-			.collect(Collectors.toList());
-
-		return result;
-	}
-
 	@Test
 	public void ストリームを遅延評価して値を得る() {
 		int startNumber = 1;
-		int count = 10;
-		List<Integer> result = new ArrayList<>();
+		int limitSize = 10;
+		Collection<Integer> result = null;
 
 		try {
-			result = primes(startNumber, count);
+			result = Functions.collectValues(primeAfter(startNumber - 1), 
+				TestFunctions::primeAfter, 
+				limitSize);
 		} catch (StackOverflowError error) {
 			fail("Fail delay stream operation:" + error.getMessage());
 		}

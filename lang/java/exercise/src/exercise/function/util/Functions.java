@@ -17,6 +17,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import static java.util.stream.Collectors.*;
 
@@ -268,16 +269,16 @@ public class Functions {
 	public static <T> Supplier<T> getDelayCacheSupplier(Supplier<T> supplier) {
 		return new DelayCacheSupplier(supplier);
 	}
-	
+
 	/**
 	 * @todo
 	 * 引数の型をTで固定しないようにしたい。
-	 * 
+	 *
 	 * @param <T>
 	 * @param predicates
-	 * @return 
+	 * @return
 	 */
-	public static <T> boolean allMatchPredidates(Predicate<T>... predicates){
+	public static <T> boolean allMatchPredidates(Predicate<T>... predicates) {
 		/**
 		 * Stream::allMatchはfalseが返された時点で残りの述語の評価を中止し
 		 * 評価結果を返す。
@@ -286,15 +287,19 @@ public class Functions {
 		 */
 		return Stream.of(predicates).allMatch(p -> p.test(null));
 	}
-	
-	public static <T, C extends Collection> Collection<T> applyDelayStream(Collection<T> src, 
-		Supplier<C> supplier){
-		/**
-		 * @todo 
-		 * implement
-		 */
-		
-		return null;
+
+	public static <T, C extends Collection> Collection<T> collectValues(
+		T seed, UnaryOperator<T> nextValueOperator, int limitSize, Supplier<C> supplier) {
+		Collection<T> result = Stream.iterate(seed, nextValueOperator)
+			.limit(limitSize)
+			.collect(toCollection(supplier));
+
+		return result;
 	}
-	
+
+	public static <T, C extends Collection> Collection<T> collectValues(
+		T seed, UnaryOperator<T> nextValueOperator, int limitSize) {
+		return collectValues(seed, nextValueOperator, limitSize, ArrayList::new);
+	}
+
 }
