@@ -28,8 +28,7 @@ import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.util.Functions;
 import exercise.function.util.CarefulFunction;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.math.BigInteger;
 
 /**
  * 参考：「Javaによる関数型プログラミング」(オライリー・ジャパン)
@@ -721,14 +720,66 @@ public class TestFunctions {
 		Collection<Integer> result = null;
 
 		try {
-			result = Functions.collectValues(primeAfter(startNumber - 1), 
-				TestFunctions::primeAfter, 
+			result = Functions.collectValues(primeAfter(startNumber - 1),
+				TestFunctions::primeAfter,
 				limitSize);
 		} catch (StackOverflowError error) {
 			fail("Fail delay stream operation:" + error.getMessage());
 		}
 
 		System.out.println(result);
+	}
+
+	private static int factorialNotTCO(int n) {
+		if (n == 1) {
+			return n;
+		} else {
+			return n * factorialNotTCO(n - 1);
+		}
+	}
+
+	private static class Factorial {
+
+		private static int calc(int number, int result) {
+			if (number == 0) {
+				return result;
+			} else {
+				return calc(number - 1, result * number);
+			}
+		}
+
+		/**
+		 * @todo
+		 * StackOveflowErrorが発生するので解消する。
+		 * さらに末尾呼び出し最適化の構造を抽象化してFunctionsのメソッドとして提供する。
+		 */
+		private static BigInteger bigCalc(BigInteger n, BigInteger accumulator) {
+			if (n.equals(BigInteger.ZERO)) {
+				return accumulator;
+			} else {
+				return bigCalc(n.subtract(BigInteger.ONE), accumulator.multiply(n));
+			}
+		}
+	}
+
+	private static BigInteger factorialTCO(int n) {
+		if (n < 0) {
+			throw new IllegalArgumentException("Number must be greater than 0 bat " + n);
+		}
+
+		return Factorial.bigCalc(new BigInteger(String.valueOf(n)), BigInteger.ONE);
+		//return Factorial.calc(n, 1);
+	}
+
+	@Test
+	public void 末尾呼び出し最適化できる() {
+		try {
+			int n = 10000;
+			BigInteger result = factorialTCO(n);
+			System.out.println("Factorial result = " + result);
+		} catch (StackOverflowError error) {
+			fail(error.getMessage());
+		}
 	}
 
 }
