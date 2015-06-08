@@ -28,11 +28,12 @@ import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.util.Functions;
 import exercise.function.util.CarefulFunction;
+import exercise.function.util.TailCall;
+import exercise.function.util.TailCalls;
 import java.math.BigInteger;
 
 /**
  * 参考：「Javaによる関数型プログラミング」(オライリー・ジャパン)
- *
  */
 public class TestFunctions {
 
@@ -739,7 +740,10 @@ public class TestFunctions {
 	}
 
 	private static class Factorial {
-
+		
+		/**
+		 * 算術オーバーフローが発生する。
+		 */
 		private static int calc(int number, int result) {
 			if (number == 0) {
 				return result;
@@ -749,9 +753,8 @@ public class TestFunctions {
 		}
 
 		/**
-		 * @todo
-		 * StackOveflowErrorが発生するので解消する。
-		 * さらに末尾呼び出し最適化の構造を抽象化してFunctionsのメソッドとして提供する。
+		 * この書き方はSchemeなどではスタックオーバーフローにならないが，
+		 * Javaのような言語ではスタックオーバーフローになってしまう。
 		 */
 		private static BigInteger bigCalc(BigInteger n, BigInteger accumulator) {
 			if (n.equals(BigInteger.ZERO)) {
@@ -762,24 +765,59 @@ public class TestFunctions {
 		}
 	}
 
-	private static BigInteger factorialTCO(int n) {
-		if (n < 0) {
-			throw new IllegalArgumentException("Number must be greater than 0 bat " + n);
+	private static BigInteger factorialTCO(int requestNumber) {
+		if (requestNumber < 0) {
+			throw new IllegalArgumentException("Number must be greater than 0 but "
+				+ requestNumber);
 		}
 
-		return Factorial.bigCalc(new BigInteger(String.valueOf(n)), BigInteger.ONE);
-		//return Factorial.calc(n, 1);
+		BigInteger n = new BigInteger(String.valueOf(requestNumber));
+		
+		return Factorial.bigCalc(n, BigInteger.ONE);
+	}
+	
+	private static TailCall<BigInteger> factorialTailRec(BigInteger fractorial, 
+		BigInteger n){
+		if(n.equals(BigInteger.ONE)){
+			return TailCalls.done(fractorial);
+		}else{
+			return TailCalls.call(() -> factorialTailRec(fractorial.multiply(n), 
+				n.subtract(BigInteger.ONE)));
+		}
+	}
+	
+	private static BigInteger factorial(int requestNumber){
+		BigInteger number = new BigInteger(String.valueOf(requestNumber));
+		return factorialTailRec(BigInteger.ONE, number).invoke();
 	}
 
 	@Test
 	public void 末尾呼び出し最適化できる() {
 		try {
-			int n = 10000;
-			BigInteger result = factorialTCO(n);
-			System.out.println("Factorial result = " + result);
+			int n = 20000;
+			BigInteger result = factorial(n);
+			//BigInteger result2 = factorialTCO(n);
+			System.out.println("Factorial result by TailCall interface ... " + result);
+			//System.out.println("Factorial result by inner TCO method ... " + result2);
 		} catch (StackOverflowError error) {
 			fail(error.getMessage());
 		}
 	}
 
+	/**
+	 * FunctionalInterfaceアノテーションが無くても条件さえ満たしていれば
+	 * 関数インタフェースとして扱える。
+	 */
+	private interface FunctionalSample<T>{
+		T getValue();
+	}
+	
+	@Test
+	public void 条件を満たしていれば関数インタフェースとして扱える(){
+		int expected = 100;
+		FunctionalSample<Integer> sample = () -> expected;
+		int result = sample.getValue();
+		
+		assertThat(result, is(expected));
+	}
 }
