@@ -28,9 +28,11 @@ import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.util.Functions;
 import exercise.function.util.CarefulFunction;
+import exercise.function.util.Memoizer;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
 import java.math.BigInteger;
+import java.util.function.BiFunction;
 
 /**
  * 参考：「Javaによる関数型プログラミング」(オライリー・ジャパン)
@@ -740,7 +742,7 @@ public class TestFunctions {
 	}
 
 	private static class Factorial {
-		
+
 		/**
 		 * 算術オーバーフローが発生する。
 		 */
@@ -772,21 +774,21 @@ public class TestFunctions {
 		}
 
 		BigInteger n = new BigInteger(String.valueOf(requestNumber));
-		
+
 		return Factorial.bigCalc(n, BigInteger.ONE);
 	}
-	
-	private static TailCall<BigInteger> factorialTailRec(BigInteger fractorial, 
-		BigInteger n){
-		if(n.equals(BigInteger.ONE)){
+
+	private static TailCall<BigInteger> factorialTailRec(BigInteger fractorial,
+		BigInteger n) {
+		if (n.equals(BigInteger.ONE)) {
 			return TailCalls.done(fractorial);
-		}else{
-			return TailCalls.call(() -> factorialTailRec(fractorial.multiply(n), 
+		} else {
+			return TailCalls.call(() -> factorialTailRec(fractorial.multiply(n),
 				n.subtract(BigInteger.ONE)));
 		}
 	}
-	
-	private static BigInteger factorial(int requestNumber){
+
+	private static BigInteger factorial(int requestNumber) {
 		BigInteger number = new BigInteger(String.valueOf(requestNumber));
 		return factorialTailRec(BigInteger.ONE, number).invoke();
 	}
@@ -796,9 +798,7 @@ public class TestFunctions {
 		try {
 			int n = 20000;
 			BigInteger result = factorial(n);
-			//BigInteger result2 = factorialTCO(n);
 			System.out.println("Factorial result by TailCall interface ... " + result);
-			//System.out.println("Factorial result by inner TCO method ... " + result2);
 		} catch (StackOverflowError error) {
 			fail(error.getMessage());
 		}
@@ -808,16 +808,90 @@ public class TestFunctions {
 	 * FunctionalInterfaceアノテーションが無くても条件さえ満たしていれば
 	 * 関数インタフェースとして扱える。
 	 */
-	private interface FunctionalSample<T>{
+	private interface FunctionalSample<T> {
+
 		T getValue();
 	}
-	
+
 	@Test
-	public void 条件を満たしていれば関数インタフェースとして扱える(){
+	public void 条件を満たしていれば関数インタフェースとして扱える() {
 		int expected = 100;
 		FunctionalSample<Integer> sample = () -> expected;
 		int result = sample.getValue();
-		
+
 		assertThat(result, is(expected));
 	}
+
+	private static class RodCutterBasic {
+
+		private final Map<Integer, Integer> prices;
+
+		public RodCutterBasic(Map<Integer, Integer> prices) {
+			this.prices = prices;
+		}
+
+		private int maxProfit(int rodLength) {
+			int profit = 0;
+			Integer lengthKey = Integer.valueOf(rodLength);
+			if (prices.containsKey(lengthKey)) {
+				profit = prices.get(lengthKey);
+			}
+
+			for (int idx = 1; idx < rodLength; idx++) {
+				int priceWhenCut = maxProfit(idx) + maxProfit(rodLength - idx);
+				if (profit < priceWhenCut) {
+					profit = priceWhenCut;
+				}
+			}
+
+			return profit;
+		}
+
+		private int maxProfitByMemoize(int rodLength) {
+			BiFunction<Function<Integer, Integer>, Integer, Integer> compute
+				= (func, lengthKey) -> {
+					int profit = 0;
+					if (prices.containsKey(lengthKey)) {
+						profit = prices.get(lengthKey);
+					}
+
+					for (int idx = 1; idx < lengthKey; idx++) {
+						int priceWhenCut = func.apply(idx) + func.apply(lengthKey - idx);
+						if (profit < priceWhenCut) {
+							profit = priceWhenCut;
+						}
+					}
+
+					return profit;
+				};
+
+			return Memoizer.callMemoized(compute, rodLength);
+		}
+	}
+
+	@Test(timeout = 1000)
+	public void メモ化して高速化する() {
+		Map<Integer, Integer> prices = new HashMap<>();
+		prices.put(1, 2);
+		prices.put(2, 1);
+		prices.put(3, 1);
+		prices.put(4, 2);
+		prices.put(5, 2);
+		prices.put(6, 2);
+		prices.put(7, 1);
+		prices.put(8, 8);
+		prices.put(9, 9);
+		prices.put(10, 15);
+
+		RodCutterBasic rodCutter = new RodCutterBasic(prices);
+
+		int actual5 = rodCutter.maxProfitByMemoize(5);
+		int expected5 = 10;
+		assertThat(actual5, is(expected5));
+
+		int actual22 = rodCutter.maxProfitByMemoize(22);
+		int expected22 = 44;
+		assertThat(actual22, is(expected22));
+	}
+
 }
