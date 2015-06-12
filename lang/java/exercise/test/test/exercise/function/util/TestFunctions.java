@@ -17,6 +17,9 @@ import java.nio.file.Paths;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
+import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.util.function.BiFunction;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -31,8 +34,6 @@ import exercise.function.util.CarefulFunction;
 import exercise.function.util.Memoizer;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
-import java.math.BigInteger;
-import java.util.function.BiFunction;
 
 /**
  * 参考：「Javaによる関数型プログラミング」(オライリー・ジャパン)
@@ -892,6 +893,26 @@ public class TestFunctions {
 		int actual22 = rodCutter.maxProfitByMemoize(22);
 		int expected22 = 44;
 		assertThat(actual22, is(expected22));
+	}
+	
+	@Test
+	public void 特定の条件下で最も多く現れる文字を求める() throws IOException{
+		List<Path> sources = Arrays.asList(
+			Paths.get("./sample/countword1.txt"),
+			Paths.get("./sample/countword2.txt"),
+			Paths.get("./sample/countword3.txt")
+		);
+		Charset cs = Charset.forName("UTF-8");
+		
+		String expected = "n";
+		int limit = 20;
+		Predicate<Integer> condition = count -> count <= limit;
+		String actual = Functions.countWord(sources, cs, condition);
+		
+		assertThat(actual, is(expected));
+		
+		System.out.println(limit + "回以下だけ現れる文字で最も多かった文字は "
+			+ actual + " でした。");
 	}
 
 }

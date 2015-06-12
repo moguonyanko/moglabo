@@ -2,11 +2,13 @@ package exercise.function.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +20,7 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import static java.util.stream.Collectors.*;
 
@@ -25,6 +28,8 @@ public class Functions {
 
 	private static final Function<String, Predicate<String>> equalsIgnoreCaseString
 		= target -> source -> source.equalsIgnoreCase(target);
+
+	private static final Pattern CHAR_BOUNDS = Pattern.compile("\\B");
 
 	/**
 	 * 型を動的に決定させたい時はフィールドではなくメソッドを使う。
@@ -300,6 +305,39 @@ public class Functions {
 	public static <T, C extends Collection> Collection<T> collectValues(
 		T seed, UnaryOperator<T> nextValueOperator, int limitSize) {
 		return collectValues(seed, nextValueOperator, limitSize, ArrayList::new);
+	}
+
+	/**
+	 * @todo
+	 * 関数型のスタイルで書き直し並列化する。
+	 */
+	public static String countWord(Collection<Path> sources, Charset cs, 
+		Predicate<Integer> condition) throws IOException {
+		Map<String, Integer> dict = new HashMap<>();
+		for(Path src : sources){
+			for (String line : Files.readAllLines(src, cs)) {
+				String[] words = CHAR_BOUNDS.split(line);
+				for (String word : words) {
+					if (dict.containsKey(word)) {
+						dict.put(word, dict.get(word) + 1);
+					} else {
+						dict.put(word, 1);
+					}
+				}
+			}
+		}
+
+		String maxCountWord = "";
+		int maxCount = 0;
+		for (String key : dict.keySet()) {
+			Integer count = dict.get(key);
+			if (count > maxCount && condition.test(count)) {
+				maxCountWord = key;
+				maxCount = dict.get(key);
+			}
+		}
+
+		return maxCountWord;
 	}
 
 }
