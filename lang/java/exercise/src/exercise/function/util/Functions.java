@@ -20,6 +20,8 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import static java.util.stream.Collectors.*;
@@ -209,6 +211,11 @@ public class Functions {
 	}
 
 	/**
+	 * @param <T>
+	 * @param sources
+	 * @param predicate
+	 * @param mapper
+	 * @return 
 	 * @todo
 	 * mapToLongとmapToDouble以外は同じ。統一したい。
 	 *
@@ -308,6 +315,11 @@ public class Functions {
 	}
 
 	/**
+	 * @param sources
+	 * @param cs
+	 * @param condition
+	 * @return 
+	 * @throws java.io.IOException
 	 * @todo
 	 * 関数型のスタイルで書き直し並列化する。
 	 */
