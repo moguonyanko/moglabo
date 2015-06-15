@@ -911,7 +911,7 @@ public class TestFunctions {
 		
 		assertThat(actual, is(expected));
 		
-		System.out.println(limit + "回以下だけ現れる文字で最も多かった文字は "
+		System.out.println(limit + "回以下現れる文字で最も多かった文字は "
 			+ actual + " でした。");
 	}
 

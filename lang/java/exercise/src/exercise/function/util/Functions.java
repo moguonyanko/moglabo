@@ -317,9 +317,11 @@ public class Functions {
 
 		private final Map<String, Integer> dict = new HashMap<>();
 		private final Path path;
+		private final Charset cs;
 
-		public WordCounter(Path path) {
+		public WordCounter(Path path, Charset cs) {
 			this.path = path;
+			this.cs = cs;
 		}
 
 		private void countWordInLine(String line) {
@@ -336,7 +338,12 @@ public class Functions {
 		private WordCounter countWord() {
 			try {
 				if(path != null){
-					Files.lines(path).forEach(line -> countWordInLine(line));
+					/**
+					 * WordCounter::countWordInLineはWordCounterクラスの外から
+					 * countWordInLineメソッドを参照するときの記述方法なので
+					 * ここではシンタックスエラーになる。
+					 */
+					Files.lines(path, cs).forEach(this::countWordInLine);
 				}
 				
 				return this;
@@ -345,6 +352,11 @@ public class Functions {
 			}
 		}
 		
+		/**
+		 * @todo
+		 * マージの際に自身のdictを変更しているので，マージ後は個別のカウント結果を
+		 * 得られなくなってしまう。
+		 */
 		private WordCounter mergeResult(WordCounter other){
 			/* key, value, result の3つの型変数が必要。 */
 			BiFunction<String, Integer, Integer> mergeFn = (word, v) -> {
@@ -374,33 +386,30 @@ public class Functions {
 	 * @param condition
 	 * @return
 	 * @throws java.io.IOException
+	 * 
 	 * @todo
-	 * 関数型のスタイルで書き直し並列化する。
+	 * Pathが参照するファイル群が全て同じ文字エンコーディングでなければ
+	 * 正常に動作しない。
+	 * 
 	 */
 	public static String countWord(Collection<Path> sources, Charset cs,
 		Predicate<Integer> condition) throws IOException {
-		/**
-		 * parallelStreamを使うとdictへアクセスする箇所で
-		 * NullPointerExceptionが発生したり，メソッドの結果が
-		 * 毎回変化したりする。
-		 */
-		Map<String, Integer> result = sources.stream()
-			.map(src -> new WordCounter(src))
+		Map<String, Integer> allCountDict = sources.parallelStream()
+			.map(src -> new WordCounter(src, cs))
 			.map(WordCounter::countWord)
 			.reduce((wc, nextWc) -> wc.mergeResult(nextWc))
 			.get()
 			.getResult();
 		
-		String maxCountWord = "";
-		int maxCount = 0;
-		for (String key : result.keySet()) {
-			Integer count = result.get(key);
-			if (count > maxCount && condition.test(count)) {
-				maxCountWord = key;
-				maxCount = result.get(key);
-			}
-		}
-
+		BinaryOperator<String> moreCountWord = 
+			(word, next) -> allCountDict.get(word) < allCountDict.get(next)
+				? next : word;
+		
+		String maxCountWord = allCountDict.keySet().parallelStream()
+			.filter(word -> condition.test(allCountDict.get(word)))
+			.reduce(moreCountWord)
+			.orElse("");
+		
 		return maxCountWord;
 	}
 
