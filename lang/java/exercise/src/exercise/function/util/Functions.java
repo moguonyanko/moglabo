@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -20,8 +21,6 @@ import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import static java.util.stream.Collectors.*;
@@ -215,7 +214,7 @@ public class Functions {
 	 * @param sources
 	 * @param predicate
 	 * @param mapper
-	 * @return 
+	 * @return
 	 * @todo
 	 * mapToLongとmapToDouble以外は同じ。統一したい。
 	 *
@@ -314,38 +313,91 @@ public class Functions {
 		return collectValues(seed, nextValueOperator, limitSize, ArrayList::new);
 	}
 
-	/**
-	 * @param sources
-	 * @param cs
-	 * @param condition
-	 * @return 
-	 * @throws java.io.IOException
-	 * @todo
-	 * 関数型のスタイルで書き直し並列化する。
-	 */
-	public static String countWord(Collection<Path> sources, Charset cs, 
-		Predicate<Integer> condition) throws IOException {
-		Map<String, Integer> dict = new HashMap<>();
-		for(Path src : sources){
-			for (String line : Files.readAllLines(src, cs)) {
-				String[] words = CHAR_BOUNDS.split(line);
-				for (String word : words) {
-					if (dict.containsKey(word)) {
-						dict.put(word, dict.get(word) + 1);
-					} else {
-						dict.put(word, 1);
-					}
+	private static class WordCounter {
+
+		private final Map<String, Integer> dict = new HashMap<>();
+		private final Path path;
+
+		public WordCounter(Path path) {
+			this.path = path;
+		}
+
+		private void countWordInLine(String line) {
+			String[] words = CHAR_BOUNDS.split(line);
+			for (String word : words) {
+				if (dict.containsKey(word)) {
+					dict.put(word, dict.get(word) + 1);
+				} else {
+					dict.put(word, 1);
 				}
 			}
 		}
 
+		private WordCounter countWord() {
+			try {
+				if(path != null){
+					Files.lines(path).forEach(line -> countWordInLine(line));
+				}
+				
+				return this;
+			} catch (IOException ex) {
+				throw new IllegalStateException(ex.getMessage());
+			}
+		}
+		
+		private WordCounter mergeResult(WordCounter other){
+			/* key, value, result の3つの型変数が必要。 */
+			BiFunction<String, Integer, Integer> mergeFn = (word, v) -> {
+				if (dict.containsKey(word)) {
+					dict.put(word, dict.get(word) + v);
+				} else {
+					dict.put(word, v);
+				}
+
+				return dict.get(word);
+			};
+				
+			dict.keySet().stream()
+				.forEach(wd -> other.dict.compute(wd, mergeFn));
+			
+			return this;
+		}
+
+		public Map<String, Integer> getResult() {
+			return new HashMap<>(dict);
+		}
+	}
+
+	/**
+	 * @param sources
+	 * @param cs
+	 * @param condition
+	 * @return
+	 * @throws java.io.IOException
+	 * @todo
+	 * 関数型のスタイルで書き直し並列化する。
+	 */
+	public static String countWord(Collection<Path> sources, Charset cs,
+		Predicate<Integer> condition) throws IOException {
+		/**
+		 * parallelStreamを使うとdictへアクセスする箇所で
+		 * NullPointerExceptionが発生したり，メソッドの結果が
+		 * 毎回変化したりする。
+		 */
+		Map<String, Integer> result = sources.stream()
+			.map(src -> new WordCounter(src))
+			.map(WordCounter::countWord)
+			.reduce((wc, nextWc) -> wc.mergeResult(nextWc))
+			.get()
+			.getResult();
+		
 		String maxCountWord = "";
 		int maxCount = 0;
-		for (String key : dict.keySet()) {
-			Integer count = dict.get(key);
+		for (String key : result.keySet()) {
+			Integer count = result.get(key);
 			if (count > maxCount && condition.test(count)) {
 				maxCountWord = key;
-				maxCount = dict.get(key);
+				maxCount = result.get(key);
 			}
 		}
 
