@@ -30,7 +30,7 @@ public class Functions {
 	private static final Function<String, Predicate<String>> equalsIgnoreCaseString
 		= target -> source -> source.equalsIgnoreCase(target);
 
-	private static final Pattern CHAR_BOUNDS = Pattern.compile("\\B");
+	private static final Pattern WORD_BOUNDS = Pattern.compile("\\s+");
 
 	/**
 	 * 型を動的に決定させたい時はフィールドではなくメソッドを使う。
@@ -315,29 +315,24 @@ public class Functions {
 
 	private static class WordCounter {
 
-		private final Map<String, Integer> dict = new HashMap<>();
-		private final Path path;
-		private final Charset cs;
+		private final Map<String, Integer> dict;
 
-		public WordCounter(Path path, Charset cs) {
-			this.path = path;
-			this.cs = cs;
+		public WordCounter(Map<String, Integer> dict) {
+			this.dict = dict;
+		}
+
+		public WordCounter() {
+			this(new HashMap<>());
 		}
 
 		private void countWordInLine(String line) {
-			String[] words = CHAR_BOUNDS.split(line);
-			for (String word : words) {
-				if (dict.containsKey(word)) {
-					dict.put(word, dict.get(word) + 1);
-				} else {
-					dict.put(word, 1);
-				}
-			}
+			Stream.of(WORD_BOUNDS.split(line))
+				.forEach(word -> dict.put(word, dict.getOrDefault(word, 0) + 1));
 		}
 
-		private WordCounter countWord() {
+		private WordCounter countWord(Path path, Charset cs) {
 			try {
-				if(path != null){
+				if (path != null) {
 					/**
 					 * WordCounter::countWordInLineはWordCounterクラスの外から
 					 * countWordInLineメソッドを参照するときの記述方法なので
@@ -345,34 +340,11 @@ public class Functions {
 					 */
 					Files.lines(path, cs).forEach(this::countWordInLine);
 				}
-				
+
 				return this;
 			} catch (IOException ex) {
 				throw new IllegalStateException(ex.getMessage());
 			}
-		}
-		
-		/**
-		 * @todo
-		 * マージの際に自身のdictを変更しているので，マージ後は個別のカウント結果を
-		 * 得られなくなってしまう。
-		 */
-		private WordCounter mergeResult(WordCounter other){
-			/* key, value, result の3つの型変数が必要。 */
-			BiFunction<String, Integer, Integer> mergeFn = (word, v) -> {
-				if (dict.containsKey(word)) {
-					dict.put(word, dict.get(word) + v);
-				} else {
-					dict.put(word, v);
-				}
-
-				return dict.get(word);
-			};
-				
-			dict.keySet().stream()
-				.forEach(wd -> other.dict.compute(wd, mergeFn));
-			
-			return this;
 		}
 
 		public Map<String, Integer> getResult() {
@@ -380,37 +352,64 @@ public class Functions {
 		}
 	}
 
+	private static WordCounter mergeCounter(WordCounter base, WordCounter other) {
+		Map<String, Integer> baseResult = new HashMap<>(base.getResult());
+
+		/* key, value, result の3つの型変数が必要。 */
+		BiFunction<String, Integer, Integer> mergeFn = (word, baseCount) -> {
+			int newCount = baseResult.getOrDefault(word, 0) + other.getResult().get(word);
+			return baseResult.put(word, newCount);
+		};
+
+		other.getResult().keySet().stream()
+			.forEach(wd -> baseResult.compute(wd, mergeFn));
+
+		return new WordCounter(baseResult);
+	}
+
 	/**
+	 * パスの集合で参照されるファイル群を調べます。そして引数の述語を満たし
+	 * 最も多く現れる単語を返します。
+	 * ファイル群の文字エンコーディングは統一されている必要があります。
+	 * 英文にしか対応していません。
+	 *
 	 * @param sources
 	 * @param cs
 	 * @param condition
 	 * @return
-	 * @throws java.io.IOException
-	 * 
-	 * @todo
-	 * Pathが参照するファイル群が全て同じ文字エンコーディングでなければ
-	 * 正常に動作しない。
-	 * 
+	 *
 	 */
 	public static String countWord(Collection<Path> sources, Charset cs,
-		Predicate<Integer> condition) throws IOException {
-		Map<String, Integer> allCountDict = sources.parallelStream()
-			.map(src -> new WordCounter(src, cs))
-			.map(WordCounter::countWord)
-			.reduce((wc, nextWc) -> wc.mergeResult(nextWc))
-			.get()
+		Predicate<String> condition, Supplier<String> defaultWordSupplier) {
+		Map<String, Integer> allResult = sources.parallelStream()
+			.map(src -> new WordCounter().countWord(src, cs))
+			.reduce(new WordCounter(), Functions::mergeCounter)
 			.getResult();
-		
-		BinaryOperator<String> moreCountWord = 
-			(word, next) -> allCountDict.get(word) < allCountDict.get(next)
-				? next : word;
-		
-		String maxCountWord = allCountDict.keySet().parallelStream()
-			.filter(word -> condition.test(allCountDict.get(word)))
+
+		BinaryOperator<String> moreCountWord = (word, next)
+			-> allResult.getOrDefault(word, 0) < allResult.getOrDefault(next, 0)
+			? next : word;
+
+		String maxCountWord = allResult.keySet().parallelStream()
+			.filter(condition::test)
 			.reduce(moreCountWord)
-			.orElse("");
-		
+			.orElseGet(defaultWordSupplier);
+
 		return maxCountWord;
 	}
 
+	public static String countWord(Collection<Path> sources, Charset cs,
+		Predicate<String> condition) {
+		return countWord(sources, cs, condition, String::new);
+	}
+
+	public static String countWord(Collection<Path> sources, Charset cs,
+		Predicate<String> condition, String defaultWord) {
+		return countWord(sources, cs, condition, () -> defaultWord);
+	}
+	
+	public static String countWord(Collection<Path> sources, Charset cs) {
+		return countWord(sources, cs, word -> true);
+	}
+	
 }

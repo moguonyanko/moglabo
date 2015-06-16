@@ -894,25 +894,26 @@ public class TestFunctions {
 		int expected22 = 44;
 		assertThat(actual22, is(expected22));
 	}
-	
+
 	@Test
-	public void 特定の条件下で最も多く現れる文字を求める() throws IOException{
+	public void 特定の条件下で最も多く現れる単語を求める() {
 		List<Path> sources = Arrays.asList(
 			Paths.get("./sample/countword1.txt"),
 			Paths.get("./sample/countword2.txt"),
 			Paths.get("./sample/countword3.txt")
 		);
 		Charset cs = Charset.forName("UTF-8");
-		
-		String expected = "n";
-		int limit = 20;
-		Predicate<Integer> condition = count -> count <= limit;
+
+		String expected = "eating";
+		List<String> notCountWords = Arrays.asList(
+			"i", "is", "am", "are", "were", "was", "my"
+		);
+		Predicate<String> condition = word -> !notCountWords.contains(word.toLowerCase());
 		String actual = Functions.countWord(sources, cs, condition);
-		
+
 		assertThat(actual, is(expected));
-		
-		System.out.println(limit + "回以下現れる文字で最も多かった文字は "
-			+ actual + " でした。");
+
+		System.out.println("最も多かった単語は " + actual + " でした。");
 	}
 
 }
