@@ -1,7 +1,9 @@
 package test.exercise.function.dod;
 
+import exercise.function.dod.BoardCell;
 import exercise.function.dod.BoardFactory;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
@@ -34,34 +36,24 @@ public class TestDod {
 	}
 
 	@Test
-	public void boardArrayでリスト表現のゲーム盤を配列表現に変換できる() {
-		List<Integer> l1 = new ArrayList<>();
-		l1.add(0);
-		l1.add(3);
-		List<Integer> l2 = new ArrayList<>();
-		l2.add(0);
-		l2.add(3);
-		List<Integer> l3 = new ArrayList<>();
-		l3.add(1);
-		l3.add(3);
-		List<Integer> l4 = new ArrayList<>();
-		l4.add(1);
-		l4.add(1);
+	public void リストで表現されたゲーム盤を得る() {
+		List<Integer> l1 = Arrays.asList(0, 3);
+		List<Integer> l2 = Arrays.asList(0, 3);
+		List<Integer> l3 = Arrays.asList(1, 3);
+		List<Integer> l4 = Arrays.asList(1, 1);
 
-		List<List<Integer>> lst = new ArrayList<>();
-		lst.add(l1);
-		lst.add(l2);
-		lst.add(l3);
-		lst.add(l4);
+		List<List<Integer>> lst = Arrays.asList(
+			l1, l2, l3, l4
+		);
 
-		int[][] expected = {
-			{0, 3},
-			{0, 3},
-			{1, 3},
-			{1, 1}
-		};
+		List<BoardCell> expected = Arrays.asList(
+			new BoardCell(0, 3),
+			new BoardCell(0, 3),
+			new BoardCell(1, 3),
+			new BoardCell(1, 1)
+		);
 
-		int[][] actual = BoardFactory.boardArray(lst);
+		List<BoardCell> actual = BoardFactory.boardArray(lst);
 
 		assertThat(actual, is(expected));
 	}
