@@ -1,7 +1,8 @@
 package test.exercise.function.dod;
 
 import exercise.function.dod.BoardCell;
-import exercise.function.dod.BoardFactory;
+import exercise.function.dod.DodUtils;
+import exercise.function.dod.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +37,14 @@ public class TestDod {
 	}
 
 	@Test
-	public void リストで表現されたゲーム盤を得る() {
+	public void ゲーム盤の元となるリストを得る() {
+		List<BoardCell> expected = Arrays.asList(
+			new BoardCell(new Player(0), 3),
+			new BoardCell(new Player(0), 3),
+			new BoardCell(new Player(1), 3),
+			new BoardCell(new Player(1), 1)
+		);
+
 		List<Integer> l1 = Arrays.asList(0, 3);
 		List<Integer> l2 = Arrays.asList(0, 3);
 		List<Integer> l3 = Arrays.asList(1, 3);
@@ -46,16 +54,21 @@ public class TestDod {
 			l1, l2, l3, l4
 		);
 
-		List<BoardCell> expected = Arrays.asList(
-			new BoardCell(0, 3),
-			new BoardCell(0, 3),
-			new BoardCell(1, 3),
-			new BoardCell(1, 1)
-		);
-
-		List<BoardCell> actual = BoardFactory.boardArray(lst);
+		List<BoardCell> actual = DodUtils.boardArray(lst);
 
 		assertThat(actual, is(expected));
 	}
 
+	@Test
+	public void プレイヤーを指す文字列を得る(){
+		String expected = "b";
+		
+		int playerNo = 1;
+		Player player = new Player(playerNo);
+		
+		String actual = DodUtils.playerLetter(player);
+		
+		assertThat(actual, is(expected));
+	}
+	
 }

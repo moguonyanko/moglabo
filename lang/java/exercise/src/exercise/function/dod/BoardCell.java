@@ -5,12 +5,12 @@ import java.util.Objects;
 
 public class BoardCell {
 
-	private final int x;
-	private final int y;
+	private final Player player;
+	private final int diceSize;
 
-	public BoardCell(int x, int y) {
-		this.x = x;
-		this.y = y;
+	public BoardCell(Player player, int diceSize) {
+		this.player = player;
+		this.diceSize = diceSize;
 	}
 
 	public BoardCell(List<Integer> nums) {
@@ -18,15 +18,15 @@ public class BoardCell {
 			throw new IllegalArgumentException("Board cell is need two numbers.");
 		}
 
-		this.x = nums.get(0);
-		this.y = nums.get(1);
+		this.player = new Player(nums.get(0));
+		this.diceSize = nums.get(1);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof BoardCell) {
 			BoardCell other = (BoardCell) obj;
-			return x == other.x && y == other.y;
+			return player.equals(other.player) && diceSize == other.diceSize;
 		}
 
 		return false;
@@ -34,7 +34,12 @@ public class BoardCell {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(x, y);
+		return Objects.hash(player, diceSize);
+	}
+
+	@Override
+	public String toString() {
+		return "(player=" + player + ",dice size=" + diceSize + ")";
 	}
 
 }
