@@ -5,16 +5,20 @@ import java.util.Objects;
 
 public class Board {
 
-	private final List<BoardCell> cells;
+	private final List<Hex> hexes;
 
-	public Board(List<BoardCell> cells) {
-		this.cells = cells;
+	public Board(List<Hex> cells) {
+		this.hexes = cells;
 	}
 
+	public Hex getHex(int index){
+		return hexes.get(index);
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder s = new StringBuilder();
-		cells.stream().forEach(cell -> s.append(cell.toString()));
+		hexes.stream().forEach(cell -> s.append(cell.toString()));
 		return s.toString();
 	}
 
@@ -22,7 +26,7 @@ public class Board {
 	public boolean equals(Object obj) {
 		if(obj instanceof Board){
 			Board other = (Board)obj;
-			return cells.equals(other.cells);
+			return hexes.equals(other.hexes);
 		}
 		
 		return false;
@@ -30,7 +34,7 @@ public class Board {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(cells);
+		return Objects.hash(hexes);
 	}
 	
 }

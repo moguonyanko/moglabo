@@ -3,17 +3,17 @@ package exercise.function.dod;
 import java.util.List;
 import java.util.Objects;
 
-public class BoardCell {
+public class Hex {
 
 	private final Player player;
 	private final int diceSize;
 
-	public BoardCell(Player player, int diceSize) {
+	public Hex(Player player, int diceSize) {
 		this.player = player;
 		this.diceSize = diceSize;
 	}
 
-	public BoardCell(List<Integer> nums) {
+	public Hex(List<Integer> nums) {
 		if (nums.size() < 2) {
 			throw new IllegalArgumentException("Board cell is need two numbers.");
 		}
@@ -22,10 +22,18 @@ public class BoardCell {
 		this.diceSize = nums.get(1);
 	}
 
+	public final Player getPlayer() {
+		return player;
+	}
+
+	public final int getDiceSize() {
+		return diceSize;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof BoardCell) {
-			BoardCell other = (BoardCell) obj;
+		if (obj instanceof Hex) {
+			Hex other = (Hex) obj;
 			return player.equals(other.player) && diceSize == other.diceSize;
 		}
 

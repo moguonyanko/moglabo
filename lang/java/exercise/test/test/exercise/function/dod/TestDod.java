@@ -1,6 +1,6 @@
 package test.exercise.function.dod;
 
-import exercise.function.dod.BoardCell;
+import exercise.function.dod.Hex;
 import exercise.function.dod.DodUtils;
 import exercise.function.dod.Player;
 import java.util.ArrayList;
@@ -38,11 +38,11 @@ public class TestDod {
 
 	@Test
 	public void ゲーム盤の元となるリストを得る() {
-		List<BoardCell> expected = Arrays.asList(
-			new BoardCell(new Player(0), 3),
-			new BoardCell(new Player(0), 3),
-			new BoardCell(new Player(1), 3),
-			new BoardCell(new Player(1), 1)
+		List<Hex> expected = Arrays.asList(
+			new Hex(new Player(0), 3),
+			new Hex(new Player(0), 3),
+			new Hex(new Player(1), 3),
+			new Hex(new Player(1), 1)
 		);
 
 		List<Integer> l1 = Arrays.asList(0, 3);
@@ -54,7 +54,7 @@ public class TestDod {
 			l1, l2, l3, l4
 		);
 
-		List<BoardCell> actual = DodUtils.boardArray(lst);
+		List<Hex> actual = DodUtils.boardArray(lst);
 
 		assertThat(actual, is(expected));
 	}

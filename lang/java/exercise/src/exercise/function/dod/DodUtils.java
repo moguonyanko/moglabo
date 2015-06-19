@@ -5,9 +5,9 @@ import static java.util.stream.Collectors.*;
 
 public class DodUtils {
 
-	public static List<BoardCell> boardArray(List<List<Integer>> boardExpressions) {
+	public static List<Hex> boardArray(List<List<Integer>> boardExpressions) {
 		return boardExpressions.stream()
-			.map(BoardCell::new)
+			.map(Hex::new)
 			.collect(toList());
 	}
 
