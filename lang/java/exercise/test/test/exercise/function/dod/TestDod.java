@@ -1,7 +1,7 @@
 package test.exercise.function.dod;
 
 import exercise.function.dod.Hex;
-import exercise.function.dod.DodUtils;
+import exercise.function.dod.DodFunctions;
 import exercise.function.dod.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public class TestDod {
 			l1, l2, l3, l4
 		);
 
-		List<Hex> actual = DodUtils.boardArray(lst);
+		List<Hex> actual = DodFunctions.boardArray(lst);
 
 		assertThat(actual, is(expected));
 	}
@@ -66,9 +66,20 @@ public class TestDod {
 		int playerNo = 1;
 		Player player = new Player(playerNo);
 		
-		String actual = DodUtils.playerLetter(player);
+		String actual = DodFunctions.playerLetter(player);
 		
 		assertThat(actual, is(expected));
+	}
+	
+	@Test 
+	public void ゲームの指し手のツリーを得られる(){
+		
+		/**
+		 * @todo
+		 * DodFunctions.gameTreeのテストを書く。
+		 */
+		
+		fail("Not implement");
 	}
 	
 }

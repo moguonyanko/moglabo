@@ -24,7 +24,7 @@ public class DodMain {
 			boards.add(board);
 		}
 		
-		return new Board(DodUtils.boardArray(boards));
+		return new Board(DodFunctions.boardArray(boards));
 	}
 	
 	private static void drawBoard(Board board){
@@ -39,7 +39,7 @@ public class DodMain {
 				int position = x + (BOARD_SIZE * y);
 				Hex hex = board.getHex(position);
 				String hexInfo = String.format("%s-%s ", 
-					DodUtils.playerLetter(hex.getPlayer()), hex.getDiceSize());
+					DodFunctions.playerLetter(hex.getPlayer()), hex.getDiceSize());
 				System.out.print(hexInfo);
 			}
 			
