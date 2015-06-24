@@ -1,5 +1,6 @@
 package test.exercise.function.util;
 
+import exercise.function.Tower;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Collection;
@@ -20,6 +21,7 @@ import java.util.stream.IntStream;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.function.BiFunction;
+import static java.util.stream.Collectors.*;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -916,4 +918,42 @@ public class TestFunctions {
 		System.out.println("最も多かった単語は " + actual + " でした。");
 	}
 
+	private void printTowers(String prefix, List<Tower> towers){
+		System.out.print(prefix + "=");
+		towers.stream().forEach(t -> {
+			System.out.print(t.getIndex() + ":" + t);
+		});
+		System.out.println("");
+	}
+	
+	@Test
+	public void ハノイの塔の円盤を並べ替える(){
+		int towserSize = 3;
+		int diskSize = 5;
+		
+		List<Tower> towers = IntStream.range(0, towserSize)
+			.mapToObj(Tower::new)
+			.collect(toList());
+
+		Tower src = towers.get(0);
+		Tower dest = towers.get(2);
+		Tower buff = towers.get(1);
+		
+		Tower expected = new Tower(towserSize - 1);
+		
+		IntStream.range(0, diskSize)
+			.forEach(diskIdx -> {
+				src.add(diskIdx);
+				expected.add(diskIdx);
+			});
+		
+		printTowers("before", towers);
+		
+		src.moveDisks(diskSize, dest, buff);
+		
+		printTowers("after", towers);
+		
+		assertThat(dest, is(expected));
+	}
+	
 }
