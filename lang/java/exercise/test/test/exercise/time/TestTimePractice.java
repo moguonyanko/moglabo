@@ -12,10 +12,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import exercise.time.DayOfWeekPractice;
+import exercise.time.LocalPractice;
+import java.time.LocalDate;
+import java.time.Month;
 
-public class TestDatePractice {
+public class TestTimePractice {
 	
-	public TestDatePractice() {
+	public TestTimePractice() {
 	}
 	
 	@BeforeClass
@@ -54,4 +57,15 @@ public class TestDatePractice {
 		
 		assertThat(actual, is(expected));
 	}
+	
+	@Test
+	public void その月の最後の日を得る(){
+		LocalDate date = LocalDate.of(2016, Month.FEBRUARY, 14);
+
+		LocalDate expected = LocalDate.of(2016, Month.FEBRUARY, 29);
+		LocalDate actual = LocalPractice.lastDayOfMonth(date);
+		
+		assertThat(actual, is(expected));
+	}
+	
 }
