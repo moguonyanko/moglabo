@@ -412,4 +412,20 @@ public class Functions {
 		return countWord(sources, cs, word -> true);
 	}
 	
+	private static Node dfs(Node node){
+		node.setColor(NodeColor.GRAY);
+		
+		node.getNodes().stream()
+			.filter(n -> n.getColor() == NodeColor.WHITE)
+			.forEach(n -> dfs(n));
+		
+		node.setColor(NodeColor.BLACK);
+		
+		return node;
+	}
+	
+	public static Node depthFirstSearch(Node root){
+		return dfs(root);
+	}
+	
 }

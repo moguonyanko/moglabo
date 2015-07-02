@@ -34,6 +34,8 @@ import static org.hamcrest.CoreMatchers.*;
 import exercise.function.util.Functions;
 import exercise.function.util.CarefulFunction;
 import exercise.function.util.Memoizer;
+import exercise.function.util.Node;
+import exercise.function.util.NodeColor;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
 
@@ -954,6 +956,58 @@ public class TestFunctions {
 		printTowers("after", towers);
 		
 		assertThat(dest, is(expected));
+	}
+	
+	private static Node getSampleGraph(){
+		Node l1 = new Node();
+		Node l2 = new Node();
+		Node l3 = new Node();
+		
+		Node n2 = new Node(Arrays.asList(
+			new Node(),
+			new Node(),
+			new Node()
+		));
+		Node ns1 = new Node(Arrays.asList(
+			l1, l2, l3, n2
+		));
+		Node ns2 = new Node(Arrays.asList(
+			new Node(Arrays.asList(
+				l1, l2
+			))
+		));
+		Node l4 = new Node();
+		Node l5 = new Node();
+		Node n3 = new Node(Arrays.asList(
+			l3, l4
+		));
+		Node l6 = new Node(Arrays.asList(
+			n3, new Node(Arrays.asList(
+				l5, new Node(Arrays.asList(
+					n2, l2
+				))
+			))
+		));
+		
+		Node ns3 = new Node(Arrays.asList(
+			l6
+		));
+		
+		Node root = new Node(Arrays.asList(
+			ns1, ns2, ns3
+		));
+		
+		return root;
+	}
+	
+	@Test
+	public void 深さ優先探索で全ての節点を巡回できる(){
+		Node expected = getSampleGraph();
+		expected.setAllColors(NodeColor.BLACK);
+		
+		Node actual = Functions.depthFirstSearch(getSampleGraph());
+		
+		assertThat(actual, is(expected));
 	}
 	
 }
