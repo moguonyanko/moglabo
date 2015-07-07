@@ -30,7 +30,7 @@ public class Grapher {
 			int minCost = -1;
 			
 			for(int i = 0; i < elementSize; i++){
-				if(!fix[i] && currentCost[i] == -1){
+				if(!fix[i] && currentCost[i] != -1){
 					if(minCost == -1 || minCost > currentCost[i]){
 						minCost = currentCost[i];
 						minElement = i;
