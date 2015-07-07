@@ -1,12 +1,9 @@
-package exercise.function.util;
+package exercise.function;
 
 /**
  * 参考：
  * 「アルゴリズムとデータ構造」SoftbankCreative
  */
-public class Knapsack {
-
-	
-	
+public class Product {
 	
 }

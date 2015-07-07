@@ -1,6 +1,5 @@
 package test.exercise.function.util;
 
-import exercise.function.Tower;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Collection;
@@ -31,16 +30,20 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+import exercise.function.Tower;
 import exercise.function.util.Functions;
 import exercise.function.util.CarefulFunction;
 import exercise.function.util.Memoizer;
 import exercise.function.util.Node;
 import exercise.function.util.NodeColor;
+import exercise.function.util.Grapher;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
 
 /**
- * 参考：「Javaによる関数型プログラミング」(オライリー・ジャパン)
+ * 参考：
+ * 「Javaによる関数型プログラミング」(オライリー・ジャパン)
+ * 「アルゴリズムとデータ構造」(SoftbankCreative)
  */
 public class TestFunctions {
 
@@ -920,19 +923,19 @@ public class TestFunctions {
 		System.out.println("最も多かった単語は " + actual + " でした。");
 	}
 
-	private void printTowers(String prefix, List<Tower> towers){
+	private void printTowers(String prefix, List<Tower> towers) {
 		System.out.print(prefix + "=");
 		towers.stream().forEach(t -> {
 			System.out.print(t.getIndex() + ":" + t);
 		});
 		System.out.println("");
 	}
-	
+
 	@Test
-	public void ハノイの塔の円盤を並べ替える(){
+	public void ハノイの塔の円盤を並べ替える() {
 		int towserSize = 3;
 		int diskSize = 5;
-		
+
 		List<Tower> towers = IntStream.range(0, towserSize)
 			.mapToObj(Tower::new)
 			.collect(toList());
@@ -940,29 +943,29 @@ public class TestFunctions {
 		Tower src = towers.get(0);
 		Tower dest = towers.get(2);
 		Tower buff = towers.get(1);
-		
+
 		Tower expected = new Tower(towserSize - 1);
-		
+
 		IntStream.range(0, diskSize)
 			.forEach(diskIdx -> {
 				src.add(diskIdx);
 				expected.add(diskIdx);
 			});
-		
+
 		printTowers("before", towers);
-		
+
 		src.moveDisks(diskSize, dest, buff);
-		
+
 		printTowers("after", towers);
-		
+
 		assertThat(dest, is(expected));
 	}
-	
-	private static Node getSampleGraph(){
+
+	private static Node getSampleGraph() {
 		Node l1 = new Node();
 		Node l2 = new Node();
 		Node l3 = new Node();
-		
+
 		Node n2 = new Node(Arrays.asList(
 			new Node(),
 			new Node(),
@@ -973,8 +976,8 @@ public class TestFunctions {
 		));
 		Node ns2 = new Node(Arrays.asList(
 			new Node(Arrays.asList(
-				l1, l2
-			))
+					l1, l2
+				))
 		));
 		Node l4 = new Node();
 		Node l5 = new Node();
@@ -983,31 +986,65 @@ public class TestFunctions {
 		));
 		Node l6 = new Node(Arrays.asList(
 			n3, new Node(Arrays.asList(
-				l5, new Node(Arrays.asList(
-					n2, l2
+					l5, new Node(Arrays.asList(
+							n2, l2
+						))
 				))
-			))
 		));
-		
+
 		Node ns3 = new Node(Arrays.asList(
 			l6
 		));
-		
+
 		Node root = new Node(Arrays.asList(
 			ns1, ns2, ns3
 		));
-		
+
 		return root;
 	}
-	
+
 	@Test
-	public void 深さ優先探索で全ての節点を巡回できる(){
+	public void 深さ優先探索で全ての節点を巡回できる() {
 		Node expected = getSampleGraph();
 		expected.setAllColors(NodeColor.BLACK);
-		
+
 		Node actual = Functions.depthFirstSearch(getSampleGraph());
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
+	@Test
+	public void ダイクストラ法で最短経路を求める() {
+		int startStation = 0;
+
+		String[] stations = {
+			"横浜", "武蔵小杉", "品川", "渋谷", "新橋", "溜池山王"
+		};
+
+		/**
+		 * 重み付きグラフが隣接行列として表現されている。
+		 */
+		int[][] adjacencyMatrix = {
+			new int[]{0, 12, 28, 0, 0, 0},
+			new int[]{12, 0, 10, 13, 0, 0},
+			new int[]{28, 10, 0, 11, 7, 0},
+			new int[]{0, 13, 11, 0, 0, 0},
+			new int[]{0, 0, 7, 0, 0, 4},
+			new int[]{0, 0, 0, 9, 4, 0}
+		};
+
+		int[] cost = new int[stations.length];
+
+		try {
+			cost = Grapher.routeSearch(adjacencyMatrix, startStation);
+		} catch (Exception ex) {
+			fail(ex.getMessage());
+		}
+
+		for (int i = 0; i < stations.length; i++) {
+			System.out.println(stations[startStation] + " -> "
+				+ stations[i] + " : " + cost[i]);
+		}
+	}
+
 }
