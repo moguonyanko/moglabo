@@ -39,6 +39,8 @@ import exercise.function.util.NodeColor;
 import exercise.function.util.Grapher;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
+import java.util.Random;
+import java.util.stream.Stream;
 
 /**
  * 参考：
@@ -1045,6 +1047,32 @@ public class TestFunctions {
 			System.out.println(stations[startStation] + " -> "
 				+ stations[i] + " : " + cost[i]);
 		}
+	}
+
+	private static List<Integer> makeSampleList(int size) {
+		Random rand = new Random();
+
+		List<Integer> sample = new ArrayList<>(size);
+		for (int i = 0; i < size; i++) {
+			sample.add(rand.nextInt(size));
+		}
+
+		return sample;
+	}
+
+	@Test
+	public void クイックソートで並べ替える() {
+		List<Integer> sample = Arrays.asList(
+			8, 2, 5, 1, 9, 0, 4, 7, 6, 3
+		);
+
+		List<Integer> expected = Arrays.asList(
+			0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+		);
+
+		List<Integer> actual = Functions.quickSort(sample, ArrayList::new);
+
+		assertThat(actual, is(expected));
 	}
 
 }

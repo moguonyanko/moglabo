@@ -25,6 +25,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import static java.util.stream.Collectors.*;
 
+/**
+ * 参考：
+ * 「Javaによる関数型プログラミング」(オライリー・ジャパン)
+ * 「アルゴリズムとデータ構造」(SoftbankCreative)
+ */
 public class Functions {
 
 	private static final Function<String, Predicate<String>> equalsIgnoreCaseString
@@ -99,9 +104,9 @@ public class Functions {
 		return result;
 	}
 
-	public static <T, C extends Collection> Collection<T> sorted(Collection<T> sources,
+	public static <T, C extends Collection<T>> C sorted(Collection<T> sources,
 		Comparator<T> comparator, Supplier<C> supplier) {
-		Collection<T> result = sources.stream().
+		C result = sources.stream().
 			sorted(comparator).
 			collect(toCollection(supplier));
 
@@ -407,25 +412,69 @@ public class Functions {
 		Predicate<String> condition, String defaultWord) {
 		return countWord(sources, cs, condition, () -> defaultWord);
 	}
-	
+
 	public static String countWord(Collection<Path> sources, Charset cs) {
 		return countWord(sources, cs, word -> true);
 	}
-	
-	private static Node dfs(Node node){
+
+	private static Node dfs(Node node) {
 		node.setColor(NodeColor.GRAY);
-		
+
 		node.getNodes().stream()
 			.filter(n -> n.getColor() == NodeColor.WHITE)
 			.forEach(n -> dfs(n));
-		
+
 		node.setColor(NodeColor.BLACK);
-		
+
 		return node;
 	}
-	
-	public static Node depthFirstSearch(Node root){
+
+	public static Node depthFirstSearch(Node root) {
 		return dfs(root);
 	}
-	
+
+	private static <T extends Comparable> void quickSortProcess(
+		int bottom, int top, List<T> data) {
+		int lower, upper;
+
+		if (bottom >= top) {
+			return;
+		}
+
+		T div = data.get(bottom);
+
+		for (lower = bottom, upper = top; lower < upper;) {
+			while (lower <= upper && data.get(lower).compareTo(div) <= 0) {
+				lower++;
+			}
+			while (lower <= upper && data.get(upper).compareTo(div) > 0) {
+				upper--;
+			}
+			if (lower < upper) {
+				T temp = data.get(lower);
+				data.set(lower, data.get(upper));
+				data.set(upper, temp);
+			}
+		}
+
+		T tmp = data.get(bottom);
+		data.set(bottom, data.get(upper));
+		data.set(upper, tmp);
+
+		quickSortProcess(bottom, upper - 1, data);
+		quickSortProcess(upper + 1, top, data);
+	}
+
+	public static <T extends Comparable, C extends Collection<T>> C
+		quickSort(Collection<T> src, Supplier<C> supplier) {
+		List<T> data = new ArrayList(src);
+
+		quickSortProcess(0, src.size() - 1, data);
+
+		C result = data.stream()
+			.collect(toCollection(supplier));
+
+		return result;
+	}
+
 }
