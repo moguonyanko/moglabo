@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.PrimitiveIterator.OfInt;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
@@ -24,6 +25,7 @@ import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import static java.util.stream.Collectors.*;
+import java.util.stream.IntStream;
 
 /**
  * 参考：
@@ -476,5 +478,60 @@ public class Functions {
 
 		return result;
 	}
+		
+	private static <T extends Comparable> void mergeSortProcess(int dataSize, 
+		List<T> data, int offset){
+		if(dataSize <= 1){
+			return;
+		}
+		
+		int divSize = dataSize / 2;
+		
+		mergeSortProcess(divSize, data, offset);
+		mergeSortProcess(dataSize - divSize, data, offset + divSize);
+		
+		/**
+		 * 終了条件や継続条件に関わる値が不変でないと関数インターフェースを
+		 * 利用した記述を行うのは難しい。
+		 */
+		
+		List<T> buffer = new ArrayList<>(divSize);
+		for(int bufIdx = 0; bufIdx < divSize; ++bufIdx){
+			buffer.add(bufIdx, data.get(offset + bufIdx));
+		}
+		
+		int lhsIdx = 0;
+		int rhsIdx = divSize;
+		int bufIdx = 0;
+		
+		while(lhsIdx < divSize && rhsIdx < dataSize){
+			if(buffer.get(lhsIdx).compareTo(data.get(offset + rhsIdx)) <= 0){
+				data.set(offset + bufIdx, buffer.get(lhsIdx));
+				lhsIdx++;
+			}else{
+				data.set(offset + bufIdx, data.get(offset + rhsIdx));
+				rhsIdx++;
+			}
+			bufIdx++;
+		}
+		
+		while(lhsIdx < divSize){
+			data.set(offset + bufIdx, buffer.get(lhsIdx));
+			bufIdx++;
+			lhsIdx++;
+		}
+	}
 
+	public static <T extends Comparable, C extends Collection<T>> C
+		mergeSort(Collection<T> src, Supplier<C> supplier) {
+		List<T> data = new ArrayList<>(src);
+			
+		mergeSortProcess(data.size(), data, 0);
+		
+		C result = data.stream()
+			.collect(toCollection(supplier));
+		
+		return result;
+	}
+		
 }
