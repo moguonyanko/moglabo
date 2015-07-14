@@ -1088,5 +1088,20 @@ public class TestFunctions {
 
 		assertThat(actual, is(expected));
 	}
+
+	@Test
+	public void 単純挿入ソートで並べ替える(){
+		List<Integer> sample = Arrays.asList(
+			8, 2, 5, 1, 9, 0, 4, 7, 6, 3
+		);
+
+		List<Integer> expected = Arrays.asList(
+			0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+		);
+
+		List<Integer> actual = Functions.insertSort(sample, ArrayList::new);
+
+		assertThat(actual, is(expected));
+	}
 	
 }

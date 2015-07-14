@@ -534,4 +534,47 @@ public class Functions {
 		return result;
 	}
 		
+	private static <T extends Comparable> void insertSortProcess(List<T> data){
+		for(int sorted = 0, size = data.size(); sorted < size - 1; ++sorted){
+			T insertElement = data.get(sorted + 1);
+			int i;
+			
+			/**
+			 * @todo
+			 * 以下のラムダ式を用いた記述では正しくソートされない。
+			 */
+//			int sortedIdx = sorted;
+//			T t = data.stream()
+//				.filter(el -> el.compareTo(data.get(sortedIdx + 1)) > 0)
+//				.findFirst()
+//				.orElse(null);
+//			int i = t != null ? data.indexOf(t) : sorted;
+			
+			for(i = 0; i <= sorted; ++i){
+				if(data.get(i).compareTo(insertElement) > 0){
+					break;
+				}
+			}
+			
+			while(i <= sorted + 1){
+				T temp = data.get(i);
+				data.set(i, insertElement);
+				insertElement = temp;
+				++i;
+			}
+		}
+	}	
+		
+	public static <T extends Comparable, C extends Collection<T>> C
+		insertSort(Collection<T> src, Supplier<C> supplier) {
+		List<T> data = new ArrayList<>(src);
+			
+		insertSortProcess(data);
+		
+		C result = data.stream()
+			.collect(toCollection(supplier));
+		
+		return result;
+	}
+		
 }
