@@ -535,32 +535,31 @@ public class Functions {
 	}
 		
 	private static <T extends Comparable> void insertSortProcess(List<T> data){
-		for(int sorted = 0, size = data.size(); sorted < size - 1; ++sorted){
+		for(int sorted = 0, size = data.size(); sorted < size - 1; sorted++){
 			T insertElement = data.get(sorted + 1);
-			int i;
 			
 			/**
 			 * @todo
 			 * 以下のラムダ式を用いた記述では正しくソートされない。
 			 */
-//			int sortedIdx = sorted;
-//			T t = data.stream()
-//				.filter(el -> el.compareTo(data.get(sortedIdx + 1)) > 0)
-//				.findFirst()
-//				.orElse(null);
-//			int i = t != null ? data.indexOf(t) : sorted;
-			
-			for(i = 0; i <= sorted; ++i){
-				if(data.get(i).compareTo(insertElement) > 0){
+//			T t = insertElement;
+//			Optional opt = data.stream()
+//				.filter(el -> el.compareTo(t) > 0)
+//				.findFirst();
+//			int insertIdx = opt.isPresent() ? data.indexOf(opt.get()) : sorted;
+
+			int insertIdx;
+			for(insertIdx = 0; insertIdx <= sorted; ++insertIdx){
+				if(data.get(insertIdx).compareTo(insertElement) > 0){
 					break;
 				}
 			}
 			
-			while(i <= sorted + 1){
-				T temp = data.get(i);
-				data.set(i, insertElement);
+			while(insertIdx <= sorted + 1){
+				T temp = data.get(insertIdx);
+				data.set(insertIdx, insertElement);
 				insertElement = temp;
-				++i;
+				insertIdx++;
 			}
 		}
 	}	
