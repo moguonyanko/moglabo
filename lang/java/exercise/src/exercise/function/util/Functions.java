@@ -536,26 +536,28 @@ public class Functions {
 		
 	private static <T extends Comparable> void insertSortProcess(List<T> data){
 		for(int sorted = 0, size = data.size(); sorted < size - 1; sorted++){
-			T insertElement = data.get(sorted + 1);
+			int now = sorted + 1;
+			int next = now + 1;
+			T insertElement = data.get(now);
+			
+			T t = insertElement;
+			Optional opt = data.stream()
+				.filter(el -> el.compareTo(t) > 0)
+				.findFirst();
 			
 			/**
-			 * @todo
-			 * 以下のラムダ式を用いた記述では正しくソートされない。
+			 * ソート済みだった場合はnextが代入され挿入処理が行われない。
 			 */
-//			T t = insertElement;
-//			Optional opt = data.stream()
-//				.filter(el -> el.compareTo(t) > 0)
-//				.findFirst();
-//			int insertIdx = opt.isPresent() ? data.indexOf(opt.get()) : sorted;
+			int insertIdx = opt.isPresent() ? data.indexOf(opt.get()) : next;
 
-			int insertIdx;
-			for(insertIdx = 0; insertIdx <= sorted; ++insertIdx){
-				if(data.get(insertIdx).compareTo(insertElement) > 0){
-					break;
-				}
-			}
+//			int insertIdx;
+//			for(insertIdx = 0; insertIdx <= sorted; ++insertIdx){
+//				if(data.get(insertIdx).compareTo(insertElement) > 0){
+//					break;
+//				}
+//			}
 			
-			while(insertIdx <= sorted + 1){
+			while(insertIdx <= now){
 				T temp = data.get(insertIdx);
 				data.set(insertIdx, insertElement);
 				insertElement = temp;
