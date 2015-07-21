@@ -574,6 +574,10 @@ public class Functions {
 		return result;
 	}
 
+	/**
+	 * 参考：
+	 * Josh Bloch氏の2015/07/21のツイート
+	 */
 	public static void printlnIntergers(Collection<Integer> sample) {
 		sample.stream()
 			.map(i -> i.toString())
