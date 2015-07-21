@@ -1075,7 +1075,7 @@ public class TestFunctions {
 	}
 
 	@Test
-	public void マージソートで並べ替える(){
+	public void マージソートで並べ替える() {
 		List<Integer> sample = Arrays.asList(
 			8, 2, 5, 1, 9, 0, 4, 7, 6, 3
 		);
@@ -1090,7 +1090,7 @@ public class TestFunctions {
 	}
 
 	@Test
-	public void 単純挿入ソートで並べ替える(){
+	public void 単純挿入ソートで並べ替える() {
 		List<Integer> sample = Arrays.asList(
 			8, 2, 5, 1, 9, 0, 4, 7, 6, 3
 		);
@@ -1103,5 +1103,16 @@ public class TestFunctions {
 
 		assertThat(actual, is(expected));
 	}
-	
+
+	@Test
+	public void リストの各数値を改行しながら表示する() {
+		List<Integer> sample = Arrays.asList(1, 2, 3);
+
+		try {
+			Functions.printlnIntergers(sample);
+		} catch (Exception ex) {
+			fail(ex.getMessage());
+		}
+	}
+
 }
