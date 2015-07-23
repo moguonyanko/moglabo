@@ -30,6 +30,7 @@ import static java.util.stream.Collectors.*;
  * 「Javaによる関数型プログラミング」(オライリー・ジャパン)
  * 「アルゴリズムとデータ構造」(SoftbankCreative)
  * 「Land of Lisp」(オライリー・ジャパン)
+ * 「ANSI Common Lisp」(ピアソン)
  */
 public class Functions {
 
@@ -620,4 +621,18 @@ public class Functions {
 		return result;
 	}
 
+	/**
+	 * @todo
+	 * 実装中
+	 * sizeやisEmptyは敢えて使用していない。
+	 * 例外の使い方がよろしくない。
+	 */
+	public static <T> boolean isSingle(Collection<T> src){
+		try{
+			return new ArrayList<>(src).get(1) != null;
+		}catch(IndexOutOfBoundsException ex){
+			return false;
+		}
+	}
+	
 }

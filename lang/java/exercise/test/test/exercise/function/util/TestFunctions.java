@@ -42,9 +42,7 @@ import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
 
 /**
- * 参考：
- * 「Javaによる関数型プログラミング」(オライリー・ジャパン)
- * 「アルゴリズムとデータ構造」(SoftbankCreative)
+ * 参考： 「Javaによる関数型プログラミング」(オライリー・ジャパン) 「アルゴリズムとデータ構造」(SoftbankCreative)
  */
 public class TestFunctions {
 
@@ -764,8 +762,7 @@ public class TestFunctions {
 		}
 
 		/**
-		 * この書き方はSchemeなどではスタックオーバーフローにならないが，
-		 * Javaのような言語ではスタックオーバーフローになってしまう。
+		 * この書き方はSchemeなどではスタックオーバーフローにならないが， Javaのような言語ではスタックオーバーフローになってしまう。
 		 */
 		private static BigInteger bigCalc(BigInteger n, BigInteger accumulator) {
 			if (n.equals(BigInteger.ZERO)) {
@@ -814,8 +811,7 @@ public class TestFunctions {
 	}
 
 	/**
-	 * FunctionalInterfaceアノテーションが無くても条件さえ満たしていれば
-	 * 関数インタフェースとして扱える。
+	 * FunctionalInterfaceアノテーションが無くても条件さえ満たしていれば 関数インタフェースとして扱える。
 	 */
 	private interface FunctionalSample<T> {
 
@@ -1135,6 +1131,22 @@ public class TestFunctions {
 		List<Integer> actual = Functions.mapcan(mapper, sample, ArrayList::new);
 
 		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void リストが1要素のリストであるかどうかを調べる() {
+		List<Integer> sample1 = Arrays.asList(1);
+		List<Integer> sample2 = Arrays.asList(1, 2, 3);
+		List<Integer> sample3 = Arrays.asList();
+
+		boolean actual1 = Functions.isSingle(sample1);
+		assertTrue(actual1);
+		
+		boolean actual2 = Functions.isSingle(sample2);
+		assertFalse(actual2);
+		
+		boolean actual3 = Functions.isSingle(sample3);
+		assertFalse(actual3);
 	}
 
 }
