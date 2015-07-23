@@ -29,6 +29,7 @@ import static java.util.stream.Collectors.*;
  * 参考：
  * 「Javaによる関数型プログラミング」(オライリー・ジャパン)
  * 「アルゴリズムとデータ構造」(SoftbankCreative)
+ * 「Land of Lisp」(オライリー・ジャパン)
  */
 public class Functions {
 
@@ -590,6 +591,18 @@ public class Functions {
 			.forEach(s -> {
 				System.out.println(s.charAt(0));
 			});
+	}
+
+	/**
+	 * @todo
+	 * Supplierを引数で受け取らず，srcを元にして得るようにしたい。
+	 */
+	public static <T, C extends Collection<T>> C mapcar(
+		Function<T, T> fn,
+		C src, Supplier<C> supplier) {
+		return src.stream()
+			.map(fn)
+			.collect(toCollection(supplier));
 	}
 
 }

@@ -1114,5 +1114,16 @@ public class TestFunctions {
 			fail(ex.getMessage());
 		}
 	}
+	
+	@Test
+	public void リストの各要素に関数を適用したリストを返す(){
+		List<Integer> sample = Arrays.asList(1, 2, 3);
+		Function<Integer, Integer> square = i -> i * i; 
+		
+		List<Integer> expected = Arrays.asList(1, 4, 9);
+		List<Integer> actual = Functions.mapcar(square, sample, ArrayList::new);
+		
+		assertThat(actual, is(expected));
+	}
 
 }
