@@ -1114,15 +1114,26 @@ public class TestFunctions {
 			fail(ex.getMessage());
 		}
 	}
-	
+
 	@Test
-	public void リストの各要素に関数を適用したリストを返す(){
+	public void リストの各要素に関数を適用したリストを返す() {
 		List<Integer> sample = Arrays.asList(1, 2, 3);
-		Function<Integer, Integer> square = i -> i * i; 
-		
+		Function<Integer, Integer> square = i -> i * i;
+
 		List<Integer> expected = Arrays.asList(1, 4, 9);
 		List<Integer> actual = Functions.mapcar(square, sample, ArrayList::new);
-		
+
+		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void リストの各要素に関数を適用した結果をリストで得てそれらを連結する() {
+		List<Integer> sample = Arrays.asList(1, 2, 3);
+		Function<Integer, List<Integer>> mapper = i -> Arrays.asList(i, i * i);
+
+		List<Integer> expected = Arrays.asList(1, 1, 2, 4, 3, 9);
+		List<Integer> actual = Functions.mapcan(mapper, sample, ArrayList::new);
+
 		assertThat(actual, is(expected));
 	}
 

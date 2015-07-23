@@ -598,11 +598,26 @@ public class Functions {
 	 * Supplierを引数で受け取らず，srcを元にして得るようにしたい。
 	 */
 	public static <T, C extends Collection<T>> C mapcar(
-		Function<T, T> fn,
+		Function<T, T> mapper,
 		C src, Supplier<C> supplier) {
-		return src.stream()
-			.map(fn)
+		C result = src.stream()
+			.map(mapper)
 			.collect(toCollection(supplier));
+
+		return result;
+	}
+
+	public static <T, C extends Collection<T>> C mapcan(
+		Function<T, C> mapper,
+		C src, Supplier<C> supplier) {
+		C result = src.stream()
+			.map(mapper)
+			.reduce(supplier.get(), (now, next) -> {
+				now.addAll(next);
+				return now;
+			});
+
+		return result;
 	}
 
 }
