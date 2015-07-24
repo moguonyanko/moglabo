@@ -620,19 +620,59 @@ public class Functions {
 
 		return result;
 	}
+	
+	private static <T> boolean hasMultiElements(Collection<T> src){
+		/**
+		 * 1番目の要素を除外したStreamを得て，その最初の要素が
+		 * 存在するならば少なくとも2つ以上要素を持つコレクションである。
+		 * 要素がnullでないかどうかをチェックする方法では，意図的にnullを含む
+		 * コレクションで誤判定が発生する可能性がある。
+		 * 
+		 * skipメソッドは<em>順序付けされた並列パイプライン</em>では
+		 * パフォーマンスが悪くなる可能性がある。
+		 * 
+		 */
+		boolean hasMulti = src.stream()
+			.skip(1)
+			.findFirst()
+			.isPresent();
+		
+		return hasMulti;
+	}
+	
+	private static <T> boolean notEmptyCollection(Collection<T> src){
+		/**
+		 * 1番目の要素だけ含むStreamを得て，その最初の要素が
+		 * 存在するならば空のコレクションではない。
+		 * 
+		 * limitメソッドは<em>順序付けされた並列パイプライン</em>では
+		 * パフォーマンスが悪くなる可能性がある。
+		 * 
+		 */
+		boolean notEmpty = src.stream()
+			.limit(1)
+			.findFirst()
+			.isPresent();
+		
+		return notEmpty;
+	}
 
 	/**
-	 * @todo
-	 * 実装中
-	 * sizeやisEmptyは敢えて使用していない。
-	 * 例外の使い方がよろしくない。
+	 * コレクションが要素を1つだけ持つかどうかを調べる。
+	 * 学習のため，以下に示す制約に従って実装している。
+	 * 
+	 * <ul>
+	 * <li>sizeやcount, isEmptyといった要素の数を調べる既存のメソッドを使わないこと。</li>
+	 * <li>自分で数えないこと。</li>
+	 * <li>例外を使わないこと。</li>
+	 * </ul>
 	 */
-	public static <T> boolean isSingle(Collection<T> src){
-		try{
-			return new ArrayList<>(src).get(1) != null;
-		}catch(IndexOutOfBoundsException ex){
-			return false;
-		}
+	public static <T> boolean isSingle(Collection<T> src) {
+		/**
+		 * 要素を1つだけ持つコレクションとは，要素を複数持たない
+		 * かつ空ではないコレクションである。
+		 */
+		return !hasMultiElements(src) && notEmptyCollection(src);
 	}
 	
 }
