@@ -31,4 +31,19 @@ public class Memoizer {
 		return memoized.apply(input);
 	}
 
+	public static <T, R> R callMemoized(Function<T, R> func, T input) {
+		Function<T, R> memoized = new Function<T, R>() {
+			private final Map<T, R> store = new HashMap<>();
+
+			@Override
+			public R apply(T checkKey) {
+				Function<T, R> mapper = key -> func.apply(key);
+				R result = store.computeIfAbsent(checkKey, mapper);
+				return result;
+			}
+		};
+
+		return memoized.apply(input);
+	}
+	
 }

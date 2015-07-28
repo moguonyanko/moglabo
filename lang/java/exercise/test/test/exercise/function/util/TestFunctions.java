@@ -42,7 +42,9 @@ import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
 
 /**
- * 参考： 「Javaによる関数型プログラミング」(オライリー・ジャパン) 「アルゴリズムとデータ構造」(SoftbankCreative)
+ * 参考：
+ * 「Javaによる関数型プログラミング」(オライリー・ジャパン)
+ * 「アルゴリズムとデータ構造」(SoftbankCreative)
  */
 public class TestFunctions {
 
@@ -898,7 +900,54 @@ public class TestFunctions {
 		int expected22 = 44;
 		assertThat(actual22, is(expected22));
 	}
+	
+	/**
+	 * @todo
+	 * 既存のコードにこのようなメソッドがあったとして，
+	 * これに手を加えずにラムダ式によるメモ化等のテクニックを
+	 * 利用することはできるだろうか。
+	 */
+	private static BigInteger originalCalcFib(int n) {
+		if (n <= 1) {
+			return new BigInteger(String.valueOf(n));
+		} else {
+			return originalCalcFib(n - 1).add(originalCalcFib(n - 2));
+		}
+	}
 
+	@Test(timeout = 1000)
+	public void メモ化して高速化する_フィボナッチ数列() {
+		BiFunction<Function<Integer, BigInteger>, Integer, BigInteger> fib
+			= (func, number) -> {
+				if (number <= 1) {
+					return new BigInteger(String.valueOf(number));
+				} else {
+					return func.apply(number - 1).add(func.apply(number - 2));
+				}
+			};
+
+		int number = 100;
+		String expectedStr = "354224848179261915075";
+		BigInteger expected = new BigInteger(String.valueOf(expectedStr));
+		BigInteger actual = Memoizer.callMemoized(fib, number);
+
+		assertThat(actual, is(expected));
+	}
+	
+	@Test(timeout = 1000)
+	public void メモ化して高速化する_フィボナッチ数列_既存メソッド利用版() {
+		/**
+		 * @todo
+		 * 無限ループになってしまう。
+		 */
+		int number = 100;
+		String expectedStr = "354224848179261915075";
+		BigInteger expected = new BigInteger(String.valueOf(expectedStr));
+		BigInteger actual = Memoizer.callMemoized(TestFunctions::originalCalcFib, number);
+
+		assertThat(actual, is(expected));
+	}
+	
 	@Test
 	public void 特定の条件下で最も多く現れる単語を求める() {
 		List<Path> sources = Arrays.asList(
@@ -1141,10 +1190,10 @@ public class TestFunctions {
 
 		boolean actual1 = Functions.isSingle(sample1);
 		assertTrue(actual1);
-		
+
 		boolean actual2 = Functions.isSingle(sample2);
 		assertFalse(actual2);
-		
+
 		boolean actual3 = Functions.isSingle(sample3);
 		assertFalse(actual3);
 	}
