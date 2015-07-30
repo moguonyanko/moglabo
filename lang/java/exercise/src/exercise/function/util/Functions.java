@@ -675,4 +675,16 @@ public class Functions {
 		return !hasMultiElements(src) && notEmptyCollection(src);
 	}
 	
+	public static <T, R> BiFunction toBiFunction(Function<T, R> f){
+		BiFunction<Function<T, R>, T, R> bfn
+			= (func, arg) -> func.apply(arg);
+		
+		return bfn;
+	}
+	
+	/**
+	 * @todo
+	 * 可変長引数を受け取れる関数型インタフェースが欲しい。
+	 */
+	
 }

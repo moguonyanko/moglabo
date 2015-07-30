@@ -900,7 +900,7 @@ public class TestFunctions {
 		int expected22 = 44;
 		assertThat(actual22, is(expected22));
 	}
-	
+
 	/**
 	 * @todo
 	 * 既存のコードにこのようなメソッドがあったとして，
@@ -912,6 +912,15 @@ public class TestFunctions {
 			return new BigInteger(String.valueOf(n));
 		} else {
 			return originalCalcFib(n - 1).add(originalCalcFib(n - 2));
+		}
+	}
+
+	private static BigInteger calcFibForMemoized(
+		Function<Integer, BigInteger> func, int n) {
+		if (n <= 1) {
+			return new BigInteger(String.valueOf(n));
+		} else {
+			return func.apply(n - 1).add(func.apply(n - 2));
 		}
 	}
 
@@ -933,21 +942,17 @@ public class TestFunctions {
 
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test(timeout = 1000)
-	public void メモ化して高速化する_フィボナッチ数列_既存メソッド利用版() {
-		/**
-		 * @todo
-		 * 無限ループになってしまう。
-		 */
+	public void メモ化して高速化する_フィボナッチ数列_既存メソッド利用検証版() {
 		int number = 100;
 		String expectedStr = "354224848179261915075";
 		BigInteger expected = new BigInteger(String.valueOf(expectedStr));
-		BigInteger actual = Memoizer.callMemoized(TestFunctions::originalCalcFib, number);
+		BigInteger actual = Memoizer.callMemoized(TestFunctions::calcFibForMemoized, number);
 
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
 	public void 特定の条件下で最も多く現れる単語を求める() {
 		List<Path> sources = Arrays.asList(
