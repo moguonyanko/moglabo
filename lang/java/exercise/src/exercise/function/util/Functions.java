@@ -682,9 +682,4 @@ public class Functions {
 		return bfn;
 	}
 	
-	/**
-	 * @todo
-	 * 可変長引数を受け取れる関数型インタフェースが欲しい。
-	 */
-	
 }

@@ -38,6 +38,7 @@ import exercise.function.util.Memoizer;
 import exercise.function.util.Node;
 import exercise.function.util.NodeColor;
 import exercise.function.util.Grapher;
+import exercise.function.util.NthFunction;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
 
@@ -1201,6 +1202,18 @@ public class TestFunctions {
 
 		boolean actual3 = Functions.isSingle(sample3);
 		assertFalse(actual3);
+	}
+
+	@Test
+	public void 可変長引数を扱う関数型インターフェースで計算できる() {
+		NthFunction<Integer, Integer> sumFunc
+			= (Integer... nums)
+			-> Arrays.asList(nums).stream().reduce(0, (n, m) -> n + m);
+
+		int expected = 15;
+		int actual = sumFunc.apply(1, 2, 3, 4, 5);
+
+		assertThat(actual, is(expected));
 	}
 
 }
