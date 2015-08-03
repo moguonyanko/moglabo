@@ -39,6 +39,7 @@ import exercise.function.util.Node;
 import exercise.function.util.NodeColor;
 import exercise.function.util.Grapher;
 import exercise.function.util.NthFunction;
+import exercise.function.util.ParamSupplier;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
 
@@ -74,7 +75,7 @@ public class TestFunctions {
 			this.name = name;
 			this.score = score;
 		}
-
+		
 		public int scoreDiff(Student other) {
 			return score - other.score;
 		}
@@ -1213,6 +1214,18 @@ public class TestFunctions {
 		int expected = 15;
 		int actual = sumFunc.apply(1, 2, 3, 4, 5);
 
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 引数を取るSupplierでインスタンスを生成できる(){
+		String sampleName = "TestUser";
+		int sampleScore = 100;
+		
+		ParamSupplier<Student, String, Integer> supplier = Student::new;
+		Student actual = supplier.get(sampleName, sampleScore);
+		Student expected = new Student(sampleName, sampleScore);
+		
 		assertThat(actual, is(expected));
 	}
 
