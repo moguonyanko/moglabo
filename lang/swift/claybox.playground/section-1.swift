@@ -1,6 +1,6 @@
 // Playground - noun: a place where people can play
 
-import UIKit
+//import UIKit
 
 func greet(){
     var str = "Hello, playground"
@@ -53,12 +53,15 @@ func linearCombination(a: Int, b: Int, x: Int, y: Int) -> Int {
     return a * x + b * y
 }
 
+func insertSort(data:Array<Int>){
+    /* @todo implement */
+}
+
 // Entry point
 
 func main(){
     let r1 = Rational(numer: 1, denom: 2)
     let r2 = Rational(numer: 1, denom: 2)
-    
     
     addRational(r1, r2)
 }
