@@ -5,6 +5,9 @@ import java.util.Map;
 
 /**
  * 述語を受け取るcarやcdrをPairのdefaultメソッドとして定義することも可能である。
+ * 
+ * 参考：
+ * 「計算機プログラムの構造と解釈 第2版」（ピアソン）
  */
 @FunctionalInterface
 public interface Pair<K, V> {

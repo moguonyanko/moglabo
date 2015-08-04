@@ -683,16 +683,8 @@ public class Functions {
 		return bfn;
 	}
 
-	/**
-	 * @todo
-	 * 同じ型の対しか生成できない。Functionの戻り値の型が1つに決まってしまうからである。
-	 * T型またはU型を返す，といった振る舞いを記述する方法はあるだろうか。
-	 * 対をクラスとして表現するしか無いかもしれない。
-	 */
 	public static <T, U> Pair<T, U> cons(T t, U u) {
-		Pair<T, U> pair = Pair.of(t, u);
-		
-		return pair;
+		return Pair.of(t, u);
 	}
 
 	public static <T, U> T car(Pair<T, U> cons) {
