@@ -1228,5 +1228,19 @@ public class TestFunctions {
 		
 		assertThat(actual, is(expected));
 	}
+	
+	@Test
+	public void 対を関数で表現できる(){
+		String foo = "Foo";
+		String bar = "Bar";
+		
+		Function<Integer, String> cons = Functions.cons(foo, bar);
+		
+		String actual1 = Functions.car(cons);
+		assertThat(actual1, is(foo));
+		
+		String actual2 = Functions.cdr(cons);
+		assertThat(actual2, is(bar));
+	}
 
 }

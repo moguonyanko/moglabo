@@ -31,6 +31,7 @@ import static java.util.stream.Collectors.*;
  * 「アルゴリズムとデータ構造」(SoftbankCreative)
  * 「Land of Lisp」(オライリー・ジャパン)
  * 「ANSI Common Lisp」(ピアソン)
+ * 「計算機プログラムの構造と解釈 第2版」（ピアソン）
  */
 public class Functions {
 
@@ -620,47 +621,47 @@ public class Functions {
 
 		return result;
 	}
-	
-	private static <T> boolean hasMultiElements(Collection<T> src){
+
+	private static <T> boolean hasMultiElements(Collection<T> src) {
 		/**
 		 * 1番目の要素を除外したStreamを得て，その最初の要素が
 		 * 存在するならば少なくとも2つ以上要素を持つコレクションである。
 		 * 要素がnullでないかどうかをチェックする方法では，意図的にnullを含む
 		 * コレクションで誤判定が発生する可能性がある。
-		 * 
+		 *
 		 * skipメソッドは<em>順序付けされた並列パイプライン</em>では
 		 * パフォーマンスが悪くなる可能性がある。
-		 * 
+		 *
 		 */
 		boolean hasMulti = src.stream()
 			.skip(1)
 			.findFirst()
 			.isPresent();
-		
+
 		return hasMulti;
 	}
-	
-	private static <T> boolean notEmptyCollection(Collection<T> src){
+
+	private static <T> boolean notEmptyCollection(Collection<T> src) {
 		/**
 		 * 1番目の要素だけ含むStreamを得て，その最初の要素が
 		 * 存在するならば空のコレクションではない。
-		 * 
+		 *
 		 * limitメソッドは<em>順序付けされた並列パイプライン</em>では
 		 * パフォーマンスが悪くなる可能性がある。
-		 * 
+		 *
 		 */
 		boolean notEmpty = src.stream()
 			.limit(1)
 			.findFirst()
 			.isPresent();
-		
+
 		return notEmpty;
 	}
 
 	/**
 	 * コレクションが要素を1つだけ持つかどうかを調べる。
 	 * 学習のため，以下に示す制約に従って実装している。
-	 * 
+	 *
 	 * <ul>
 	 * <li>sizeやcount, isEmptyといった要素の数を調べる既存のメソッドを使わないこと。</li>
 	 * <li>自分で数えないこと。</li>
@@ -674,12 +675,38 @@ public class Functions {
 		 */
 		return !hasMultiElements(src) && notEmptyCollection(src);
 	}
-	
-	public static <T, R> BiFunction toBiFunction(Function<T, R> f){
+
+	public static <T, R> BiFunction toBiFunction(Function<T, R> f) {
 		BiFunction<Function<T, R>, T, R> bfn
 			= (func, arg) -> func.apply(arg);
-		
+
 		return bfn;
 	}
-	
+
+	/**
+	 * @todo
+	 * 同じ型の対しか生成できない。Functionの戻り値の型が1つに決まってしまうからである。
+	 * T型またはU型を返す，といった振る舞いを記述する方法はあるだろうか。
+	 * 対をクラスとして表現するしか無いかもしれない。
+	 */
+	public static <T> Function<Integer, T> cons(T t1, T t2) {
+		return m -> {
+			if (m == 0) {
+				return t1;
+			} else if (m == 1) {
+				return t2;
+			} else {
+				throw new IllegalArgumentException("引数は0か1である必要があります。:" + m);
+			}
+		};
+	}
+
+	public static <T> T car(Function<Integer, T> cons) {
+		return cons.apply(0);
+	}
+
+	public static <T> T cdr(Function<Integer, T> cons) {
+		return cons.apply(1);
+	}
+
 }
