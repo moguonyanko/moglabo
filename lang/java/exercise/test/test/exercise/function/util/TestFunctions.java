@@ -1244,4 +1244,30 @@ public class TestFunctions {
 		assertThat(actual2, is(score));
 	}
 
+	@Test
+	public void 対の等値性を調査できる(){
+		String name = "Foo";
+		int score = 100;
+		
+		Pair<String, Integer> cons1 = Functions.cons(name, score);
+		Pair<String, Integer> cons2 = Functions.cons(name, score);
+		
+		assertEquals(cons1, cons2);
+	}
+	
+	@Test
+	public void 対の文字列表現を取得できる(){
+		String name = "Foo";
+		int score = 100;
+		
+		Pair<String, Integer> cons = Functions.cons(name, score);
+		
+		String expected = name + ":" + score;
+		String actual = cons.toString();
+		
+		System.out.println(actual);
+		
+		assertThat(actual, is(expected));
+	}
+	
 }

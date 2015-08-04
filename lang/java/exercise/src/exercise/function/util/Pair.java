@@ -2,18 +2,23 @@ package exercise.function.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
- * 述語を受け取るcarやcdrをPairのdefaultメソッドとして定義することも可能である。
- * 
+ * Mapを使って値の対を表現する関数型インターフェースです。
+ *
  * 参考：
  * 「計算機プログラムの構造と解釈 第2版」（ピアソン）
+ * 
+ * @todo
+ * 述語を受け取るcarやcdrをPairのdefaultメソッドとして定義することも
+ * 可能だが未実装である。
  */
 @FunctionalInterface
 public interface Pair<K, V> {
 
 	Map<K, V> get();
-	
+
 	/**
 	 * carとcdrはNoSuchElementExceptionを送出しないように
 	 * 値が無いときはnullを返している。
@@ -35,14 +40,56 @@ public interface Pair<K, V> {
 	 * staticメソッドから型変数KやVを参照することはできない。
 	 */
 	static <T, U> Pair<T, U> of(T t, U u) {
-		return () -> {
+		Pair<T, U> pair = new Pair<T, U>() {
 			/**
-			 * 1つのPairしか保持しないのでコンストラクタにサイズ1を指定する。 
+			 * 1組の値の対だけ保持するのでコンストラクタの引数にサイズ1を指定する。
 			 */
-			Map<T, U> m = new HashMap<>(1);
-			m.put(t, u);
-			return m;
+			private final Map<T, U> m = new HashMap<>(1);
+
+			/**
+			 * ここでPairの値の設定を行わないと，
+			 * get呼び出し前にtoString等が呼び出された時
+			 * 意図しない振る舞いを示す可能性がある。
+			 */
+			{
+				m.put(t, u);
+			}
+
+			@Override
+			public Map<T, U> get() {
+				return m;
+			}
+
+			@Override
+			public String toString() {
+				return car() + ":" + cdr();
+			}
+
+			@Override
+			public boolean equals(Object o) {
+				if(o instanceof Pair){
+					Pair<T, U> other = (Pair<T, U>)o;
+					return car().equals(other.car()) && cdr().equals(other.cdr());
+				}else{
+					return false;
+				}
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hash(m);
+			}
+
 		};
+
+		return pair;
 	}
 
+	/**
+	 * Objectクラスのメソッドのオーバーライドでもコンパイルエラーになる。
+	 */
+//	@Override
+//	public String toString(){
+//		return car() + ":" + cdr();
+//	}
 }
