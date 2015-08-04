@@ -39,6 +39,7 @@ import exercise.function.util.Node;
 import exercise.function.util.NodeColor;
 import exercise.function.util.Grapher;
 import exercise.function.util.NthFunction;
+import exercise.function.util.Pair;
 import exercise.function.util.ParamSupplier;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
@@ -1231,16 +1232,16 @@ public class TestFunctions {
 	
 	@Test
 	public void 対を関数で表現できる(){
-		String foo = "Foo";
-		String bar = "Bar";
+		String name = "Foo";
+		int score = 100;
 		
-		Function<Integer, String> cons = Functions.cons(foo, bar);
+		Pair<String, Integer> cons = Functions.cons(name, score);
 		
 		String actual1 = Functions.car(cons);
-		assertThat(actual1, is(foo));
+		assertThat(actual1, is(name));
 		
-		String actual2 = Functions.cdr(cons);
-		assertThat(actual2, is(bar));
+		int actual2 = Functions.cdr(cons);
+		assertThat(actual2, is(score));
 	}
 
 }

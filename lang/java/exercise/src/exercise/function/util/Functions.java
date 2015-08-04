@@ -689,24 +689,18 @@ public class Functions {
 	 * T型またはU型を返す，といった振る舞いを記述する方法はあるだろうか。
 	 * 対をクラスとして表現するしか無いかもしれない。
 	 */
-	public static <T> Function<Integer, T> cons(T t1, T t2) {
-		return m -> {
-			if (m == 0) {
-				return t1;
-			} else if (m == 1) {
-				return t2;
-			} else {
-				throw new IllegalArgumentException("引数は0か1である必要があります。:" + m);
-			}
-		};
+	public static <T, U> Pair<T, U> cons(T t, U u) {
+		Pair<T, U> pair = Pair.of(t, u);
+		
+		return pair;
 	}
 
-	public static <T> T car(Function<Integer, T> cons) {
-		return cons.apply(0);
+	public static <T, U> T car(Pair<T, U> cons) {
+		return cons.car();
 	}
 
-	public static <T> T cdr(Function<Integer, T> cons) {
-		return cons.apply(1);
+	public static <T, U> U cdr(Pair<T, U> cons) {
+		return cons.cdr();
 	}
 
 }
