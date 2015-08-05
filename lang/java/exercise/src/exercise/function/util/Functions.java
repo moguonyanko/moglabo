@@ -683,16 +683,4 @@ public class Functions {
 		return bfn;
 	}
 
-	public static <T, U> Pair<T, U> cons(T t, U u) {
-		return Pair.of(t, u);
-	}
-
-	public static <T, U> T car(Pair<T, U> cons) {
-		return cons.car();
-	}
-
-	public static <T, U> U cdr(Pair<T, U> cons) {
-		return cons.cdr();
-	}
-
 }

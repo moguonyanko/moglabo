@@ -1,21 +1,23 @@
 package exercise.function.util;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Mapを使って値の対を表現する関数型インターフェースです。
+ * 関数型インターフェースで定義する必要は無いですが，
+ * 調査・学習のため関数型インターフェースで定義しています。
  *
  * 参考：
  * 「計算機プログラムの構造と解釈 第2版」（ピアソン）
- * 
+ *
  * @todo
  * 述語を受け取るcarやcdrをPairのdefaultメソッドとして定義することも
  * 可能だが未実装である。
+ * Pair自身を直接Comparableにはできない。
+ * Pairが関数型インターフェースだからである。
  */
 @FunctionalInterface
-public interface Pair<K, V> {
+public interface Pair<K extends Comparable, V extends Comparable> {
 
 	Map<K, V> get();
 
@@ -39,57 +41,62 @@ public interface Pair<K, V> {
 	/**
 	 * staticメソッドから型変数KやVを参照することはできない。
 	 */
-	static <T, U> Pair<T, U> of(T t, U u) {
-		Pair<T, U> pair = new Pair<T, U>() {
-			/**
-			 * 1組の値の対だけ保持するのでコンストラクタの引数にサイズ1を指定する。
-			 */
-			private final Map<T, U> m = new HashMap<>(1);
+	static <T extends Comparable, U extends Comparable> Pair<T, U> of(T t, U u) {
+		
+		/**
+		 * ここでComparablePairを定義することでもComparablePairを
+		 * 隠蔽することは可能である。しかし読みにくくなる。
+		 * Comparableを実装させたいので無名クラスでは定義できない。
+		 */
+//		class ComparablePair<X extends Comparable, Y extends Comparable>
+//			implements Pair<X, Y>, Comparable<ComparablePair<X, Y>> {
+//
+//			/**
+//			 * 1組の値の対だけ保持するのでコンストラクタの引数にサイズ1を指定する。
+//			 */
+//			private final Map<X, Y> m = new HashMap<>(1);
+//
+//			ComparablePair(X x, Y y) {
+//				m.put(x, y);
+//			}
+//
+//			@Override
+//			public Map<X, Y> get() {
+//				return new HashMap<>(m);
+//			}
+//
+//			@Override
+//			public int compareTo(ComparablePair<X, Y> that) {
+//				if (this.car().equals(that.car())) {
+//					return this.cdr().compareTo(that.cdr());
+//				} else {
+//					return this.car().compareTo(that.car());
+//				}
+//			}
+//
+//			@Override
+//			public String toString() {
+//				return car() + ":" + cdr();
+//			}
+//
+//			@Override
+//			public boolean equals(Object o) {
+//				if (o instanceof Pair) {
+//					Pair<X, Y> other = (Pair<X, Y>) o;
+//					return car().equals(other.car()) && cdr().equals(other.cdr());
+//				} else {
+//					return false;
+//				}
+//			}
+//
+//			@Override
+//			public int hashCode() {
+//				return Objects.hash(m);
+//			}
+//
+//		}
 
-			/**
-			 * ここでPairの値の設定を行わないと，
-			 * get呼び出し前にtoString等が呼び出された時
-			 * 意図しない振る舞いを示す可能性がある。
-			 */
-			{
-				m.put(t, u);
-			}
-
-			@Override
-			public Map<T, U> get() {
-				return m;
-			}
-
-			@Override
-			public String toString() {
-				return car() + ":" + cdr();
-			}
-
-			@Override
-			public boolean equals(Object o) {
-				if(o instanceof Pair){
-					Pair<T, U> other = (Pair<T, U>)o;
-					return car().equals(other.car()) && cdr().equals(other.cdr());
-				}else{
-					return false;
-				}
-			}
-
-			@Override
-			public int hashCode() {
-				return Objects.hash(m);
-			}
-
-		};
-
-		return pair;
+		return new ComparablePair(t, u);
 	}
 
-	/**
-	 * Objectクラスのメソッドのオーバーライドでもコンパイルエラーになる。
-	 */
-//	@Override
-//	public String toString(){
-//		return car() + ":" + cdr();
-//	}
 }

@@ -1235,12 +1235,12 @@ public class TestFunctions {
 		String name = "Foo";
 		int score = 100;
 		
-		Pair<String, Integer> cons = Functions.cons(name, score);
+		Pair<String, Integer> cons = Pair.of(name, score);
 		
-		String actual1 = Functions.car(cons);
+		String actual1 = cons.car();
 		assertThat(actual1, is(name));
 		
-		int actual2 = Functions.cdr(cons);
+		int actual2 = cons.cdr();
 		assertThat(actual2, is(score));
 	}
 
@@ -1249,8 +1249,8 @@ public class TestFunctions {
 		String name = "Foo";
 		int score = 100;
 		
-		Pair<String, Integer> cons1 = Functions.cons(name, score);
-		Pair<String, Integer> cons2 = Functions.cons(name, score);
+		Pair<String, Integer> cons1 = Pair.of(name, score);
+		Pair<String, Integer> cons2 = Pair.of(name, score);
 		
 		assertEquals(cons1, cons2);
 	}
@@ -1260,12 +1260,38 @@ public class TestFunctions {
 		String name = "Foo";
 		int score = 100;
 		
-		Pair<String, Integer> cons = Functions.cons(name, score);
+		Pair<String, Integer> cons = Pair.of(name, score);
 		
 		String expected = name + ":" + score;
 		String actual = cons.toString();
 		
 		System.out.println(actual);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 対を比較することができる(){
+		String fooName = "foo", barName = "bar", bazName = "baz", fooName2 = "foo";
+		int fooAge = 18, barAge = 17, bazAge = 30, fooAge2 = 17;
+
+		List<Pair<String, Integer>> expected = Arrays.asList(
+			Pair.of(barName, barAge), 
+			Pair.of(bazName, bazAge), 
+			Pair.of(fooName2, fooAge2),
+			Pair.of(fooName, fooAge)
+		);
+		
+		List<Pair<String, Integer>> pairs = Arrays.asList(
+			Pair.of(fooName, fooAge), 
+			Pair.of(barName, barAge), 
+			Pair.of(bazName, bazAge), 
+			Pair.of(fooName2, fooAge2)
+		);
+		
+		List<Pair<String, Integer>> actual = pairs.stream()
+			.sorted()
+			.collect(toList());
 		
 		assertThat(actual, is(expected));
 	}
