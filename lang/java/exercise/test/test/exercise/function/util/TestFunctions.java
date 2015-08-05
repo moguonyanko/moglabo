@@ -1276,17 +1276,17 @@ public class TestFunctions {
 		int fooAge = 18, barAge = 17, bazAge = 30, fooAge2 = 17;
 
 		List<Pair<String, Integer>> expected = Arrays.asList(
-			Pair.of(barName, barAge), 
-			Pair.of(bazName, bazAge), 
-			Pair.of(fooName2, fooAge2),
-			Pair.of(fooName, fooAge)
+			Pair.ofComparable(barName, barAge), 
+			Pair.ofComparable(bazName, bazAge), 
+			Pair.ofComparable(fooName2, fooAge2),
+			Pair.ofComparable(fooName, fooAge)
 		);
 		
 		List<Pair<String, Integer>> pairs = Arrays.asList(
-			Pair.of(fooName, fooAge), 
-			Pair.of(barName, barAge), 
-			Pair.of(bazName, bazAge), 
-			Pair.of(fooName2, fooAge2)
+			Pair.ofComparable(fooName, fooAge), 
+			Pair.ofComparable(barName, barAge), 
+			Pair.ofComparable(bazName, bazAge), 
+			Pair.ofComparable(fooName2, fooAge2)
 		);
 		
 		List<Pair<String, Integer>> actual = pairs.stream()
