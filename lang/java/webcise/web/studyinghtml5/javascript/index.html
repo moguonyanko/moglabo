@@ -28,7 +28,7 @@
 						width: 200px;
 						height: 100px;
 					}
-					
+
 					#closure-sample-list li {
 						border: 1px green solid;
 						background-color: yellowgreen;
@@ -37,7 +37,7 @@
 						width: 100px;
 						cursor: pointer;
 					}
-					
+
 					#closure-sample-list li[data-list-value="3"] {
 						background-color: red;
 					}
@@ -491,7 +491,7 @@ function indirect(){
 						border-radius: 5px;
 						margin: 5px;
 					}
-					
+
 					ul.nodelist-sample-list {
 						margin: 5px;
 						width: 300px;
@@ -866,12 +866,12 @@ function indirect(){
 						height: 5em;
 						margin: 5px;
 					}
-					
+
 					div.stylesheet-sample-container:hover {
 						border: 2px solid red;
 						background-color: lightpink;
 					}
-					
+
 					div.style-result-info-area {
 						border: solid lightgrey 1px;
 						width: 500pt;
@@ -917,6 +917,48 @@ function indirect(){
 					<button id="clear-typed-array-element">クリア</button>
 				</div>
 				<script src="typedarray.js"></script>
+			</section>
+			<section>
+				<h2>Promise</h2>
+				<div>
+					<p>
+						Promiseを使って非同期処理を実行する。<br />
+						Promiseコンストラクタに渡した関数は即時呼び出される。
+					</p>
+					<div>
+						<label>引数1:<input type="number" name="promise-parameter" value="1" /></label>
+						<label>引数2:<input type="number" name="promise-parameter" value="2" /></label>
+						<label>引数3:<input type="number" name="promise-parameter" value="3" /></label>
+						<div>
+							<label>
+								<input type="radio" name="promise-operator" value="add" checked="checked" /><span>加算</span>
+							</label>
+							<label>
+								<input type="radio" name="promise-operator" value="sub" /><span>減算</span>
+							</label>
+							<label>
+								<input type="radio" name="promise-operator" value="mul" /><span>乗算</span>
+							</label>
+							<label>
+								<input type="radio" name="promise-operator" value="div" /><span>除算</span>
+							</label>
+						</div>
+						<div>
+							<label>タイムアウト時間(ミリ秒):<input id="promise-timeout-seconds" type="number" value="1000" required="required" /></label>
+						</div>
+						<div>
+							<label><button id="promise-runner">計算実行</button></label>
+						</div>
+					</div>
+				</div>
+				<div>
+					<textarea id="promise-result-area" 
+							  readonly="readonly" cols="80" rows="5"></textarea>
+				</div>
+				<div>
+					<button id="clear-promise-element">クリア</button>
+				</div>
+				<script src="promise.js"></script>
 			</section>
 		</div>
 

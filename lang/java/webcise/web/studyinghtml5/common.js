@@ -106,6 +106,14 @@
 
 				return null;
 			},
+			values : function(eles){
+				var vals = [];
+				Array.prototype.forEach.call(eles, function(el){
+					vals.push(el.value);
+				});
+				
+				return vals;
+			},
 			freeze : function(obj, names) {
 				if (!names) {
 					/**
