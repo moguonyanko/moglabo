@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Promise</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="../../favicon.ico" />
+	</head>
+	<body>
+		<header role="banner">
+			<h1>Promise</h1>
+			<p>Promiseの調査</p>
+		</header>
+
+		<div role="main">
+			<section>
+				<h2>Promise</h2>
+				<div>
+					<p>
+						Promiseを使って非同期処理を実行する。<br />
+						Promiseコンストラクタに渡した関数は即時呼び出される。
+					</p>
+					<div>
+						<label>引数1:<input type="number" name="promise-parameter" value="1" /></label>
+						<label>引数2:<input type="number" name="promise-parameter" value="2" /></label>
+						<label>引数3:<input type="number" name="promise-parameter" value="3" /></label>
+						<div>
+							<label>
+								<input type="radio" name="promise-operator" value="add" checked="checked" /><span>加算</span>
+							</label>
+							<label>
+								<input type="radio" name="promise-operator" value="sub" /><span>減算</span>
+							</label>
+							<label>
+								<input type="radio" name="promise-operator" value="mul" /><span>乗算</span>
+							</label>
+							<label>
+								<input type="radio" name="promise-operator" value="div" /><span>除算</span>
+							</label>
+						</div>
+						<div>
+							<label>タイムアウト時間(ミリ秒):<input id="promise-timeout-seconds" type="number" value="1000" required="required" /></label>
+						</div>
+						<div>
+							<label><button id="promise-runner">計算実行</button></label>
+						</div>
+					</div>
+				</div>
+				<div>
+					<textarea id="promise-result-area" 
+							  readonly="readonly" cols="80" rows="5"></textarea>
+				</div>
+				<div>
+					<button id="clear-promise-element">クリア</button>
+				</div>
+			</section>
+		</div>
+
+		<footer role="contentinfo">
+			<small>Copyright &copy; 2015- moguonyanko All rights reserved.</small>
+		</footer>
+
+		<script src="/webcise/common.js"></script>
+		<script src="promise.js"></script>
+	</body>
+</html>
