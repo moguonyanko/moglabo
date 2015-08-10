@@ -58,7 +58,11 @@
 		 * enumerableをfalseにする。
 		 * 
 		 * 本当に公開したくないprivateなプロパティは，書き込み(writable)と
-		 * 設定(configurable)を不可にするだけでなく列挙(enumerable)も不可にする。
+		 * 設定(configurable)を不可にするだけでなく列挙(enumerable)も不可に
+		 * した方が良い。
+		 * 列挙不可にするとfor文による列挙はされなくなるが，
+		 * プロパティ名を直接指定することによる読み取りは行える。
+		 * つまりenumerable=falseはprivateではない。
 		 * なお設定不可のオブジェクトを後からdefinePropertyで
 		 * 列挙不可に設定することはできない。
 		 */
