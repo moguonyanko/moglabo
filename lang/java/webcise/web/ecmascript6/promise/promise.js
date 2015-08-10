@@ -12,6 +12,10 @@
 	 */
 	function resolve(res) {
 		m.println(resultArea, "計算結果=" + res.result);
+		/**
+		 * 返した値は後続のthenメソッドの引数に渡された関数で参照できる。
+		 */
+		return res;
 	}
 
 	/**
@@ -24,6 +28,8 @@
 		/**
 		 * Firefox39ではthrowされたErrorがブラウザのデバッガに通知されるまでに
 		 * 数秒から数十秒かかる。
+		 * 
+		 * throwしたErrorは後続のcatchメソッドの引数に渡された関数で参照できる。
 		 */
 		throw err;
 	}
@@ -34,21 +40,15 @@
 	 * この時の呼び出される関数の引数はundefinedになっている。
 	 */
 	function logging(res) {
-		var date = new Date(),
-			status = res ? res.status : "",
-			msg = res ? res.message : "";
-
 		var logs = [
-			date,
-			"Promiseによる計算が終了しました。",
-			msg
+			new Date(),
+			((res || {}).message || ""),
+			((res || {}).status || "")
 		];
-
-		if (status) {
-			logs.push(status);
-		}
-
+		
 		m.log(logs.join(separator));
+		
+		return res;
 	}
 
 	function PromiseError(baseMsg, result) {
@@ -80,8 +80,17 @@
 				enumerable : false,
 				configurable : false
 			},
+			/**
+			 * resultとstatusはfreezeされた状態と同じ。
+			 */
 			result : {
 				value : result || {},
+				writable : false,
+				enumerable : true,
+				configurable : false
+			},
+			status : {
+				value : (result || {}).status,
 				writable : false,
 				enumerable : true,
 				configurable : false
@@ -101,12 +110,13 @@
 	Object.defineProperties(PromiseError.prototype, {
 		message : {
 			get : function() {
-				var msg = [
-					this.rawMessage,
-					this.getStatus()
-				];
-
-				return msg.join(" ");
+				/**
+				 * PromiseErrorオブジェクト共通の説明をエラーメッセージに付ける。
+				 * 正常終了時とログ出力の流れを揃えるためにstatusはここでは付与せず
+				 * logging関数内で付与する。PromiseErrorがstatusプロパティを
+				 * 持っているのはそのためである。
+				 */
+				return "Promiseの処理中にエラーが発生しました。" + this.rawMessage;
 			},
 			/**
 			 * rawMessageを列挙不可にし整形されたmessageを列挙可にする。
@@ -115,10 +125,6 @@
 			configurable : false
 		}
 	});
-
-	PromiseError.prototype.getStatus = function() {
-		return this.result.status;
-	};
 
 	function promiseFunc(resolve, reject) {
 		m.log(new Date() + separator + "Promiseの準備を開始します。");
@@ -172,6 +178,8 @@
 		/**
 		 * Promiseの成否に関わらず呼び出したい関数はthenとcatchの両方に
 		 * 渡しておかなければならない。finally的な関数は無いのか？
+		 * thenにもcatchにも渡す関数(ここではlogging)の引数のインターフェースは
+		 * 統一されているべきである。
 		 */
 		promise.then(resolve)
 			.then(logging)
