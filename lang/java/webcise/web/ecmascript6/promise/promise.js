@@ -52,28 +52,48 @@
 	}
 
 	function PromiseError(baseMsg, result) {
-		this.result = result || {};
-		//this.message = PromiseError.formatMessage(baseMsg, this.result);
-		this.rawMessage = baseMsg;
+		/**
+		 * Object.freezeはenumerableをfalse(列挙不可)にはしない。
+		 * 列挙も不可にしたい場合はdefineProperty等を使い自分で
+		 * enumerableをfalseにする。
+		 * 
+		 * 本当に公開したくないprivateなプロパティは，書き込み(writable)と
+		 * 設定(configurable)を不可にするだけでなく列挙(enumerable)も不可にする。
+		 * なお設定不可のオブジェクトを後からdefinePropertyで
+		 * 列挙不可に設定することはできない。
+		 */
+		Object.defineProperties(this, {
+			/**
+			 * 元のエラーメッセージを保持するrawMessageプロパティは，
+			 * ・書き込み不可
+			 * ・列挙不可
+			 * ・設定不可(プロパティの追加，編集，削除不可)
+			 * にする。
+			 */
+			rawMessage : {
+				value : baseMsg,
+				writable : false,
+				enumerable : false,
+				configurable : false
+			},
+			result : {
+				value : result || {},
+				writable : false,
+				enumerable : true,
+				configurable : false
+			}
+		});
 	}
-
-	/**
-	 * definePropertiesを使わず以下の静的メソッドを使うことでも
-	 * エラーメッセージの整形は行える。ただし静的メソッドだと公開されてしまう。
-	 * 静的メソッドが完全にオブジェクト内部で使うためだけのヘルパーメソッドで
-	 * あった場合はdefinePropertiesを使う方が良いかもしれない。
-	 */
-//	PromiseError.formatMessage = function(message, result) {
-//		var msg = [
-//			message,
-//			result.status
-//		];
-//
-//		return msg.join(" ");
-//	};
 
 	PromiseError.prototype = Object.create(Error.prototype);
 
+	/**
+	 * definePropertiesを使わず静的なヘルパーメソッドを使うことでも
+	 * エラーメッセージの整形は行える。ただし静的メソッドは公開される。
+	 * 静的メソッドがオブジェクト内部で使うためだけのヘルパーメソッドだった場合は
+	 * definePropertyやdefinePropertiesを使ってプロパティ記述子を
+	 * 設定する方が良いかもしれない。
+	 */
 	Object.defineProperties(PromiseError.prototype, {
 		message : {
 			get : function() {
@@ -84,7 +104,10 @@
 
 				return msg.join(" ");
 			},
-			enumerable : true, 
+			/**
+			 * rawMessageを列挙不可にし整形されたmessageを列挙可にする。
+			 */
+			enumerable : true,
 			configurable : false
 		}
 	});
