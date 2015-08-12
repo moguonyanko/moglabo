@@ -45,9 +45,9 @@
 			((res || {}).message || ""),
 			((res || {}).status || "")
 		];
-		
+
 		m.log(logs.join(separator));
-		
+
 		return res;
 	}
 
@@ -188,6 +188,96 @@
 
 		m.log(new Date() + separator + "Promiseの関数を設定しました。");
 	}
+	
+	/**
+	 * Promiseの拡張テスト
+	 */
+//	Promise.prototype.finally = function(func, opt_value){
+//		var fn = function(value){
+//			func(value);
+//			return opt_value || value;
+//		};
+//		
+//		this.then(fn);
+//		this.catch(fn);
+//	};
+	
+	function preparePromise(chainEle){
+		/**
+		 * Promise.resolveやPromise.rejectだと
+		 * 成功・失敗毎のPromiseを生成することになる。
+		 */
+		if(chainEle.checked){
+			return Promise.resolve({
+				then: function(resolve, reject){
+					resolve(chainEle.value + " Promise 成功");
+				}
+			});
+		}else{
+			return Promise.reject({
+				then: function(resolve, reject){
+					reject(chainEle.value + " Promise 失敗");
+				}
+			});
+		}
+	}
+	
+	function getChainPromise(chainEle){
+		return new Promise(function(resolve, reject){
+			if(chainEle.checked){
+				resolve(chainEle.value + " Promise 成功");
+			}else{
+				reject(chainEle.value + " Promise 失敗");
+			}
+		});
+	}
+	
+	function chainPromises() {
+		var chains = m.refs("promise-state-check"),
+			ps = Array.prototype.map.call(chains, getChainPromise);
+		
+		m.log(ps);
+		
+		/* Firefox39で試したところletがシンタックスエラーになった。 */
+//		let [p1, p2, p3] = ps;
+//		
+//		p1.then(function(){
+//			return p2;
+//		}).then(function(){
+//			return p3;
+//		});
+
+		var func = function(value) {
+			m.println(resultArea, value);
+			return value;
+		};
+		
+		var returnPromiseFunc = function(fn, promise){
+			return function(value){
+				fn(value);
+				return promise;
+			};
+		};
+
+		for (var pIdx = 0, pSize = ps.length; pIdx < pSize; pIdx++) {
+			var current = ps[pIdx],
+				next = ps[pIdx + 1];
+
+			if (next) {
+				var fn = returnPromiseFunc(function(value) {
+					func(value);
+				}, next);
+
+				/**
+				 * rejectされたPromiseの処理はcatchの関数で行われ，
+				 * その後thenの関数の処理が行われる。
+				 */
+				current.catch(fn).then(fn);
+			} else {
+				current.catch(func).then(func);
+			}
+		}
+	}
 
 	(function() {
 		m.addListener(m.ref("promise-runner"), "click", run, false);
@@ -195,6 +285,8 @@
 		m.addListener(m.ref("clear-promise-element"), "click", function() {
 			m.print(resultArea, "", true);
 		}, false);
+		
+		m.addListener(m.ref("promise-chain-runner"), "click", chainPromises, false);
 	}());
 
 }(window, document, my));

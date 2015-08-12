@@ -5,6 +5,7 @@
 		<title>Promise</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="shortcut icon" href="../../favicon.ico" />
+		<link rel="stylesheet" href="promise.css" />
 	</head>
 	<body>
 		<header role="banner">
@@ -12,7 +13,17 @@
 			<p>Promiseの調査</p>
 		</header>
 
-		<div role="main">
+		<div class="promise-result-container">
+			<div>
+				<textarea id="promise-result-area" 
+						  readonly="readonly" cols="80" rows="10"></textarea>
+			</div>
+			<div class="promise-result-control-panel">
+				<button id="clear-promise-element">クリア</button>
+			</div>
+		</div>
+
+		<div role="main" class="main-container">
 			<section>
 				<h2>Promiseの生成と評価</h2>
 				<div>
@@ -46,12 +57,22 @@
 						</div>
 					</div>
 				</div>
+			</section>
+			<section>
+				<h2>Promiseのチェーン</h2>
 				<div>
-					<textarea id="promise-result-area" 
-							  readonly="readonly" cols="80" rows="5"></textarea>
-				</div>
-				<div>
-					<button id="clear-promise-element">クリア</button>
+					<p>
+						Promiseを値の代わりに返してチェーンにすることができる。
+					</p>
+					<div>
+						<p>成功(resolve)させるPromiseにはチェックを入れる</p>
+						<label><input type="checkbox" name="promise-state-check" value="chain1" checked="checked" />Promise1</label>
+						<label><input type="checkbox" name="promise-state-check" value="chain2" checked="checked" />Promise2</label>
+						<label><input type="checkbox" name="promise-state-check" value="chain3" checked="checked" />Promise3</label>
+					</div>
+					<div>
+						<label><button id="promise-chain-runner">Promiseチェーンテスト実行</button></label>
+					</div>
 				</div>
 			</section>
 		</div>
