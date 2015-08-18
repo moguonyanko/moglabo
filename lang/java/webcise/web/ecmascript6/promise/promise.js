@@ -5,7 +5,9 @@
 		timeoutEle = m.ref("promise-timeout-seconds");
 
 	var separator = ",";
-
+	
+	var resultCanvases = m.selectAll(".promise-result-canvas");
+	
 	/**
 	 * Promiseの処理中にエラーが発生した時はthenに渡した関数は
 	 * 自分で直接呼び出していない限り呼び出されない。
@@ -278,6 +280,62 @@
 			}
 		}
 	}
+	
+	function drawImage(img, onScreenCanvas){
+		var offScreenCanvas = doc.createElement("canvas");
+		offScreenCanvas.width = onScreenCanvas.width;
+		offScreenCanvas.height = onScreenCanvas.height;
+		var offCtx = offScreenCanvas.getContext("2d");
+		offCtx.drawImage(img, 0, 0);
+		
+		var onCtx = onScreenCanvas.getContext("2d");
+		onCtx.clearRect(0, 0, onScreenCanvas.width, onScreenCanvas.height);
+
+		var offImg = offCtx.getImageData(0, 0, offScreenCanvas.width, offScreenCanvas.height);
+		onCtx.putImageData(offImg, 0, 0);
+	}
+	
+	function createImage(url, onloadCallback, onerrorCallback){
+		var img = new Image();
+		img.onload = function(evt){
+			onloadCallback(this);
+		};
+		img.onerror = onerrorCallback;
+		
+		var noCache = new Date().getTime();
+		img.src = url + "?" + noCache;
+	}
+	
+	function clearPromiseImage(){
+		Array.prototype.forEach.call(resultCanvases, function(cvs){
+			cvs.getContext("2d").clearRect(0, 0, cvs.width, cvs.height);
+		});
+	}
+	
+	function drawPromiseImage(){
+		var p1 = new Promise(function(resolve, reject){
+			createImage("star1.jpg", resolve, reject);
+		});
+		var p2 = new Promise(function(resolve, reject){
+			createImage("star2.jpg", resolve, reject);
+		});
+		var p3 = new Promise(function(resolve, reject){
+			createImage("star3.jpg", resolve, reject);
+		});
+		
+		/**
+		 * Promise.allの引数の配列要素の順序はthenが受け取る配列要素の順序と
+		 * 一致する。各Promiseの処理は並列で行われているのか，コールバックを
+		 * 入れ子にした時のように順次行われているのかは不明である。
+		 */
+		var pAll = Promise.all([p1, p2, p3]);
+		
+		pAll.then(function(values){
+			values.forEach(function(img, idx, imgs){
+				drawImage(img, resultCanvases[idx]);
+			});
+		});
+	}
 
 	(function() {
 		m.addListener(m.ref("promise-runner"), "click", run, false);
@@ -287,6 +345,9 @@
 		}, false);
 		
 		m.addListener(m.ref("promise-chain-runner"), "click", chainPromises, false);
+		
+		m.addListener(m.ref("promise-image-downloader"), "click", drawPromiseImage, false);
+		m.addListener(m.ref("promise-image-clearer"), "click", clearPromiseImage, false);
 	}());
 
 }(window, document, my));

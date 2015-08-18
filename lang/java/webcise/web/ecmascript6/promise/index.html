@@ -75,6 +75,34 @@
 					</div>
 				</div>
 			</section>
+			<section>
+				<h2>Promiseをまとめて処理</h2>
+				<p>
+					Promiseをまとめて処理するためのAPIがある。
+				</p>
+				<section>
+					<h3>Promise.all()</h3>
+					<p>
+						Promiseを配列で受け取り，各々の処理結果を含む配列をthenの引数で受け取る。<br />
+						<strong>
+							Promise.allの引数に渡したPromise配列の順序と処理結果の配列の順序は一致する。
+						</strong>
+					</p>
+					<div>
+						<canvas class="promise-result-canvas" width="800" height="200"></canvas>
+						<canvas class="promise-result-canvas" width="800" height="200"></canvas>
+						<canvas class="promise-result-canvas" width="800" height="200"></canvas>
+					</div>
+					<div>
+						<label>
+							<button id="promise-image-downloader">ダウンロード</button>
+						</label>
+						<label>
+							<button id="promise-image-clearer">クリア</button>
+						</label>
+					</div>
+				</section>
+			</section>
 		</div>
 
 		<footer role="contentinfo">

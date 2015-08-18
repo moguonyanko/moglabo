@@ -12,6 +12,11 @@
 	width: 100%;
 }
 
+.promise-result-canvas {
+	border: 1px gold solid;
+	background-color: white;
+}
+
 #promise-result-area {
 	width: 100%;
 	/*border: none;*/

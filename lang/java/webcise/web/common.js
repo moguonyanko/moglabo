@@ -56,6 +56,9 @@
 				 */
 				return (doc || document).getElementsByName(name) || [];
 			},
+			selectAll : function(selector, doc){
+				return (doc || document).querySelectorAll(selector);
+			},
 			export : function(name, ns) {
 				win[name] = ns;
 			},
