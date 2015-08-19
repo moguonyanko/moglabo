@@ -336,6 +336,45 @@
 			});
 		});
 	}
+	
+	function downloadPromiseRace(){
+		var imgContainer = m.ref("promise-race-result");
+		imgContainer.innerHTML = "";
+		var checks = m.refs("promise-download-image-check");
+		
+		var ps = Array.prototype.map.call(checks, function(el){
+			var imgName = el.value; 
+			if(!el.checked){
+				imgName += "_reject";
+			}
+			imgName += ".jpg";
+			
+			var p = new Promise(function(resolve, reject){
+				var img = new Image();
+				img.onload = function(evt){
+					resolve(this);
+				};
+				img.onerror = function(iamge){
+					reject(new Error(this.src + "のダウンロードに失敗しました。"));
+				};
+				img.src = imgName;
+			});
+			
+			return p;
+		});
+		
+		var allPs = Promise.race(ps);
+		
+		/**
+		 * 先に成功するPromiseがあれば，その後で失敗するPromiseがあったとしても
+		 * thenだけが処理されcatchは無視される。
+		 */
+		allPs.then(function(value){
+			imgContainer.appendChild(value);
+		}).catch(function(err){
+			m.println(resultArea, err.message);
+		});
+	}
 
 	(function() {
 		m.addListener(m.ref("promise-runner"), "click", run, false);
@@ -348,6 +387,8 @@
 		
 		m.addListener(m.ref("promise-image-downloader"), "click", drawPromiseImage, false);
 		m.addListener(m.ref("promise-image-clearer"), "click", clearPromiseImage, false);
+		
+		m.addListener(m.ref("promise-race-downloader"), "click", downloadPromiseRace, false);
 	}());
 
 }(window, document, my));

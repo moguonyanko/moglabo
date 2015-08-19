@@ -5,11 +5,16 @@
 }
 
 .promise-result-container {
-	width: 100%;
+	position: fixed;
+	top: 0%;
+	left: 50%;
+	width: 50%;
+	border: solid 2px gray;
+	border-radius: 5px;
 }
 
 .promise-result-control-panel {
-	width: 100%;
+	/*width: 50%;*/
 }
 
 .promise-result-canvas {
@@ -18,8 +23,10 @@
 }
 
 #promise-result-area {
-	width: 100%;
-	/*border: none;*/
+	height: 150px;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	background-color: rgba(204, 255, 255, 0.9);
 }
 
 #clear-promise-element {

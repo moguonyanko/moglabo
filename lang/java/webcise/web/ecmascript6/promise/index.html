@@ -15,8 +15,7 @@
 
 		<div class="promise-result-container">
 			<div>
-				<textarea id="promise-result-area" 
-						  readonly="readonly" cols="80" rows="10"></textarea>
+				<div id="promise-result-area"></div>
 			</div>
 			<div class="promise-result-control-panel">
 				<button id="clear-promise-element">クリア</button>
@@ -100,6 +99,40 @@
 						<label>
 							<button id="promise-image-clearer">クリア</button>
 						</label>
+					</div>
+				</section>
+				<section>
+					<h3>Promise.race()</h3>
+					<p>
+						Promiseを配列で受け取り，最初にresolveあるいはrejectした
+						Promiseの処理結果をthenあるいはcatchの引数で受け取る。
+					</p>
+					<div>
+						<p>
+							成功(resolve)させるダウンロードにチェックを入れる。
+						</p>
+						<div>
+							<label>
+								<input name="promise-download-image-check" 
+									   type="checkbox" value="star1" checked="checked" />star1
+							</label>
+							<label>
+								<input name="promise-download-image-check" 
+									   type="checkbox" value="star2" checked="checked" />star2
+							</label>
+							<label>
+								<input name="promise-download-image-check" 
+									   type="checkbox" value="star3" checked="checked" />star3
+							</label>
+						</div>
+						<div>
+							<label>
+								<button id="promise-race-downloader">ダウンロード</button>
+							</label>
+						</div>
+						<div id="promise-race-result">
+							
+						</div>
 					</div>
 				</section>
 			</section>
