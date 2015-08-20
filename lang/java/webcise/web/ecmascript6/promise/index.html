@@ -107,6 +107,11 @@
 						Promiseを配列で受け取り，最初にresolveあるいはrejectした
 						Promiseの処理結果をthenあるいはcatchの引数で受け取る。
 					</p>
+					<p>
+						引数のPromise群は並列に処理される。<br />
+						成功するPromiseより先に失敗するPromiseが現れた場合は
+						catchが呼び出されて，その他のPromiseの処理結果は全て無視される。
+					</p>
 					<div>
 						<p>
 							成功(resolve)させるダウンロードにチェックを入れる。
@@ -131,10 +136,46 @@
 							</label>
 						</div>
 						<div id="promise-race-result">
-							
+							ダウンロード結果表示領域
 						</div>
 					</div>
 				</section>
+			</section>
+			<section>
+				<h2>Promiseによる非同期処理</h2>
+				<p>
+					Promiseで非同期処理を記述することで
+					変数のスコープを小さくしたりコードをシンプルにできるらしい。
+				</p>
+				<div>
+					<div>
+						<label>
+							<input id="promise-prime-check" type="checkbox" checked="checked" />計算を終了する
+						</label>
+						<label>
+							<span>得る素数の個数</span><input id="promise-prime-limit-size" type="number" value="5" />
+						</label>
+					</div>
+					<div>
+						<p>promise-prime-number1</p>
+						<label>
+							<input id="promise-prime-number1" class="promise-prime-number" type="number" value="1" />
+						</label>
+						<p>promise-prime-number2</p>
+						<label>
+							<input id="promise-prime-number2" class="promise-prime-number" type="number" value="10" />
+						</label>
+						<p>promise-prime-number3</p>
+						<label>
+							<input id="promise-prime-number3" class="promise-prime-number" type="number" value="20" />
+						</label>
+					</div>
+				</div>
+				<div>
+					<label>
+						<button id="promise-prime-calc-executer">計算実行</button>
+					</label>
+				</div>
 			</section>
 		</div>
 
