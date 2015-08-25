@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Generator</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="shortcut icon" href="../../favicon.ico" />
+		<link rel="stylesheet" href="generator.css" />
+	</head>
+	<body>
+		<header role="banner">
+			<h1>Generator</h1>
+			<p>ジェネレータの調査</p>
+		</header>
+
+		<div role="main" class="main-container">
+			<section>
+				<h2>ジェネレータの生成</h2>
+				<p>
+					yieldキーワードを含む関数はジェネレータ関数になる。
+				</p>
+				<div>
+					<label>
+						<span>カウンタの結果:</span>
+						<input type="text" readonly="readonly" id="count-result" value="" />
+					</label>
+					<button id="get-generator-count">値取得</button>
+					<button id="reset-generator-count">リセット</button>
+				</div>
+			</section>
+		</div>
+
+		<footer role="contentinfo">
+			<small>Copyright &copy; 2015- moguonyanko All rights reserved.</small>
+		</footer>
+
+		<script src="/webcise/common.js"></script>
+		<script type="application/javascript;version=1.7" src="generator.js"></script>
+	</body>
+</html>

@@ -525,7 +525,7 @@
 
 		promiseAll(ps);
 	}
-
+	
 	(function() {
 		m.addListener(m.ref("promise-runner"), "click", run, false);
 
