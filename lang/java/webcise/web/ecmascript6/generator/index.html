@@ -17,7 +17,7 @@
 			<section>
 				<h2>ジェネレータの生成</h2>
 				<p>
-					yieldキーワードを含む関数はジェネレータ関数になる。
+					yield式を含む関数はジェネレータ関数になる。
 				</p>
 				<div>
 					<label>
@@ -26,6 +26,21 @@
 					</label>
 					<button id="get-generator-count">値取得</button>
 					<button id="reset-generator-count">リセット</button>
+				</div>
+			</section>
+			<section>
+				<h2>ジェネレータに引数を渡す</h2>
+				<p>
+					ジェネレータのsendに渡した引数をyield式で受け取ることができる。
+				</p>
+				<label>読む行数<input id="read-byte-size" type="number" value="1" min="1" /></label>
+				<button id="run-file-reader">ファイルを読む</button>
+				<button id="close-file-reader">ファイルを閉じる</button>
+				<button id="clear-read-result">クリア</button>
+				<div>
+					<label>
+						<textarea id="result-read-area" rows="10" cols="80"></textarea>
+					</label>
 				</div>
 			</section>
 		</div>

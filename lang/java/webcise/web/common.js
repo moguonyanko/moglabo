@@ -147,6 +147,15 @@
 					fragment.appendChild(el);
 				});
 				parentEle.appendChild(fragment);				
+			},
+			createWebSocket : function (resourceName) {
+				var host = location.host,
+					port = 8080;
+
+				return new WebSocket("ws://" + host + ":" + port + "/webcise/" + resourceName);
+			},
+			clickListener : function(id, listener, opt_cap){
+				this.addListener(this.ref(id), "click", listener, opt_cap || false);
 			}
 		};
 	}

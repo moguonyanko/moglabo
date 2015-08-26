@@ -497,7 +497,10 @@
 		var ps = Array.prototype.map.call(inputs, function(el) {
 			return getPrimePromise(el.id, el.value, getPromiseLimitSize());
 		});
-
+		
+		/**
+		 * Promiseを毎回newしていてもthenは1回しか呼び出されないことがある。
+		 */
 		var promiseAll = function(ps) {
 			var allPs = Promise.all(ps);
 
