@@ -1,7 +1,25 @@
-(function (win, doc, m) {
-	"use strict";
+(function(win, doc, m, factory){
+	/**
+	 * "use strict"をここに記述しても引数の関数内部には影響を与えられない。
+	 */
+	
+	var mygenerator = win.mygenerator;
 
-	function createCounter(limit) {
+	if(typeof mygenerator === "object" && typeof mygenerator.init === "object"){
+		m.log(navigator.userAgent + "ではmygenerator名前空間の初期化は完了しています。");
+	}else{
+		win.mygenerator = factory(win, doc, m);
+	}
+	
+}(window, document, my, function (win, doc, m) {
+	"use strict";
+	
+	/**
+	 * アスタリスクをfunctionキーワードの後ろに付けることで
+	 * ジェネレータ関数を定義する。yield式を含む関数の宣言部に
+	 * アスタリスクが付いていないとChrome44ではシンタックスエラーになる。
+	 */
+	function* createCounter(limit) {
 		for (var i = 0; i < limit; i++) {
 			yield i + 1;
 		}
@@ -17,7 +35,10 @@
 
 		m.addListener(countGetter, "click", function (evt) {
 			try {
-				var num = nowCounter.next();
+				/**
+				 * ジェネレータの最新の値はvalueプロパティから取得する。
+				 */
+				var num = nowCounter.next().value;
 				countResult.value = num;
 			} catch (err) {
 				if (err instanceof StopIteration) {
@@ -36,14 +57,16 @@
 		}, false);
 	}
 
-	function createMyReader(ws, lineSize) {
+	function* createMyReader(ws, lineSize) {
 		if (ws.readyState !== WebSocket.OPEN) {
 			return;
 		}
 		
 		/**
 		 * 無限ループにすることによってStopIterationを送出させない。
-		 * ジェネレータのsendメソッドに渡された引数はyield式の左辺で受け取られる。
+		 * ジェネレータのnextメソッドに渡された引数はyield式の左辺で受け取られる。
+		 * この時のnextメソッドの戻り値のvalueプロパティにはyield式の左辺値が
+		 * 割り当てられる。
 		 */
 		while(true)	{
 			let newSize = yield lineSize;
@@ -68,7 +91,7 @@
 
 		/**
 		 * @todo
-		 * WebSocketをopenした直後は3回ボタンをクリックしないと
+		 * WebSocketをopenした直後は2回ボタンをクリックしないと
 		 * ファイルを読まない。
 		 */
 		m.clickListener("run-file-reader", function () {
@@ -77,6 +100,8 @@
 
 				ws.onopen = function () {
 					reader = createMyReader(this, getLineSize());
+					var val = reader.next().value;
+					m.log(val + "行から読み始めます。");
 				};
 
 				ws.onclose = function (evt) {
@@ -94,7 +119,11 @@
 					m.println(resultArea, "読み込み失敗");
 				};
 			}else{
-				reader && reader.send(getLineSize());
+				/**
+				 * nextメソッドに引数を渡せばyield式に引数を渡すことができる。
+				 * sendメソッドはECMAScript6の標準には存在しない。
+				 */
+				reader && reader.next(getLineSize());
 			}
 		});
 
@@ -114,6 +143,10 @@
 		initFileReader();
 	}
 
-	m.addListener(doc, "DOMContentLoaded", init, false);
+	return {
+		init : init
+	};
+	
+}
+));
 
-}(window, document, my));

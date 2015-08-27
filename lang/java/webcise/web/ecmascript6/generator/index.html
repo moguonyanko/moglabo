@@ -31,7 +31,7 @@
 			<section>
 				<h2>ジェネレータに引数を渡す</h2>
 				<p>
-					ジェネレータのsendに渡した引数をyield式で受け取ることができる。
+					ジェネレータのnextに渡した引数をyield式で受け取ることができる。
 				</p>
 				<label>読む行数<input id="read-byte-size" type="number" value="1" min="1" /></label>
 				<button id="run-file-reader">ファイルを読む</button>
@@ -50,6 +50,12 @@
 		</footer>
 
 		<script src="/webcise/common.js"></script>
+		<!-- Firefox用 -->
 		<script type="application/javascript;version=1.7" src="generator.js"></script>
+		<!-- Chrome用 -->
+		<script src="generator.js"></script>
+		<script>
+			document.addEventListener("DOMContentLoaded", mygenerator.init, false);
+		</script>
 	</body>
 </html>
