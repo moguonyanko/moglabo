@@ -32,6 +32,7 @@ import static java.util.stream.Collectors.*;
  * 「Land of Lisp」(オライリー・ジャパン)
  * 「ANSI Common Lisp」(ピアソン)
  * 「計算機プログラムの構造と解釈 第2版」（ピアソン）
+ * 「javaScript(第6版)」(オライリー・ジャパン)
  */
 public class Functions {
 
@@ -681,6 +682,14 @@ public class Functions {
 			= (func, arg) -> func.apply(arg);
 
 		return bfn;
+	}
+	
+	public static <T> Stream<T> map(Stream<T> stream, Function<T, T> func){
+		return stream.map(func);
+	}
+	
+	public static <T> Stream<T> select(Stream<T> stream, Predicate<T> pred){
+		return stream.filter(pred);
 	}
 
 }

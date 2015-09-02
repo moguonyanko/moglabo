@@ -43,6 +43,7 @@ import exercise.function.util.Pair;
 import exercise.function.util.ParamSupplier;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
+import java.util.stream.Stream;
 
 /**
  * 参考：
@@ -1292,6 +1293,30 @@ public class TestFunctions {
 		List<Pair<String, Integer>> actual = pairs.stream()
 			.sorted()
 			.collect(toList());
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void Streamを引数で渡して処理を連結し結果を得る() 
+		throws IOException{
+		Path path = Paths.get("./sample/countword1.txt");
+		
+		Function<String, String> func = s -> s.replace(".", "!");
+		Predicate<String> pred = s -> s.startsWith("F");
+		String expected = "Foo is my friend!";
+		
+		/**
+		 * Stream.filterやStream.mapを分離して実行しているだけである。
+		 * 
+		 * Streamは中間処理を行うためのオブジェクトなので公開APIの
+		 * 戻り値や引数にはしたくない。
+		 */
+		Stream<String> lines = Files.lines(path);
+		Stream<String> appended = Functions.map(lines, func);
+		Stream<String> result = Functions.select(appended, pred);
+		
+		String actual = result.findFirst().get();
 		
 		assertThat(actual, is(expected));
 	}
