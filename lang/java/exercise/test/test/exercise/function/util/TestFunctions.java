@@ -43,6 +43,7 @@ import exercise.function.util.Pair;
 import exercise.function.util.ParamSupplier;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -1317,6 +1318,46 @@ public class TestFunctions {
 		Stream<String> result = Functions.select(appended, pred);
 		
 		String actual = result.findFirst().get();
+		
+		assertThat(actual, is(expected));
+	}
+	
+	private enum Favorite{
+		EGG, TOAST, RICE, BANANA, NONE
+	}
+	
+	private static class Person{
+		private final String name;
+		private final Set<Favorite> fatorites;
+
+		public Person(String name, Favorite[] fatorites) {
+			this.name = name;
+			this.fatorites = Arrays.stream(fatorites).collect(toSet());
+		}
+
+		public Set<Favorite> getFatorites() {
+			return fatorites;
+		}
+	}
+	
+	@Test
+	public void Streamを平坦化して最も多く現れる要素を得る(){
+		Person foo = new Person("foo", new Favorite[]{
+			Favorite.EGG, Favorite.TOAST
+		});
+		
+		Person bar = new Person("bar", new Favorite[]{
+			Favorite.RICE, Favorite.BANANA, Favorite.EGG
+		});
+		
+		Person baz = new Person("baz", new Favorite[]{
+			Favorite.EGG, Favorite.RICE, Favorite.TOAST
+		});
+		
+		List<Person> persons = Arrays.asList(foo, bar, baz);
+		
+		Favorite expected = Favorite.EGG;
+		Favorite actual = Functions.most(persons, Person::getFatorites, Favorite.NONE);
 		
 		assertThat(actual, is(expected));
 	}

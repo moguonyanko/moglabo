@@ -692,4 +692,36 @@ public class Functions {
 		return stream.filter(pred);
 	}
 
+	/**
+	 * @todo
+	 * 要素の数を数えるために一時的なMapを用意している。
+	 * これを使わないかラムダ式の中に入れるかできないか？
+	 * 
+	 */
+	public static <T, R, C extends Collection<R>> R most(Collection<T> src, 
+		Function<T, C> mapper, R identity){
+		Map<R, Integer> counter = new HashMap<>();
+		
+		/**
+		 * クライアントにStreamを生成する手間を掛けさせたくないので
+		 * flatMapの引数でStreamを生成している。
+		 * 
+		 * クライアントが引数をメソッド参照で渡せるようにAPIを設計することが重要。
+		 * Streamは中間状態でありStreamを扱うAPIは中間操作である。従ってそれらを
+		 * クライアントが気にする必要があるような設計は避けるべきである。
+		 */
+		src.stream()
+			.flatMap(t -> mapper.apply(t).stream())
+			.forEach(r -> counter.put(r, counter.getOrDefault(r, 0) + 1));
+		
+		BinaryOperator<R> moreElementGetter 
+			= (a, b) -> counter.getOrDefault(a, 0) > counter.getOrDefault(b, 0)
+				? a : b;
+		
+		R result = counter.keySet().stream()
+			.reduce(identity, moreElementGetter);
+		
+		return result;
+	}
+	
 }
