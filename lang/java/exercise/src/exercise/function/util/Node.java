@@ -27,7 +27,7 @@ public class Node {
 
 	public void setAllColors(NodeColor color) {
 		setColor(color);
-		nodes.stream().forEach(node -> node.setColor(color));
+		nodes.stream().forEach(node -> node.setAllColors(color));
 	}
 
 	public List<Node> getNodes() {
