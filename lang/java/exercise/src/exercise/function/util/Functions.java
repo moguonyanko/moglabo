@@ -694,12 +694,14 @@ public class Functions {
 
 	/**
 	 * @todo
-	 * 要素の数を数えるために一時的なMapを用意している。
-	 * これを使わないかラムダ式の中に入れるかできないか？
+	 * 要素の数を数えるためにMapに状態を保持している。
+	 * これを使わないかラムダ式の中に入れることができないかを考える。
+	 * このMapがあるためにsrcからStreamを得る時にparallelStream()を
+	 * 使うことができない。使うとメソッドの戻り値がランダムで間違った結果になる。
 	 * 
 	 */
 	public static <T, R, C extends Collection<R>> R most(Collection<T> src, 
-		Function<T, C> mapper, R identity){
+		Function<T, C> mapper, R defaultValue){
 		Map<R, Integer> counter = new HashMap<>();
 		
 		/**
@@ -714,12 +716,17 @@ public class Functions {
 			.flatMap(t -> mapper.apply(t).stream())
 			.forEach(r -> counter.put(r, counter.getOrDefault(r, 0) + 1));
 		
-		BinaryOperator<R> moreElementGetter 
+		BinaryOperator<R> moreElementAccumlator 
 			= (a, b) -> counter.getOrDefault(a, 0) > counter.getOrDefault(b, 0)
 				? a : b;
 		
+		/**
+		 * reduceの第1引数としてidentityを渡す場合，その値は累積関数の
+		 * 単位元でなければならない。これはデフォルト値とは異なる場合がある。
+		 */
 		R result = counter.keySet().stream()
-			.reduce(identity, moreElementGetter);
+			.reduce(moreElementAccumlator)
+			.orElse(defaultValue);
 		
 		return result;
 	}
