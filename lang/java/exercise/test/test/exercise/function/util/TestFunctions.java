@@ -44,6 +44,8 @@ import exercise.function.util.ParamSupplier;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -1358,6 +1360,26 @@ public class TestFunctions {
 		
 		Favorite expected = Favorite.EGG;
 		Favorite actual = Functions.most(persons, Person::getFatorites, Favorite.NONE);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void Collectorsのリダクション操作で合計値を計算できる() {
+		int expected = 55;
+		int actual = Functions.ranegClosedSum(0, 10);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void Collectorsのリダクション操作で文字列連結できる() {
+		List<String> sample = Arrays.asList(
+			"foo", "bar", "baz"
+		);
+		
+		String expected = "pre_foo|bar|baz_suff";
+		String actual = Functions.concat("|", "pre_", "_suff", sample);
 		
 		assertThat(actual, is(expected));
 	}

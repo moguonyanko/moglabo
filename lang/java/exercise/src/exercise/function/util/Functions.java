@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -22,7 +23,10 @@ import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.IntStream;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -246,6 +250,22 @@ public class Functions {
 			.sum();
 
 		return result;
+	}
+
+	public static <T extends Integer> int ranegClosedSum(T start, T end) {
+		if (start > end) {
+			throw new IllegalArgumentException("start must be less than end");
+		}
+
+		/**
+		 * IntStreamはStreamのサブインターフェースではない。従って
+		 * IntStreamからStreamを得るにはboxed等による変換処理が必要になる。
+		 */
+		Stream<Integer> stream = IntStream.rangeClosed(start, end).boxed();
+		Collector<Integer, ?, Integer> collector
+			= Collectors.reducing(0, (a, b) -> a + b);
+
+		return stream.collect(collector);
 	}
 
 	public static <T> T getDecoratedValue(T target, Function<T, T>... decoraters) {
@@ -683,12 +703,12 @@ public class Functions {
 
 		return bfn;
 	}
-	
-	public static <T> Stream<T> map(Stream<T> stream, Function<T, T> func){
+
+	public static <T> Stream<T> map(Stream<T> stream, Function<T, T> func) {
 		return stream.map(func);
 	}
-	
-	public static <T> Stream<T> select(Stream<T> stream, Predicate<T> pred){
+
+	public static <T> Stream<T> select(Stream<T> stream, Predicate<T> pred) {
 		return stream.filter(pred);
 	}
 
@@ -698,28 +718,31 @@ public class Functions {
 	 * これを使わないかラムダ式の中に入れることができないかを考える。
 	 * このMapがあるためにsrcからStreamを得る時にparallelStream()を
 	 * 使うことができない。使うとメソッドの戻り値がランダムで間違った結果になる。
-	 * 
+	 *
 	 */
-	public static <T, R, C extends Collection<R>> R most(Collection<T> src, 
-		Function<T, C> mapper, R defaultValue){
+	public static <T, R, C extends Collection<R>> R most(Collection<T> src,
+		Function<T, C> mapper, R defaultValue) {
 		Map<R, Integer> counter = new HashMap<>();
-		
+
 		/**
 		 * クライアントにStreamを生成する手間を掛けさせたくないので
 		 * flatMapの引数でStreamを生成している。
-		 * 
+		 *
 		 * クライアントが引数をメソッド参照で渡せるようにAPIを設計することが重要。
 		 * Streamは中間状態でありStreamを扱うAPIは中間操作である。従ってそれらを
 		 * クライアントが気にする必要があるような設計は避けるべきである。
+		 *
+		 * flapMapはコレクションの各要素に含まれるコレクションを
+		 * Streamで得るためのショートカットと考える。
 		 */
 		src.stream()
 			.flatMap(t -> mapper.apply(t).stream())
 			.forEach(r -> counter.put(r, counter.getOrDefault(r, 0) + 1));
-		
-		BinaryOperator<R> moreElementAccumlator 
+
+		BinaryOperator<R> moreElementAccumlator
 			= (a, b) -> counter.getOrDefault(a, 0) > counter.getOrDefault(b, 0)
-				? a : b;
-		
+			? a : b;
+
 		/**
 		 * reduceの第1引数としてidentityを渡す場合，その値は累積関数の
 		 * 単位元でなければならない。これはデフォルト値とは異なる場合がある。
@@ -727,8 +750,23 @@ public class Functions {
 		R result = counter.keySet().stream()
 			.reduce(moreElementAccumlator)
 			.orElse(defaultValue);
-		
+
 		return result;
 	}
-	
+
+	public static <T extends Collection<String>> String
+		concat(String delimiter, String prefix, String suffix, T values) {
+		/**
+		 * Collectorsの静的メソッドでCollectorを得てリダクション操作を
+		 * 行う方法は，groupingBy等と組み合わせて2段階以上のリダクション操作を
+		 * 使う時に有用である。それ以外の時はStream.reduceでリダクション操作を
+		 * 行う方法が推奨されている。
+		 */
+		Collector<CharSequence, ?, String> joiner
+			= Collectors.joining(delimiter, prefix, suffix);
+		Stream<String> stream = values.stream();
+
+		return stream.collect(joiner);
+	}
+
 }
