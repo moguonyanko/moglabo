@@ -768,5 +768,50 @@ public class Functions {
 
 		return stream.collect(joiner);
 	}
+		
+	private static <T, C extends Collection<T>> C copyCollection(C src,
+		Supplier<C> supplier){
+		C result = supplier.get();
+		result.addAll(src);
+
+		return result;
+	}
+	
+	private static <K, V, C extends Map<K, V>> C copyMap(C src, 
+		Supplier<C> supplier){
+		C result = supplier.get();
+		result.putAll(src);
+
+		return result;
+	}
+		
+	public static <T, C extends Collection<T>> C removeIf(C src, 
+		Predicate<T> filter, Supplier<C> supplier){
+		C result = copyCollection(src, supplier);
+		
+		result.removeIf(filter);
+		
+		return result;
+	}
+	
+	public static <T, C extends List<T>> C replaceAll(C src, 
+		UnaryOperator<T> op, Supplier<C> supplier){
+		C result = copyCollection(src, supplier);
+		
+		result.replaceAll(op);
+		
+		return result;
+	}
+	
+	public static <K, V, C extends Map<K, V>> C replaceAll(C src, 
+		BiFunction<K, V, V> func, Supplier<C> supplier){
+		C result = copyMap(src, supplier);
+
+		result.keySet().stream().forEach((key) -> {
+			result.computeIfPresent(key, func);
+		});
+		
+		return result;
+	}
 
 }

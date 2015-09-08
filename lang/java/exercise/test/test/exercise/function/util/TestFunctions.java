@@ -21,6 +21,9 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.function.BiFunction;
 import java.util.Random;
+import java.util.Set;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -43,10 +46,6 @@ import exercise.function.util.Pair;
 import exercise.function.util.ParamSupplier;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
-import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 参考：
@@ -1380,6 +1379,62 @@ public class TestFunctions {
 		
 		String expected = "pre_foo|bar|baz_suff";
 		String actual = Functions.concat("|", "pre_", "_suff", sample);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 条件に該当しない要素を排除したコレクションを得る(){
+		List<String> sample = Arrays.asList(
+			"foo", "bar", "baz"
+		);
+		
+		List<String> expected = Arrays.asList(
+			"foo"
+		);
+		
+		Predicate<String> filter = el -> el.startsWith("b");
+		List<String> actual = Functions.removeIf(sample, filter, ArrayList::new);
+		
+		assertThat(actual, is(expected));
+		
+		/* 副作用が無いことの確認 */
+		System.out.println(sample);
+	}
+	
+	@Test
+	public void コレクションの全要素に引数の関数を適用したコレクションを得る(){
+		List<String> sample = Arrays.asList(
+			"foo", "bar", "baz"
+		);
+		
+		List<String> expected = Arrays.asList(
+			"FOO", "BAR", "BAZ"
+		);
+		
+		UnaryOperator<String> op = String::toUpperCase;
+		List<String> actual = Functions.replaceAll(sample, op, ArrayList::new);
+		
+		assertThat(actual, is(expected));
+		
+		/* 副作用が無いことの確認 */
+		System.out.println(sample);
+	}
+	
+	@Test
+	public void マップの各値に関数を適用した結果を得る(){
+		Map<String, Integer> persons = new HashMap<>();
+		persons.put("foo", 10);
+		persons.put("bar", 30);
+		persons.put("baz", 50);
+		
+		BiFunction<String, Integer, Integer> func 
+			= (k, v) -> v * 2;
+		
+		Map<String, Integer> expected = new HashMap<>();
+		persons.forEach((k, v) -> expected.put(k, v * 2));
+		
+		Map<String, Integer> actual = Functions.replaceAll(persons, func, HashMap::new);
 		
 		assertThat(actual, is(expected));
 	}
