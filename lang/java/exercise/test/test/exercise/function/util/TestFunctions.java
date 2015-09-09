@@ -46,6 +46,7 @@ import exercise.function.util.Pair;
 import exercise.function.util.ParamSupplier;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
+import java.util.Collections;
 
 /**
  * 参考：
@@ -1435,6 +1436,77 @@ public class TestFunctions {
 		persons.forEach((k, v) -> expected.put(k, v * 2));
 		
 		Map<String, Integer> actual = Functions.replaceAll(persons, func, HashMap::new);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void Collectorsで合計値を計算する(){
+		Student foo = new Student("foo", 50);
+		Student bar = new Student("bar", 80);
+		Student baz = new Student("baz", 70);
+		
+		List<Student> students = Arrays.asList(
+			foo, bar, baz
+		);
+		
+		int expected = 200;
+		int actual = Functions.sum(students, Student::getScore);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	private enum Student2Class {
+		A, B, C
+	}
+	
+	private static class Student2{
+		private final String name;
+		private final int score;
+		private final Student2Class studentClass;
+
+		public Student2(String name, int score, Student2Class className) {
+			this.name = name;
+			this.score = score;
+			this.studentClass = className;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public int getScore() {
+			return score;
+		}
+
+		public Student2Class getClassName() {
+			return studentClass;
+		}
+		
+	}
+	
+	@Test
+	public void 分類して平均値を得る(){
+		Student2 foo = new Student2("foo", 100, Student2Class.A);
+		Student2 bar = new Student2("bar", 50, Student2Class.A);
+		Student2 hoge = new Student2("hoge", 70, Student2Class.B);
+		Student2 baz = new Student2("baz", 80, Student2Class.B);
+		Student2 mike = new Student2("mike", 40, Student2Class.C);
+		Student2 neko = new Student2("neko", 80, Student2Class.C);
+		
+		Map<Student2Class, Double> expected = new HashMap<>();
+		expected.put(Student2Class.A, 75.0);
+		expected.put(Student2Class.B, 75.0);
+		expected.put(Student2Class.C, 60.0);
+		
+		List<Student2> sample = Arrays.asList(
+			foo, bar, baz, hoge, mike, neko
+		);
+		
+		Collections.shuffle(sample);
+		
+		Map<Student2Class, Double> actual = Functions.averagingBy(sample, 
+			Student2::getClassName, Student2::getScore);
 		
 		assertThat(actual, is(expected));
 	}

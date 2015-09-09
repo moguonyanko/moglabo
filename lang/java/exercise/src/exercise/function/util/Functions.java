@@ -6,13 +6,14 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
@@ -20,6 +21,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
@@ -40,7 +42,7 @@ import static java.util.stream.Collectors.*;
  */
 public class Functions {
 
-	private static final Function<String, Predicate<String>> equalsIgnoreCaseString
+	private static final Function<String, Predicate<String>> EQUALSIGNORECASE_STRING
 		= target -> source -> source.equalsIgnoreCase(target);
 
 	private static final Pattern WORD_BOUNDS = Pattern.compile("\\s+");
@@ -83,7 +85,7 @@ public class Functions {
 
 	public static String findIgnoreCase(Collection<String> sources, String target) {
 		Optional<String> result = sources.stream().
-			filter(equalsIgnoreCaseString.apply(target)).
+			filter(EQUALSIGNORECASE_STRING.apply(target)).
 			findFirst();
 
 		return result.get();
@@ -91,7 +93,7 @@ public class Functions {
 
 	public static List<String> findAllIgnoreCase(List<String> sources, String target) {
 		List<String> result = sources.stream().
-			filter(equalsIgnoreCaseString.apply(target)).
+			filter(EQUALSIGNORECASE_STRING.apply(target)).
 			collect(toList());
 
 		return result;
@@ -252,6 +254,13 @@ public class Functions {
 		return result;
 	}
 
+	public static <T> int sum(Collection<T> src, ToIntFunction<T> func){
+		int result = src.stream()
+			.collect(summingInt(func));
+		
+		return result;
+	}
+	
 	public static <T extends Integer> int ranegClosedSum(T start, T end) {
 		if (start > end) {
 			throw new IllegalArgumentException("start must be less than end");
@@ -813,5 +822,24 @@ public class Functions {
 		
 		return result;
 	}
-
+	
+	public static <T, U> Map<U, Double> averagingBy(Collection<T> src, 
+		Function<T, U> classfier, ToDoubleFunction<T> mapper){
+		/**
+		 * Collectorは合成可能なように設計されている。すなわち副作用のある
+		 * Collectorは作らないようにするべきである。
+		 */
+		Collector<T, ?, Double> averaging = averagingDouble(mapper);
+		/**
+		 * グループ化はgroupingByConcurrentによって並行化できる。
+		 */
+		Collector<T, ?, ConcurrentMap<U, Double>> grouping
+			= groupingByConcurrent(classfier, averaging);
+		
+		Map<U, Double> result = src.parallelStream()
+			.collect(grouping);
+		
+		return result;
+	}
+	
 }
