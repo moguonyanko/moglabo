@@ -1479,7 +1479,7 @@ public class TestFunctions {
 			return score;
 		}
 
-		public Student2Class getClassName() {
+		public Student2Class getStudentClass() {
 			return studentClass;
 		}
 
@@ -1534,7 +1534,7 @@ public class TestFunctions {
 		Collections.shuffle(sample);
 		
 		Map<Student2Class, Double> actual = Functions.averagingBy(sample, 
-			Student2::getClassName, Student2::getScore);
+			Student2::getStudentClass, Student2::getScore);
 		
 		assertThat(actual, is(expected));
 	}
@@ -1606,14 +1606,14 @@ public class TestFunctions {
 		Student2 buzz = new Student2("buzz", 80, Student2Class.C);
 		Student2 qwerty = new Student2("qwerty", 0, Student2Class.C);
 
-		List<Student2> sample = Arrays.asList(
+		List<Student2> allStudents = Arrays.asList(
 			foo, bar, baz, hoge, mike, neko, mochi, fuga, buzz, poo, 
 			peko, qwerty
 		);
-		sample.sort(Student2::compareTo);
+		allStudents.sort(Student2::compareTo);
 		
 		int borderScore = 40;
-		Predicate<Student2> passed = s -> s.getScore() >= borderScore;
+		Predicate<Student2> passedPredicate = s -> s.getScore() >= borderScore;
 		
 		Map<Boolean, Map<Student2Class, List<Student2>>> expected = new HashMap<>();
 		
@@ -1644,9 +1644,14 @@ public class TestFunctions {
 		expected.put(true, passStudents);
 		expected.put(false, notPassStudents);
 		
-		Function<Student2, Student2Class> classfier = s -> s.getClassName();
+		/* 生徒をクラス毎に分類するFunction */
+		Function<Student2, Student2Class> classfier = s -> s.getStudentClass();
+		/**
+		 * 合格ライン以上のスコアを持つ生徒とそうでない生徒を
+		 * クラスごとに分類する。
+		 */
 		Map<Boolean, Map<Student2Class, List<Student2>>> actual
-			= Functions.partitioningGroupingBy(sample, passed, classfier);
+			= Functions.partitioningGroupingBy(allStudents, passedPredicate, classfier);
 		
 		assertThat(actual, is(expected));
 	}
