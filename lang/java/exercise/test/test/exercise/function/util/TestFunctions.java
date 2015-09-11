@@ -1460,7 +1460,7 @@ public class TestFunctions {
 		A, B, C
 	}
 	
-	private static class Student2{
+	private static class Student2 implements Comparable<Student2>{
 		private final String name;
 		private final int score;
 		private final Student2Class studentClass;
@@ -1481,6 +1481,34 @@ public class TestFunctions {
 
 		public Student2Class getClassName() {
 			return studentClass;
+		}
+
+		@Override
+		public String toString() {
+			return name + ":" + score + ":" + studentClass;
+		}
+
+		@Override
+		public int compareTo(Student2 o) {
+			return name.compareTo(o.name);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if(obj instanceof Student2){
+				Student2 other = (Student2)obj;
+				
+				return name.equalsIgnoreCase(other.name)
+					&& score == other.score
+					&& studentClass == other.studentClass;
+			}else{
+				return false;
+			}
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(name, score, studentClass);
 		}
 		
 	}
@@ -1507,6 +1535,118 @@ public class TestFunctions {
 		
 		Map<Student2Class, Double> actual = Functions.averagingBy(sample, 
 			Student2::getClassName, Student2::getScore);
+		
+		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void 指定した区切り文字で文字列連結する(){
+		List<String> terms = Arrays.asList(
+			"foo", "bar", "baz"
+		);
+		
+		String expected = "foo,bar,baz";
+		String actual = Functions.join(terms, ",");
+		
+		assertThat(actual, is(expected));
+	}
+	
+	
+	@Test
+	public void 指定した条件で集団を分類する(){
+		Student2 foo = new Student2("foo", 100, Student2Class.A);
+		Student2 bar = new Student2("bar", 50, Student2Class.A);
+		Student2 mochi = new Student2("mochi", 35, Student2Class.A);
+		Student2 hoge = new Student2("hoge", 70, Student2Class.B);
+		Student2 baz = new Student2("baz", 20, Student2Class.B);
+		Student2 fuga = new Student2("fuga", 80, Student2Class.B);
+		Student2 mike = new Student2("mike", 10, Student2Class.C);
+		Student2 neko = new Student2("neko", 80, Student2Class.C);
+		Student2 buzz = new Student2("buzz", 80, Student2Class.C);
+
+		List<Student2> sample = Arrays.asList(
+			foo, bar, baz, hoge, mike, neko, mochi, fuga, buzz
+		);
+		sample.sort(Student2::compareTo);
+		
+		int borderScore = 40;
+		Predicate<Student2> passed = s -> s.getScore() >= borderScore;
+		
+		Map<Boolean, List<Student2>> expected = new HashMap<>();
+		
+		List<Student2> passStudents = Arrays.asList(
+			foo, bar, hoge, fuga, neko, buzz
+		);
+		passStudents.sort(Student2::compareTo);
+		expected.put(true, passStudents);
+		
+		List<Student2> notPassStudents = Arrays.asList(
+			mochi, baz, mike
+		);
+		notPassStudents.sort(Student2::compareTo);
+		expected.put(false, notPassStudents);
+		
+		Map<Boolean, List<Student2>> actual = Functions.partitioning(sample, passed);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 指定した条件で集団をグループ化しつつ分類する(){
+		Student2 foo = new Student2("foo", 100, Student2Class.A);
+		Student2 poo = new Student2("poo", 20, Student2Class.A);
+		Student2 bar = new Student2("bar", 50, Student2Class.A);
+		Student2 mochi = new Student2("mochi", 35, Student2Class.A);
+		Student2 hoge = new Student2("hoge", 70, Student2Class.B);
+		Student2 baz = new Student2("baz", 20, Student2Class.B);
+		Student2 fuga = new Student2("fuga", 80, Student2Class.B);
+		Student2 peko = new Student2("peko", 15, Student2Class.B);
+		Student2 mike = new Student2("mike", 10, Student2Class.C);
+		Student2 neko = new Student2("neko", 80, Student2Class.C);
+		Student2 buzz = new Student2("buzz", 80, Student2Class.C);
+		Student2 qwerty = new Student2("qwerty", 0, Student2Class.C);
+
+		List<Student2> sample = Arrays.asList(
+			foo, bar, baz, hoge, mike, neko, mochi, fuga, buzz, poo, 
+			peko, qwerty
+		);
+		sample.sort(Student2::compareTo);
+		
+		int borderScore = 40;
+		Predicate<Student2> passed = s -> s.getScore() >= borderScore;
+		
+		Map<Boolean, Map<Student2Class, List<Student2>>> expected = new HashMap<>();
+		
+		Map<Student2Class, List<Student2>> passStudents = new HashMap<>();
+		
+		List<Student2> passStudentsA = Arrays.asList(foo, bar);
+		Collections.sort(passStudentsA);
+		passStudents.put(Student2Class.A, passStudentsA);
+		List<Student2> passStudentsB = Arrays.asList(hoge, fuga);
+		Collections.sort(passStudentsB);
+		passStudents.put(Student2Class.B, passStudentsB);
+		List<Student2> passStudentsC = Arrays.asList(neko, buzz);
+		Collections.sort(passStudentsC);
+		passStudents.put(Student2Class.C, passStudentsC);
+		
+		Map<Student2Class, List<Student2>> notPassStudents = new HashMap<>();
+		
+		List<Student2> notPassStudentsA = Arrays.asList(poo, mochi);
+		Collections.sort(notPassStudentsA);
+		notPassStudents.put(Student2Class.A, notPassStudentsA);
+		List<Student2> notPassStudentsB = Arrays.asList(baz, peko);
+		Collections.sort(notPassStudentsB);
+		notPassStudents.put(Student2Class.B, notPassStudentsB);
+		List<Student2> notPassStudentsC = Arrays.asList(mike, qwerty);
+		Collections.sort(notPassStudentsC);
+		notPassStudents.put(Student2Class.C, notPassStudentsC);
+		
+		expected.put(true, passStudents);
+		expected.put(false, notPassStudents);
+		
+		Function<Student2, Student2Class> classfier = s -> s.getClassName();
+		Map<Boolean, Map<Student2Class, List<Student2>>> actual
+			= Functions.partitioningGroupingBy(sample, passed, classfier);
 		
 		assertThat(actual, is(expected));
 	}

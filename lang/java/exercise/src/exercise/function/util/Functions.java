@@ -106,14 +106,19 @@ public class Functions {
 		return result.get();
 	}
 
-	public static String join(Collection<String> sources, String separator,
-		Function<String, String> action) {
+	public static <T extends CharSequence, C extends Collection<T>> String 
+		join(C sources, T separator, Function<T, T> action) {
 		String result = sources.stream().
 			map(action).collect(joining(separator));
 
 		return result;
 	}
-
+	
+	public static <T extends CharSequence, C extends Collection<T>> String
+		join(C sources, T separator) {
+		return join(sources, separator, Function.identity());
+	}
+	
 	public static <T, C extends Collection<T>> C sorted(Collection<T> sources,
 		Comparator<T> comparator, Supplier<C> supplier) {
 		C result = sources.stream().
@@ -838,6 +843,22 @@ public class Functions {
 		
 		Map<U, Double> result = src.parallelStream()
 			.collect(grouping);
+		
+		return result;
+	}
+	
+	public static <T, U> Map<Boolean, Map<U, List<T>>> partitioningGroupingBy(
+		Collection<T> src, Predicate<T> predicate, Function<T, U> classfier){
+		Map<Boolean, Map<U, List<T>>> result = src.parallelStream()
+			.collect(partitioningBy(predicate, groupingBy(classfier)));
+		
+		return result;
+	}
+	
+	public static <T> Map<Boolean, List<T>> partitioning(Collection<T> src, 
+		Predicate<T> predicate){
+		Map<Boolean, List<T>> result = src.parallelStream()
+			.collect(partitioningBy(predicate));
 		
 		return result;
 	}
