@@ -1672,4 +1672,17 @@ public class TestFunctions {
 		assertThat(actual, is(expected));
 	}
 	
+	@Test
+	public void 条件を満たすパスをフィルタで絞り込んで検索する() throws IOException{
+		Path path = Paths.get(".");
+		int maxDepth = 10;
+		Predicate<Path> matcher = p -> p.toFile().getName().startsWith("filessample");
+		
+		Path actual = Functions.findPath(path, maxDepth, matcher);
+		
+		Path expected = Paths.get("./sample/foo/bar/baz/filessample.txt");
+		
+		assertThat(actual, is(expected));
+	}
+	
 }

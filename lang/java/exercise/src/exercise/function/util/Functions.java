@@ -866,7 +866,23 @@ public class Functions {
 	
 	public static Path findPath(Path path, int maxDepth, 
 		BiPredicate<Path, BasicFileAttributes> matcher) throws IOException{
+		/**
+		 * Files.findはBasicFileAttributesの値を元に目的のPathを見つけ，
+		 * それらのPathを集めて返したい時に有用と思われる。
+		 * 単に名前などでPathを探すだけであれば，Files.walkから得られるStreamに対し
+		 * filterを適用する方がAPIを利用する側はシンプルに書ける。
+		 */
 		Path result = Files.find(path, maxDepth, matcher)
+			.findFirst()
+			.get();
+		
+		return result;
+	}
+	
+	public static Path findPath(Path path, int maxDepth, Predicate<Path> matcher) 
+		throws IOException{
+		Path result = Files.walk(path, maxDepth)
+			.filter(matcher)
 			.findFirst()
 			.get();
 		
