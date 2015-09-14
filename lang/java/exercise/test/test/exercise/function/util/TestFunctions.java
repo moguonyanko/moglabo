@@ -24,6 +24,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collections;
+import java.util.function.BiPredicate;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -46,7 +49,6 @@ import exercise.function.util.Pair;
 import exercise.function.util.ParamSupplier;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
-import java.util.Collections;
 
 /**
  * 参考：
@@ -1652,6 +1654,20 @@ public class TestFunctions {
 		 */
 		Map<Boolean, Map<Student2Class, List<Student2>>> actual
 			= Functions.partitioningGroupingBy(allStudents, passedPredicate, classfier);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 条件を満たすパスを検索する() throws IOException{
+		Path path = Paths.get(".");
+		int maxDepth = 10;
+		BiPredicate<Path, BasicFileAttributes> matcher 
+			= (p, attrs) -> p.toFile().getName().startsWith("filessample");
+		
+		Path actual = Functions.findPath(path, maxDepth, matcher);
+		
+		Path expected = Paths.get("./sample/foo/bar/baz/filessample.txt");
 		
 		assertThat(actual, is(expected));
 	}

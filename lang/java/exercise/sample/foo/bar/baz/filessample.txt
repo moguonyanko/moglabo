@@ -1,0 +1,3 @@
+Files API sample
+
+This is sample file for Files.walk and Files.find etc.

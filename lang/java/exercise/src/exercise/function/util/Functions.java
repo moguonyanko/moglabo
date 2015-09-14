@@ -5,16 +5,17 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -859,6 +860,15 @@ public class Functions {
 		Predicate<T> predicate){
 		Map<Boolean, List<T>> result = src.parallelStream()
 			.collect(partitioningBy(predicate));
+		
+		return result;
+	}
+	
+	public static Path findPath(Path path, int maxDepth, 
+		BiPredicate<Path, BasicFileAttributes> matcher) throws IOException{
+		Path result = Files.find(path, maxDepth, matcher)
+			.findFirst()
+			.get();
 		
 		return result;
 	}
