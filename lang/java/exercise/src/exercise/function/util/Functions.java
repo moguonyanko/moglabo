@@ -889,4 +889,18 @@ public class Functions {
 		return result;
 	}
 	
+	public static <K, V, C extends Map<K, V>> C merge(C self, C other, 
+		BiFunction<V, V, V> remapper, Supplier<C> supplier){
+		C result = copyMap(self, supplier);
+		
+		Stream<K> stream = other.keySet().parallelStream();
+		stream.forEach((key) -> {
+			//System.out.println(stream.isParallel());
+			V value = other.get(key);
+			result.merge(key, value, remapper);
+		});
+		
+		return result;
+	}
+	
 }

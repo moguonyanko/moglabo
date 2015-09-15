@@ -1684,5 +1684,57 @@ public class TestFunctions {
 		
 		assertThat(actual, is(expected));
 	}
+
+	@Test
+	public void 既存のマップの値を新しい値に置き換える(){
+		Map<String, Integer> sample = new HashMap<>();
+		sample.put("foo", 100);
+		sample.put("bar", 50);
+		sample.put("baz", 75);
+		
+		String key = "bar";
+		Integer value = 10;
+		BiFunction<Integer, Integer, Integer> func
+			= (orgValue, newValue) -> orgValue + newValue;
+		
+		Integer expected = sample.get(key) + value;
+		Integer actual = sample.merge(key, value, func);
+		
+		assertThat(actual, is(expected));
+		
+		/* Map.mergeに副作用があることの確認 */
+		System.out.println(sample);
+	}
+	
+	@Test
+	public void 既存のマップに別のマップをマージする(){
+		Map<String, Integer> self = new HashMap<>();
+		self.put("foo", 100);
+		self.put("bar", 50);
+		self.put("baz", 75);
+		Map<String, Integer> forTestMap = new HashMap<>(self);
+		
+		Map<String, Integer> other = new HashMap<>();
+		other.put("hoge", 30);
+		other.put("bar", 90);
+		other.put("piko", 40);
+		
+		Map<String, Integer> expected = new HashMap<>();
+		expected.put("foo", 100);
+		expected.put("baz", 75);
+		expected.put("hoge", 30);
+		expected.put("bar", 90);
+		expected.put("piko", 40);
+		
+		BiFunction<Integer, Integer, Integer> func
+			= (orgValue, newValue) -> orgValue < newValue ? newValue : orgValue;
+		
+		Map<String, Integer> actual = Functions.merge(self, other, func, HashMap::new);
+		
+		assertThat(actual, is(expected));
+		
+		/* Functions.mergeに副作用が無いことの確認 */
+		assertThat(self, is(forTestMap));
+	}
 	
 }
