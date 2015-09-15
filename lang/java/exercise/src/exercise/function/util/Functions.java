@@ -1,5 +1,6 @@
 package exercise.function.util;
 
+import com.sun.org.apache.xpath.internal.compiler.OpCodes;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -893,11 +894,9 @@ public class Functions {
 		BiFunction<V, V, V> remapper, Supplier<C> supplier){
 		C result = copyMap(self, supplier);
 		
-		Stream<K> stream = other.keySet().parallelStream();
-		stream.forEach((key) -> {
-			//System.out.println(stream.isParallel());
-			V value = other.get(key);
-			result.merge(key, value, remapper);
+		other.keySet().parallelStream().forEach((key) -> {
+			Optional<V> optVal = Optional.ofNullable(other.get(key));
+			optVal.ifPresent(value -> result.merge(key, value, remapper));
 		});
 		
 		return result;
