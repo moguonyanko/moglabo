@@ -1,6 +1,5 @@
 package exercise.function.util;
 
-import com.sun.org.apache.xpath.internal.compiler.OpCodes;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -41,6 +40,7 @@ import static java.util.stream.Collectors.*;
  * 「ANSI Common Lisp」(ピアソン)
  * 「計算機プログラムの構造と解釈 第2版」（ピアソン）
  * 「javaScript(第6版)」(オライリー・ジャパン)
+ * 「Effective Java 第2版」(ピアソン)
  */
 public class Functions {
 
@@ -890,12 +890,23 @@ public class Functions {
 		return result;
 	}
 	
+	/**
+	 * remapperの第1引数と第2引数はMap.mergeにおける再マッピングの計算でconsumeされる
+	 * 値なのでsuperを使って型を宣言する。一方，remapperの第3引数は再マッピングの結果
+	 * produceされる値なのでextendsを使って型を宣言する。
+	 * 
+	 * 参考：「Effective Java 第2版」 項目28 PECS略語
+	 * 
+	 */
 	public static <K, V, C extends Map<K, V>> C merge(C self, C other, 
-		BiFunction<V, V, V> remapper, Supplier<C> supplier){
+		BiFunction<? super V, ? super V, ? extends V> remapper, Supplier<C> supplier){
 		C result = copyMap(self, supplier);
 		
 		other.keySet().parallelStream().forEach((key) -> {
 			Optional<V> optVal = Optional.ofNullable(other.get(key));
+			/**
+			 * Map.mergeはmerge呼び出し元となるMapに副作用がある。
+			 */
 			optVal.ifPresent(value -> result.merge(key, value, remapper));
 		});
 		
