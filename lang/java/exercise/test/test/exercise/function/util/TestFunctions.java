@@ -1332,15 +1332,15 @@ public class TestFunctions {
 	
 	private static class Person{
 		private final String name;
-		private final Set<Favorite> fatorites;
+		private final Set<Favorite> favorites;
 
 		public Person(String name, Favorite[] fatorites) {
 			this.name = name;
-			this.fatorites = Arrays.stream(fatorites).collect(toSet());
+			this.favorites = Arrays.stream(fatorites).collect(toSet());
 		}
 
-		public Set<Favorite> getFatorites() {
-			return fatorites;
+		public Set<Favorite> getFavorites() {
+			return favorites;
 		}
 	}
 	
@@ -1361,7 +1361,7 @@ public class TestFunctions {
 		List<Person> persons = Arrays.asList(foo, bar, baz);
 		
 		Favorite expected = Favorite.EGG;
-		Favorite actual = Functions.most(persons, Person::getFatorites, Favorite.NONE);
+		Favorite actual = Functions.most(persons, Person::getFavorites, Favorite.NONE);
 		
 		assertThat(actual, is(expected));
 	}

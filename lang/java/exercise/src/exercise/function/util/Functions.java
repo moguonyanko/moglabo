@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -728,42 +729,52 @@ public class Functions {
 		return stream.filter(pred);
 	}
 
-	/**
-	 * @todo
-	 * 要素の数を数えるためにMapに状態を保持している。
-	 * これを使わないかラムダ式の中に入れることができないかを考える。
-	 * このMapがあるためにsrcからStreamを得る時にparallelStream()を
-	 * 使うことができない。使うとメソッドの戻り値がランダムで間違った結果になる。
-	 *
-	 */
 	public static <T, R, C extends Collection<R>> R most(Collection<T> src,
-		Function<T, C> mapper, R defaultValue) {
-		Map<R, Integer> counter = new HashMap<>();
-
+		Function<? super T, ? extends C> mapper, R defaultValue) {
 		/**
 		 * クライアントにStreamを生成する手間を掛けさせたくないので
 		 * flatMapの引数でStreamを生成している。
 		 *
-		 * クライアントが引数をメソッド参照で渡せるようにAPIを設計することが重要。
+		 * クライアントが引数をメソッド参照で渡せるようにAPIを設計することが重要である。
 		 * Streamは中間状態でありStreamを扱うAPIは中間操作である。従ってそれらを
-		 * クライアントが気にする必要があるような設計は避けるべきである。
+		 * クライアントが意識する必要があるようなAPI設計は避けるべきである。
 		 *
 		 * flapMapはコレクションの各要素に含まれるコレクションを
-		 * Streamで得るためのショートカットと考える。
+		 * Streamで得るためのショートカットと考えられる。
+		 * 
+		 * eleCounter変数を得る終端操作のStream.collectでは現在のコレクションの
+		 * 状態に応じて値を決定しているため，Collectors.toConcurrentMapを使うように
+		 * 記述できない。
+		 * 
+		 * mapper.applyの戻り値となるコレクションが
+		 * Collector.Characteristics.UNORDERED特性を持っているかどうか
+		 * 分からないので，flatMapの引数でBaseStream.unordered()を呼び出して
+		 * ストリームが順序付けされないようにしている。ただしその後の
+		 * collectの第1引数にConcurrentHashMap::newを渡しているので，
+		 * コレクタがCollector.Characteristics.UNORDERED特性を持つかもしれない。
+		 * もしそうであるならばBaseStream.unordered()を呼び出す必要は無い。
+		 * 
+		 * srcに対してCollection.parallelStreamを呼び出すと，このメソッドは
+		 * 誤った結果を返すことがある。今のところsrcが並行性をサポートする
+		 * コレクションであっても同じように問題は発生する。
+		 * APIの柔軟性を維持するためにsrcの型をCollection<T>と宣言している。即ち
+		 * 並行性をサポートするコレクション型で宣言するべきではない。
 		 */
-		src.stream()
-			.flatMap(t -> mapper.apply(t).stream())
-			.forEach(r -> counter.put(r, counter.getOrDefault(r, 0) + 1));
+		Map<R, Integer> eleCounter = src.stream()
+			.flatMap(t -> mapper.apply(t).parallelStream().unordered())
+			.collect(ConcurrentHashMap::new, 
+				(m, r) -> m.put(r, m.getOrDefault(r, 0) + 1), 
+				ConcurrentHashMap::putAll);
 
 		BinaryOperator<R> moreElementAccumlator
-			= (a, b) -> counter.getOrDefault(a, 0) > counter.getOrDefault(b, 0)
+			= (a, b) -> eleCounter.getOrDefault(a, 0) > eleCounter.getOrDefault(b, 0)
 			? a : b;
 
 		/**
 		 * reduceの第1引数としてidentityを渡す場合，その値は累積関数の
 		 * 単位元でなければならない。これはデフォルト値とは異なる場合がある。
 		 */
-		R result = counter.keySet().stream()
+		R result = eleCounter.keySet().parallelStream()
 			.reduce(moreElementAccumlator)
 			.orElse(defaultValue);
 
