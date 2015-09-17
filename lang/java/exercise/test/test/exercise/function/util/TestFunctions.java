@@ -1,5 +1,6 @@
 package test.exercise.function.util;
 
+import exercise.function.Lambda;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Collection;
@@ -1735,6 +1736,16 @@ public class TestFunctions {
 		
 		/* Functions.mergeに副作用が無いことの確認 */
 		assertThat(self, is(forTestMap));
+	}
+	
+	@Test
+	public void 自前の関数インターフェースで計算できる(){
+		Lambda<Integer, Integer> square = n -> n * n;
+		
+		int expected = 100;
+		int actual = square.funcall(10);
+		
+		assertThat(actual, is(expected));
 	}
 	
 }
