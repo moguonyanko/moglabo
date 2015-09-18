@@ -5,7 +5,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-public class TimeZonePractice {
+public class TimeZones {
 
 	public static ZonedDateTime now(ZoneId toZoneId){
 		LocalDateTime localDateTime = LocalDateTime.now();

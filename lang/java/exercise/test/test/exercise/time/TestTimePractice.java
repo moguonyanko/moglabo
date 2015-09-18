@@ -9,6 +9,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,14 +19,20 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.is;
 
-import exercise.time.DayOfWeekPractice;
-import exercise.time.LocalPractice;
-import exercise.time.TimeZonePractice;
+import exercise.time.DayOfWeeks;
+import exercise.time.LocalDates;
+import exercise.time.TimeZones;
+import java.time.temporal.TemporalAdjusters;
 
+/**
+ * Java8以降に導入されたjava.timeパッケージの調査を行うためのクラスです。
+ * 
+ * 参考：
+ * 「The Java™ Tutorials」 Lesson: Standard Calendar
+ * https://docs.oracle.com/javase/tutorial/datetime/iso/index.html
+ * 
+ */
 public class TestTimePractice {
-	
-	public TestTimePractice() {
-	}
 	
 	@BeforeClass
 	public static void setUpClass() {
@@ -45,7 +52,7 @@ public class TestTimePractice {
 
 	@Test
 	public void nextは翌日の曜日を得る(){
-		DayOfWeekPractice dayOfWeek = new DayOfWeekPractice(DayOfWeek.MONDAY);
+		DayOfWeeks dayOfWeek = new DayOfWeeks(DayOfWeek.MONDAY);
 		
 		DayOfWeek actual = dayOfWeek.next();
 		DayOfWeek expected = DayOfWeek.TUESDAY;
@@ -55,8 +62,8 @@ public class TestTimePractice {
 	
 	@Test
 	public void toStringは曜日の文字列表現を返す(){
-		DayOfWeekPractice dayOfWeek = 
-			new DayOfWeekPractice(DayOfWeek.MONDAY, TextStyle.SHORT);
+		DayOfWeeks dayOfWeek = 
+			new DayOfWeeks(DayOfWeek.MONDAY, TextStyle.SHORT);
 		
 		String actual = dayOfWeek.toString();
 		String expected = "月";
@@ -69,7 +76,7 @@ public class TestTimePractice {
 		LocalDate date = LocalDate.of(2016, Month.FEBRUARY, 14);
 
 		LocalDate expected = LocalDate.of(2016, Month.FEBRUARY, 29);
-		LocalDate actual = LocalPractice.lastDayOfMonth(date);
+		LocalDate actual = LocalDates.lastDayOfMonth(date);
 		
 		assertThat(actual, is(expected));
 	}
@@ -82,7 +89,7 @@ public class TestTimePractice {
 	public void 現在時刻をタイムゾーン付きで得る(){
 		ZonedDateTime expected = ZonedDateTime.now();
 		ZoneId zoneId = ZoneId.of("Asia/Tokyo");
-		ZonedDateTime actual = TimeZonePractice.now(zoneId);
+		ZonedDateTime actual = TimeZones.now(zoneId);
 		
 		/**
 		 * 秒及びミリ秒はテストする要素に含めたくないが分までは含めたいので，
@@ -104,7 +111,7 @@ public class TestTimePractice {
 			.atZone(toZoneId);
 		OffsetDateTime expected = berlinZonedDateTime.toOffsetDateTime();
 		
-		OffsetDateTime actual = TimeZonePractice.getOffsetDateTime(fromZoneId, toZoneId);
+		OffsetDateTime actual = TimeZones.getOffsetDateTime(fromZoneId, toZoneId);
 		
 		/**
 		 * ミリ秒を比較されるとテストに失敗する。
@@ -112,6 +119,45 @@ public class TestTimePractice {
 		 */
 		DateTimeFormatter formatter = getPatternForTest();
 		assertThat(actual.format(formatter), is(expected.format(formatter)));
+	}
+	
+	@Test
+	public void 月の最大の日数を得る(){
+		Month m = Month.FEBRUARY;
+		Locale locale = Locale.getDefault();
+		
+		int actual = m.maxLength();
+		/**
+		 * 2月はうるう年では29日あるので最大日数は29が返される。
+		 */
+		int expected = 29;
+		
+		assertThat(actual, is(expected));
+		
+		System.out.println(m.getDisplayName(TextStyle.FULL, locale));
+		System.out.println(m.getDisplayName(TextStyle.FULL_STANDALONE, locale));
+	}
+	
+	@Test
+	public void 特定の日を基点として別の日を得る(){
+		LocalDate baseDate = LocalDate.of(2015, Month.SEPTEMBER, 18);
+		
+		LocalDate actual = baseDate.with(TemporalAdjusters.next(DayOfWeek.FRIDAY));
+		LocalDate expected = LocalDate.of(2015, Month.SEPTEMBER, 25);
+		
+		assertThat(actual, is(expected));
+		
+		System.out.printf("現在は %s です。次の金曜日は %s です。%n", baseDate, actual);
+	}
+	
+	@Test
+	public void 指定した日の曜日を得る(){
+		LocalDate sample = LocalDate.of(2015, Month.SEPTEMBER, 18);
+		
+		DayOfWeek expected = DayOfWeek.FRIDAY;
+		DayOfWeek actual = sample.getDayOfWeek();
+		
+		assertThat(actual, is(expected));
 	}
 	
 }
