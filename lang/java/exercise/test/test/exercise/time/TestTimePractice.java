@@ -10,6 +10,11 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.time.temporal.TemporalAdjusters;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.Year;
+import java.time.YearMonth;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -22,7 +27,6 @@ import static org.hamcrest.CoreMatchers.is;
 import exercise.time.DayOfWeeks;
 import exercise.time.LocalDates;
 import exercise.time.TimeZones;
-import java.time.temporal.TemporalAdjusters;
 
 /**
  * Java8以降に導入されたjava.timeパッケージの調査を行うためのクラスです。
@@ -156,6 +160,76 @@ public class TestTimePractice {
 		
 		DayOfWeek expected = DayOfWeek.FRIDAY;
 		DayOfWeek actual = sample.getDayOfWeek();
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 指定した年月を得てうるう年かどうかを確認できる(){
+		YearMonth yearMonth = YearMonth.of(2015, Month.SEPTEMBER);
+		
+		boolean expected = false;
+		boolean actual = yearMonth.isLeapYear();
+
+		assertThat(actual, is(expected));
+		
+		System.out.printf("現在は %s で %d 日あります。"
+			+ "うるう年判定結果は %b です。 %n", 
+			yearMonth, yearMonth.lengthOfMonth(), actual);
+	}
+	
+	@Test
+	public void 妥当な月日の指定かどうかを確認できる(){
+		/**
+		 * 9月31日など存在しない月日をofの引数に指定すると，
+		 * MonthDay.isValidYearを呼ぶまでも無くDateTimeExceptionが発生する。
+		 */
+		MonthDay monthDay = MonthDay.of(Month.SEPTEMBER, 30);
+		
+		boolean expected = true;
+		boolean actual = monthDay.isValidYear(2015);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 指定した年がうるう年かどうかを確認できる(){
+		Year year = Year.of(2015);
+		
+		boolean expected = false;
+		boolean actual = year.isLeap();
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void ナノ秒を含む時刻を表現する(){
+		/**
+		 * 第4引数でナノ秒を指定することができる。
+		 */
+		LocalTime localTime = LocalTime.of(14, 38, 30, 99999);
+		
+		int expected = 99999;
+		int actual = localTime.getNano();
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 日付と時刻を合わせて操作する(){
+		LocalDate date = LocalDate.of(2015, Month.SEPTEMBER, 24);
+		LocalTime time = LocalTime.of(15, 7, 30, 99999);
+		LocalDateTime localDateTime = LocalDateTime.of(date, time);
+		
+		/**
+		 * Monthオブジェクトは引数で渡せるがYearオブジェクトは渡すことができない。
+		 */
+		LocalDateTime expected = LocalDateTime.of(date.getYear(), 
+			Month.DECEMBER, date.getDayOfMonth(), 
+			time.getHour(), time.getMinute(), time.getSecond(), time.getNano());
+		
+		/* 3ヶ月進める。 */
+		LocalDateTime actual = localDateTime.plusMonths(3);
 		
 		assertThat(actual, is(expected));
 	}
