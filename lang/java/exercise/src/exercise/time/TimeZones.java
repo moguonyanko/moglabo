@@ -26,4 +26,19 @@ public class TimeZones {
 		return OffsetDateTime.of(toLocalDateTime, zonedDateTime.getOffset());
 	}
 	
+	public static ZoneId getZoneId(String shortId){
+		return ZoneId.of(ZoneId.SHORT_IDS.get(shortId));
+	}
+	
+	public static boolean inSummerTime(ZonedDateTime toZoneTime){
+		/**
+		 * ある場所がサマータイムにあるかどうかを
+		 * ZoneRules.isDaylightSavingsで確認するには
+		 * Instantオブジェクトに変換して渡す必要がある。
+		 */
+		return toZoneTime.getZone()
+			.getRules()
+			.isDaylightSavings(toZoneTime.toInstant());
+	}
+	
 }

@@ -15,6 +15,7 @@ import java.time.LocalTime;
 import java.time.MonthDay;
 import java.time.Year;
 import java.time.YearMonth;
+import java.time.ZoneOffset;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -230,6 +231,65 @@ public class TestTimePractice {
 		
 		/* 3ヶ月進める。 */
 		LocalDateTime actual = localDateTime.plusMonths(3);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void ローカル時間にタイムゾーンを適用する(){
+		LocalDateTime localDateTime = LocalDateTime.of(2015, Month.SEPTEMBER, 25, 16, 30);
+		ZoneId zoneId = ZoneId.systemDefault();
+		ZonedDateTime actual = localDateTime.atZone(zoneId);
+		
+		/**
+		 * ZonedDateTime.ofにはMonthを渡せない。
+		 */
+		ZoneId jstId = TimeZones.getZoneId("JST");
+		ZonedDateTime expected = ZonedDateTime.of(2015, Month.SEPTEMBER.getValue()
+			, 25, 16, 30, 0, 0, jstId);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 時差を考慮して時刻を計算する(){
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年 MMM月 d日 ahh時mm分");
+
+		LocalDateTime fromLocalTime = LocalDateTime.of(2015, Month.SEPTEMBER, 25, 17, 4);
+		ZoneId fromZone = ZoneId.of("Asia/Tokyo");
+		ZonedDateTime fromZoneTime = ZonedDateTime.of(fromLocalTime, fromZone);
+		
+		int deltaMinutes = 720;
+		
+		ZoneId toZone = ZoneId.of("Europe/Berlin");
+		ZonedDateTime toZoneTime = fromZoneTime.withZoneSameInstant(toZone)
+			.plusMinutes(deltaMinutes);
+		
+		String expected = "2015年 9月 25日 午後10時04分";
+		String actual = toZoneTime.format(formatter);
+		
+		assertThat(actual, is(expected));
+		System.out.printf("%s の%d分後の時刻 -> %s %n", toZone, deltaMinutes, actual);
+		
+		boolean inSummerTime = TimeZones.inSummerTime(toZoneTime);
+		
+		if(inSummerTime){
+			System.out.printf("%s はサマータイムにあります。%n", toZone);
+		}else{
+			System.out.printf("%s はサマータイムにありません。%n", toZone);
+		}
+	}
+	
+	@Test
+	public void ローカル時間に時差を追加する(){
+		LocalDateTime localDate = LocalDateTime.of(2015, Month.SEPTEMBER, 25, 17, 33);
+		ZoneOffset offset = ZoneOffset.of("+12:00");
+		
+		OffsetDateTime expected = OffsetDateTime .of(2015, Month.SEPTEMBER.getValue(), 
+			25, 17, 33, 0, 0, offset);
+		
+		OffsetDateTime offsetDate = OffsetDateTime.of(localDate, offset);
+		OffsetDateTime actual = offsetDate.with(TemporalAdjusters.lastInMonth(DayOfWeek.FRIDAY));
 		
 		assertThat(actual, is(expected));
 	}
