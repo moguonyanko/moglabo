@@ -16,6 +16,9 @@ import java.time.MonthDay;
 import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.JulianFields;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,8 +31,6 @@ import static org.hamcrest.CoreMatchers.is;
 import exercise.time.DayOfWeeks;
 import exercise.time.LocalDates;
 import exercise.time.TimeZones;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 /**
  * Java8以降に導入されたjava.timeパッケージの調査を行うためのクラスです。
@@ -315,6 +316,26 @@ public class TestTimePractice {
 		LocalDate actual = LocalDate.parse(input, DateTimeFormatter.BASIC_ISO_DATE);
 		
 		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 日付に関するフィールドや単位のサポート状況を調べる(){
+		/**
+		 * サードパーティ製の日付ライブラリを使用している時に
+		 * isSupportedメソッドによるテストは有用なのかもしれない。
+		 */
+		
+		/**
+		 * LocalDateはユリウス日の日付フィールドをサポートしている。
+		 */
+		boolean isSupportedJulianDay = LocalDate.now().isSupported(JulianFields.JULIAN_DAY);
+		assertTrue(isSupportedJulianDay);
+		
+		/**
+		 * LocalTimeは日付単位をサポートしていない。
+		 */
+		boolean isSupportedChronoDay = LocalTime.now().isSupported(ChronoUnit.DAYS);
+		assertFalse(isSupportedChronoDay);
 	}
 	
 }
