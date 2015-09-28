@@ -28,6 +28,8 @@ import static org.hamcrest.CoreMatchers.is;
 import exercise.time.DayOfWeeks;
 import exercise.time.LocalDates;
 import exercise.time.TimeZones;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Java8以降に導入されたjava.timeパッケージの調査を行うためのクラスです。
@@ -290,6 +292,27 @@ public class TestTimePractice {
 		
 		OffsetDateTime offsetDate = OffsetDateTime.of(localDate, offset);
 		OffsetDateTime actual = offsetDate.with(TemporalAdjusters.lastInMonth(DayOfWeek.FRIDAY));
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 標準Javaエポックからの経過秒数を与えてタイムスタンプを得る(){
+		Instant timestamp = Instant.ofEpochSecond(1443418752L);
+		LocalDateTime localTimestamp = LocalDateTime.ofInstant(timestamp, ZoneId.systemDefault());
+		
+		String expected = "2015年 9月 28日 14時39分";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年 MMM月 d日 HH時mm分");
+		String actual = localTimestamp.format(formatter);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void ISO日付フォーマッタで日付を得る(){
+		LocalDate expected = LocalDate.of(2015, Month.SEPTEMBER, 28);
+		String input = "20150928";
+		LocalDate actual = LocalDate.parse(input, DateTimeFormatter.BASIC_ISO_DATE);
 		
 		assertThat(actual, is(expected));
 	}
