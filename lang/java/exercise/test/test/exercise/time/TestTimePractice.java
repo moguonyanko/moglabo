@@ -10,7 +10,6 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import java.time.temporal.TemporalAdjusters;
 import java.time.LocalTime;
 import java.time.MonthDay;
 import java.time.Year;
@@ -19,6 +18,12 @@ import java.time.ZoneOffset;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.JulianFields;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalQueries;
+import java.time.temporal.TemporalQuery;
+import java.time.temporal.TemporalUnit;
+import static java.time.temporal.TemporalAdjusters.*;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -150,7 +155,7 @@ public class TestTimePractice {
 	public void 特定の日を基点として別の日を得る(){
 		LocalDate baseDate = LocalDate.of(2015, Month.SEPTEMBER, 18);
 		
-		LocalDate actual = baseDate.with(TemporalAdjusters.next(DayOfWeek.FRIDAY));
+		LocalDate actual = baseDate.with(next(DayOfWeek.FRIDAY));
 		LocalDate expected = LocalDate.of(2015, Month.SEPTEMBER, 25);
 		
 		assertThat(actual, is(expected));
@@ -292,7 +297,7 @@ public class TestTimePractice {
 			25, 17, 33, 0, 0, offset);
 		
 		OffsetDateTime offsetDate = OffsetDateTime.of(localDate, offset);
-		OffsetDateTime actual = offsetDate.with(TemporalAdjusters.lastInMonth(DayOfWeek.FRIDAY));
+		OffsetDateTime actual = offsetDate.with(lastInMonth(DayOfWeek.FRIDAY));
 		
 		assertThat(actual, is(expected));
 	}
@@ -336,6 +341,98 @@ public class TestTimePractice {
 		 */
 		boolean isSupportedChronoDay = LocalTime.now().isSupported(ChronoUnit.DAYS);
 		assertFalse(isSupportedChronoDay);
+	}
+
+	@Test
+	public void 特定の日を基点として任意の日付を得る(){
+		LocalDate baseDate = LocalDate.of(2015, Month.SEPTEMBER, 29);
+		DayOfWeek dayOfWeek = baseDate.getDayOfWeek();
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
+		
+		String expected = "2015年10月06日";
+		String actual = DayOfWeeks.nextDate(baseDate, dayOfWeek).format(formatter);
+		
+		assertThat(actual, is(expected));
+		
+		System.out.println(actual);
+	}
+	
+	private class SalaryAdjuster implements TemporalAdjuster {
+
+		private final int salaryDay;
+
+		public SalaryAdjuster(int salaryDay) {
+			this.salaryDay = salaryDay;
+		}
+		
+		/**
+		 * 給料支払日が土日だった場合は直前の金曜日を給料支払日とする。
+		 */
+		@Override
+		public Temporal adjustInto(Temporal temporal) {
+			LocalDate date = LocalDate.from(temporal);
+			
+			LocalDate salaryDate = date.withDayOfMonth(salaryDay);
+			
+			DayOfWeek dow = salaryDate.getDayOfWeek();
+			if(dow == DayOfWeek.SATURDAY || dow == DayOfWeek.SUNDAY){
+				salaryDate = salaryDate.with(previous(DayOfWeek.FRIDAY));
+			}
+			
+			return temporal.with(salaryDate);
+		}
+
+	}
+	
+	@Test
+	public void カスタマイズしたアジャスタで任意の日付を得る(){
+		/**
+		 * 通常の給料支払日を23日とする。
+		 */
+		int standardSalaryDay = 23;
+		TemporalAdjuster adjuster = new SalaryAdjuster(standardSalaryDay);
+		
+		/**
+		 * 2015年8月は23日が日曜日なので21日が給料支払日になる。
+		 */
+		LocalDate sampleDate0 = LocalDate.of(2015, Month.AUGUST, 1);
+		LocalDate expected0 = LocalDate.of(2015, Month.AUGUST, 21);
+		LocalDate actual0 = sampleDate0.with(adjuster);
+		
+		assertThat(actual0, is(expected0));
+		
+		/**
+		 * 2015年9月は23日が水曜日なのでそのまま23日が給料支払日になる。
+		 */
+		LocalDate sampleDate1 = LocalDate.of(2015, Month.SEPTEMBER, 1);
+		LocalDate expected1 = LocalDate.of(2015, Month.SEPTEMBER, 23);
+		LocalDate actual1 = sampleDate1.with(adjuster);
+		
+		assertThat(actual1, is(expected1));
+	}
+	
+	@Test
+	public void 最も小さい日付または時刻の単位を得る(){
+		TemporalQuery<TemporalUnit> query = TemporalQueries.precision();
+		
+		OffsetDateTime dateTime = OffsetDateTime.of(LocalDateTime.now(), ZoneOffset.of("-12:00"));
+		
+		/**
+		 * OffsetDateTimeはナノ秒まで扱える。
+		 */
+		String expected = "Nanos";
+		String actual = dateTime.query(query).toString();
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void カスタマイズしたクラスで日付を照会する(){
+		/**
+		 * @todo
+		 * implement
+		 */
 	}
 	
 }
