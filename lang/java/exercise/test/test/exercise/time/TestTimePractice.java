@@ -23,6 +23,12 @@ import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalQueries;
 import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
+import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAccessor;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.List;
 import static java.time.temporal.TemporalAdjusters.*;
 
 import org.junit.After;
@@ -358,7 +364,7 @@ public class TestTimePractice {
 		System.out.println(actual);
 	}
 	
-	private class SalaryAdjuster implements TemporalAdjuster {
+	private static class SalaryAdjuster implements TemporalAdjuster {
 
 		private final int salaryDay;
 
@@ -427,12 +433,81 @@ public class TestTimePractice {
 		assertThat(actual, is(expected));
 	}
 	
-	@Test
-	public void カスタマイズしたクラスで日付を照会する(){
+	private static class UpdateDays implements TemporalQuery<Boolean>{
+
 		/**
-		 * @todo
-		 * implement
+		 * アップデート作業を実施する曜日
 		 */
+		private final DayOfWeek updateDayOfWeek;
+
+		public UpdateDays(DayOfWeek updateDayOfWeek) {
+			this.updateDayOfWeek = updateDayOfWeek;
+		}
+		
+		@Override
+		public Boolean queryFrom(TemporalAccessor temporal) {
+			int dow = temporal.get(ChronoField.DAY_OF_WEEK);
+			DayOfWeek dayOfWeek = DayOfWeek.of(dow);
+			
+			return updateDayOfWeek.equals(dayOfWeek);
+		}
+		
+	}
+	
+	private static class EventDays{
+		
+		/**
+		 * イベントの開催日一覧
+		 */
+		private final Set<LocalDate> eventDays;
+
+		public EventDays(List<LocalDate> eventDayList) {
+			this.eventDays = new HashSet<>(eventDayList);
+		}
+
+		public Boolean isEventDay(TemporalAccessor temporal){
+			int year = temporal.get(ChronoField.YEAR);
+			int month = temporal.get(ChronoField.MONTH_OF_YEAR);
+			int day = temporal.get(ChronoField.DAY_OF_MONTH);
+			LocalDate localDate = LocalDate.of(year, month, day);
+			
+			return eventDays.contains(localDate);
+		}
+	}
+	
+	@Test
+	public void カスタマイズした日付照会クラスで特定の日付に該当するかどうかを調べる(){
+		/**
+		 * 毎週金曜日がアップデート作業日とする。
+		 */
+		UpdateDays updateDays = new UpdateDays(DayOfWeek.FRIDAY);
+		
+		/**
+		 * イベント開催日は9月から11月の適当な日とする。
+		 */
+		List<LocalDate> eventDayList = Arrays.asList(
+			LocalDate.of(2015, Month.SEPTEMBER, 23),
+			LocalDate.of(2015, Month.OCTOBER, 9),
+			LocalDate.of(2015, Month.NOVEMBER, 18)
+		);
+		
+		EventDays eventDays = new EventDays(eventDayList);
+		
+		LocalDate date = LocalDate.of(2015, Month.OCTOBER, 9);
+		
+		Boolean isUpdateDay = date.query(updateDays);
+		/**
+		 * TemporalQueryはFunctionalInterfaceなので，TemporalQuery型を要求される
+		 * 箇所にはラムダ式あるいはメソッド参照を渡すことができる。
+		 */
+		Boolean isEventday = date.query(eventDays::isEventDay);
+		
+		assertTrue(isUpdateDay && isEventday);
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年M月d日(E)");
+		String info = date.format(formatter);
+		
+		System.out.println(info + "はアップデート作業日かつイベント開催日です。");
 	}
 	
 }
