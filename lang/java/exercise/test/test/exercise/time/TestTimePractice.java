@@ -25,10 +25,13 @@ import java.time.temporal.TemporalQuery;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
+import java.time.Duration;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
+import java.util.function.IntUnaryOperator;
 import static java.time.temporal.TemporalAdjusters.*;
 
 import org.junit.After;
@@ -508,6 +511,61 @@ public class TestTimePractice {
 		String info = date.format(formatter);
 		
 		System.out.println(info + "はアップデート作業日かつイベント開催日です。");
+	}
+	
+	/**
+	 * @todo
+	 * メソッド内のスコープでラムダ式による再帰を記述する方法はあるか？
+	 */
+	private static final IntUnaryOperator fibonacci  = n -> {
+		if (n <= 1) {
+			return n;
+		} else {
+			return TestTimePractice.fibonacci .applyAsInt(n - 1)
+				+ TestTimePractice.fibonacci .applyAsInt(n - 2);
+		}
+	};
+	
+	@Test
+	public void メソッドの実行時間を計測する(){
+		Instant start = Instant.now();
+		
+		int arg = 30;
+		fibonacci .applyAsInt(arg);
+		
+		Instant end = Instant.now();
+		
+		/**
+		 * Durationはナノ秒まで扱うことができる。
+		 * Durationは時間をベースとして期間を表す。
+		 */
+		long execTime = Duration.between(start, end).toNanos();
+		
+		System.out.printf("フィボナッチ数列計算時間は引数 %d のとき %d ナノ秒でした。%n", arg, execTime);
+	}
+	
+	@Test
+	public void 任意の日付間の日数を得る(){
+		LocalDate start = LocalDate.of(2010, Month.OCTOBER, 15);
+		LocalDate end = LocalDate.of(2015, Month.APRIL, 1);
+		/**
+		 * Periodは日付をベースとして期間を表す。
+		 * Period.getDaysは日付の差しか返さない。
+		 * 月を日に換算して日数を返したりはしない。
+		 * したがってPeriod.getDaysのみでは期間中の
+		 * 合計日数を得ることはできない。
+		 * なおPeriod.getDaysとPeriod.get(ChronoUnit.DAYS)は
+		 * 型以外は同じ結果を返す。
+		 */
+		Period period = Period.between(start, end);
+		
+		long expected = 1629;
+		long actual = LocalDates.toTotalDays(start, end);
+		
+		assertThat(actual, is(expected));
+		
+		System.out.printf("%s と %s の間の月数は %s 月です。%n", start, end, period.toTotalMonths());
+		System.out.printf("%s と %s の間の日数は %d 日です。%n", start, end, actual);
 	}
 	
 }
