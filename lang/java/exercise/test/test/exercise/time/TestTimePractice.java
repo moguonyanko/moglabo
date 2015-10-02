@@ -32,6 +32,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
 import java.util.function.IntUnaryOperator;
+import java.time.Clock;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.Chronology;
+import java.time.chrono.JapaneseChronology;
+import java.time.chrono.JapaneseEra;
 import static java.time.temporal.TemporalAdjusters.*;
 
 import org.junit.After;
@@ -538,6 +543,7 @@ public class TestTimePractice {
 		/**
 		 * Durationはナノ秒まで扱うことができる。
 		 * Durationは時間をベースとして期間を表す。
+		 * しかしDurationのはDuration.ofDays(long)メソッドがある。
 		 */
 		long execTime = Duration.between(start, end).toNanos();
 		
@@ -566,6 +572,83 @@ public class TestTimePractice {
 		
 		System.out.printf("%s と %s の間の月数は %s 月です。%n", start, end, period.toTotalMonths());
 		System.out.printf("%s と %s の間の日数は %d 日です。%n", start, end, actual);
+	}
+	
+	@Test
+	public void 指定された期間を加えたクロックを得る(){
+		LocalDateTime baseTime = LocalDateTime.of(2015, Month.OCTOBER, 2, 17, 2);
+		long totalEpochSecond = baseTime.toEpochSecond(ZoneOffset.UTC);
+		Instant baseInstant = Instant.ofEpochSecond(totalEpochSecond);
+		
+		ZoneId zoneId = ZoneId.of("Asia/Tokyo");
+		/* 3日後のClockを得る。 */
+		int days = 3;
+		Period period = Period.ofDays(days);
+		/**
+		 * Instant.fromは引数にTemporalAccessor型の値を取る。
+		 * TemporalAccessor型はTemporal型のスーパーインターフェースなので，
+		 * Temporal型の値をInstant.fromに渡すことができる。
+		 * 
+		 * Instant.from(LocalDate)は実行時例外として
+		 * DateTimeExceptionがスローされる。
+		 * LocalDateからInstantが得られないためである。
+		 */
+		Instant instant = baseInstant.plus(period);
+		Clock fixedClock = Clock.fixed(instant, zoneId);
+		
+		/**
+		 * Duration.fromにPeriodを渡すと実行時例外として
+		 * UnsupportedTemporalTypeExceptionがスローされる。
+		 * 
+		 * Clock.systemは現在のシステム時間を保持したClockを返す。
+		 */
+		Duration duration = Duration.ofDays(days);
+		Clock clock = Clock.fixed(baseInstant, zoneId);
+		Clock offsetClock = Clock.offset(clock, duration);
+		
+		/**
+		 * Clock.fixedはFixedClockを返し，Clock.offsetはOffsetClockを返す。
+		 * 仮に両者の指す時点が同じでもequalsで両者が等しいと判定されることは無い。
+		 * Clock.instantでInstantを取得し，それを比較してテストする。
+		 */
+		assertThat(offsetClock.instant(), is(fixedClock.instant()));
+	}
+	
+	@Test
+	public void ISO暦体系の日付からISO暦体系以外の日付を得る(){
+		String expected = "平成27年10月2日";
+		
+		LocalDate isoDate = LocalDate.of(2015, Month.OCTOBER, 2);
+		Chronology notIsoChrono = JapaneseChronology.INSTANCE;
+		String pattern = "Gy年M月d日";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+		ChronoLocalDate notIsoDate = notIsoChrono.date(isoDate);
+		String actual = notIsoDate.format(formatter);
+		
+		assertThat(actual, is(expected));
+		
+		String isoDateInfo = isoDate.format(formatter);
+		
+		System.out.printf("%s は和暦で表すと %s です。%n", isoDateInfo, actual);
+	}
+	
+	@Test
+	public void ISO暦体系以外の日付からISO暦体系の日付を得る(){
+		String expected = "西暦2015-10-02";
+		
+		String pattern = "Gyyyy-MM-dd";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+		
+		Chronology notIsoChrono = JapaneseChronology.INSTANCE;
+		ChronoLocalDate notIsoDate = notIsoChrono.date(JapaneseEra.HEISEI, 27, 10, 2);
+		LocalDate isoDate = LocalDate.from(notIsoDate);
+		String actual = isoDate.format(formatter);
+		
+		assertThat(actual, is(expected));
+		
+		String notIsoDateInfo = notIsoDate.format(formatter);
+		
+		System.out.printf("%s は西暦で表すと %s です。%n", notIsoDateInfo, actual);
 	}
 	
 }
