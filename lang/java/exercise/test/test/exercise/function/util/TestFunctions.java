@@ -585,10 +585,11 @@ public class TestFunctions {
 	}
 
 	private static class HeavyObject {
+		private static final long HEAVY_OBJECT_CREATE_TIME = 1000L;
 
 		public HeavyObject() {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(HEAVY_OBJECT_CREATE_TIME);
 			} catch (InterruptedException ex) {
 				System.err.println("Interrupted.");
 			}
@@ -600,7 +601,12 @@ public class TestFunctions {
 		}
 	}
 
-	@Test
+	/**
+	 * HeavyObjectの遅延生成が行えていれば，HeavyObjectUser.getHeavyObjectを
+	 * 呼び出さない限り，HeavyObject.HEAVY_OBJECT_CREATE_TIMEよりテスト実行時間が
+	 * 掛かることはないはずである。以下のテストケースではそれを確認する。
+	 */
+	@Test(timeout = HeavyObject.HEAVY_OBJECT_CREATE_TIME)
 	public void 必要になるまでオブジェクトの生成を遅延する() {
 		class HeavyObjectUser {
 
@@ -642,26 +648,18 @@ public class TestFunctions {
 			}
 		}
 
-		long timeoutThreshold = 100;
-		long startTime = System.currentTimeMillis();
-
 		HeavyObjectUser heavyUser = new HeavyObjectUser("HeavyUser", 50);
 		/* 遅延生成が行えていれば以下の2行の結果はすぐに得られる。 */
 		System.out.println("Heavy user name:" + heavyUser.getName());
 		System.out.println("Heavy user age:" + heavyUser.getAge());
-
-		long checkPointTime = System.currentTimeMillis();
-		if (checkPointTime - startTime > timeoutThreshold) {
-			fail("HeavyObject timeout! Threshold is " + timeoutThreshold + " ms.");
-		}
 
 		/**
 		 * HeavyObjectUser::getHeavyObjectを呼び出しHeavyObjectを遅延生成する。
 		 * 遅延生成の仕組みが正常に動作して<em>いない<em>時は，
 		 * HeavyObjectUser::getHeavyObjectを呼び出さなくてもタイムアウトする。
 		 */
-		boolean callHeavyInitializer = false;
-		if (callHeavyInitializer) {
+		boolean callHeavyObjectInitializer = false;
+		if (callHeavyObjectInitializer) {
 			System.out.println("Heavy object state:" + heavyUser.getHeavyObject());
 		}
 	}
@@ -1744,6 +1742,19 @@ public class TestFunctions {
 		
 		int expected = 100;
 		int actual = square.funcall(10);
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 配列から任意の型のリストを得る(){
+		Integer[] nums = {1, 2, 3, 4, 5};
+		
+		List<Integer> expected = new ArrayList<>();
+		Arrays.stream(nums)
+			.forEach(expected::add);
+		
+		List<Integer> actual = Functions.asList(nums, ArrayList::new);
 		
 		assertThat(actual, is(expected));
 	}

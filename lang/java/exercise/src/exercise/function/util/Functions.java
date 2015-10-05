@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -863,6 +864,14 @@ public class Functions {
 	public static <T, U> Map<Boolean, Map<U, List<T>>> partitioningGroupingBy(
 		Collection<T> src, Predicate<T> predicate, Function<T, U> classfier){
 		Map<Boolean, Map<U, List<T>>> result = src.parallelStream()
+			/**
+			 * Collectors.partitioningByが存在する一方で
+			 * Collectors.partitioningByConcurrentは存在しない。
+			 * 仮にCollectors.partitioningByConcurrentが存在したとしても，
+			 * Booleanが持ちうる値の数すなわち2つ(True, False)分までしか
+			 * 並行性が上がらないため，Collectors.partitioningByConcurrentは
+			 * 不要と見なされたのだろうか？
+			 */
 			.collect(partitioningBy(predicate, groupingBy(classfier)));
 		
 		return result;
@@ -922,6 +931,14 @@ public class Functions {
 		});
 		
 		return result;
+	}
+	
+	public static <T, C extends Collection<T>> C asList(T[] src, Supplier<C> supplier){
+		List<T> eles = Arrays.asList(src);
+		C collection = supplier.get();
+		collection.addAll(eles);
+		
+		return collection;
 	}
 	
 }
