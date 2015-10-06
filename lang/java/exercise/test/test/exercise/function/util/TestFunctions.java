@@ -1,6 +1,5 @@
 package test.exercise.function.util;
 
-import exercise.function.Lambda;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Collection;
@@ -50,11 +49,13 @@ import exercise.function.util.Pair;
 import exercise.function.util.ParamSupplier;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
+import exercise.function.Lambda;
 
 /**
  * 参考：
  * 「Javaによる関数型プログラミング」(オライリー・ジャパン)
  * 「アルゴリズムとデータ構造」(SoftbankCreative)
+ * 「Java Tutorial」(オラクル)
  */
 public class TestFunctions {
 

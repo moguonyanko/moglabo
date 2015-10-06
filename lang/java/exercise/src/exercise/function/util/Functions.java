@@ -43,6 +43,7 @@ import static java.util.stream.Collectors.*;
  * 「計算機プログラムの構造と解釈 第2版」（ピアソン）
  * 「javaScript(第6版)」(オライリー・ジャパン)
  * 「Effective Java 第2版」(ピアソン)
+ * 「Java Tutorial」(オラクル)
  */
 public class Functions {
 
