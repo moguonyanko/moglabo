@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.function.BiPredicate;
+import java.io.PrintStream;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -1327,7 +1328,21 @@ public class TestFunctions {
 	}
 	
 	private enum Favorite{
-		EGG, TOAST, RICE, BANANA, NONE
+		EGG(10), 
+		TOAST(80), 
+		RICE(100), 
+		BANANA(30), 
+		NONE(0);
+		
+		private final int calorie;
+		
+		private Favorite(int calorie){
+			this.calorie = calorie;
+		}
+
+		public int getCalorie() {
+			return calorie;
+		}
 	}
 	
 	private static class Person{
@@ -1758,6 +1773,105 @@ public class TestFunctions {
 		List<Integer> actual = Functions.asList(nums, ArrayList::new);
 		
 		assertThat(actual, is(expected));
+	}
+	
+	private static class IntPrinter{
+		private static final String PREFIX = "***";
+		
+		private final String suffix;
+		private final List<Integer> src;
+
+		public IntPrinter(List<Integer> src, String suffix) {
+			this.src = src;
+			this.suffix = suffix;
+		}
+		
+		private void print(PrintStream out){
+			src.forEach(out::println);
+		}
+		
+		private void println(Integer i){
+			System.out.println(i + suffix);
+		}
+		
+		private static void printWithPrefix(Integer i){
+			System.out.println(PREFIX + i);
+		}
+		
+	}
+	
+	@Test
+	public void メソッド参照でラムダ式を置き換えできる() {
+		List<Integer> sample = Arrays.asList(1, 4, 2, 5, 7, 0);
+
+		/* PrintStreamクラスのインスタンスメソッドのメソッド参照 */
+		sample.forEach(System.out::println);
+
+		IntPrinter ip = new IntPrinter(sample, "!!!");
+
+		ip.print(System.out);
+
+		/* インスタンスメソッドのメソッド参照 */
+		sample.forEach(ip::println);
+
+		/* staticメソッドのメソッド参照 */
+		sample.forEach(IntPrinter::printWithPrefix);
+
+		String[] sample2 = {"foo", "bar", "baz"};
+
+		/**
+		 * 以下のStream.mapの引数は同じ意味。
+		 * (String s)はsだけでよいが，後のコードとの比較のため
+		 * わざと冗長に書いている。
+		 */
+		Arrays.stream(sample2)
+			.map((String s) -> s.toUpperCase())
+			.forEach(System.out::println);
+
+		Arrays.stream(sample2)
+			.map(String::toUpperCase)
+			.forEach(System.out::println);
+	}
+	
+	@Test
+	public void ストリームから重複を排除した結果を得る(){
+		List<String> sample = Arrays.asList("baz", "foo", "baz", "foo", "bar", "bar");
+		
+		List<String> expected = Arrays.asList("foo", "bar", "baz");
+		/* String::compareToと同義。 */
+		//expected.sort((a, b) -> a.compareTo(b));
+		expected.sort(String::compareTo);
+		
+		List<String> actual = sample.stream()
+			.distinct()
+			.sorted()
+			.collect(toList());
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 単一の要素を持つストリームを得る(){
+		Person samplePerson = new Person("mike", new Favorite[]{ 
+			Favorite.BANANA, Favorite.EGG, Favorite.RICE
+		});
+		
+		Function<Person, IntStream> calorieStream = person -> {
+			Set<Favorite> fs = person.getFavorites();
+			return fs.stream().mapToInt(Favorite::getCalorie);
+		};
+		
+		int expectedMaxCalorie = 100;
+		
+		/**
+		 * Stream.ofは引数の要素1つだけを含むStreamを生成する。
+		 */
+		int actualMaxCalorie = Stream.of(samplePerson)
+			.flatMapToInt(calorieStream)
+			.max()
+			.orElse(Favorite.NONE.getCalorie());
+			
+		assertThat(actualMaxCalorie, is(expectedMaxCalorie));
 	}
 	
 }
