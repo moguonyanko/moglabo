@@ -651,4 +651,24 @@ public class TestTimePractice {
 		System.out.printf("%s は西暦で表すと %s です。%n", notIsoDateInfo, actual);
 	}
 	
+	@Test
+	public void 負の値を指定して日付を得る(){
+		LocalDate date = LocalDate.of(2015, Month.OCTOBER, 7);
+		long dayDelta = 3;
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		
+		String expected = date.minusDays(dayDelta).format(formatter);
+		
+		/**
+		 * -3をplusDaysの引数に渡すと3日前を指定したことになる。
+		 * LocalDateを含めtimeパッケージの多くが不変なので
+		 * 新しい変数でplusDaysなどの結果を受け取る必要がある。
+		 */
+		LocalDate beforeDate = date.plusDays(dayDelta * -1);
+		String actual = beforeDate.format(formatter);
+		
+		assertThat(actual, is(expected));
+	}
+	
 }

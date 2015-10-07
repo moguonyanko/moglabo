@@ -28,6 +28,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
 import java.util.function.BiPredicate;
 import java.io.PrintStream;
+import java.util.Optional;
+import java.util.HashSet;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -1872,6 +1874,184 @@ public class TestFunctions {
 			.orElse(Favorite.NONE.getCalorie());
 			
 		assertThat(actualMaxCalorie, is(expectedMaxCalorie));
+	}
+	
+	@Test
+	public void 短絡終端操作で結果を得る(){
+		List<String> names = Arrays.asList(
+			"foo", "bar", "baz", "hoge", "neko", "mike"
+		);
+		
+		Predicate<String> toEmptyStreamFilter = s -> s.length() < 0;
+		
+		/**
+		 * AbstractList.addを呼び出すとUnsupportedOperationExceptionになる。
+		 * AbstractList.removeIfは引数のPredicateを適用して真になる要素が無ければ
+		 * 呼び出しても例外は発生しない。真になる要素がある場合は
+		 * AbstractList.removeが呼び出されることにより
+		 * UnsupportedOperationExceptionがスローされる。
+		 * 正確にはdefaultメソッドとして定義されているCollection.removeIfが
+		 * 呼び出され，その後AbstractList.removeが呼び出された時に例外が発生する。
+		 * 
+		 * AbstractListがCollection.removeIfをオーバーライドして，常に
+		 * UnsupportedOperationExceptionをスローするように
+		 * 実装されていた方が一貫性はあったと思う。
+		 * Collection.removeIfはJava8から追加されたメソッドなので，後方互換を
+		 * 考慮する必要性は少なかったはずである。
+		 * 
+		 * さらに言えばAbstractListのような実質的に固定サイズのコレクションと
+		 * 固定でないサイズのコレクションが同じインターフェースを実装しているのが
+		 * 問題に思われる。
+		 * 固定サイズのコレクションがUnsupportedOperationExceptionを
+		 * スローするだけのaddやremoveといったメソッドを持っているのは
+		 * 事実上インターフェースを実装拒否している。
+		 * 固定サイズのコレクションがaddやremoveをそもそも持っていなければ，
+		 * 不正な要素の追加・削除操作に対してコンパイル時にエラーを通知することができる。
+		 * APIの使い勝手や後方互換を考慮した結果，今のようになっているのかもしれないが…。
+		 */
+		names.removeIf(toEmptyStreamFilter);
+		//names.removeIf(s -> s.startsWith("f"));
+		//names.add("ponko");
+		
+		String name = names.stream()
+			.parallel()
+			/* String::startsWith("b")のような書き方はできない。 */
+			.filter(s -> s.startsWith("b"))
+			/**
+			 * findAnyは並列処理でのパフォーマンスを上げるように
+			 * 実装されているので結果は不定になる。安定した結果を得るには
+			 * findFirstを用いる必要がある。
+			 * 
+			 * 並列ストリームを途中で順次ストリームにしたり，
+			 * その逆をしても例外は発生しない。
+			 */
+			.sequential()
+			.parallel()
+			.findAny()
+			.orElseGet(String::new);
+		
+		assertTrue(name.equals("bar") || name.equals("baz"));
+		
+		System.out.println(names + "のうちbから始まる名前を1つ挙げると" + name + "です。");
+		
+		boolean resultAnyMatch = names.parallelStream()
+			.map(String::toUpperCase)
+			.filter(toEmptyStreamFilter)
+			/**
+			 * 空のストリームに対してanyMatchするとfalseが返される。
+			 */
+			.anyMatch(s -> s.equalsIgnoreCase("mike"));
+		
+		assertFalse(resultAnyMatch);
+		
+		boolean resultAllMatch = names.parallelStream()
+			.map(String::toUpperCase)
+			.filter(toEmptyStreamFilter)
+			/**
+			 * 空のストリームに対してallMatchするとtrueが返される。
+			 */
+			.allMatch(s -> s.equalsIgnoreCase("mike"));
+		
+		assertTrue(resultAllMatch);
+		
+		boolean resultNoneMatch = names.parallelStream()
+			.map(String::toUpperCase)
+			.filter(toEmptyStreamFilter)
+			/**
+			 * 空のストリームに対してnoneMatchするとtrueが返される。
+			 */
+			.noneMatch(s -> s.equalsIgnoreCase("mike"));
+		
+		assertTrue(resultNoneMatch);
+	}
+	
+	private static class MyOptionalException extends Exception{
+
+		public MyOptionalException() {
+			super("My exception message");
+		}
+		
+	}
+	
+	@Test(expected = MyOptionalException.class)
+	public void 空のOptionalから値を得る時の振る舞いを変える() throws MyOptionalException {
+		String[] names = {};
+		
+		Optional<String> sample = Arrays.stream(names)
+			.parallel()
+			.findAny();
+		
+		Functions.optionalGet(sample, MyOptionalException::new);
+	}
+	
+	@Test
+	public void マッピング関数の結果によってMapの値が変化する(){
+		Map<String, Integer> sample = new HashMap<>();
+		sample.put("foo", 90);
+		sample.put("bar", 10);
+		sample.put("baz", 35);
+		sample.put("abc", 15);
+		sample.put("hoge", 70);
+		/**
+		 * sample.keySet()から直接Streamを得てMap.computeIfPresent等を
+		 * 呼び出すとConcurrentModificationExceptionがスローされる。
+		 * これを避けるためにHashSetのコンストラクタを呼び出してキーのSetを
+		 * 再生成している。
+		 */
+		Set<String> keys = new HashSet<>(sample.keySet());
+		
+		List<Integer> actual0 = keys.stream()
+			/**
+			 * Map.computeIfPresentの第2引数のBiFunctionが
+			 * 常にnullを返すのでMapのマッピングは全て削除される。
+			 * Map.computeも同様の振る舞いをする。
+			 */
+			.map(s -> sample.computeIfPresent(s, (key, value) -> null))
+			.collect(toList());
+		
+		/**
+		 * ストリーム処理中のMap.computeIfPresentによる副作用により
+		 * 元のMapのマッピングは全て削除されている。
+		 */
+		assertTrue(sample.isEmpty());
+		assertTrue(actual0.stream().allMatch(i -> i == null));
+		
+		List<Integer> actual1 = keys.stream()
+			/**
+			 * Map.computeIfAbsentの第2引数のFunctionが
+			 * 常にnullを返すのでMapのマッピングは一切登録されない。
+			 */
+			.map(s -> sample.computeIfAbsent(s, key -> null))
+			.collect(toList());
+		
+		assertTrue(actual1.stream().allMatch(i -> i == null));
+		
+		Map<String, Integer> actual = new HashMap<>();
+		actual.put("momo", 30);
+		actual.put("popo", 25);
+		actual.put("koko", 80);
+		
+		HashMap<String, Integer> expected = new HashMap<>(actual);
+		
+		try {
+			List<Integer> actual2 = new HashSet<>(actual.keySet()).stream()
+				/**
+				 * マッピング関数が非チェック例外をスローした場合，元のMapの
+				 * マッピングは変更されない。マッピング関数からチェック例外を
+				 * スローして伝搬させることはできない。Functionインターフェースが
+				 * チェック例外をスローできるように定義されていないからである。
+				 */
+				.map(s -> sample.compute(s, (key, value) -> {
+					throw new RuntimeException("マッピング中の例外テスト");
+				}))
+				.collect(toList());
+			
+			System.out.println(actual2);
+		} catch (Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+		
+		assertThat(actual, is(expected));
 	}
 	
 }

@@ -942,4 +942,17 @@ public class Functions {
 		return collection;
 	}
 	
+	/**
+	 * Optionalのような中間のオブジェクトを
+	 * 公開APIのシグネチャに含めるのは好ましくない。
+	 * 
+	 * throws節に型変数を指定することができる。
+	 * E extends Throwable の E はRuntimeExceptionである可能性もあるが，
+	 * それでもthrows節にEを指定していないとコンパイルエラーになる。
+	 */
+	public static <T, E extends Throwable> T optionalGet(Optional<T> optional, 
+		Supplier<E> exClass) throws E {
+		return optional.orElseThrow(exClass);
+	}
+	
 }
