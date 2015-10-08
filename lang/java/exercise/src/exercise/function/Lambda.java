@@ -11,9 +11,11 @@ public interface Lambda<T, R> {
 	//int id();
 	
 	/**
-	 * defaultメソッドでObjectクラスのメソッドをオーバーライドするkとはできない。
+	 * defaultメソッドでObjectクラスのメソッドをオーバーライドすることはできない。
 	 * すなわちインターフェースがデフォルトのequalsを提供することはできない。
 	 * 同じことは他のObjectクラスのメソッドについても言える。
+	 * Objectクラスのメソッドのデフォルト実装を提供したい時は，
+	 * 従来通り抽象クラスを用いた骨格実装を用意する。
 	 */
 //	@Override
 //	default boolean equals(Object obj){
