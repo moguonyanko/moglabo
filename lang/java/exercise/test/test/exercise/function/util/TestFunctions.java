@@ -1853,9 +1853,13 @@ public class TestFunctions {
 	}
 	
 	@Test
-	public void 単一の要素を持つストリームを得る(){
-		Person samplePerson = new Person("mike", new Favorite[]{ 
+	public void 任意の型のオブジェクトを任意の数だけ受け取ってストリームを得る(){
+		Person mike = new Person("mike", new Favorite[]{ 
 			Favorite.BANANA, Favorite.EGG, Favorite.RICE
+		});
+		
+		Person neko = new Person("neko", new Favorite[]{ 
+			Favorite.EGG, Favorite.TOAST
 		});
 		
 		Function<Person, IntStream> calorieStream = person -> {
@@ -1866,9 +1870,9 @@ public class TestFunctions {
 		int expectedMaxCalorie = 100;
 		
 		/**
-		 * Stream.ofは引数の要素1つだけを含むStreamを生成する。
+		 * Stream.ofは単一の要素または可変長引数を受け取ってストリームを生成する。
 		 */
-		int actualMaxCalorie = Stream.of(samplePerson)
+		int actualMaxCalorie = Stream.of(mike, neko)
 			.flatMapToInt(calorieStream)
 			.max()
 			.orElse(Favorite.NONE.getCalorie());
@@ -2050,6 +2054,29 @@ public class TestFunctions {
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
+		
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 外部からキー抽出メソッドを指定してソートする(){
+		List<Student> students = Arrays.asList(
+			new Student("foo", 70),
+			new Student("bar", 65),
+			new Student("baz", 100),
+			new Student("hoge", 35),
+			new Student("mike", 10)
+		);
+		
+		List<Student> expected = Arrays.asList(
+			new Student("mike", 10),
+			new Student("hoge", 35),
+			new Student("bar", 65),
+			new Student("foo", 70),
+			new Student("baz", 100)
+		);
+		
+		List<Student> actual = Functions.sorted(students, Student::getScore, ArrayList::new);
 		
 		assertThat(actual, is(expected));
 	}

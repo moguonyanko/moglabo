@@ -175,6 +175,23 @@ public class Functions {
 
 		return sorted(sources, comparator, supplier);
 	}
+	
+	public static <T, U extends Comparable<? super U>, C extends Collection<T>>
+		C sorted(C src, Function<? super T, ? extends U> keyExtractor, Supplier<C> supplier){
+		/**
+		 * 型変数宣言でUがComparableをextendsしていないと以下の行は
+		 * コンパイルエラーになる。そうでないとComparableな(比較可能な)
+		 * キーを返すFunctionがComparator.comparingに渡されることが
+		 * 保証されないためだと思われる。
+		 */
+		//Comparator<T> comparator = Comparator.comparing(keyExtractor);
+		
+		C result = src.stream()
+			.sorted(Comparator.comparing(keyExtractor))
+			.collect(toCollection(supplier));
+		
+		return result;
+	}
 
 	public static <T, U> Map<U, List<T>> groupBy(Collection<T> sources, Function<T, U> classifier) {
 		Map<U, List<T>> result = sources.stream().

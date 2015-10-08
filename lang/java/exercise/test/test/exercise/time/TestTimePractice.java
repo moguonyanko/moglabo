@@ -522,12 +522,12 @@ public class TestTimePractice {
 	 * @todo
 	 * メソッド内のスコープでラムダ式による再帰を記述する方法はあるか？
 	 */
-	private static final IntUnaryOperator fibonacci  = n -> {
+	private static final IntUnaryOperator FIBONACCI  = n -> {
 		if (n <= 1) {
 			return n;
 		} else {
-			return TestTimePractice.fibonacci .applyAsInt(n - 1)
-				+ TestTimePractice.fibonacci .applyAsInt(n - 2);
+			return TestTimePractice.FIBONACCI .applyAsInt(n - 1)
+				+ TestTimePractice.FIBONACCI .applyAsInt(n - 2);
 		}
 	};
 	
@@ -536,7 +536,7 @@ public class TestTimePractice {
 		Instant start = Instant.now();
 		
 		int arg = 30;
-		fibonacci .applyAsInt(arg);
+		FIBONACCI .applyAsInt(arg);
 		
 		Instant end = Instant.now();
 		
