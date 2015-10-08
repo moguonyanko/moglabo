@@ -9,4 +9,15 @@ public interface Lambda<T, R> {
 	 * ラムダ式とともにこのインターフェースを使用するとコンパイルエラーになる。
 	 */
 	//int id();
+	
+	/**
+	 * defaultメソッドでObjectクラスのメソッドをオーバーライドするkとはできない。
+	 * すなわちインターフェースがデフォルトのequalsを提供することはできない。
+	 * 同じことは他のObjectクラスのメソッドについても言える。
+	 */
+//	@Override
+//	default boolean equals(Object obj){
+//		return true;
+//	}
+	
 }

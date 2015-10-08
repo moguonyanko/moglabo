@@ -2081,4 +2081,106 @@ public class TestFunctions {
 		assertThat(actual, is(expected));
 	}
 	
+	@Test
+	public void 空のストリームを比較する(){
+		Stream s0 = Stream.of();
+		Stream s1 = Stream.empty();
+		
+		assertTrue(s0.count() == 0);
+		assertTrue(s1.count() == 0);
+		
+		System.out.println("Stream.ofによる空のストリームの型:" + s0.getClass().getCanonicalName());
+		System.out.println("Stream.emptyによる空のストリームの型:" + s1.getClass().getCanonicalName());
+		
+		/**
+		 * 空のコレクション同士は等しいと判定される。
+		 * Streamを同じように考えないこと。
+		 */
+		List lst0 = Arrays.asList();
+		List lst1 = Arrays.asList();
+		assertTrue(lst0.equals(lst1));
+		
+		/**
+		 * Stream.ofやStream.emptyで返されるクラスは
+		 * equals及びhashCodeを実装していないため
+		 * 両者の比較はObject.equalsが使われる。その結果
+		 * 2つの空のストリームは等しくないと判定される。
+		 * 
+		 * 滅多に無いはずだが，Streamの等しさを厳密に判定しなければ
+		 * ならない状況(例えばStreamをMapのキーにする等)が発生した時は，
+		 * Streamを保持した別のクラスを用意して，そのクラスに
+		 * equalsとhashCodeを実装させる必要がある。
+		 */
+		assertFalse(s0.equals(s1));
+	}
+	
+	private static class MyNaN{
+		private final String id;
+		private static final double NAN = Double.NaN;
+
+		public MyNaN(String id) {
+			this.id = id;
+		}
+
+		/**
+		 * equalsとhashCodeをオーバーライドしていない。
+		 */
+		
+		@Override
+		public String toString() {
+			return id + ":" + NAN;
+		}
+	}
+	
+	@Test
+	public void 重複する要素の判定方法を調査する(){
+		List<Student> students = Arrays.asList(
+			new Student("mike", 10),
+			new Student("hoge", 35),
+			new Student("hoge", 35),
+			new Student("hoge", 35),
+			new Student("baz", 100)
+		);
+		
+		List<Student> expected = Arrays.asList(
+			new Student("mike", 10),
+			new Student("hoge", 35),
+			new Student("baz", 100)
+		);
+		
+		List<Student> actual = students.stream()
+			.distinct()
+			.collect(toList());
+		
+		assertThat(actual, is(expected));
+		
+		List<MyNaN> orgNans = Arrays.asList(
+			new MyNaN("foo"),
+			new MyNaN("duplicate"),
+			new MyNaN("duplicate"),
+			new MyNaN("duplicate"),
+			new MyNaN("bar")
+		);
+		
+		List<MyNaN> actualNans = orgNans.stream()
+			/**
+			 * Stream.distinctはストリームの要素のクラスに
+			 * equalsがオーバーライドされていない時は
+			 * Object.equalsを使用する。こうなると(x == y)を
+			 * 満たす要素しかdistinctで削除されなくなり，
+			 * 結果としてMyNaNのストリームからは何も削除されない。
+			 * 
+			 * equalsの実装方法が不適切であったときも当然distinctは
+			 * 意図されたようには重複を削除してくれなくなる。
+			 * 
+			 * 予期せぬ事故を防ぐためにも，Streamの要素として
+			 * 想定されるクラスは，equalsとhashCodeをオーバーライド
+			 * して一般契約を守り実装されるべきである。
+			 */
+			.distinct()
+			.collect(toList());
+		
+		assertThat(actualNans, is(orgNans));
+	}
+	
 }
