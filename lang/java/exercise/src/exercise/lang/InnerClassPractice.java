@@ -114,7 +114,7 @@ public class InnerClassPractice {
 		return sampleString;
 	}
 	
-	public String getModifiedString(String term){
+	public static String getModifiedString(String term){
 		/**
 		 * 以下はコンパイルエラー。インターフェースは本質的にstaticであるため。 
 		 * ローカルクラスを内包するメソッドが静的メソッドでも不可。
@@ -125,6 +125,10 @@ public class InnerClassPractice {
 		
 		/**
 		 * ローカルクラスは静的クラスにできない。
+		 * 
+		 * ローカルクラスが静的メソッド内に宣言された場合，
+		 * ローカルクラスのメソッド内では静的メソッドを定義したクラスの
+		 * インスタンスメンバを参照できない。
 		 */
 		class LocalModifier{
 			private static final String KEYWORD = "*MODIFIED*";
@@ -142,7 +146,9 @@ public class InnerClassPractice {
 			}
 
 			public String modify() {
-				return KEYWORD + term + id;
+				/* getModifiedStringが静的メソッドでなければ以下は有効。 */
+				//return KEYWORD + term + id + "@" + sampleString + SAMPLE_STRING;
+				return KEYWORD + term + id + "@" + SAMPLE_STRING;
 			}
 			
 			/**

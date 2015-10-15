@@ -158,7 +158,7 @@ public class TestInnerClass {
 	
 	@Test
 	public void ローカルクラスを使ったメソッドで文字列を修飾する(){
-		String actual = new InnerClassPractice().getModifiedString("hoge");
+		String actual = InnerClassPractice.getModifiedString("hoge");
 		assertNotNull(actual);
 		
 		System.out.println(actual);
