@@ -114,4 +114,61 @@ public class InnerClassPractice {
 		return sampleString;
 	}
 	
+	public String getModifiedString(String term){
+		/**
+		 * 以下はコンパイルエラー。インターフェースは本質的にstaticであるため。 
+		 * ローカルクラスを内包するメソッドが静的メソッドでも不可。
+		 */
+//		interface Sample{
+//			
+//		}
+		
+		/**
+		 * ローカルクラスは静的クラスにできない。
+		 */
+		class LocalModifier{
+			private static final String KEYWORD = "*MODIFIED*";
+			/* 静的変数の宣言はできない。 */
+			//private static String staticName = "static";
+			
+			private int id;
+
+			{
+				id = 100;
+			}
+
+			public LocalModifier(int id) {
+				this.id += id;
+			}
+
+			public String modify() {
+				return KEYWORD + term + id;
+			}
+			
+			/**
+			 * ローカルクラス内に静的初期化子及び静的メンバは宣言できない。
+			 */
+			
+//			static {
+//				
+//			}
+				
+//			public static void test(){
+//				
+//			}
+			
+			/**
+			 * 以下も同様にコンパイルエラー。
+			 */
+//			interface Sample{
+//				
+//			}
+			
+		}
+		
+		LocalModifier modifier = new LocalModifier(400);
+		
+		return modifier.modify();
+	}
+	
 }

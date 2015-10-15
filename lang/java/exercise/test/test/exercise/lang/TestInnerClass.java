@@ -8,12 +8,15 @@ import java.util.function.Function;
 
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import exercise.lang.InnerClassPractice;
 import exercise.lang.InnerClassPractice.Inner;
 import exercise.lang.InnerClassPractice.InnerComparableClass;
 import exercise.lang.InnerClassPractice.InnerStatic;
+import exercise.lang.InnerInterfacePractice;
+import exercise.lang.InnerInterfacePractice.InnerClass;
+import exercise.lang.InnerInterfacePractice.StaticInnerClass;
 
 public class TestInnerClass {
 	
@@ -134,6 +137,31 @@ public class TestInnerClass {
 			.collect(Collectors.toList());
 		
 		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void インターフェースの内部クラスをインスタンス化する(){
+		String testName0 = "hoge";
+		String testName1 = "foo";
+		
+		StaticInnerClass sic = new InnerInterfacePractice.StaticInnerClass(testName0);
+		/**
+		 * インターフェース内のクラスは暗黙の静的内部クラスになるので，
+		 * 以下のコードはコンパイルエラーである。
+		 */
+		//InnerClass ic = new InnerInterfacePractice().new InnerClass("testName1");
+		InnerClass ic = new InnerInterfacePractice.InnerClass(testName1);
+		
+		assertThat(sic.getName(), is(testName0));
+		assertThat(ic.getName(), is(testName1));
+	}
+	
+	@Test
+	public void ローカルクラスを使ったメソッドで文字列を修飾する(){
+		String actual = new InnerClassPractice().getModifiedString("hoge");
+		assertNotNull(actual);
+		
+		System.out.println(actual);
 	}
 	
 }
