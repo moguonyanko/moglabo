@@ -1,6 +1,12 @@
 package test.exercise.lang;
 
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -15,13 +21,7 @@ import exercise.lang.Favorable;
 import exercise.function.ShopItem;
 import exercise.lang.Tax;
 import exercise.lang.Taxable;
-import java.time.Month;
 import exercise.lang.ZonedTimeMachine;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class TestDefaultMethods {
 	
