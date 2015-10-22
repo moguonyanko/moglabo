@@ -708,4 +708,18 @@ public class TestTimePractice {
 		}
 	}
 	
+	@Test
+	public void 任意の時刻を夏時間を考慮した時刻に変換する(){
+		LocalDateTime localDateTime = LocalDateTime.of(2015, Month.OCTOBER, 22, 13, 22);
+		ZoneId zoneId = ZoneId.of("Europe/Paris");
+		ZonedDateTime zonedDateTime = ZonedDateTime.of(localDateTime, zoneId);
+		long summerTimeHours = 1L;
+		
+		ZonedDateTime expected = ZonedDateTime.of(localDateTime.plusHours(summerTimeHours), zoneId);
+		
+		ZonedDateTime actual = TimeZones.withSummerTime(zonedDateTime);
+		
+		assertThat(actual, is(expected));
+	}
+	
 }

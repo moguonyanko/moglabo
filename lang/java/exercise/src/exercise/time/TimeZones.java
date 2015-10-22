@@ -62,4 +62,13 @@ public class TimeZones {
 		return getSummerTimeDuration(zoneId).get(unit);
 	}
 	
+	public static ZonedDateTime withSummerTime(ZonedDateTime src){
+		Duration duration = src.getZone()
+			.getRules()
+			.getDaylightSavings(src.toInstant());
+		ZonedDateTime result = src.plus(duration);
+		
+		return result;
+	}
+	
 }
