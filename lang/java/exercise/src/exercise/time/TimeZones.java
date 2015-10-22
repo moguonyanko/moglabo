@@ -1,9 +1,13 @@
 package exercise.time;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.TemporalUnit;
+import java.util.function.ToLongFunction;
 
 public class TimeZones {
 
@@ -39,6 +43,23 @@ public class TimeZones {
 		return toZoneTime.getZone()
 			.getRules()
 			.isDaylightSavings(toZoneTime.toInstant());
+	}
+	
+	private static Duration getSummerTimeDuration(ZoneId zoneId){
+		Duration duration = zoneId.getRules()
+			.getDaylightSavings(Instant.now());
+		
+		return duration;
+	}
+	
+	public static long getSummerTime(ZoneId zoneId, 
+		ToLongFunction<Duration> toFunc){
+		return toFunc.applyAsLong(getSummerTimeDuration(zoneId));
+	}
+	
+	public static long getSummerTime(ZoneId zoneId, 
+		TemporalUnit unit){
+		return getSummerTimeDuration(zoneId).get(unit);
 	}
 	
 }

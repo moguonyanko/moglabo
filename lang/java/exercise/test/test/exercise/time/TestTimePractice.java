@@ -37,6 +37,7 @@ import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Chronology;
 import java.time.chrono.JapaneseChronology;
 import java.time.chrono.JapaneseEra;
+import java.time.temporal.UnsupportedTemporalTypeException;
 import static java.time.temporal.TemporalAdjusters.*;
 
 import org.junit.After;
@@ -669,6 +670,42 @@ public class TestTimePractice {
 		String actual = beforeDate.format(formatter);
 		
 		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 地域を指定して夏時間を取得する(){
+		/* 夏時間の量は1時間 */
+		ZoneId zoneId = ZoneId.of("Europe/Paris");
+		
+		long summerTimeByHours = TimeZones.getSummerTime(zoneId, Duration::toHours);
+		/**
+		 * 数値リテラルをlong型の変数に代入しておらず末尾にLを付与していない場合，
+		 * long型と認識されずテストに失敗する。
+		 */
+		assertThat(summerTimeByHours, is(1L));
+		
+		long summerTimeByMinutes = TimeZones.getSummerTime(zoneId, Duration::toMinutes);
+		assertThat(summerTimeByMinutes, is(60L));
+		
+		try {
+			long summerTimeByHoursWithUnit = TimeZones.getSummerTime(zoneId, ChronoUnit.HOURS);
+			assertThat(summerTimeByHoursWithUnit, is(1L));
+
+			long summerTimeByMinutesWithUnit = TimeZones.getSummerTime(zoneId, ChronoUnit.MINUTES);
+			assertThat(summerTimeByMinutesWithUnit, is(60L));
+		} catch (UnsupportedTemporalTypeException ex) {
+			/**
+			 * Durationは時間ベースの時間の量を扱うクラスであり
+			 * toHoursやtoMinutesなどのメソッドを持つが，getの引数に
+			 * ChronoUnit.SECONDSとChronoUnit.NANOS以外を渡すと
+			 * 実行時例外がスローされる。
+			 * 
+			 * ChronoUnitのようなTemporalUnitを実装したクラスを用いて
+			 * 時間を得るのは危険なのかもしれない。しばしば直感に反する
+			 * 実行時例外が発生する。
+			 */
+			System.err.println(ex.getMessage());
+		}
 	}
 	
 }
