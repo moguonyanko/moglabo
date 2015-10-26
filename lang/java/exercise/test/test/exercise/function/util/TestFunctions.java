@@ -30,6 +30,7 @@ import java.util.function.BiPredicate;
 import java.io.PrintStream;
 import java.util.Optional;
 import java.util.HashSet;
+import java.util.concurrent.Callable;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -2181,6 +2182,51 @@ public class TestFunctions {
 			.collect(toList());
 		
 		assertThat(actualNans, is(orgNans));
+	}
+	
+	private interface Invoker {
+		
+		default void invoke(Runnable r){
+			System.out.println("Runnable.run");
+			r.run();
+		}
+		
+		default <T> T invoke(Callable<T> c) throws Exception{
+			System.out.println("Callable.call");
+			return c.call();
+		}
+		
+		default void print(){
+			System.out.println("Invoker test");
+		}
+		
+	}
+	
+	@Test
+	public void 引数からターゲット型を推論できる() throws Exception {
+		List<Integer> sample = new ArrayList<>();
+		sample.add(100);
+		/**
+		 * Java7までは以下は無効。Arrays.<Number>asListと記述する必要があった。
+		 */
+		sample.addAll(Arrays.asList(1, 2, 3, 4, 5));
+		System.out.println(sample);
+		
+		Invoker invoker = new Invoker() {};
+		
+		/**
+		 * invokeの引数は値を返しているのでinvoke(Callable)が呼び出される。
+		 */
+		int resultCallable = invoker.invoke(() -> sample.stream().reduce(0, Integer::sum));
+		System.out.println(resultCallable);
+		
+		/**
+		 * 以下のコードでは呼び出すinvokeを特定できずにエラーとなる。
+		 * invoker.invoke(System.out::println);
+		 * 
+		 * invokeの引数は値を返していないのでinvoke(Runnable)が呼び出される。
+		 */
+		invoker.invoke(invoker::print);
 	}
 	
 }
