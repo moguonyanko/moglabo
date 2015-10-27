@@ -31,6 +31,7 @@ import java.io.PrintStream;
 import java.util.Optional;
 import java.util.HashSet;
 import java.util.concurrent.Callable;
+import java.util.TreeSet;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -1352,9 +1353,17 @@ public class TestFunctions {
 		private final String name;
 		private final Set<Favorite> favorites;
 
-		public Person(String name, Favorite[] fatorites) {
+		public Person(String name, Favorite[] fatorites, boolean ordered) {
 			this.name = name;
-			this.favorites = Arrays.stream(fatorites).collect(toSet());
+			if(ordered){
+				this.favorites = Arrays.stream(fatorites).collect(toCollection(TreeSet::new));
+			}else{
+				this.favorites = Arrays.stream(fatorites).collect(toSet());
+			}
+		}
+		
+		public Person(String name, Favorite[] fatorites) {
+			this(name, fatorites, false);
 		}
 
 		public Set<Favorite> getFavorites() {
@@ -2227,6 +2236,148 @@ public class TestFunctions {
 		 * invokeの引数は値を返していないのでinvoke(Runnable)が呼び出される。
 		 */
 		invoker.invoke(invoker::print);
+	}
+	
+	@FunctionalInterface
+	private interface MyFunction<T, R> extends Comparable<MyFunction<T, R>>{
+
+		R apply(T t);
+		
+		int ID = 100;
+		
+		/**
+		 * Objectクラスのメソッドでないメソッドの宣言が2つ以上あると
+		 * FunctionalInterfaceではなくなる。
+		 */
+		//int getId();
+		
+		/**
+		 * Objectクラスのメソッドのオーバーライドは行っても
+		 * FunctionalInterfaceを維持できる。
+		 */
+		@Override
+		boolean equals(Object o);
+
+		@Override
+		int hashCode();
+
+		/**
+		 * Objectクラス以外のメソッドのオーバーライドを行うと
+		 * FunctionalInterfaceでなくなる。
+		 * Comparableインターフェースを拡張し，compareToを
+		 * オーバーライドも実装もしていない場合もFunctionalInterfaceでなくなる。
+		 */
+		//@Override
+		//int compareTo(MyFunction<T, R> o);
+		
+		/**
+		 * Objectクラス以外のメソッドをデフォルトメソッドとして実装すれば
+		 * FunctionalInterfaceを維持できる。
+		 */
+		@Override
+		default int compareTo(MyFunction<T, R> o) {
+			return 1;
+		}
+		
+		/**
+		 * デフォルトメソッドは記述してもFunctionalInterfaceを維持できる。
+		 */
+		default String getInfo(T t) {
+			String info = apply(t).toString();
+			
+			return info;
+		}
+
+		/**
+		 * staticメソッドは記述してもFunctionalInterfaceを維持できる。
+		 */
+		static int divId(int factor) {
+			return ID / factor;
+		}
+		
+		/**
+		 * Objectクラスのメソッドをデフォルトメソッドとして実装すると
+		 * FunctionalInterface云々は関係無くコンパイルエラーになる。
+		 */
+		//@Override
+		//default String toString(){
+		//	return "test";
+		//}
+		
+		@Override
+		String toString();
+		
+	}
+	
+	@FunctionalInterface
+	private interface MySubFunction<T, U extends CharSequence, R> extends MyFunction<T, R> {
+		
+		R apply(T t, U u);
+		
+		String FAVORITE_NAME = "EGG";
+
+		/**
+		 * スーパーインターフェースの唯一のメソッドをデフォルトメソッドで
+		 * 実装しないとFunctionalInterfaceではなくなる。
+		 * FAVORITE_NAMEはString型でありCharSequenceを実装しているが
+		 * Uにキャストしなければコンパイルエラーになってしまう。
+		 */
+		@Override
+		default R apply(T t) {
+			return apply(t, (U)FAVORITE_NAME);
+		}
+		
+		/**
+		 * スーパーインターフェースでデフォルトメソッドとして実装されている
+		 * メソッドをオーバーライドするとFunctionalInterfaceではなくなる。
+		 */
+		//@Override
+		//int compareTo(MyFunction<T, R> o);
+		
+	}
+	
+	@Test
+	public void FunctionalInterfaceのデフォルトメソッドを実行する(){
+		String personName = "hogehoge";
+		
+		Favorite[] favorites0 = {
+			Favorite.BANANA, Favorite.TOAST, Favorite.RICE
+		};
+		
+		boolean ordered = true;
+		
+		Person p0 = new Person(personName, favorites0, ordered);
+		
+		BiFunction <Person, String, Favorite[]> toFavs = (p, s) -> 
+		{
+			Set<Favorite> favorites = p.getFavorites();
+			favorites.add(Favorite.valueOf(s));
+			Favorite[] fs = favorites.toArray(new Favorite[favorites.size()]);
+			
+			return fs;
+		};
+		
+		/**
+		 * サブインターフェースでデフォルトメソッドにより実装した
+		 * スーパーインタフェースのメソッドから，サブインターフェースの
+		 * 「関数」(ここではMySubFunction.apply(T, U))を呼び出す。
+		 */
+		MySubFunction<Person, String, Collection<Favorite>> mf = (p, s) -> 
+		{
+			Favorite[] fs = toFavs.apply(p, s);
+			return new Person(p.name, fs, ordered).getFavorites();
+		};
+		
+		Favorite[] favorites1 = toFavs.apply(p0, MySubFunction.FAVORITE_NAME);
+		Person p1 = new Person(personName, favorites1, ordered);
+		
+		String expected = p1.getFavorites().toString();
+		
+		String actual = mf.getInfo(p0);
+		
+		assertThat(actual, is(expected));
+		
+		System.out.println(actual);
 	}
 	
 }
