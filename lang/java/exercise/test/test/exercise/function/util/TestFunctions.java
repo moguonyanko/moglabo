@@ -89,7 +89,7 @@ public class TestFunctions {
 			this.name = name;
 			this.score = score;
 		}
-		
+
 		public int scoreDiff(Student other) {
 			return score - other.score;
 		}
@@ -591,6 +591,7 @@ public class TestFunctions {
 	}
 
 	private static class HeavyObject {
+
 		private static final long HEAVY_OBJECT_CREATE_TIME = 1000L;
 
 		public HeavyObject() {
@@ -1041,8 +1042,8 @@ public class TestFunctions {
 		));
 		Node ns2 = new Node(Arrays.asList(
 			new Node(Arrays.asList(
-					l1, l2
-				))
+				l1, l2
+			))
 		));
 		Node l4 = new Node();
 		Node l5 = new Node();
@@ -1051,10 +1052,10 @@ public class TestFunctions {
 		));
 		Node l6 = new Node(Arrays.asList(
 			n3, new Node(Arrays.asList(
-					l5, new Node(Arrays.asList(
-							n2, l2
-						))
+				l5, new Node(Arrays.asList(
+					n2, l2
 				))
+			))
 		));
 
 		Node ns3 = new Node(Arrays.asList(
@@ -1228,119 +1229,119 @@ public class TestFunctions {
 
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 引数を取るSupplierでインスタンスを生成できる(){
+	public void 引数を取るSupplierでインスタンスを生成できる() {
 		String sampleName = "TestUser";
 		int sampleScore = 100;
-		
+
 		ParamSupplier<Student, String, Integer> supplier = Student::new;
 		Student actual = supplier.get(sampleName, sampleScore);
 		Student expected = new Student(sampleName, sampleScore);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 対を関数で表現できる(){
+	public void 対を関数で表現できる() {
 		String name = "Foo";
 		int score = 100;
-		
+
 		Pair<String, Integer> cons = Pair.of(name, score);
-		
+
 		String actual1 = cons.car();
 		assertThat(actual1, is(name));
-		
+
 		int actual2 = cons.cdr();
 		assertThat(actual2, is(score));
 	}
 
 	@Test
-	public void 対の等値性を調査できる(){
+	public void 対の等値性を調査できる() {
 		String name = "Foo";
 		int score = 100;
-		
+
 		Pair<String, Integer> cons1 = Pair.of(name, score);
 		Pair<String, Integer> cons2 = Pair.of(name, score);
-		
+
 		assertEquals(cons1, cons2);
 	}
-	
+
 	@Test
-	public void 対の文字列表現を取得できる(){
+	public void 対の文字列表現を取得できる() {
 		String name = "Foo";
 		int score = 100;
-		
+
 		Pair<String, Integer> cons = Pair.of(name, score);
-		
+
 		String expected = name + ":" + score;
 		String actual = cons.toString();
-		
+
 		System.out.println(actual);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 対を比較することができる(){
+	public void 対を比較することができる() {
 		String fooName = "foo", barName = "bar", bazName = "baz", fooName2 = "foo";
 		int fooAge = 18, barAge = 17, bazAge = 30, fooAge2 = 17;
 
 		List<Pair<String, Integer>> expected = Arrays.asList(
-			Pair.ofComparable(barName, barAge), 
-			Pair.ofComparable(bazName, bazAge), 
+			Pair.ofComparable(barName, barAge),
+			Pair.ofComparable(bazName, bazAge),
 			Pair.ofComparable(fooName2, fooAge2),
 			Pair.ofComparable(fooName, fooAge)
 		);
-		
+
 		List<Pair<String, Integer>> pairs = Arrays.asList(
-			Pair.ofComparable(fooName, fooAge), 
-			Pair.ofComparable(barName, barAge), 
-			Pair.ofComparable(bazName, bazAge), 
+			Pair.ofComparable(fooName, fooAge),
+			Pair.ofComparable(barName, barAge),
+			Pair.ofComparable(bazName, bazAge),
 			Pair.ofComparable(fooName2, fooAge2)
 		);
-		
+
 		List<Pair<String, Integer>> actual = pairs.stream()
 			.sorted()
 			.collect(toList());
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void Streamを引数で渡して処理を連結し結果を得る() 
-		throws IOException{
+	public void Streamを引数で渡して処理を連結し結果を得る()
+		throws IOException {
 		Path path = Paths.get("./sample/countword1.txt");
-		
+
 		Function<String, String> func = s -> s.replace(".", "!");
 		Predicate<String> pred = s -> s.startsWith("F");
 		String expected = "Foo is my friend!";
-		
+
 		/**
 		 * Stream.filterやStream.mapを分離して実行しているだけである。
-		 * 
+		 *
 		 * Streamは中間処理を行うためのオブジェクトなので公開APIの
 		 * 戻り値や引数にはしたくない。
 		 */
 		Stream<String> lines = Files.lines(path);
 		Stream<String> appended = Functions.map(lines, func);
 		Stream<String> result = Functions.select(appended, pred);
-		
+
 		String actual = result.findFirst().get();
-		
+
 		assertThat(actual, is(expected));
 	}
-	
-	private enum Favorite{
-		EGG(10), 
-		TOAST(80), 
-		RICE(100), 
-		BANANA(30), 
+
+	private enum Favorite {
+		EGG(10),
+		TOAST(80),
+		RICE(100),
+		BANANA(30),
 		NONE(0);
-		
+
 		private final int calorie;
-		
-		private Favorite(int calorie){
+
+		private Favorite(int calorie) {
 			this.calorie = calorie;
 		}
 
@@ -1348,20 +1349,21 @@ public class TestFunctions {
 			return calorie;
 		}
 	}
-	
-	private static class Person{
+
+	private static class Person {
+
 		private final String name;
 		private final Set<Favorite> favorites;
 
 		public Person(String name, Favorite[] fatorites, boolean ordered) {
 			this.name = name;
-			if(ordered){
+			if (ordered) {
 				this.favorites = Arrays.stream(fatorites).collect(toCollection(TreeSet::new));
-			}else{
+			} else {
 				this.favorites = Arrays.stream(fatorites).collect(toSet());
 			}
 		}
-		
+
 		public Person(String name, Favorite[] fatorites) {
 			this(name, fatorites, false);
 		}
@@ -1370,126 +1372,127 @@ public class TestFunctions {
 			return favorites;
 		}
 	}
-	
+
 	@Test
-	public void Streamを平坦化して最も多く現れる要素を得る(){
+	public void Streamを平坦化して最も多く現れる要素を得る() {
 		Person foo = new Person("foo", new Favorite[]{
 			Favorite.EGG, Favorite.TOAST
 		});
-		
+
 		Person bar = new Person("bar", new Favorite[]{
 			Favorite.RICE, Favorite.BANANA, Favorite.EGG
 		});
-		
+
 		Person baz = new Person("baz", new Favorite[]{
 			Favorite.EGG, Favorite.RICE, Favorite.TOAST
 		});
-		
+
 		List<Person> persons = Arrays.asList(foo, bar, baz);
-		
+
 		Favorite expected = Favorite.EGG;
 		Favorite actual = Functions.most(persons, Person::getFavorites, Favorite.NONE);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
 	public void Collectorsのリダクション操作で合計値を計算できる() {
 		int expected = 55;
 		int actual = Functions.ranegClosedSum(0, 10);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
 	public void Collectorsのリダクション操作で文字列連結できる() {
 		List<String> sample = Arrays.asList(
 			"foo", "bar", "baz"
 		);
-		
+
 		String expected = "pre_foo|bar|baz_suff";
 		String actual = Functions.concat("|", "pre_", "_suff", sample);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 条件に該当しない要素を排除したコレクションを得る(){
+	public void 条件に該当しない要素を排除したコレクションを得る() {
 		List<String> sample = Arrays.asList(
 			"foo", "bar", "baz"
 		);
-		
+
 		List<String> expected = Arrays.asList(
 			"foo"
 		);
-		
+
 		Predicate<String> filter = el -> el.startsWith("b");
 		List<String> actual = Functions.removeIf(sample, filter, ArrayList::new);
-		
+
 		assertThat(actual, is(expected));
-		
+
 		/* 副作用が無いことの確認 */
 		System.out.println(sample);
 	}
-	
+
 	@Test
-	public void コレクションの全要素に引数の関数を適用したコレクションを得る(){
+	public void コレクションの全要素に引数の関数を適用したコレクションを得る() {
 		List<String> sample = Arrays.asList(
 			"foo", "bar", "baz"
 		);
-		
+
 		List<String> expected = Arrays.asList(
 			"FOO", "BAR", "BAZ"
 		);
-		
+
 		UnaryOperator<String> op = String::toUpperCase;
 		List<String> actual = Functions.replaceAll(sample, op, ArrayList::new);
-		
+
 		assertThat(actual, is(expected));
-		
+
 		/* 副作用が無いことの確認 */
 		System.out.println(sample);
 	}
-	
+
 	@Test
-	public void マップの各値に関数を適用した結果を得る(){
+	public void マップの各値に関数を適用した結果を得る() {
 		Map<String, Integer> persons = new HashMap<>();
 		persons.put("foo", 10);
 		persons.put("bar", 30);
 		persons.put("baz", 50);
-		
-		BiFunction<String, Integer, Integer> func 
+
+		BiFunction<String, Integer, Integer> func
 			= (k, v) -> v * 2;
-		
+
 		Map<String, Integer> expected = new HashMap<>();
 		persons.forEach((k, v) -> expected.put(k, v * 2));
-		
+
 		Map<String, Integer> actual = Functions.replaceAll(persons, func, HashMap::new);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void Collectorsで合計値を計算する(){
+	public void Collectorsで合計値を計算する() {
 		Student foo = new Student("foo", 50);
 		Student bar = new Student("bar", 80);
 		Student baz = new Student("baz", 70);
-		
+
 		List<Student> students = Arrays.asList(
 			foo, bar, baz
 		);
-		
+
 		int expected = 200;
 		int actual = Functions.sum(students, Student::getScore);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	private enum Student2Class {
 		A, B, C
 	}
-	
-	private static class Student2 implements Comparable<Student2>{
+
+	private static class Student2 implements Comparable<Student2> {
+
 		private final String name;
 		private final int score;
 		private final Student2Class studentClass;
@@ -1524,13 +1527,13 @@ public class TestFunctions {
 
 		@Override
 		public boolean equals(Object obj) {
-			if(obj instanceof Student2){
-				Student2 other = (Student2)obj;
-				
+			if (obj instanceof Student2) {
+				Student2 other = (Student2) obj;
+
 				return name.equalsIgnoreCase(other.name)
 					&& score == other.score
 					&& studentClass == other.studentClass;
-			}else{
+			} else {
 				return false;
 			}
 		}
@@ -1539,50 +1542,49 @@ public class TestFunctions {
 		public int hashCode() {
 			return Objects.hash(name, score, studentClass);
 		}
-		
+
 	}
-	
+
 	@Test
-	public void 分類して平均値を得る(){
+	public void 分類して平均値を得る() {
 		Student2 foo = new Student2("foo", 100, Student2Class.A);
 		Student2 bar = new Student2("bar", 50, Student2Class.A);
 		Student2 hoge = new Student2("hoge", 70, Student2Class.B);
 		Student2 baz = new Student2("baz", 80, Student2Class.B);
 		Student2 mike = new Student2("mike", 40, Student2Class.C);
 		Student2 neko = new Student2("neko", 80, Student2Class.C);
-		
+
 		Map<Student2Class, Double> expected = new HashMap<>();
 		expected.put(Student2Class.A, 75.0);
 		expected.put(Student2Class.B, 75.0);
 		expected.put(Student2Class.C, 60.0);
-		
+
 		List<Student2> sample = Arrays.asList(
 			foo, bar, baz, hoge, mike, neko
 		);
-		
+
 		Collections.shuffle(sample);
-		
-		Map<Student2Class, Double> actual = Functions.averagingBy(sample, 
+
+		Map<Student2Class, Double> actual = Functions.averagingBy(sample,
 			Student2::getStudentClass, Student2::getScore);
-		
+
 		assertThat(actual, is(expected));
 	}
 
 	@Test
-	public void 指定した区切り文字で文字列連結する(){
+	public void 指定した区切り文字で文字列連結する() {
 		List<String> terms = Arrays.asList(
 			"foo", "bar", "baz"
 		);
-		
+
 		String expected = "foo,bar,baz";
 		String actual = Functions.join(terms, ",");
-		
+
 		assertThat(actual, is(expected));
 	}
-	
-	
+
 	@Test
-	public void 指定した条件で集団を分類する(){
+	public void 指定した条件で集団を分類する() {
 		Student2 foo = new Student2("foo", 100, Student2Class.A);
 		Student2 bar = new Student2("bar", 50, Student2Class.A);
 		Student2 mochi = new Student2("mochi", 35, Student2Class.A);
@@ -1597,31 +1599,31 @@ public class TestFunctions {
 			foo, bar, baz, hoge, mike, neko, mochi, fuga, buzz
 		);
 		sample.sort(Student2::compareTo);
-		
+
 		int borderScore = 40;
 		Predicate<Student2> passed = s -> s.getScore() >= borderScore;
-		
+
 		Map<Boolean, List<Student2>> expected = new HashMap<>();
-		
+
 		List<Student2> passStudents = Arrays.asList(
 			foo, bar, hoge, fuga, neko, buzz
 		);
 		passStudents.sort(Student2::compareTo);
 		expected.put(true, passStudents);
-		
+
 		List<Student2> notPassStudents = Arrays.asList(
 			mochi, baz, mike
 		);
 		notPassStudents.sort(Student2::compareTo);
 		expected.put(false, notPassStudents);
-		
+
 		Map<Boolean, List<Student2>> actual = Functions.partitioning(sample, passed);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 指定した条件で集団をグループ化しつつ分類する(){
+	public void 指定した条件で集団をグループ化しつつ分類する() {
 		Student2 foo = new Student2("foo", 100, Student2Class.A);
 		Student2 poo = new Student2("poo", 20, Student2Class.A);
 		Student2 bar = new Student2("bar", 50, Student2Class.A);
@@ -1636,18 +1638,18 @@ public class TestFunctions {
 		Student2 qwerty = new Student2("qwerty", 0, Student2Class.C);
 
 		List<Student2> allStudents = Arrays.asList(
-			foo, bar, baz, hoge, mike, neko, mochi, fuga, buzz, poo, 
+			foo, bar, baz, hoge, mike, neko, mochi, fuga, buzz, poo,
 			peko, qwerty
 		);
 		allStudents.sort(Student2::compareTo);
-		
+
 		int borderScore = 40;
 		Predicate<Student2> passedPredicate = s -> s.getScore() >= borderScore;
-		
+
 		Map<Boolean, Map<Student2Class, List<Student2>>> expected = new HashMap<>();
-		
+
 		Map<Student2Class, List<Student2>> passStudents = new HashMap<>();
-		
+
 		List<Student2> passStudentsA = Arrays.asList(foo, bar);
 		Collections.sort(passStudentsA);
 		passStudents.put(Student2Class.A, passStudentsA);
@@ -1657,9 +1659,9 @@ public class TestFunctions {
 		List<Student2> passStudentsC = Arrays.asList(neko, buzz);
 		Collections.sort(passStudentsC);
 		passStudents.put(Student2Class.C, passStudentsC);
-		
+
 		Map<Student2Class, List<Student2>> notPassStudents = new HashMap<>();
-		
+
 		List<Student2> notPassStudentsA = Arrays.asList(poo, mochi);
 		Collections.sort(notPassStudentsA);
 		notPassStudents.put(Student2Class.A, notPassStudentsA);
@@ -1669,10 +1671,10 @@ public class TestFunctions {
 		List<Student2> notPassStudentsC = Arrays.asList(mike, qwerty);
 		Collections.sort(notPassStudentsC);
 		notPassStudents.put(Student2Class.C, notPassStudentsC);
-		
+
 		expected.put(true, passStudents);
 		expected.put(false, notPassStudents);
-		
+
 		/* 生徒をクラス毎に分類するFunction */
 		Function<Student2, Student2Class> classfier = s -> s.getStudentClass();
 		/**
@@ -1681,115 +1683,116 @@ public class TestFunctions {
 		 */
 		Map<Boolean, Map<Student2Class, List<Student2>>> actual
 			= Functions.partitioningGroupingBy(allStudents, passedPredicate, classfier);
-		
-		assertThat(actual, is(expected));
-	}
-	
-	@Test
-	public void 条件を満たすパスを検索する() throws IOException{
-		Path path = Paths.get(".");
-		int maxDepth = 10;
-		BiPredicate<Path, BasicFileAttributes> matcher 
-			= (p, attrs) -> p.toFile().getName().startsWith("filessample");
-		
-		Path actual = Functions.findPath(path, maxDepth, matcher);
-		
-		Path expected = Paths.get("./sample/foo/bar/baz/filessample.txt");
-		
-		assertThat(actual, is(expected));
-	}
-	
-	@Test
-	public void 条件を満たすパスをフィルタで絞り込んで検索する() throws IOException{
-		Path path = Paths.get(".");
-		int maxDepth = 10;
-		Predicate<Path> matcher = p -> p.toFile().getName().startsWith("filessample");
-		
-		Path actual = Functions.findPath(path, maxDepth, matcher);
-		
-		Path expected = Paths.get("./sample/foo/bar/baz/filessample.txt");
-		
+
 		assertThat(actual, is(expected));
 	}
 
 	@Test
-	public void 既存のマップの値を新しい値に置き換える(){
+	public void 条件を満たすパスを検索する() throws IOException {
+		Path path = Paths.get(".");
+		int maxDepth = 10;
+		BiPredicate<Path, BasicFileAttributes> matcher
+			= (p, attrs) -> p.toFile().getName().startsWith("filessample");
+
+		Path actual = Functions.findPath(path, maxDepth, matcher);
+
+		Path expected = Paths.get("./sample/foo/bar/baz/filessample.txt");
+
+		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void 条件を満たすパスをフィルタで絞り込んで検索する() throws IOException {
+		Path path = Paths.get(".");
+		int maxDepth = 10;
+		Predicate<Path> matcher = p -> p.toFile().getName().startsWith("filessample");
+
+		Path actual = Functions.findPath(path, maxDepth, matcher);
+
+		Path expected = Paths.get("./sample/foo/bar/baz/filessample.txt");
+
+		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void 既存のマップの値を新しい値に置き換える() {
 		Map<String, Integer> sample = new HashMap<>();
 		sample.put("foo", 100);
 		sample.put("bar", 50);
 		sample.put("baz", 75);
-		
+
 		String key = "bar";
 		Integer value = 10;
 		BiFunction<Integer, Integer, Integer> func
 			= (orgValue, newValue) -> orgValue + newValue;
-		
+
 		Integer expected = sample.get(key) + value;
 		Integer actual = sample.merge(key, value, func);
-		
+
 		assertThat(actual, is(expected));
-		
+
 		/* Map.mergeに副作用があることの確認 */
 		System.out.println(sample);
 	}
-	
+
 	@Test
-	public void 既存のマップに別のマップをマージする(){
+	public void 既存のマップに別のマップをマージする() {
 		Map<String, Integer> self = new HashMap<>();
 		self.put("foo", 100);
 		self.put("bar", 50);
 		self.put("baz", 75);
 		Map<String, Integer> forTestMap = new HashMap<>(self);
-		
+
 		Map<String, Integer> other = new HashMap<>();
 		other.put("hoge", 30);
 		other.put("bar", 90);
 		other.put("piko", 40);
-		
+
 		Map<String, Integer> expected = new HashMap<>();
 		expected.put("foo", 100);
 		expected.put("baz", 75);
 		expected.put("hoge", 30);
 		expected.put("bar", 90);
 		expected.put("piko", 40);
-		
+
 		BiFunction<Integer, Integer, Integer> func
 			= (orgValue, newValue) -> orgValue < newValue ? newValue : orgValue;
-		
+
 		Map<String, Integer> actual = Functions.merge(self, other, func, HashMap::new);
-		
+
 		assertThat(actual, is(expected));
-		
+
 		/* Functions.mergeに副作用が無いことの確認 */
 		assertThat(self, is(forTestMap));
 	}
-	
+
 	@Test
-	public void 自前の関数インターフェースで計算できる(){
+	public void 自前の関数インターフェースで計算できる() {
 		Lambda<Integer, Integer> square = n -> n * n;
-		
+
 		int expected = 100;
 		int actual = square.funcall(10);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 配列から任意の型のリストを得る(){
+	public void 配列から任意の型のリストを得る() {
 		Integer[] nums = {1, 2, 3, 4, 5};
-		
+
 		List<Integer> expected = new ArrayList<>();
 		Arrays.stream(nums)
 			.forEach(expected::add);
-		
+
 		List<Integer> actual = Functions.asList(nums, ArrayList::new);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
-	private static class IntPrinter{
+
+	private static class IntPrinter {
+
 		private static final String PREFIX = "***";
-		
+
 		private final String suffix;
 		private final List<Integer> src;
 
@@ -1797,21 +1800,21 @@ public class TestFunctions {
 			this.src = src;
 			this.suffix = suffix;
 		}
-		
-		private void print(PrintStream out){
+
+		private void print(PrintStream out) {
 			src.forEach(out::println);
 		}
-		
-		private void println(Integer i){
+
+		private void println(Integer i) {
 			System.out.println(i + suffix);
 		}
-		
-		private static void printWithPrefix(Integer i){
+
+		private static void printWithPrefix(Integer i) {
 			System.out.println(PREFIX + i);
 		}
-		
+
 	}
-	
+
 	@Test
 	public void メソッド参照でラムダ式を置き換えできる() {
 		List<Integer> sample = Arrays.asList(1, 4, 2, 5, 7, 0);
@@ -1844,41 +1847,41 @@ public class TestFunctions {
 			.map(String::toUpperCase)
 			.forEach(System.out::println);
 	}
-	
+
 	@Test
-	public void ストリームから重複を排除した結果を得る(){
+	public void ストリームから重複を排除した結果を得る() {
 		List<String> sample = Arrays.asList("baz", "foo", "baz", "foo", "bar", "bar");
-		
+
 		List<String> expected = Arrays.asList("foo", "bar", "baz");
 		/* String::compareToと同義。 */
 		//expected.sort((a, b) -> a.compareTo(b));
 		expected.sort(String::compareTo);
-		
+
 		List<String> actual = sample.stream()
 			.distinct()
 			.sorted()
 			.collect(toList());
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 任意の型のオブジェクトを任意の数だけ受け取ってストリームを得る(){
-		Person mike = new Person("mike", new Favorite[]{ 
+	public void 任意の型のオブジェクトを任意の数だけ受け取ってストリームを得る() {
+		Person mike = new Person("mike", new Favorite[]{
 			Favorite.BANANA, Favorite.EGG, Favorite.RICE
 		});
-		
-		Person neko = new Person("neko", new Favorite[]{ 
+
+		Person neko = new Person("neko", new Favorite[]{
 			Favorite.EGG, Favorite.TOAST
 		});
-		
+
 		Function<Person, IntStream> calorieStream = person -> {
 			Set<Favorite> fs = person.getFavorites();
 			return fs.stream().mapToInt(Favorite::getCalorie);
 		};
-		
+
 		int expectedMaxCalorie = 100;
-		
+
 		/**
 		 * Stream.ofは単一の要素または可変長引数を受け取ってストリームを生成する。
 		 */
@@ -1886,18 +1889,18 @@ public class TestFunctions {
 			.flatMapToInt(calorieStream)
 			.max()
 			.orElse(Favorite.NONE.getCalorie());
-			
+
 		assertThat(actualMaxCalorie, is(expectedMaxCalorie));
 	}
-	
+
 	@Test
-	public void 短絡終端操作で結果を得る(){
+	public void 短絡終端操作で結果を得る() {
 		List<String> names = Arrays.asList(
 			"foo", "bar", "baz", "hoge", "neko", "mike"
 		);
-		
+
 		Predicate<String> toEmptyStreamFilter = s -> s.length() < 0;
-		
+
 		/**
 		 * AbstractList.addを呼び出すとUnsupportedOperationExceptionになる。
 		 * AbstractList.removeIfは引数のPredicateを適用して真になる要素が無ければ
@@ -1906,13 +1909,13 @@ public class TestFunctions {
 		 * UnsupportedOperationExceptionがスローされる。
 		 * 正確にはdefaultメソッドとして定義されているCollection.removeIfが
 		 * 呼び出され，その後AbstractList.removeが呼び出された時に例外が発生する。
-		 * 
+		 *
 		 * AbstractListがCollection.removeIfをオーバーライドして，常に
 		 * UnsupportedOperationExceptionをスローするように
 		 * 実装されていた方が一貫性はあったと思う。
 		 * Collection.removeIfはJava8から追加されたメソッドなので，後方互換を
 		 * 考慮する必要性は少なかったはずである。
-		 * 
+		 *
 		 * さらに言えばAbstractListのような実質的に固定サイズのコレクションと
 		 * 固定でないサイズのコレクションが同じインターフェースを実装しているのが
 		 * 問題に思われる。
@@ -1926,7 +1929,7 @@ public class TestFunctions {
 		names.removeIf(toEmptyStreamFilter);
 		//names.removeIf(s -> s.startsWith("f"));
 		//names.add("ponko");
-		
+
 		String name = names.stream()
 			.parallel()
 			/* String::startsWith("b")のような書き方はできない。 */
@@ -1935,7 +1938,7 @@ public class TestFunctions {
 			 * findAnyは並列処理でのパフォーマンスを上げるように
 			 * 実装されているので結果は不定になる。安定した結果を得るには
 			 * findFirstを用いる必要がある。
-			 * 
+			 *
 			 * 並列ストリームを途中で順次ストリームにしたり，
 			 * その逆をしても例外は発生しない。
 			 */
@@ -1943,11 +1946,11 @@ public class TestFunctions {
 			.parallel()
 			.findAny()
 			.orElseGet(String::new);
-		
+
 		assertTrue(name.equals("bar") || name.equals("baz"));
-		
+
 		System.out.println(names + "のうちbから始まる名前を1つ挙げると" + name + "です。");
-		
+
 		boolean resultAnyMatch = names.parallelStream()
 			.map(String::toUpperCase)
 			.filter(toEmptyStreamFilter)
@@ -1955,9 +1958,9 @@ public class TestFunctions {
 			 * 空のストリームに対してanyMatchするとfalseが返される。
 			 */
 			.anyMatch(s -> s.equalsIgnoreCase("mike"));
-		
+
 		assertFalse(resultAnyMatch);
-		
+
 		boolean resultAllMatch = names.parallelStream()
 			.map(String::toUpperCase)
 			.filter(toEmptyStreamFilter)
@@ -1965,9 +1968,9 @@ public class TestFunctions {
 			 * 空のストリームに対してallMatchするとtrueが返される。
 			 */
 			.allMatch(s -> s.equalsIgnoreCase("mike"));
-		
+
 		assertTrue(resultAllMatch);
-		
+
 		boolean resultNoneMatch = names.parallelStream()
 			.map(String::toUpperCase)
 			.filter(toEmptyStreamFilter)
@@ -1975,31 +1978,31 @@ public class TestFunctions {
 			 * 空のストリームに対してnoneMatchするとtrueが返される。
 			 */
 			.noneMatch(s -> s.equalsIgnoreCase("mike"));
-		
+
 		assertTrue(resultNoneMatch);
 	}
-	
-	private static class MyOptionalException extends Exception{
+
+	private static class MyOptionalException extends Exception {
 
 		public MyOptionalException() {
 			super("My exception message");
 		}
-		
+
 	}
-	
+
 	@Test(expected = MyOptionalException.class)
 	public void 空のOptionalから値を得る時の振る舞いを変える() throws MyOptionalException {
 		String[] names = {};
-		
+
 		Optional<String> sample = Arrays.stream(names)
 			.parallel()
 			.findAny();
-		
+
 		Functions.optionalGet(sample, MyOptionalException::new);
 	}
-	
+
 	@Test
-	public void マッピング関数の結果によってMapの値が変化する(){
+	public void マッピング関数の結果によってMapの値が変化する() {
 		Map<String, Integer> sample = new HashMap<>();
 		sample.put("foo", 90);
 		sample.put("bar", 10);
@@ -2013,7 +2016,7 @@ public class TestFunctions {
 		 * 再生成している。
 		 */
 		Set<String> keys = new HashSet<>(sample.keySet());
-		
+
 		List<Integer> actual0 = keys.stream()
 			/**
 			 * Map.computeIfPresentの第2引数のBiFunctionが
@@ -2022,14 +2025,14 @@ public class TestFunctions {
 			 */
 			.map(s -> sample.computeIfPresent(s, (key, value) -> null))
 			.collect(toList());
-		
+
 		/**
 		 * ストリーム処理中のMap.computeIfPresentによる副作用により
 		 * 元のMapのマッピングは全て削除されている。
 		 */
 		assertTrue(sample.isEmpty());
 		assertTrue(actual0.stream().allMatch(i -> i == null));
-		
+
 		List<Integer> actual1 = keys.stream()
 			/**
 			 * Map.computeIfAbsentの第2引数のFunctionが
@@ -2037,16 +2040,16 @@ public class TestFunctions {
 			 */
 			.map(s -> sample.computeIfAbsent(s, key -> null))
 			.collect(toList());
-		
+
 		assertTrue(actual1.stream().allMatch(i -> i == null));
-		
+
 		Map<String, Integer> actual = new HashMap<>();
 		actual.put("momo", 30);
 		actual.put("popo", 25);
 		actual.put("koko", 80);
-		
+
 		HashMap<String, Integer> expected = new HashMap<>(actual);
-		
+
 		try {
 			List<Integer> actual2 = new HashSet<>(actual.keySet()).stream()
 				/**
@@ -2059,17 +2062,17 @@ public class TestFunctions {
 					throw new RuntimeException("マッピング中の例外テスト");
 				}))
 				.collect(toList());
-			
+
 			System.out.println(actual2);
 		} catch (Exception ex) {
 			System.out.println(ex.getMessage());
 		}
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 外部からキー抽出メソッドを指定してソートする(){
+	public void 外部からキー抽出メソッドを指定してソートする() {
 		List<Student> students = Arrays.asList(
 			new Student("foo", 70),
 			new Student("bar", 65),
@@ -2077,7 +2080,7 @@ public class TestFunctions {
 			new Student("hoge", 35),
 			new Student("mike", 10)
 		);
-		
+
 		List<Student> expected = Arrays.asList(
 			new Student("mike", 10),
 			new Student("hoge", 35),
@@ -2085,23 +2088,23 @@ public class TestFunctions {
 			new Student("foo", 70),
 			new Student("baz", 100)
 		);
-		
+
 		List<Student> actual = Functions.sorted(students, Student::getScore, ArrayList::new);
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 空のストリームを比較する(){
+	public void 空のストリームを比較する() {
 		Stream s0 = Stream.of();
 		Stream s1 = Stream.empty();
-		
+
 		assertTrue(s0.count() == 0);
 		assertTrue(s1.count() == 0);
-		
+
 		System.out.println("Stream.ofによる空のストリームの型:" + s0.getClass().getCanonicalName());
 		System.out.println("Stream.emptyによる空のストリームの型:" + s1.getClass().getCanonicalName());
-		
+
 		/**
 		 * 空のコレクション同士は等しいと判定される。
 		 * Streamを同じように考えないこと。
@@ -2109,13 +2112,13 @@ public class TestFunctions {
 		List lst0 = Arrays.asList();
 		List lst1 = Arrays.asList();
 		assertTrue(lst0.equals(lst1));
-		
+
 		/**
 		 * Stream.ofやStream.emptyで返されるクラスは
 		 * equals及びhashCodeを実装していないため
 		 * 両者の比較はObject.equalsが使われる。その結果
 		 * 2つの空のストリームは等しくないと判定される。
-		 * 
+		 *
 		 * 滅多に無いはずだが，Streamの等しさを厳密に判定しなければ
 		 * ならない状況(例えばStreamをMapのキーにする等)が発生した時は，
 		 * Streamを保持した別のクラスを用意して，そのクラスに
@@ -2123,8 +2126,9 @@ public class TestFunctions {
 		 */
 		assertFalse(s0.equals(s1));
 	}
-	
-	private static class MyNaN{
+
+	private static class MyNaN {
+
 		private final String id;
 		private static final double NAN = Double.NaN;
 
@@ -2135,15 +2139,14 @@ public class TestFunctions {
 		/**
 		 * equalsとhashCodeをオーバーライドしていない。
 		 */
-		
 		@Override
 		public String toString() {
 			return id + ":" + NAN;
 		}
 	}
-	
+
 	@Test
-	public void 重複する要素の判定方法を調査する(){
+	public void 重複する要素の判定方法を調査する() {
 		List<Student> students = Arrays.asList(
 			new Student("mike", 10),
 			new Student("hoge", 35),
@@ -2151,19 +2154,19 @@ public class TestFunctions {
 			new Student("hoge", 35),
 			new Student("baz", 100)
 		);
-		
+
 		List<Student> expected = Arrays.asList(
 			new Student("mike", 10),
 			new Student("hoge", 35),
 			new Student("baz", 100)
 		);
-		
+
 		List<Student> actual = students.stream()
 			.distinct()
 			.collect(toList());
-		
+
 		assertThat(actual, is(expected));
-		
+
 		List<MyNaN> orgNans = Arrays.asList(
 			new MyNaN("foo"),
 			new MyNaN("duplicate"),
@@ -2171,7 +2174,7 @@ public class TestFunctions {
 			new MyNaN("duplicate"),
 			new MyNaN("bar")
 		);
-		
+
 		List<MyNaN> actualNans = orgNans.stream()
 			/**
 			 * Stream.distinctはストリームの要素のクラスに
@@ -2179,38 +2182,38 @@ public class TestFunctions {
 			 * Object.equalsを使用する。こうなると(x == y)を
 			 * 満たす要素しかdistinctで削除されなくなり，
 			 * 結果としてMyNaNのストリームからは何も削除されない。
-			 * 
+			 *
 			 * equalsの実装方法が不適切であったときも当然distinctは
 			 * 意図されたようには重複を削除してくれなくなる。
-			 * 
+			 *
 			 * 予期せぬ事故を防ぐためにも，Streamの要素として
 			 * 想定されるクラスは，equalsとhashCodeをオーバーライド
 			 * して一般契約を守り実装されるべきである。
 			 */
 			.distinct()
 			.collect(toList());
-		
+
 		assertThat(actualNans, is(orgNans));
 	}
-	
+
 	private interface Invoker {
-		
-		default void invoke(Runnable r){
+
+		default void invoke(Runnable r) {
 			System.out.println("Runnable.run");
 			r.run();
 		}
-		
-		default <T> T invoke(Callable<T> c) throws Exception{
+
+		default <T> T invoke(Callable<T> c) throws Exception {
 			System.out.println("Callable.call");
 			return c.call();
 		}
-		
-		default void print(){
+
+		default void print() {
 			System.out.println("Invoker test");
 		}
-		
+
 	}
-	
+
 	@Test
 	public void 引数からターゲット型を推論できる() throws Exception {
 		List<Integer> sample = new ArrayList<>();
@@ -2220,37 +2223,37 @@ public class TestFunctions {
 		 */
 		sample.addAll(Arrays.asList(1, 2, 3, 4, 5));
 		System.out.println(sample);
-		
-		Invoker invoker = new Invoker() {};
-		
+
+		Invoker invoker = new Invoker() {
+		};
+
 		/**
 		 * invokeの引数は値を返しているのでinvoke(Callable)が呼び出される。
 		 */
 		int resultCallable = invoker.invoke(() -> sample.stream().reduce(0, Integer::sum));
 		System.out.println(resultCallable);
-		
+
 		/**
 		 * 以下のコードでは呼び出すinvokeを特定できずにエラーとなる。
 		 * invoker.invoke(System.out::println);
-		 * 
+		 *
 		 * invokeの引数は値を返していないのでinvoke(Runnable)が呼び出される。
 		 */
 		invoker.invoke(invoker::print);
 	}
-	
+
 	@FunctionalInterface
-	private interface MyFunction<T, R> extends Comparable<MyFunction<T, R>>{
+	private interface MyFunction<T, R> extends Comparable<MyFunction<T, R>> {
 
 		R apply(T t);
-		
+
 		int ID = 100;
-		
+
 		/**
 		 * Objectクラスのメソッドでないメソッドの宣言が2つ以上あると
 		 * FunctionalInterfaceではなくなる。
 		 */
 		//int getId();
-		
 		/**
 		 * Objectクラスのメソッドのオーバーライドは行っても
 		 * FunctionalInterfaceを維持できる。
@@ -2269,7 +2272,6 @@ public class TestFunctions {
 		 */
 		//@Override
 		//int compareTo(MyFunction<T, R> o);
-		
 		/**
 		 * Objectクラス以外のメソッドをデフォルトメソッドとして実装すれば
 		 * FunctionalInterfaceを維持できる。
@@ -2278,13 +2280,13 @@ public class TestFunctions {
 		default int compareTo(MyFunction<T, R> o) {
 			return 1;
 		}
-		
+
 		/**
 		 * デフォルトメソッドは記述してもFunctionalInterfaceを維持できる。
 		 */
 		default String getInfo(T t) {
 			String info = apply(t).toString();
-			
+
 			return info;
 		}
 
@@ -2294,7 +2296,7 @@ public class TestFunctions {
 		static int divId(int factor) {
 			return ID / factor;
 		}
-		
+
 		/**
 		 * Objectクラスのメソッドをデフォルトメソッドとして実装すると
 		 * FunctionalInterface云々は関係無くコンパイルエラーになる。
@@ -2303,17 +2305,16 @@ public class TestFunctions {
 		//default String toString(){
 		//	return "test";
 		//}
-		
 		@Override
 		String toString();
-		
+
 	}
-	
+
 	@FunctionalInterface
 	private interface MySubFunction<T, U extends CharSequence, R> extends MyFunction<T, R> {
-		
+
 		R apply(T t, U u);
-		
+
 		String FAVORITE_NAME = "EGG";
 
 		/**
@@ -2324,60 +2325,128 @@ public class TestFunctions {
 		 */
 		@Override
 		default R apply(T t) {
-			return apply(t, (U)FAVORITE_NAME);
+			return apply(t, (U) FAVORITE_NAME);
 		}
-		
+
 		/**
 		 * スーパーインターフェースでデフォルトメソッドとして実装されている
 		 * メソッドをオーバーライドするとFunctionalInterfaceではなくなる。
 		 */
 		//@Override
 		//int compareTo(MyFunction<T, R> o);
-		
 	}
-	
+
 	@Test
-	public void FunctionalInterfaceのデフォルトメソッドを実行する(){
+	public void FunctionalInterfaceのデフォルトメソッドを実行する() {
 		String personName = "hogehoge";
-		
+
 		Favorite[] favorites0 = {
 			Favorite.BANANA, Favorite.TOAST, Favorite.RICE
 		};
-		
+
 		boolean ordered = true;
-		
+
 		Person p0 = new Person(personName, favorites0, ordered);
-		
-		BiFunction <Person, String, Favorite[]> toFavs = (p, s) -> 
-		{
+
+		BiFunction<Person, String, Favorite[]> toFavs = (p, s) -> {
 			Set<Favorite> favorites = p.getFavorites();
 			favorites.add(Favorite.valueOf(s));
 			Favorite[] fs = favorites.toArray(new Favorite[favorites.size()]);
-			
+
 			return fs;
 		};
-		
+
 		/**
 		 * サブインターフェースでデフォルトメソッドにより実装した
 		 * スーパーインタフェースのメソッドから，サブインターフェースの
 		 * 「関数」(ここではMySubFunction.apply(T, U))を呼び出す。
 		 */
-		MySubFunction<Person, String, Collection<Favorite>> mf = (p, s) -> 
-		{
+		MySubFunction<Person, String, Collection<Favorite>> mf = (p, s) -> {
 			Favorite[] fs = toFavs.apply(p, s);
 			return new Person(p.name, fs, ordered).getFavorites();
 		};
-		
+
 		Favorite[] favorites1 = toFavs.apply(p0, MySubFunction.FAVORITE_NAME);
 		Person p1 = new Person(personName, favorites1, ordered);
-		
+
 		String expected = p1.getFavorites().toString();
-		
+
 		String actual = mf.getInfo(p0);
-		
+
 		assertThat(actual, is(expected));
-		
+
 		System.out.println(actual);
 	}
-	
+
+	private static class StudentComparison {
+
+		private static final Comparator<Student> BY_NAME_COMPARATOR
+			= (s1, s2) -> s1.getName().compareTo(s2.getName());
+		private static final Comparator<Student> BY_SCORE_COMPARATOR
+			= (s1, s2) -> s1.getScore() - s2.getScore();
+
+		public int compareByName(Student s1, Student s2) {
+			return BY_NAME_COMPARATOR.compare(s1, s2);
+		}
+
+		public int compareByScore(Student s1, Student s2) {
+			return BY_SCORE_COMPARATOR.compare(s1, s2);
+		}
+	}
+
+	@Test
+	public void メソッド参照に置き換えられる基準を調べる() {
+		List<Student> students = Arrays.asList(
+			new Student("baz", 80),
+			new Student("foo", 100),
+			new Student("bar", 50)
+		);
+
+		StudentComparison comparison = new StudentComparison();
+
+		List<String> expected = Arrays.asList(
+			"bar", "baz", "foo"
+		);
+
+		List<String> actual = students.stream()
+			//.sorted((s1, s2) -> comparison.compareByName(s1, s2))
+			/**
+			 * <pre>
+			 * (s1, s2) -> comparison.compareByName(s1, s2)
+			 * </pre>
+			 * 上記をメソッド参照で置き換えると
+			 * <pre>comparison::compareByName</pre>
+			 * になる。
+			 * メソッド呼び出し元のオブジェクトがコレクションの要素ではない。
+			 */
+			.sorted(comparison::compareByName)
+			/**
+			 * 以下はcomparison::compareByNameを指定した時と同じになる。
+			 */
+			//.sorted(StudentComparison.BY_NAME_COMPARATOR)
+			/**
+			 * <pre>StudentComparison::compareByName</pre>ではコンパイルエラーになる。
+			 * 
+			 * メソッド参照を使わない場合に次のように書けるのであれば
+			 * コンパイルエラーにならない。
+			 * 
+			 * <pre>
+			 * (TypeA a1, TypeA a2) -> a1.method(a2);
+			 * </pre>
+			 * 
+			 * あるいは
+			 * 
+			 * <pre>
+			 * (TypeA a1) -> a1.method();
+			 * </pre>
+			 * 
+			 * いずれも<pre>TypeA::method</pre>と置き換えられる。
+			 */
+			//.sorted(StudentComparison::compareByName)
+			.map(Student::getName)
+			.collect(toList());
+
+		assertThat(actual, is(expected));
+	}
+
 }
