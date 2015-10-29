@@ -32,6 +32,7 @@ import java.util.Optional;
 import java.util.HashSet;
 import java.util.concurrent.Callable;
 import java.util.TreeSet;
+import java.util.TreeMap;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -55,6 +56,7 @@ import exercise.function.util.ParamSupplier;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
 import exercise.function.Lambda;
+import exercise.function.util.BiSupplier;
 
 /**
  * 参考：
@@ -2501,6 +2503,33 @@ public class TestFunctions {
 			.min(Integer::compareTo)
 			.get();
 		assertThat(actualMinBoxed, is(expectedMin));
+	}
+	
+	@Test
+	public void 引数を受け取れるSupplierでオブジェクトを生成する(){
+		Map<String, Integer> data = new TreeMap<>();
+		data.put("foo", 30);
+		data.put("bar", 100);
+		data.put("baz", 50);
+		data.put("hoge", 80);
+		data.put("mike", 40);
+		
+		List<Student> expected = new ArrayList<>();
+		data.keySet().forEach(
+			k -> expected.add(new Student(k, data.get(k)))
+		);
+		
+		BiSupplier<Student, String, Integer> bs = Student::new;
+		/**
+		 * メソッド参照を使わない場合は以下のようになる。
+		 */
+		//BiSupplier<Student, String, Integer> bs = (name, score) -> new Student(name, score);
+		
+		List<Student> actual = data.keySet().stream()
+			.map(k -> bs.get(k, data.get(k)))
+			.collect(toList());
+		
+		assertThat(actual, is(expected));
 	}
 
 }
