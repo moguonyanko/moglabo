@@ -2426,20 +2426,20 @@ public class TestFunctions {
 			//.sorted(StudentComparison.BY_NAME_COMPARATOR)
 			/**
 			 * <pre>StudentComparison::compareByName</pre>ではコンパイルエラーになる。
-			 * 
+			 *
 			 * メソッド参照を使わない場合に次のように書けるのであれば
 			 * コンパイルエラーにならない。
-			 * 
+			 *
 			 * <pre>
 			 * (TypeA a1, TypeA a2) -> a1.method(a2);
 			 * </pre>
-			 * 
+			 *
 			 * あるいは
-			 * 
+			 *
 			 * <pre>
 			 * (TypeA a1) -> a1.method();
 			 * </pre>
-			 * 
+			 *
 			 * いずれも<pre>TypeA::method</pre>と置き換えられる。
 			 */
 			//.sorted(StudentComparison::compareByName)
@@ -2447,6 +2447,60 @@ public class TestFunctions {
 			.collect(toList());
 
 		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void 複数種類のストリームから最大値と最小値を得る() {
+		List<Integer> nums = Arrays.asList(
+			0, 6, 4, 5, 7, 8, 9, 3, 1, 2
+		);
+		
+		int start = 0;
+		int end = 9;
+		
+		int expectedMax = 9;
+		int expectedMin = 0;
+		
+		BiFunction<Integer, Integer, IntStream> getIntStream =
+			(s, e) -> IntStream.rangeClosed(s, e);
+		
+		/**
+		 * IntStreamから最大値や最小値を得る時はmax及びminに引数は不要。
+		 * IntegerのComparatorを使えばよいことが分かっているからである。
+		 * maxとminはOptionalIntを返す。値を得るメソッドはgetではなく
+		 * getAsIntとなる。OptionalIntである時点で返される値はintに
+		 * 決まっているのでgetでよかったように思える。orElse等はOptionalクラスと
+		 * 同じ名前なのでなおさらgetAsIntが特殊に見える。
+		 * 
+		 * OptionalIntはOptionalのサブクラスではない。
+		 * IntStream等もそうだが基本データ型で特殊化したクラスは
+		 * 特殊化されていないクラスのサブクラスになっていない。
+		 */
+		int actualMax = getIntStream.apply(start, end).max().getAsInt();
+		assertThat(actualMax, is(expectedMax));
+		
+		/**
+		 * 終端操作が呼び出されたストリームは閉じられる(消費済になる)ので
+		 * 再利用不可能である。参照するとIllegalStateExceptionがスローされる。
+		 */
+		//int actualMin = is.min().getAsInt();
+		int actualMin = getIntStream.apply(start, end).min().getAsInt();
+		assertThat(actualMin, is(expectedMin));
+		
+		/**
+		 * IntStreamをStream<Integer>に置き換えると以下のようになる。
+		 * max，minにComparator<? super Integer>型の引数が必要になる。
+		 */
+		
+		int actualMaxBoxed = getIntStream.apply(start, end).boxed()
+			.max(Integer::compareTo)
+			.get();
+		assertThat(actualMaxBoxed, is(expectedMax));
+		
+		int actualMinBoxed = getIntStream.apply(start, end).boxed()
+			.min(Integer::compareTo)
+			.get();
+		assertThat(actualMinBoxed, is(expectedMin));
 	}
 
 }
