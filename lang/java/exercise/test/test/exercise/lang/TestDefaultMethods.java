@@ -7,6 +7,10 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.function.Supplier;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -22,52 +26,57 @@ import exercise.function.ShopItem;
 import exercise.lang.Tax;
 import exercise.lang.Taxable;
 import exercise.lang.ZonedTimeMachine;
+import exercise.function.IntCalculator;
 
+/**
+ * 参考：
+ * 「Java Tutorial」(オラクル)
+ */
 public class TestDefaultMethods {
-	
+
 	public TestDefaultMethods() {
 	}
-	
+
 	@BeforeClass
 	public static void setUpClass() {
 	}
-	
+
 	@AfterClass
 	public static void tearDownClass() {
 	}
-	
+
 	@Before
 	public void setUp() {
 	}
-	
+
 	@After
 	public void tearDown() {
 	}
 
 	@Test
-	public void デフォルトの税金計算が出来る(){
+	public void デフォルトの税金計算が出来る() {
 		Tax tax = new Excise();
-		
+
 		Taxable item = new ShopItem("Apple", 100);
-		
+
 		int actual = tax.on(item);
 		int expected = 108;
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 優遇される金額が得られる(){
-		Favorable f = new ShopItem("Apple", 100); 
-		
+	public void 優遇される金額が得られる() {
+		Favorable f = new ShopItem("Apple", 100);
+
 		int actual = f.getValue();
 		int expected = 0;
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void デフォルトメソッドで時刻を変更し取得する(){
+	public void デフォルトメソッドで時刻を変更し取得する() {
 		LocalDateTime baseTime = LocalDateTime.of(2015, Month.OCTOBER, 20, 15, 30);
 		ZoneId testZoneId = ZoneId.of("Europe/Paris");
 
@@ -77,9 +86,9 @@ public class TestDefaultMethods {
 		 * new ZonedTimeMachine(2015)などとは書けない。
 		 */
 		ZonedTimeMachine tm = new ZonedTimeMachine() {
-			
+
 			private ZonedDateTime time;
-			
+
 			{
 				time = ZonedDateTime.of(baseTime, testZoneId);
 			}
@@ -88,7 +97,7 @@ public class TestDefaultMethods {
 			public ZoneId getZonedId() {
 				return testZoneId;
 			}
-			
+
 			@Override
 			public ZonedDateTime getTime() {
 				return time;
@@ -98,22 +107,23 @@ public class TestDefaultMethods {
 			public void setTime(ZonedDateTime zdt) {
 				time = zdt;
 			}
-			
+
 		};
-		
+
 		/**
 		 * LocalDateTimeやZonedDateTimeは不変。
 		 */
 		ZonedDateTime after3Days = baseTime.plusDays(3).atZone(testZoneId);
-		
+
 		tm.toFuture(after3Days);
 		ZonedDateTime actual = tm.now();
-		
+
 		assertThat(actual, is(after3Days));
 		assertThat(tm.getZonedId(), is(testZoneId));
 	}
-	
+
 	private static class MyZonedTimeMachine implements ZonedTimeMachine {
+
 		private ZonedDateTime time;
 		private final ZoneId zoneId;
 
@@ -143,29 +153,237 @@ public class TestDefaultMethods {
 			return zoneId;
 		}
 	}
-	
+
 	@Test
-	public void デフォルトメソッドで並べ替える(){
+	public void デフォルトメソッドで並べ替える() {
 		LocalDateTime localDateTime = LocalDateTime.of(2015, Month.OCTOBER, 20, 17, 13);
-		
+
 		ZoneId zone0 = ZoneId.of("Asia/Tokyo");
 		ZonedDateTime sampleTime0 = localDateTime.atZone(zone0);
 		ZoneId zone1 = ZoneId.of("Europe/Paris");
 		ZonedDateTime sampleTime1 = localDateTime.atZone(zone1);
-		
+
 		MyZonedTimeMachine tokyoMachine = new MyZonedTimeMachine(sampleTime0, sampleTime0.getZone());
 		MyZonedTimeMachine patisMachine = new MyZonedTimeMachine(sampleTime1, sampleTime1.getZone());
-		
+
 		List<MyZonedTimeMachine> source = Arrays.asList(patisMachine, tokyoMachine);
-		
+
 		/* 東京の方がパリよりも7時間進んでいるので並べ替えると順番が先になる。 */
 		List<MyZonedTimeMachine> expected = Arrays.asList(tokyoMachine, patisMachine);
-		
+
 		List<MyZonedTimeMachine> actual = source.stream()
 			.sorted()
 			.collect(Collectors.toList());
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
+	private static class Addition {
+
+		/**
+		 * こちらのcalcを削除するとSubAddtionがIntCalculatorのメソッドを
+		 * 実装していないということでコンパイルエラーになる。
+		 * AdditionはIntCalculatorと何の関係も無いがSubAddtionで行われるべき
+		 * IntCalculatorの実装を肩代わりしている。
+		 * しかしこちらに@Overrideを書くとコンパイルエラーになる。
+		 */
+		public Integer calc(Integer a, Integer b) {
+			return a + b;
+		}
+
+		/**
+		 * こちらのcalcはIntegerではなくintなのでIntCalculatorのメソッドを
+		 * 実装したことにならない。
+		 */
+		public int calc(int a, int b) {
+			return a + b;
+		}
+	}
+
+	private static class SubAddtion extends Addition
+		implements IntCalculator {
+
+	}
+
+	@Test
+	public void インターフェースをスーパークラスで実装する() {
+		Integer a = 7;
+		Integer b = 3;
+
+		Integer expected = 10;
+
+		Addition addition = new SubAddtion();
+
+		Integer actual = addition.calc(a, b);
+
+		assertThat(actual, is(expected));
+	}
+
+	private static class Student {
+
+		private final String name;
+		private final int grade;
+
+		public Student(String name, int grade) {
+			this.name = name;
+			this.grade = grade;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public int getGrade() {
+			return grade;
+		}
+
+	}
+
+	private static class School<C extends Collection<Student>> {
+
+		private final C students;
+
+		public School(C students) {
+			this.students = students;
+		}
+
+		public <V extends Collection<String>, S extends Supplier<V>> V getGenericNames(S supplier) {
+			return students.stream()
+				.map(Student::getName)
+				.collect(Collectors.toCollection(supplier));
+		}
+
+		/**
+		 * このメソッドが実装されていないとSubSchoolはNameCheckerのメソッドを
+		 * オーバーライドしていないとしてコンパイルエラーになる。
+		 * しかし@Overrideを書くとコンパイルエラーである。
+		 */
+		//@Override
+		public List<String> getNames() {
+			return getGenericNames(ArrayList::new);
+		}
+
+	}
+
+	private interface NameDumper {
+
+		default List<String> getNames() {
+			return Arrays.asList("Dump", "Domp", "Damp");
+		}
+
+	}
+
+	private interface NameGetter {
+
+		default List<String> getNames() {
+			return Arrays.asList("Get", "Got", "Gat");
+		}
+
+	}
+
+	private interface NameChecker {
+
+		List<String> getNames();
+
+	}
+
+	private static class SubSchool extends School
+		implements NameDumper, NameGetter, NameChecker {
+
+		public SubSchool(List<Student> students) {
+			super(students);
+		}
+
+	}
+
+	@Test
+	public void デフォルトメソッドよりも具象クラスのメソッドが優先される() {
+		List<Student> students = Arrays.asList(
+			new Student("foo", 3),
+			new Student("bar", 1),
+			new Student("baz", 2)
+		);
+
+		School school = new SubSchool(students);
+
+		List<String> expected = Arrays.asList("foo", "bar", "baz");
+
+		/**
+		 * SubSchoolがimplementsしているインターフェースのメソッドは
+		 * デフォルトメソッドとして実装されていても呼び出されない。
+		 * SubSchoolのスーパークラスSchoolが実装している，シグネチャが全く同じ
+		 * メソッドが呼び出される。
+		 * NameCheckerのメソッドはSubSchoolで実装されていないが
+		 * スーパークラスのSchoolが実装しているのでコンパイルエラーにならない。
+		 */
+		List<String> actual = school.getNames();
+
+		assertThat(actual, is(expected));
+	}
+
+	private interface NameProvider {
+
+		default List<String> getNames() {
+			return Arrays.asList("I", "MY", "ME");
+		}
+
+	}
+
+	private static class NameLoader implements NameDumper, NameGetter {
+
+		private static List<String> getStaticNames() {
+			/**
+			 * staticメソッド内でsuperを指定してインターフェースのメソッドを
+			 * 呼び出すことはできない。
+			 */
+			//return NameDumper.super.getNames();
+			return Collections.emptyList();
+		}
+
+		private List<String> getInstanseNames() {
+			/**
+			 * インスタンスメソッド内であればsuperを介してスーパーインターフェースの
+			 * メソッドを呼び出すことができる。
+			 */
+			List<String> dumpResult = new ArrayList<>(NameDumper.super.getNames());
+			List<String> getResult = NameGetter.super.getNames();
+			/**
+			 * implementsしていないインターフェースのデフォルトメソッドを
+			 * 呼びだそうとするとコンパイルエラーになる。
+			 */
+			//List<String> provideResult = NameProvider.super.getNames();
+
+			/* デフォルトメソッドが定義されていなければ呼び出せない。 */
+			//NameChecker.super.getNames();
+			/**
+			 * dumpResultがArrayList等といった可変長のコレクションでないと
+			 * addAll呼び出し時にUnsupportedOperationExceptionが発生する。
+			 */
+			dumpResult.addAll(getResult);
+
+			return dumpResult;
+		}
+
+		@Override
+		public List<String> getNames() {
+			return getInstanseNames();
+		}
+
+	}
+
+	@Test
+	public void 重複したデフォルトメソッドを選択して呼び出す() {
+		NameLoader loader = new NameLoader();
+
+		/**
+		 * インターフェースを実装していないクラスからsuperを用いて
+		 * インターフェースのメソッドを呼び出すことはできない。
+		 */
+		//NameDumper.super.getNames();
+		List<String> expected = Arrays.asList("Dump", "Domp", "Damp", "Get", "Got", "Gat");
+		List<String> actual = loader.getNames();
+
+		assertThat(actual, is(expected));
+	}
+
 }
