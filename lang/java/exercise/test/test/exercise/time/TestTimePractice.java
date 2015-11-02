@@ -133,10 +133,26 @@ public class TestTimePractice {
 		ZoneId fromZoneId = ZoneId.of("Asia/Tokyo");
 		ZoneId toZoneId = ZoneId.of("Europe/Berlin");
 		
-		/* 時差が +07:00 ある。 */
-		ZonedDateTime berlinZonedDateTime = LocalDateTime.now()
-			.minusHours(7)
-			.atZone(toZoneId);
+		/**
+		 * ZoneRunes.isDaylightSavingsはZonedDateTimeの
+		 * インスタンスメソッドだった方が利用しやすかったと思う。
+		 */
+		ZonedDateTime berlinZonedDateTime = LocalDateTime.now().atZone(toZoneId);
+		
+		boolean isSummerTime = TimeZones.inSummerTime(berlinZonedDateTime);
+		
+		/**
+		 * ベルリンと日本では，ベルリンがサマータイムの時は
+		 * 日本が7時間進んでいて，サマータイムでない時は日本が
+		 * 8時間進んでいる。ベルリンから見るとベルリンの方が
+		 * 時間が遅れているのでZonedDateTime.minusHoursを実行する。
+		 */
+		if(isSummerTime){
+			berlinZonedDateTime = berlinZonedDateTime.minusHours(7);
+		}else{
+			berlinZonedDateTime = berlinZonedDateTime.minusHours(8);
+		}
+		
 		OffsetDateTime expected = berlinZonedDateTime.toOffsetDateTime();
 		
 		OffsetDateTime actual = TimeZones.getOffsetDateTime(fromZoneId, toZoneId);
@@ -674,25 +690,30 @@ public class TestTimePractice {
 	
 	@Test
 	public void 地域を指定して夏時間を取得する(){
-		/* 夏時間の量は1時間 */
 		ZoneId zoneId = ZoneId.of("Europe/Paris");
-		
-		long summerTimeByHours = TimeZones.getSummerTime(zoneId, Duration::toHours);
+		boolean inSummerTime = zoneId.getRules().isDaylightSavings(Instant.now());
 		/**
 		 * 数値リテラルをlong型の変数に代入しておらず末尾にLを付与していない場合，
 		 * long型と認識されずテストに失敗する。
+		 * 
+		 * ZoneIdの指す地域で夏時間(サマータイム)が実施中であるかどうかによって
+		 * ZoneRules.isDaylightSavingsやZoneRules.getDaylightSavingsの結果は変化する。
 		 */
-		assertThat(summerTimeByHours, is(1L));
+		long summerTimeHours = inSummerTime ? 1L : 0L;
+		long summerTimeMinutes = inSummerTime ? 60L : 0L;
+			
+		long summerTimeByHours = TimeZones.getSummerTime(zoneId, Duration::toHours);
+		assertThat(summerTimeByHours, is(summerTimeHours));
 		
 		long summerTimeByMinutes = TimeZones.getSummerTime(zoneId, Duration::toMinutes);
-		assertThat(summerTimeByMinutes, is(60L));
+		assertThat(summerTimeByMinutes, is(summerTimeMinutes));
 		
 		try {
 			long summerTimeByHoursWithUnit = TimeZones.getSummerTime(zoneId, ChronoUnit.HOURS);
-			assertThat(summerTimeByHoursWithUnit, is(1L));
+			assertThat(summerTimeByHoursWithUnit, is(summerTimeHours));
 
 			long summerTimeByMinutesWithUnit = TimeZones.getSummerTime(zoneId, ChronoUnit.MINUTES);
-			assertThat(summerTimeByMinutesWithUnit, is(60L));
+			assertThat(summerTimeByMinutesWithUnit, is(summerTimeMinutes));
 		} catch (UnsupportedTemporalTypeException ex) {
 			/**
 			 * Durationは時間ベースの時間の量を扱うクラスであり
