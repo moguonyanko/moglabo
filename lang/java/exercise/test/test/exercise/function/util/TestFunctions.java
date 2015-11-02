@@ -33,6 +33,15 @@ import java.util.HashSet;
 import java.util.concurrent.Callable;
 import java.util.TreeSet;
 import java.util.TreeMap;
+import java.util.function.IntBinaryOperator;
+import java.util.function.IntConsumer;
+import java.util.function.IntFunction;
+import java.util.function.IntPredicate;
+import java.util.function.DoubleToIntFunction;
+import java.util.function.IntSupplier;
+import java.util.function.ObjIntConsumer;
+import java.util.function.ToIntBiFunction;
+import java.util.function.ToIntFunction;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -2530,6 +2539,105 @@ public class TestFunctions {
 			.collect(toList());
 		
 		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 特殊化された関数で結果を得る(){
+		/**
+		 * IntFunctionはFunctionの特殊化とされているが
+		 * Functionを拡張したインターフェースではない。
+		 */
+		IntFunction<String> i2s = i -> String.valueOf(i);
+		assertThat(i2s.apply(100), is("100"));
+		
+		/**
+		 * BinaryOperatorはBiFunctionを継承している。しかし
+		 * IntBinaryOperatorはIntFunctionを継承していない。
+		 * IntBiFunctionが存在していたらそれを継承していたのかもしれない。
+		 */
+		IntBinaryOperator add = (a, b) -> a + b;
+		assertThat(add.applyAsInt(100, 200), is(300));
+		
+		/**
+		 * <pre>
+		 * IntConsumer inc = i -> i + 1;
+		 * </pre>
+		 * 上のように書くと
+		 * <pre>
+		 * IntConsumer inc = i -> { return i + 1; };
+		 * </pre>
+		 * と同じになりintを返すことになる。
+		 * Comsumerは値を返さないラムダ式しか受け付けないので
+		 * コンパイルエラーになる。
+		 */
+		IntConsumer inc = i -> i++;
+		/* カッコを付けると以下のようになる。 */
+		//IntConsumer inc = i -> { i++; };
+		
+		int incTarget = 1;
+		inc.accept(incTarget);
+		/**
+		 * IntConsumer.acceptを実行してもincTargetの値は変わらない。
+		 * Consumerは入出力のような副作用を介して動作することが期待されるが，
+		 * ラムダ式のスコープ外の値に副作用を及ぼすわけではない。
+		 */
+		assertThat(incTarget, is(incTarget));
+		
+		IntPredicate even = i -> i % 2 == 0;
+		IntPredicate odd = even.negate();
+		assertTrue(odd.test(11));
+		
+		Random rand = new Random();
+		int bound = 10;
+		IntSupplier randInt = () -> rand.nextInt(bound);
+		int randResult = randInt.getAsInt();
+		assertTrue(randResult < bound);
+		System.out.println("Random.nextInt(int) returned " + randResult);
+		
+		ToIntFunction<String> s2i = s -> Integer.parseInt(s);
+		assertThat(s2i.applyAsInt("100"), is(100));
+		
+		ToIntBiFunction<Student, Student2> sumScore = 
+			(s1, s2) -> s1.getScore() + s2.getScore();
+		Student hoge = new Student("hoge", 40);
+		Student2 mike = new Student2("mike", 60, Student2Class.A);
+		assertThat(sumScore.applyAsInt(hoge, mike), is(100));
+		
+		List<Student> students = Arrays.asList(
+			new Student("foo", 20),
+			new Student("bar", 70),
+			new Student("baz", 10)
+		);
+		
+//		IntSupplier getZero = () -> 0;
+		int sumResult = students.stream()
+			.mapToInt(Student::getScore)
+			.sum();
+			/**
+			 * sumはreduce(0, Integer::sum)と同じ。
+			 * つまり以下のコードとも同じである。
+			 */
+//			.reduce((s1, s2) -> s1 + s2)
+//			.orElseGet(getZero);
+		
+		assertThat(sumResult, is(100));
+		
+		/**
+		 * FloatToIntFunctionは存在しない。
+		 */
+		DoubleToIntFunction round = d -> (int)Math.round(d);
+		assertThat(round.applyAsInt(1.5), is(2));
+		
+		ObjIntConsumer<Student> dispScore = (student, bonusPoint) -> 
+		{ 
+			/**
+			 * 以下のコードでは文字列連結が優先されてしまうので誤った得点が表示される。
+			 */
+			//System.out.println(student.getName() + " score is " + student.getScore() + bonusPoint); 
+			int result = student.getScore() + bonusPoint;
+			System.out.println(student.getName() + " score is " + result); 
+		};
+		dispScore.accept(new Student("foo", 95), 5);
 	}
 
 }
