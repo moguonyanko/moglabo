@@ -972,4 +972,14 @@ public class Functions {
 		return optional.orElseThrow(exClass);
 	}
 	
+	/**
+	 * UnaryOperator<T>はFunction<T, T>とほぼ同じ。
+	 * staticメソッドであるidentityメソッドの戻り値の型だけ異なる。
+	 */
+	public static <T> T vary(T value, UnaryOperator<T> op){
+		T result = op.apply(value);
+		
+		return result;
+	}
+	
 }

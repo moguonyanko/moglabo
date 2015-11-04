@@ -2465,16 +2465,16 @@ public class TestFunctions {
 		List<Integer> nums = Arrays.asList(
 			0, 6, 4, 5, 7, 8, 9, 3, 1, 2
 		);
-		
+
 		int start = 0;
 		int end = 9;
-		
+
 		int expectedMax = 9;
 		int expectedMin = 0;
-		
-		BiFunction<Integer, Integer, IntStream> getIntStream =
-			(s, e) -> IntStream.rangeClosed(s, e);
-		
+
+		BiFunction<Integer, Integer, IntStream> getIntStream
+			= (s, e) -> IntStream.rangeClosed(s, e);
+
 		/**
 		 * IntStreamから最大値や最小値を得る時はmax及びminに引数は不要。
 		 * IntegerのComparatorを使えばよいことが分かっているからである。
@@ -2482,14 +2482,14 @@ public class TestFunctions {
 		 * getAsIntとなる。OptionalIntである時点で返される値はintに
 		 * 決まっているのでgetでよかったように思える。orElse等はOptionalクラスと
 		 * 同じ名前なのでなおさらgetAsIntが特殊に見える。
-		 * 
+		 *
 		 * OptionalIntはOptionalのサブクラスではない。
 		 * IntStream等もそうだが基本データ型で特殊化したクラスは
 		 * 特殊化されていないクラスのサブクラスになっていない。
 		 */
 		int actualMax = getIntStream.apply(start, end).max().getAsInt();
 		assertThat(actualMax, is(expectedMax));
-		
+
 		/**
 		 * 終端操作が呼び出されたストリームは閉じられる(消費済になる)ので
 		 * 再利用不可能である。参照するとIllegalStateExceptionがスローされる。
@@ -2497,59 +2497,58 @@ public class TestFunctions {
 		//int actualMin = is.min().getAsInt();
 		int actualMin = getIntStream.apply(start, end).min().getAsInt();
 		assertThat(actualMin, is(expectedMin));
-		
+
 		/**
 		 * IntStreamをStream<Integer>に置き換えると以下のようになる。
 		 * max，minにComparator<? super Integer>型の引数が必要になる。
 		 */
-		
 		int actualMaxBoxed = getIntStream.apply(start, end).boxed()
 			.max(Integer::compareTo)
 			.get();
 		assertThat(actualMaxBoxed, is(expectedMax));
-		
+
 		int actualMinBoxed = getIntStream.apply(start, end).boxed()
 			.min(Integer::compareTo)
 			.get();
 		assertThat(actualMinBoxed, is(expectedMin));
 	}
-	
+
 	@Test
-	public void 引数を受け取れるSupplierでオブジェクトを生成する(){
+	public void 引数を受け取れるSupplierでオブジェクトを生成する() {
 		Map<String, Integer> data = new TreeMap<>();
 		data.put("foo", 30);
 		data.put("bar", 100);
 		data.put("baz", 50);
 		data.put("hoge", 80);
 		data.put("mike", 40);
-		
+
 		List<Student> expected = new ArrayList<>();
 		data.keySet().forEach(
 			k -> expected.add(new Student(k, data.get(k)))
 		);
-		
+
 		BiSupplier<Student, String, Integer> bs = Student::new;
 		/**
 		 * メソッド参照を使わない場合は以下のようになる。
 		 */
 		//BiSupplier<Student, String, Integer> bs = (name, score) -> new Student(name, score);
-		
+
 		List<Student> actual = data.keySet().stream()
 			.map(k -> bs.get(k, data.get(k)))
 			.collect(toList());
-		
+
 		assertThat(actual, is(expected));
 	}
-	
+
 	@Test
-	public void 特殊化された関数で結果を得る(){
+	public void 特殊化された関数で結果を得る() {
 		/**
 		 * IntFunctionはFunctionの特殊化とされているが
 		 * Functionを拡張したインターフェースではない。
 		 */
 		IntFunction<String> i2s = i -> String.valueOf(i);
 		assertThat(i2s.apply(100), is("100"));
-		
+
 		/**
 		 * BinaryOperatorはBiFunctionを継承している。しかし
 		 * IntBinaryOperatorはIntFunctionを継承していない。
@@ -2557,7 +2556,7 @@ public class TestFunctions {
 		 */
 		IntBinaryOperator add = (a, b) -> a + b;
 		assertThat(add.applyAsInt(100, 200), is(300));
-		
+
 		/**
 		 * <pre>
 		 * IntConsumer inc = i -> i + 1;
@@ -2573,7 +2572,7 @@ public class TestFunctions {
 		IntConsumer inc = i -> i++;
 		/* カッコを付けると以下のようになる。 */
 		//IntConsumer inc = i -> { i++; };
-		
+
 		int incTarget = 1;
 		inc.accept(incTarget);
 		/**
@@ -2582,36 +2581,40 @@ public class TestFunctions {
 		 * ラムダ式のスコープ外の値に副作用を及ぼすわけではない。
 		 */
 		assertThat(incTarget, is(incTarget));
-		
+
 		IntPredicate even = i -> i % 2 == 0;
 		IntPredicate odd = even.negate();
 		assertTrue(odd.test(11));
-		
+
 		Random rand = new Random();
 		int bound = 10;
 		IntSupplier randInt = () -> rand.nextInt(bound);
 		int randResult = randInt.getAsInt();
 		assertTrue(randResult < bound);
 		System.out.println("Random.nextInt(int) returned " + randResult);
-		
+
 		ToIntFunction<String> s2i = s -> Integer.parseInt(s);
 		assertThat(s2i.applyAsInt("100"), is(100));
-		
-		ToIntBiFunction<Student, Student2> sumScore = 
-			(s1, s2) -> s1.getScore() + s2.getScore();
+
+		ToIntBiFunction<Student, Student2> sumScore
+			= (s1, s2) -> s1.getScore() + s2.getScore();
 		Student hoge = new Student("hoge", 40);
 		Student2 mike = new Student2("mike", 60, Student2Class.A);
 		assertThat(sumScore.applyAsInt(hoge, mike), is(100));
-		
+
 		List<Student> students = Arrays.asList(
 			new Student("foo", 20),
 			new Student("bar", 70),
 			new Student("baz", 10)
 		);
-		
+
 //		IntSupplier getZero = () -> 0;
 		int sumResult = students.stream()
 			.mapToInt(Student::getScore)
+			/**
+			 * 合計値の単位元はゼロでも許されるからか，sumはmaxやminと異なり
+			 * OptionalIntではなくint型の値を返してくる。
+			 */
 			.sum();
 			/**
 			 * sumはreduce(0, Integer::sum)と同じ。
@@ -2619,25 +2622,130 @@ public class TestFunctions {
 			 */
 //			.reduce((s1, s2) -> s1 + s2)
 //			.orElseGet(getZero);
-		
+
 		assertThat(sumResult, is(100));
-		
+
 		/**
 		 * FloatToIntFunctionは存在しない。
+		 * 
+		 * プリミティブ特殊化といいつつbyteやshort，floatといった
+		 * プリミティブ型はサポートされていないため，
+		 * それらの型を扱う既存のAPIは，プリミティブ特殊化された
+		 * 関数型インターフェースやストリームと相性が悪いかもしれない。
 		 */
-		DoubleToIntFunction round = d -> (int)Math.round(d);
+		DoubleToIntFunction round = d -> (int) Math.round(d);
 		assertThat(round.applyAsInt(1.5), is(2));
-		
-		ObjIntConsumer<Student> dispScore = (student, bonusPoint) -> 
-		{ 
+
+		ObjIntConsumer<Student> dispScore = (student, bonusPoint) -> {
 			/**
 			 * 以下のコードでは文字列連結が優先されてしまうので誤った得点が表示される。
 			 */
 			//System.out.println(student.getName() + " score is " + student.getScore() + bonusPoint); 
 			int result = student.getScore() + bonusPoint;
-			System.out.println(student.getName() + " score is " + result); 
+			System.out.println(student.getName() + " score is " + result);
 		};
 		dispScore.accept(new Student("foo", 95), 5);
+	}
+
+	@Test
+	public void 単項演算子を使った計算を様々な型に適用する() {
+		int a = 10;
+		int actualInc = Functions.vary(a, n -> ++n);
+		/**
+		 * 後置インクリメントでは更新された値がUnaryOperator.applyの戻り値として
+		 * 得られない。したがって以下のコードはテストに失敗する。
+		 */
+		//int actualInc = Functions.vary(a, n -> n++);
+		/**
+		 * 後置インクリメント版のコードを詳細に記述すると以下のようになる。
+		 * インクリメント後の値が返されないことは明確である。
+		 *
+		 * またラムダ式の<pre>Integer n</pre>を<pre>int n</pre>にすると，
+		 * int型がUnaryOperatorの型変数の上限(Object)以下に収まらないため
+		 * コンパイルエラーになる。Integerへのオートボクシングは行われない。
+		 * これはただ煩わしいだけなので，特に事情が無い限りはラムダ式で型は
+		 * 明示しない方がいい。
+		 */
+		//int actualInc = Functions.vary(a, (Integer n) -> {
+		//	return n++;
+		//});
+		/**
+		 * 以下は変数aが既に利用されているためコンパイルエラーになる。
+		 * ラムダ式外のスコープの変数がラムダ式内の変数でシャドウイングされることは
+		 * 許されない。
+		 */
+		//int actualInc = Functions.vary(a, a -> a++);
+
+		assertThat(actualInc, is(11));
+
+		String greet = "Hello";
+		String actualGreet = Functions.vary(greet, s -> {
+			return s.toUpperCase().replaceAll("\\B", "_");
+		});
+
+		assertThat(actualGreet, is("H_E_L_L_O"));
+	}
+
+	@Test
+	public void プリミティブ特殊化されたストリームで平均値を求める() {
+		List<Integer> sample = Arrays.asList(
+			1, 6, 5, 3, 2, 4, 8, 7, 9, 10
+		);
+		
+		double expected = 5.5;
+		
+		double actual = sample.stream()
+			/**
+			 * Streamにはmaxとminはあるがsumやaverageは存在しないので
+			 * map系メソッドによってIntStream等のプリミティブ特殊化された
+			 * ストリームに変換する必要がある。
+			 * 
+			 * ToIntFunctionにはidentityメソッドが存在しない。
+			 * 従ってToIntFunction型の関数を要求される場面で
+			 * <pre>i -> i</pre>を<pre>ToIntFunction::identity</pre>
+			 * とは置き換えられない。
+			 * 少なくともjava.util.functionパッケージに含まれる
+			 * 関数型インターフェースはidentityメソッドを持っているべきだと思う。
+			 * BiFunction等引数を複数取る関数型インターフェースは難しかったかも
+			 * しれないが。
+			 * 
+			 * IntFunctionにもidentityメソッドは存在しない。
+			 * プリミティブ特殊化されたインターフェースには
+			 * 特殊化の元となったインターフェースのメソッドのうち
+			 * 1つしか持っていないか全く持っていない。
+			 * 特殊化の元となったインターフェースが
+			 * スーパーインターフェースでないことにも注意が必要である。
+			 * Functionに関していえばFunctionを継承している
+			 * インターフェースの方が少ない。PredicateもFunction<T, Boolean>を
+			 * 継承してはいない。
+			 */
+			.mapToInt(i -> i)
+			.average()
+			/**
+			 * To***Functionのgetメソッドは全てgetAs***になる。
+			 * Optional***のgetメソッドも同じようにgetAs***になる。
+			 * しかし他のメソッド名は何故かOptionalに準じている。
+			 * またXXXTo***Functionのapplyメソッドは全てapplyAs***になる。
+			 * 
+			 * プリミティブ特殊化が絡んだAPIの設計はオブジェクト指向を
+			 * 放棄しているように見える。単に似たような名前のメソッドを
+			 * 持たせることで調整している感がありダック・タイピング的である。
+			 * しかも特殊化されていないメソッドと同じ名前で良さそうなメソッドも
+			 * getAsInt等のように微妙に変えられており混乱を招きそうである。
+			 * さらにプリミティブ特殊化によってFunctionやStream，Optional等に似た
+			 * インターフェースやクラスの数がむやみに増えてしまっている。
+			 * しかし一部のプリミティブ型は無視されているので，やはり混乱を
+			 * 招きそうである。
+			 * 
+			 * これらはパフォーマンスを維持するための設計なのだろうか。
+			 * Functionのような関数型インターフェースは多態を表現するための
+			 * インターフェースではないだろうが，些か無駄や不自然さが多い設計に思える。
+			 * いずれにせよAPIドキュメントにある「特殊化」は「具象化」等とは
+			 * 区別して考えるべきである。
+			 */
+			.orElseGet(() -> Double.NaN);
+		
+		assertThat(actual, is(expected));
 	}
 
 }
