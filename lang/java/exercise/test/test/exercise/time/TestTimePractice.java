@@ -743,4 +743,15 @@ public class TestTimePractice {
 		assertThat(actual, is(expected));
 	}
 	
+	@Test
+	public void 単位から時間量を得る(){
+		TemporalUnit unit = ChronoUnit.WEEKS;
+		
+		long expected = 7;
+		Duration duration = unit.getDuration();
+		long actual = duration.toDays();
+		
+		assertThat(actual, is(expected));
+	}
+	
 }
