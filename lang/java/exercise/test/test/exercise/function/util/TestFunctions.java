@@ -2771,5 +2771,5 @@ public class TestFunctions {
 		MyPredicate<Student> eq = MyPredicate.isEqual(poo);
 		assertTrue(eq.test(poo2));
 	}
-
+	
 }

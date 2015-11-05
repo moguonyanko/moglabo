@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -384,6 +385,151 @@ public class TestDefaultMethods {
 		List<String> actual = loader.getNames();
 
 		assertThat(actual, is(expected));
+	}
+	
+	/**
+	 * 内部インターフェースはprivateにもstaticにもできる。
+	 */
+	private static interface IStudent {
+		default String study(){
+			return "I am study hard.";
+		}
+	}
+	
+	private static interface SubIStudent extends IStudent {
+		/**
+		 * IStudentのデフォルトメソッドは抽象メソッドで
+		 * オーバーライドされた結果，暗黙では呼び出されなくなる。
+		 */
+		@Override
+		String study();
+	}
+	
+	private static class ParentStudent{
+		/**
+		 * SubIStudentのメソッドと同じシグネチャなので
+		 * SubIStudentのメソッドとして実装されたものと解釈される。
+		 * もちろん@Overrideを書いたらコンパイルエラーになる。
+		 */
+		public String study(){
+			return "Study hard!";
+		}
+	}
+	
+	/**
+	 * ParentStudentを継承していない場合，SubIStudentのメソッドを
+	 * 実装していないとしてコンパイルエラーになる。
+	 * スーパーインターフェースIStudentのデフォルトメソッドは
+	 * SubIStudentでオーバーライドされた抽象メソッドで隠される。
+	 * <pre>
+	 * 	private static class Student3 implements SubIStudent
+	 * </pre>
+	 * デフォルトメソッドの解決を考える時は，そのクラス自身がextendsしているクラスと
+	 * implementsしているインターフェースについてだけ考えるようにすればいい。
+	 */
+	private static class Student3 extends ParentStudent implements SubIStudent {
+		/**
+		 * 実装したインターフェースのスーパーインターフェースのデフォルトメソッドは
+		 * 呼び出すことができない。コンパイルエラーになる。
+		 */
+		//@Override
+		//public String study() {
+		//	return IStudent.super.study();
+		//}
+	}
+	
+	private static class ParentStudent2 implements IStudent {
+
+		@Override
+		public String study() {
+			return IStudent.super.study() + " Hurry up!!";
+		}
+		
+	}
+	
+	private static class ParentStudent2_1 {
+		public String study() {
+			return "No, I am not study.";
+		}
+	}
+	
+	/**
+	 * ParentStudent2にSubIStudentのメソッドと同じシグネチャのメソッドが
+	 * 実装されていなければコンパイルエラーになる。
+	 * ParentStudent2はIStudentを実装しているが，Student4のインスタンスを
+	 * 介してメソッドが呼び出される時にIStudentのデフォルトメソッドが
+	 * 暗黙で呼び出されることはない。
+	 * 暗黙で呼び出されるデフォルトメソッドは自分がimplementsしている
+	 * インターフェースのデフォルトメソッドだけであり，ここではSubIStudentが
+	 * 該当するが，SubIStudentはデフォルトメソッドを持っていない。
+	 * SubIStudentに何も定義されていなければIStudentのデフォルトメソッドが
+	 * 呼び出される。
+	 * 
+	 * なおdefault修飾子はインターフェースでしか記述できない。
+	 * 抽象クラスに記述するとコンパイルエラーになる。
+	 */
+	private static class Student4 extends ParentStudent2 implements SubIStudent {
+	}
+	
+	/**
+	 * implementsされたインターフェースのデフォルトメソッドより
+	 * extendsされたクラスのメソッドが優先される。
+	 */
+	private static class Student5 extends ParentStudent2 implements IStudent {
+	}
+	
+	private static class ParentStudent3 extends ParentStudent2_1 {
+	}
+	
+	/**
+	 * ParentStudent3のスーパークラスであるParentStudent2_1が
+	 * IStudentのメソッドと同じシグネチャのメソッドを実装していなければ，
+	 * IStudentのデフォルトメソッドが呼び出される。
+	 * 継承しているクラスを辿って呼び出せるメソッドを探す仕組みは
+	 * デフォルトメソッドが絡んでいても変わらない。
+	 */
+	private static class Student6 extends ParentStudent3 implements IStudent {
+	}
+	
+	private static interface SubIStudent2 extends IStudent {		
+	}
+	
+	/**
+	 * 呼び出されようとしているメソッドが，実装または継承されている
+	 * インターフェースを辿る途中でオーバーライドされていなければ，
+	 * 最も祖先のインターフェースが持つデフォルトメソッドが呼び出される。
+	 */
+	private static class Student7 implements SubIStudent2 {
+		
+		void studyFail(){
+			/**
+			 * SubIStudent2のスーパーインターフェースのデフォルトメソッドは
+			 * 呼び出せない。superキーワードで明示的に呼び出せるデフォルトメソッドは
+			 * 自身がimplementsしているインターフェースのデフォルトメソッドのみである。
+			 */
+			//System.out.println(IStudent.super.study());
+		}
+	}
+	
+	@Test
+	public void デフォルトメソッドを抽象メソッドでオーバーライドする(){
+		List<Supplier<? extends IStudent>> students = Arrays.asList(
+			Student3::new,
+			Student4::new,
+			Student5::new,
+			Student6::new,
+			Student7::new
+		);
+		
+		/**
+		 * Consumer<? extends IStudent>ではStream.forEachでコンパイルエラーになる。
+		 */
+		Consumer<IStudent> printStudying = 
+			s -> System.out.println(s.getClass().getSimpleName() + ":" + s.study());
+		
+		students.stream()
+			.map(Supplier::get)
+			.forEach(printStudying);
 	}
 
 }
