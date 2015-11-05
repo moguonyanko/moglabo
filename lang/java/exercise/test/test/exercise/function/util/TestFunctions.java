@@ -65,6 +65,7 @@ import exercise.function.util.ParamSupplier;
 import exercise.function.util.TailCall;
 import exercise.function.util.TailCalls;
 import exercise.function.Lambda;
+import exercise.function.MyPredicate;
 import exercise.function.util.BiSupplier;
 
 /**
@@ -2746,6 +2747,29 @@ public class TestFunctions {
 			.orElseGet(() -> Double.NaN);
 		
 		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void 自前の述語関数でテストできる(){
+		int borderLine = 70;
+		MyPredicate<Student> passed = s -> s.getScore() >= borderLine;
+		
+		Student hoge = new Student("hoge", 65);
+		assertFalse(passed.test(hoge));
+		
+		Student mike = new Student("mike", 75);
+		assertTrue(passed.test(mike));
+		
+		Student poo = new Student("poo", 99);
+		int fullMarks = 100;
+		MyPredicate<Student> perfect = s -> s.getScore() == fullMarks;
+		assertFalse(passed.and(perfect).test(poo));
+		assertTrue(passed.or(perfect).test(poo));
+		assertFalse(passed.negate().test(poo));
+		
+		Student poo2 = new Student("poo", 99);
+		MyPredicate<Student> eq = MyPredicate.isEqual(poo);
+		assertTrue(eq.test(poo2));
 	}
 
 }
