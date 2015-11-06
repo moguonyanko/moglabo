@@ -2772,4 +2772,126 @@ public class TestFunctions {
 		assertTrue(eq.test(poo2));
 	}
 	
+	@Test
+	public void 実質的finalな変数に値を設定する(){
+		
+		class Modifier{
+			private String word;
+
+			public Modifier(String word) {
+				this.word = word;
+			}
+
+			public void setWord(String word) {
+				this.word = word;
+			}
+			
+			String modify(Function<String, String> modifier){
+				/**
+				 * applyの引数は実質的finalである必要は無い。
+				 */
+				return modifier.apply(word);
+			}
+		}
+		
+		String sample = "Hello, ";
+		String suffix = "♪";
+		
+		Modifier m = new Modifier(sample);
+		/**
+		 * 変数sampleは最終的にラムダ式で参照される値を提供するが，
+		 * ラムダ式で直接参照しているわけではないので実質的finalである必要は無い。
+		 */
+		sample += "MODIFIED";
+		
+		/**
+		 * ラムダ式で直接参照する変数は実質的finalでなければならない。
+		 */
+		//suffix = "!!";
+		
+		int suffNumber;
+		suffNumber = 10;
+		
+		/**
+		 * 分岐が利用されなければ実質的finalは保持される。
+		 */
+		if(false){
+			suffNumber = 10000;
+		}
+		
+		String prefix;
+		/**
+		 * ラムダ式の変数が初期化されていない可能性がある場合は
+		 * コンパイルエラーになる。これはラムダ式関係無く発生する
+		 * エラーである。
+		 */
+		//String actual = m.modify(s -> s + "World" + suffix + suffNumber);
+		String actual = m.modify(s -> {
+			/**
+			 * ラムダ式の内部で実質的finalでなければならない変数を変更するのも
+			 * コンパイルエラーになる。
+			 */
+			//suffix = "!!";
+			/**
+			 * ラムダ式の内部で初めて値を設定するのもコンパイルエラーになる。
+			 * 変数はラムダ式で参照される前には値が設定されていなければならない。
+			 */
+			//prefix = "***";
+			return s + "World" + suffix + suffNumber;
+		});
+		
+		/**
+		 * 実質的finalでなければならない変数をラムダ式の後で変更しても
+		 * コンパイルエラーになる。
+		 */
+		//suffix = "!!";
+		
+		String expected = "Hello, World♪10";
+		assertThat(actual, is(expected));
+	}
+	
+	@Test
+	public void ループ内でラムダ式を扱う(){
+		Student[] students = {
+			new Student("hoge", 90),
+			new Student("mike", 50),
+			new Student("baz", 75)
+		};
+		
+		Student[] expected = {
+			new Student("HOGE", 100),
+			new Student("MIKE", 60),
+			new Student("BAZ", 85)
+		};
+		
+		List<Supplier> studentSuppliers = new ArrayList<>();
+		for(Student s : students){
+			studentSuppliers.add(() -> new Student(s.getName().toUpperCase(), 
+			s.getScore() + 10));
+		}
+		
+		/**
+		 * 以下のループにてインデックスを示す変数iはループの度に
+		 * インクリメントされており実質的finalではない。
+		 * そのためコンパイルエラーになる。
+		 */
+		//for(int i = 0; i < students.length; i++){
+		//	studentSuppliers.add(() -> new Student(students[i].getName().toUpperCase(), 
+		//	students[i].getScore() + 10));
+		//}
+		
+		Student[] actual = studentSuppliers.stream()
+			.map(Supplier::get)
+			/**
+			 * IntFunction<A[]>型のオブジェクトが要求された時は
+			 * 配列のコンストラクタのメソッド参照を渡すことができる。
+			 * コレクションではなく配列を利用しないといけない時でも
+			 * コレクションのようにストリームを利用して処理を行うことは
+			 * 可能だということである。
+			 */
+			.toArray(Student[]::new);
+		
+		assertThat(actual, is(expected));
+	}
+	
 }
