@@ -42,6 +42,7 @@ import java.util.function.IntSupplier;
 import java.util.function.ObjIntConsumer;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
+import java.util.function.Consumer;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -2883,6 +2884,11 @@ public class TestFunctions {
 		Student[] actual = studentSuppliers.stream()
 			.map(Supplier::get)
 			/**
+			 * 以下のようなメソッド参照も有効。
+			 * ここでは左辺のジェネリックス型の指定は何を書いてもエラーにならない。
+			 */
+			//.map(Supplier<Student>::<String, Integer>get)
+			/**
 			 * IntFunction<A[]>型のオブジェクトが要求された時は
 			 * 配列のコンストラクタのメソッド参照を渡すことができる。
 			 * コレクションではなく配列を利用しないといけない時でも
@@ -2892,6 +2898,110 @@ public class TestFunctions {
 			.toArray(Student[]::new);
 		
 		assertThat(actual, is(expected));
+	}
+	
+	private static interface Addition<T extends Number>{
+		
+		T add(T a, T b);
+		
+		T getLeft();
+		
+		T getRight();
+		
+		default List<T> getParameters(){
+			List<T> params = Arrays.asList(getLeft(), getRight());
+			
+			return params;
+		}
+		
+	}
+	
+	private static class IntAddition implements Addition<Integer> {
+		
+		private final int left;
+		private final int right;
+
+		public IntAddition(int left, int right) {
+			this.left = left;
+			this.right = right;
+		}
+
+		@Override
+		public Integer add(Integer a, Integer b) {
+			return a + b;
+		}
+
+		@Override
+		public Integer getLeft() {
+			return left;
+		}
+
+		@Override
+		public Integer getRight() {
+			return right;
+		}
+		
+		public void printParameters(){
+			Function<IntAddition, List<Integer>> f = ia -> {
+				List<Integer> params = Addition.super.getParameters();
+				return params;
+			};
+			/**
+			 * 以下はコンパイルエラーだがsuperキーワードを介して
+			 * メソッド参照が利用できないわけではない。
+			 * 型変数や文字列のリテラルを介したメソッド参照も可能。
+			 * Java言語仕様の「15.13 Method Reference Expressions」を参考にすること。
+			 */
+			//Function<IntAddition, Integer[]> f = Addition.super::getParameters;
+			
+			System.out.println(f.apply(this));
+		}
+		
+	}
+	
+	@Test
+	public void メソッド参照の形式を調べる(){
+		List<Person> persons = Arrays.asList(
+			new Person("hoge", new Favorite[]{
+				Favorite.BANANA, Favorite.RICE
+			}),
+			new Person("poko", new Favorite[]{
+				Favorite.EGG, Favorite.TOAST
+			}),
+			new Person("mike", new Favorite[]{
+				Favorite.RICE
+			})
+		);
+		
+		//Function<List<Person>, Integer> getSize = (List<Person> lst) -> lst.size();
+		/**
+		 * ジェネリックス型を明示的に指定したメソッド参照も可能。
+		 */
+		Function<List<Person>, Integer> getSize = List<Person>::size;
+		/**
+		 * 以下はコンパイルエラー。
+		 * コレクションやラムダ式の左辺で<em>現れない</em>オブジェクトのメソッドを
+		 * 呼び出す時にJava Tutorialで言うところの
+		 * 「Reference to an Instance Method of a Particular Object」
+		 * にあたるメソッド参照が可能になる。
+		 */
+		//Function<List<Person>, Integer> getSize = persons::size;
+		
+		assertThat(getSize.apply(persons), is(persons.size()));
+		
+		IntAddition ia = new IntAddition(3, 7);
+		ia.printParameters();
+	}
+	
+	@Test
+	public void 戻り値の無いラムダ式を実行する(){
+		Consumer<String> print = s -> System.out.println(s);
+		/**
+		 * もちろん上のコードは下と同じである。
+		 */
+		//Consumer<String> print = System.out::println;
+		
+		print.accept("Hello, Consumer world!");
 	}
 	
 }
