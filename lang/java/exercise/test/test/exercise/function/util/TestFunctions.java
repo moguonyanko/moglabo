@@ -43,6 +43,8 @@ import java.util.function.ObjIntConsumer;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
 import java.util.function.Consumer;
+import java.nio.charset.StandardCharsets;
+import java.util.function.BiConsumer;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -1370,6 +1372,11 @@ public class TestFunctions {
 
 		public Person(String name, Favorite[] fatorites, boolean ordered) {
 			this.name = name;
+			
+			if(fatorites == null){
+				fatorites = new Favorite[0];
+			}
+			
 			if (ordered) {
 				this.favorites = Arrays.stream(fatorites).collect(toCollection(TreeSet::new));
 			} else {
@@ -1384,6 +1391,16 @@ public class TestFunctions {
 		public Set<Favorite> getFavorites() {
 			return favorites;
 		}
+
+		public String getName() {
+			return name;
+		}
+
+		@Override
+		public String toString() {
+			return name + ":" + favorites.toString();
+		}
+		
 	}
 
 	@Test
@@ -3002,6 +3019,89 @@ public class TestFunctions {
 		//Consumer<String> print = System.out::println;
 		
 		print.accept("Hello, Consumer world!");
+	}
+	
+	@Test
+	public void 数値以外に対して最大最小を求める(){
+		List<Student> students = Arrays.asList(
+			new Student("hoge", 30),
+			new Student("popo", 75),
+			new Student("mike", 10),
+			new Student("bar", 20),
+			new Student("baz", 65)
+		);
+		
+		/**
+		 * 文字列で比較するコンパレータを得る。
+		 */
+		Comparator<Student> comparator = Comparator.comparing(Student::getName);
+		
+		Student expectedMax = new Student("popo", 75);
+		Student actualMax = students.stream()
+			.max(comparator)
+			.get();
+		
+		assertThat(actualMax, is(expectedMax));
+		
+		Student expectedMin = new Student("bar", 20);
+		Student actualMin = students.stream()
+			.min(comparator)
+			.get();
+		
+		assertThat(actualMin, is(expectedMin));
+	}
+	
+	@Test(expected = ClassCastException.class)
+	public void 比較できないオブジェクト群をストリームで並べ替えると例外が起きる(){
+		Stream<Person> sortedStream = Stream.of(
+			new Person("hoge", new Favorite[]{ Favorite.RICE }),
+			new Person("foo", null),
+			new Person("hoge", null),
+			new Person("pipi", null)
+		)
+		.sorted();
+		/**
+		 * Comparatorを引数で渡してやれば例外は発生しない。
+		 * 以下のコンパレータはまず名前で比較し昇順で並べ，名前が同じだったら
+		 * 好物の数を比較して昇順で並べるコンパレータである。
+		 */
+		//.sorted(Comparator.comparing(Person::getName).thenComparing(p -> p.getFavorites().size()));
+		
+		System.out.println("終端操作collectを呼び出す前です。");
+			
+		/**
+		 * collectを実行するとComparableでないPersonのストリームで
+		 * 並べ替え処理が行われる。その結果ClassCastExceptionがスローされる。
+		 */
+		List<Person> sortedPersons = sortedStream.collect(toList());
+		
+		/**
+		 * 終端操作であるcollectを呼び出した時に例外が発生するため
+		 * 以下のコードは実行されない。
+		 */
+		System.out.println("並べ替え結果 -> " + sortedPersons);
+	}
+	
+	@Test
+	public void Mapの内容をダンプする(){
+		Map<String, Integer> sample = new HashMap<>();
+		sample.put("foo", 30);
+		sample.put("bar", 20);
+		sample.put("baz", 10);
+		
+		BiConsumer<String, Integer> action = 
+			(key, value) -> System.out.println(key + ":" + value);
+		
+		sample.forEach(action);
+	}
+	
+	@Test
+	public void ファイルの内容を全て読み込む() throws IOException{
+		Path path = Paths.get("./sample/foo/bar/baz/filessample.txt");
+		
+		List<String> result = Files.readAllLines(path, StandardCharsets.UTF_8);
+		
+		result.forEach(System.out::println);
 	}
 	
 }

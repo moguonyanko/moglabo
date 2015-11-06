@@ -230,12 +230,18 @@ public class Functions {
 	}
 
 	public static void comsumePath(Path path, Consumer<Path> consumer) throws IOException {
-		Files.list(path).forEach(consumer);
+		try(Stream<Path> stream = Files.list(path)){
+			stream.forEach(consumer);
+		}
 	}
 
 	public static List<Path> collectPaths(Path path, Predicate<Path> predicate)
 		throws IOException {
-		List<Path> result = Files.list(path).filter(predicate).collect(toList());
+		List<Path> result;
+		
+		try(Stream<Path> stream = Files.list(path)){
+			result = stream.filter(predicate).collect(toList());
+		}
 
 		return result;
 	}
@@ -403,7 +409,9 @@ public class Functions {
 					 * countWordInLineメソッドを参照するときの記述方法なので
 					 * ここではシンタックスエラーになる。
 					 */
-					Files.lines(path, cs).forEach(this::countWordInLine);
+					try(Stream<String> stream = Files.lines(path, cs)){
+						stream.forEach(this::countWordInLine);
+					}
 				}
 
 				return this;
@@ -903,27 +911,38 @@ public class Functions {
 		return result;
 	}
 	
-	public static Path findPath(Path path, int maxDepth, 
-		BiPredicate<Path, BasicFileAttributes> matcher) throws IOException{
+	public static Path findPath(Path path, int maxDepth,
+		BiPredicate<Path, BasicFileAttributes> matcher) throws IOException {
+
+		Path result;
 		/**
 		 * Files.findはBasicFileAttributesの値を元に目的のPathを見つけ，
 		 * それらのPathを集めて返したい時に有用と思われる。
 		 * 単に名前などでPathを探すだけであれば，Files.walkから得られるStreamに対し
 		 * filterを適用する方がAPIを利用する側はシンプルに書ける。
+		 * 
+		 * リソースの破棄をすぐに行いたい場合はtry-with-resources構文を
+		 * 使ってStream.closeが呼び出されるようにする。
 		 */
-		Path result = Files.find(path, maxDepth, matcher)
-			.findFirst()
-			.get();
-		
+		try (Stream<Path> stream = Files.find(path, maxDepth, matcher)) {
+			result = stream
+				.findFirst()
+				.get();
+		}
+
 		return result;
 	}
 	
 	public static Path findPath(Path path, int maxDepth, Predicate<Path> matcher) 
 		throws IOException{
-		Path result = Files.walk(path, maxDepth)
-			.filter(matcher)
-			.findFirst()
-			.get();
+		Path result;
+		
+		try (Stream<Path> stream = Files.walk(path, maxDepth)) {
+			result = stream
+				.filter(matcher)
+				.findFirst()
+				.get();
+		}
 		
 		return result;
 	}
