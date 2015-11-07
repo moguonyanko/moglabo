@@ -754,4 +754,23 @@ public class TestTimePractice {
 		assertThat(actual, is(expected));
 	}
 	
+	@Test
+	public void 任意の単位で時刻を切り取る(){
+		LocalDateTime localDateTIme = LocalDateTime.of(2015, Month.SEPTEMBER, 11, 8, 2, 10);
+		
+		LocalDateTime expected = LocalDateTime.of(2015, Month.SEPTEMBER, 11, 8, 0, 0);
+		/**
+		 * LocalDateTime.truncatedToの引数に指定したTemporalUnit<em>以下</em>の単位が
+		 * 対象のLocalDateTimeオブジェクトから切り捨てられる。
+		 * 例えばHOURSを指定すると時分秒が切り捨てられる。
+		 */
+		LocalDateTime actual = localDateTIme.truncatedTo(ChronoUnit.HOURS);
+		
+		assertThat(actual, is(expected));
+		
+		DateTimeFormatter formatter = getPatternForTest();
+		
+		System.out.println(actual.format(formatter));
+	}
+	
 }
