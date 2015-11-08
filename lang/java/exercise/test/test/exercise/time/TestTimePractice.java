@@ -800,7 +800,29 @@ public class TestTimePractice {
 		
 		assertThat(actual, is(expected));
 		
-		System.out.println(actual);
+		System.out.println("short format : " + actual);
+		
+		/**
+		 * 生成済みのDateTimeFormatterからFormatStyleだけ異なる
+		 * 新しいDateTimeFoematterを生成することはできないようだ。
+		 * DateTimeFormatter.getLocaleで書式設定時のLocaleは得られるが，
+		 * 同じ要領でFormatStyleが得られるメソッドは存在しない。
+		 */
+		DateTimeFormatter mediumFormatter = DateTimeFormatter
+			.ofLocalizedDate(FormatStyle.MEDIUM)
+			.withLocale(Locale.JAPAN);
+		DateTimeFormatter longFormatter = DateTimeFormatter
+			.ofLocalizedDate(FormatStyle.LONG)
+			.withLocale(Locale.JAPAN);
+		DateTimeFormatter fullFormatter = DateTimeFormatter
+			.ofLocalizedDate(FormatStyle.FULL)
+			.withLocale(Locale.JAPAN);
+		
+		System.out.println("medium format : " + time.format(mediumFormatter));
+		System.out.println("long format : " + time.format(longFormatter));
+		System.out.println("full format : " + time.format(fullFormatter));
+		
+		System.out.println("formatter locale is " + formatter.getLocale());
 	}
 	
 }
