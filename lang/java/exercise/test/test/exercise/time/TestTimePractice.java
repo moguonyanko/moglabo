@@ -38,6 +38,7 @@ import java.time.chrono.Chronology;
 import java.time.chrono.JapaneseChronology;
 import java.time.chrono.JapaneseEra;
 import java.time.temporal.UnsupportedTemporalTypeException;
+import java.time.format.FormatStyle;
 import static java.time.temporal.TemporalAdjusters.*;
 
 import org.junit.After;
@@ -771,6 +772,35 @@ public class TestTimePractice {
 		DateTimeFormatter formatter = getPatternForTest();
 		
 		System.out.println(actual.format(formatter));
+	}
+	
+	@Test
+	public void ローカル時間を保持しつつタイムゾーンを変更する(){
+		LocalDateTime sampleTime = LocalDateTime.of(2015, Month.SEPTEMBER, 9, 1, 0);
+		ZoneId fromZonedId = ZoneId.ofOffset("GMT", ZoneOffset.ofHours(3));
+		ZoneId toZonedId = ZoneId.of("Europe/Paris");
+		
+		ZonedDateTime fromZonedDateTime = ZonedDateTime.of(sampleTime, fromZonedId);
+		ZonedDateTime toZoneDateTime = fromZonedDateTime.withZoneSameLocal(toZonedId);
+		LocalDateTime actual = toZoneDateTime.toLocalDateTime();
+		
+		assertThat(actual, is(sampleTime));
+	}
+	
+	@Test
+	public void ロケールを指定して時刻を書式化する(){
+		DateTimeFormatter formatter = DateTimeFormatter
+			.ofLocalizedDateTime(FormatStyle.SHORT)
+			.withLocale(Locale.JAPAN);
+		
+		String expected = "15/11/09 1:00";
+		
+		LocalDateTime time = LocalDateTime.of(2015, Month.NOVEMBER, 9, 1, 0);
+		String actual = time.format(formatter);
+		
+		assertThat(actual, is(expected));
+		
+		System.out.println(actual);
 	}
 	
 }
