@@ -70,12 +70,14 @@ import exercise.function.util.TailCalls;
 import exercise.function.Lambda;
 import exercise.function.MyPredicate;
 import exercise.function.util.BiSupplier;
+import exercise.function.CollectionFactory;
 
 /**
  * 参考：
  * 「Javaによる関数型プログラミング」(オライリー・ジャパン)
  * 「アルゴリズムとデータ構造」(SoftbankCreative)
  * 「Java Tutorial」(オラクル)
+ * 「Java Language Specification Java SE 8 Edition」(オラクル)
  */
 public class TestFunctions {
 
@@ -3102,6 +3104,77 @@ public class TestFunctions {
 		List<String> result = Files.readAllLines(path, StandardCharsets.UTF_8);
 		
 		result.forEach(System.out::println);
+	}
+	
+	@Test
+	public void 関数型インターフェースのメソッドで型パラメータを用いる(){
+		/**
+		 * 以下ではコンパイルエラーになる。
+		 * <pre>
+		 * CollectionFactory factory = ArrayList<Student>::new;
+		 * </pre>
+		 */
+		CollectionFactory factory = ArrayList::new;
+		
+		/**
+		 * 変数にラムダ式を代入する時点で関数型インターフェースの
+		 * 型パラメータの値を宣言するような文法は存在しない。
+		 * 参照:
+		 * 「Java Language Specification Java SE 8 Edition」15.13.2
+		 * 
+		 * 以下は全てコンパイルエラーになる。
+		 */
+		//CollectionFactory factory = () -> new ArrayList();
+		//CollectionFactory factory = () -> new ArrayList<>();
+		//CollectionFactory factory = () -> new ArrayList<Student>();
+		//CollectionFactory factory = () -> new ArrayList<Person>();
+		
+		/**
+		 * CollectionFactory.makeの型パラメータを省略している。
+		 * 
+		 * CollectionFactory型の変数factoryへの代入をメソッド参照で行っていれば
+		 * コレクションの要素の型(ここではStudent)の決定をCollectionFactory.makeで
+		 * コレクションを生成する時まで延ばすことができる。
+		 */
+		Collection<Student> c0 = factory.make();
+		/**
+		 * 以下も有効だが，Collection.add呼び出しの際，誤った型のオブジェクトを
+		 * 追加しようとした時にコンパイルエラーを発生させることができないので
+		 * 好ましくない。
+		 */
+		//Collection c0 = factory.make();
+		
+		/**
+		 * <pre>
+		 * factory.<Person>make()
+		 * </pre>
+		 * の<Person>ように，CollectionFactory.makeの型パラメータを
+		 * ターゲット型付けで明示的に指定することも可能である。
+		 * <pre>
+		 * Collection<Person> c1 = factory.<Student>make()
+		 * </pre>
+		 * ではコンパイルエラーになる。
+		 */
+		Collection<Person> c1 = factory.<Person>make();
+
+		/**
+		 * ArrayList.addが実行される。
+		 */
+		c0.add(new Student("foo", 10));
+		c0.add(new Student("bar", 20));
+		c0.add(new Student("baz", 30));
+		/**
+		 * c0がCollection<Student>型ではなくCollection型だと
+		 * 以下のコードもコンパイルが通ってしまう。
+		 */
+		//c0.add(100);
+
+		c1.add(new Person("foo", new Favorite[]{ Favorite.RICE }));
+		c1.add(new Person("bar", new Favorite[]{ Favorite.EGG }));
+		c1.add(new Person("baz", new Favorite[]{ Favorite.NONE }));
+		
+		System.out.println(c0);
+		System.out.println(c1);
 	}
 	
 }
