@@ -3177,4 +3177,52 @@ public class TestFunctions {
 		System.out.println(c1);
 	}
 	
+	@FunctionalInterface
+	private static interface Eatable<T, R> {
+		R eat(T t);
+	}
+
+	private static class Food {
+
+		private final String name;
+
+		public Food(String name) {
+			this.name = name;
+		}
+
+		public String getEatenName() {
+			return name;
+		}
+
+		public String getEatenName(Object f) {
+//		public static String getEatenName(Object f){
+			if (f instanceof Food) {
+				return ((Food) f).name;
+			} else {
+				return "";
+			}
+		}
+
+		public String getEatenName(Food f) {
+			return f.name;
+		}
+
+		void eating() {
+			/**
+			 * staticなgetEatenNameが定義されていると，どのgetEatenNameも
+			 * シグネチャが異なるのにメソッド参照が実際にどのメソッドを参照するのか
+			 * 決定できないとしてコンパイルエラーになる。
+			 * staticなgetEatenNameのstaticを外せばコンパイルできる。
+			 */
+			Eatable<Food, String> eatable = Food::getEatenName;
+			System.out.println(eatable.eat(this));
+		}
+	}
+
+	@Test
+	public void メソッド参照とオーバーロードを組み合わせる() {
+		Food f = new Food("orange");
+		f.eating();
+	}
+	
 }
