@@ -3308,4 +3308,29 @@ public class TestFunctions {
 		System.out.println(mapObj);
 	}
 	
+	@Test
+	public void サイズの一致しないコレクション群に対しflatMapを適用する(){
+		List<String> sample1 = Arrays.asList("foo", "bar", "baz");
+		List<String> sample2 = Arrays.asList("hoge", "mike");
+		List<String> sample3 = Arrays.asList("koma", "gome", "pike");
+		
+		Stream<List<String>> source = Stream.of(sample1, sample2, sample3);
+		
+		List<String> expected = Arrays.asList(
+			"FOO", "BAR", "BAZ", "HOGE", "MIKE", "KOMA", "GOME", "PIKE"
+		);
+		
+		/**
+		 * sample2の要素数は他のリストに比べて1つ少ない。
+		 * しかしflapMap実行時に少ない部分がnullで埋められるようなことはない。
+		 */
+		List<String> actual = source.flatMap(sample -> sample.stream().parallel())
+			.map(String::toUpperCase)
+			.collect(toList());
+		
+		assertThat(actual, is(expected));
+		
+		System.out.println(actual);
+	}
+	
 }
