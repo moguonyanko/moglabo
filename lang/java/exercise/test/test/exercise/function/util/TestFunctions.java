@@ -45,6 +45,7 @@ import java.util.function.ToIntFunction;
 import java.util.function.Consumer;
 import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
+import java.util.concurrent.ConcurrentHashMap;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -3091,6 +3092,12 @@ public class TestFunctions {
 		sample.put("bar", 20);
 		sample.put("baz", 10);
 		
+		/**
+		 * ラムダ式内の変数名をアンダースコア<strong>_</strong>だけにすることは
+		 * 許されずコンパイルエラーになる。
+		 * 今後のバージョンのJavaではラムダ式関係無くアンダースコアだけの変数名は
+		 * コンパイルエラーとされる可能性がある。
+		 */
 		BiConsumer<String, Integer> action = 
 			(key, value) -> System.out.println(key + ":" + value);
 		
@@ -3223,6 +3230,82 @@ public class TestFunctions {
 	public void メソッド参照とオーバーロードを組み合わせる() {
 		Food f = new Food("orange");
 		f.eating();
+	}
+	
+	@Test
+	public void マッピングを中断した時の結果を調べる(){
+		/**
+		 * ConcurrentHashMapではなくHashMapにすると
+		 * Stream.forEach呼び出し時にConcurrentModificationExceptionが
+		 * スローされる。
+		 * ただしforEachでキーを出力するだけなどMapを変更する処理を
+		 * 行っていなければConcurrentModificationExceptionはスローされない。
+		 */
+		Map<String, Integer> mapObj = new ConcurrentHashMap<>();
+		mapObj.put("foo", 3);
+		mapObj.put("baz", 5);
+		mapObj.put("hoge", 1);
+		mapObj.put("mike", 2);
+		mapObj.put("bar", 4);
+		
+		BiFunction<String, Integer, Integer> f = (key, value) -> {
+			if(key.equalsIgnoreCase("foo")){
+				throw new RuntimeException("Map.compute中に例外発生！");
+			}else if(key.equalsIgnoreCase("mike")){
+				System.out.println(key + "はマッピングから削除");
+				return null;
+			}else{
+				System.out.println(key + "の値を10倍");
+				return value * 10;
+			}
+		};
+		
+		System.out.println(mapObj);
+	
+		try {
+			mapObj.keySet().stream()
+				/**
+				 * Mapの値で並べ替える。
+				 * メソッド参照を使うならばMap::getではなく
+				 * mapObj::getと書かなくてはならない。
+				 * mapObjはラムダ式外に存在する既存のオブジェクトだからである。
+				 */
+				.sorted(Comparator.comparing(mapObj::get))
+				/**
+				 * ラムダ式で記述すると以下のようになる。
+				 */
+				//.sorted(Comparator.comparing(k -> mapObj.get(k)))
+				/**
+				 * 現在注目されているキーを出力する。
+				 */
+				.peek(System.out::println)
+				/**
+				 * 例外で中断される直前までの副作用はMapに残る。
+				 */
+				.forEach(k -> mapObj.compute(k, f));
+				/**
+				 * 以下のメソッド参照はコンパイルエラーになる。
+				 * Map.cumputeの第2引数として必要なBiFunctionを
+				 * cumputeに渡せないからである。Map.cumputeが
+				 * 第1引数のキーだけを要求するメソッドであれば
+				 * Map.getと同じであり以下のコードは問題無くなる。
+				 */
+				//.forEach(mapObj::compute);
+		} catch (RuntimeException ex) {
+			System.err.println(ex);
+		}
+		
+		Map<String, Integer> expected = new ConcurrentHashMap<>();
+		/* 中断される前の副作用は残ることの確認 */
+		expected.put("hoge", 10);
+		/* 中断された後は値が変更されていないことの確認 */
+		expected.put("foo", 3);
+		expected.put("bar", 4);
+		expected.put("baz", 5);
+		
+		assertThat(mapObj, is(expected));
+		
+		System.out.println(mapObj);
 	}
 	
 }
