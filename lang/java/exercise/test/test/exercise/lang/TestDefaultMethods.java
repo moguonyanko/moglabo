@@ -32,6 +32,7 @@ import exercise.function.IntCalculator;
 /**
  * 参考：
  * 「Java Tutorial」(オラクル)
+ * 「Java Language Specification Java SE 8 Edition」(オラクル)
  */
 public class TestDefaultMethods {
 
@@ -530,6 +531,67 @@ public class TestDefaultMethods {
 		students.stream()
 			.map(Supplier::get)
 			.forEach(printStudying);
+	}
+	
+	private static interface Animal {
+		default String getName(){
+			return "any animal";
+		}
+	}
+	
+	private static interface Lion extends Animal {
+		@Override
+		default String getName(){
+			//return "Lion";
+			/**
+			 * 無名クラスのインスタンスを介してgetNameが呼び出された時は
+			 * 以下のコードは空文字を返す。
+			 */
+			return getClass().getSimpleName();
+		}
+	}
+	
+	private static interface Eagle extends Animal {
+		
+		/**
+		 * EagleがgetNameをオーバーライドすると
+		 * Chimeraから同じステップ数で辿れるgetNameが
+		 * LionのものとEagleのものの2つ存在することになる。
+		 * そのためコンパイルエラーが発生する。
+		 * この場合，ChimeraあるいはChimeraを実装したクラスが
+		 * getNameをオーバーライドする必要がある。
+		 */
+		//@Override
+		//default public String getName(){
+		//	return "EAGLE";
+		//}
+		
+	}
+	
+	/**
+	 * extendsの後に書いた順番はメソッド呼び出しの順番に何ら影響を与えない。
+	 */
+	private static interface Chimera extends Eagle, Lion {
+
+		//@Override
+		//default public String getName(){
+		//	return Lion.super.getName() + " and " +  Eagle.super.getName();
+		//}
+	
+	}
+	
+	/**
+	 * 参考：
+	 * 「Java Language Specification Java SE 8 Edition」(オラクル)
+	 * 「9.4.1 Inheritance and Overriding」
+	 */
+	@Test
+	public void デフォルトメソッド呼び出しの優先度を調べる(){
+		String expected = "";
+		
+		String actual = new Chimera(){}.getName();
+		
+		assertThat(actual, is(expected));
 	}
 
 }
