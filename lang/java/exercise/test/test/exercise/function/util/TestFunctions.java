@@ -3355,5 +3355,45 @@ public class TestFunctions {
 		
 		System.out.println(actual);
 	}
+	/**
+	 * 参考：
+	 * 「Java Language Specification Java SE 8 Edition」(オラクル)
+	 * 「9.8 Functional Interfaces」
+	 */
+	@FunctionalInterface
+	private static interface SampleFunction {
+		
+		int call();
+		
+		@Override
+		String toString();
+		
+		@Override
+		boolean equals(Object obj);
+		
+		@Override
+		int hashCode();
+		
+		/**
+		 * SampleFunctionインターフェースはObjectクラスを継承できないため
+		 * protectedであるcloneメソッドをオーバーライドできない。
+		 * Overrideアノテーションが無いと通常の新規メソッド宣言になる。
+		 * その結果SampleFunctionインターフェースは2つの抽象メソッドを
+		 * 持つことになり，関数型インターフェースではなくなってしまう。
+		 */
+		//@Override
+		//Object clone();
+	}
+	
+	@Test
+	public void Objectクラスのメソッドをオーバーライドした関数型インターフェースを利用する(){
+		SampleFunction func = () -> 100;
+		
+		int expected = 100;
+		
+		int actual = func.call();
+		
+		assertThat(actual, is(expected));
+	}
 	
 }
