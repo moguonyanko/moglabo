@@ -3,6 +3,7 @@ package exercise.function.util;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
@@ -944,6 +946,77 @@ public class Functions {
 				.get();
 		}
 		
+		return result;
+	}
+	
+	private static class PathAttr {
+		private final Path path;
+		private final BasicFileAttributes attrs;
+
+		public PathAttr(Path path, BasicFileAttributes attrs) {
+			this.path = path;
+			this.attrs = attrs;
+		}
+
+		public Path getPath() {
+			return path;
+		}
+
+		public BasicFileAttributes getAttrs() {
+			return attrs;
+		}
+	}
+	
+	public static Set<Path> findPathSet(Path base, int maxDepth,
+		BiPredicate<Path, BasicFileAttributes>... preds) throws IOException {
+		BiPredicate<Path, BasicFileAttributes> mather = Stream.of(preds)
+			.reduce((pred, nextPred) -> pred.and(nextPred))
+			.orElse((path, attr) -> false);
+
+		Set<Path> result;
+
+		boolean byWalk = false;
+
+		/**
+		 * ファイルの属性を述語関数(Predicate)の条件に含むのであれば，
+		 * Files.walkを使うよりFiles.findを使う方が簡単である。それを以下に示す。
+		 */
+		if (byWalk) {
+			try (Stream<Path> stream = Files.walk(base, maxDepth, FileVisitOption.FOLLOW_LINKS)) {
+				/**
+				 * Stream.filterはBiPredicateを受け取ることができない。
+				 * 受け取れるのはPredicateのみである。
+				 * そこでBiPredicateの2つの引数をPathAttrでラップし，
+				 * Predicate<PathAttr>型のオブジェクトを用意して
+				 * Stream.filterに渡す。
+				 */
+				Predicate<PathAttr> predicate = 
+					pathAttr -> mather.test(pathAttr.getPath(), pathAttr.getAttrs());
+
+				result = stream
+					.map(path -> {
+						try {
+							BasicFileAttributes attrs = 
+								Files.readAttributes(path, BasicFileAttributes.class);
+							return new PathAttr(path, attrs);
+						} catch (IOException ex) {
+							throw new IllegalStateException(ex);
+						}
+					})
+					.filter(predicate)
+					/**
+					 * 本来の戻り値に必要なPath型のオブジェクト群に
+					 * マッピングし直す。
+					 */
+					.map(PathAttr::getPath)
+					.collect(toSet());
+			}
+		} else {
+			try (Stream<Path> stream = Files.find(base, maxDepth, mather, FileVisitOption.FOLLOW_LINKS)) {
+				result = stream.collect(toSet());
+			}
+		}
+
 		return result;
 	}
 	

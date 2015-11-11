@@ -3333,4 +3333,27 @@ public class TestFunctions {
 		System.out.println(actual);
 	}
 	
+	@Test
+	public void 複数の条件を満たすパスをまとめて得る() throws IOException{
+		BiPredicate<Path, BasicFileAttributes> regularFile = 
+			(path, attr) -> attr.isRegularFile();
+		BiPredicate<Path, BasicFileAttributes> textExt = 
+			(path, attr) -> String.valueOf(path).endsWith(".txt");
+		BiPredicate<Path, BasicFileAttributes> notEmpty = 
+			(path, attr) -> attr.size() > 0;
+		
+		Set<Path> expected = new HashSet<>();
+		expected.add(Paths.get("./sample/countword1.txt"));
+		expected.add(Paths.get("./sample/countword2.txt"));
+		expected.add(Paths.get("./sample/countword3.txt"));
+		expected.add(Paths.get("./sample/foo/bar/baz/filessample.txt"));
+		
+		Path base = Paths.get(".");
+		Set<Path> actual = Functions.findPathSet(base, 10, regularFile, textExt, notEmpty);
+		
+		assertThat(actual, is(expected));
+		
+		System.out.println(actual);
+	}
+	
 }
