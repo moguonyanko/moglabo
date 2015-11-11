@@ -348,11 +348,29 @@ public class TestTimePractice {
 	
 	@Test
 	public void ISO日付フォーマッタで日付を得る(){
-		LocalDate expected = LocalDate.of(2015, Month.SEPTEMBER, 28);
-		String input = "20150928";
-		LocalDate actual = LocalDate.parse(input, DateTimeFormatter.BASIC_ISO_DATE);
+		LocalDate expected1 = LocalDate.of(2015, Month.SEPTEMBER, 28);
+		LocalDate actual1 = LocalDate.parse("20150928", DateTimeFormatter.BASIC_ISO_DATE);
 		
-		assertThat(actual, is(expected));
+		assertThat(actual1, is(expected1));
+		System.out.println(actual1);
+		
+		LocalDate expected2 = LocalDate.of(2015, Month.NOVEMBER, 11);
+		LocalDate actual2 = LocalDate.parse("11.11.2015", DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+		
+		assertThat(actual2, is(expected2));
+		/**
+		 * LocalDate.parseの第2引数に指定したパターンは「第1引数をこのパターンで
+		 * パースするする」ことだけを示しており，生成されたLocalDateの文字列表現を
+		 * 示しているわけではない。フォーマッタを介さずにLocalDateの文字列表現を
+		 * 得るとISO_LOCAL_DATE(yyyy-MM-dd)に従った結果が返される。
+		 */
+		System.out.println(actual2);
+		
+		LocalDate expected3 = LocalDate.of(2015, Month.DECEMBER, 31);
+		LocalDate actual3 = LocalDate.parse("2015-12-31", DateTimeFormatter.ISO_LOCAL_DATE);
+		
+		assertThat(actual3, is(expected3));
+		System.out.println(actual3);
 	}
 	
 	@Test

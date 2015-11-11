@@ -963,6 +963,12 @@ public class Functions {
 			Optional<V> optVal = Optional.ofNullable(other.get(key));
 			/**
 			 * Map.mergeはmerge呼び出し元となるMapに副作用がある。
+			 * 
+			 * Map.mergeは第2引数のvalueがnullだとNullPointerExceptionをスローする。
+			 * つまりMap.mergeでnullを値として設定することはできない。
+			 * ここではOptional.ifPresentを使い，valueが存在した時だけ
+			 * Map.mergeが行われるようにしている。厳密にチェックするならば
+			 * keyやremapperについても同様の対応を行わなければならない。
 			 */
 			optVal.ifPresent(value -> result.merge(key, value, remapper));
 		});
