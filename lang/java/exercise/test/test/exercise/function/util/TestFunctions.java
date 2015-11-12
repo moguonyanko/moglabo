@@ -3396,4 +3396,256 @@ public class TestFunctions {
 		assertThat(actual, is(expected));
 	}
 	
+	/**
+	 * 「Java Language Specification Java SE 8 Edition」(オラクル)
+	 * 「9.8 Functional Interfaces」
+	 */
+	
+	@FunctionalInterface
+	private static interface ISampleX {
+		int call(Callable<String> arg);
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleY {
+		int call(Callable<String> arg);
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleZ extends ISampleX, ISampleY {
+		/**
+		 * ISampleZはインターフェースなのでスーパーインターフェースの
+		 * 抽象メソッドを実装する義務が無い。
+		 * スーパーインターフェースのメソッドはいずれも抽象メソッドなので
+		 * デフォルトメソッドの時のようにオーバーライドを要求されない。
+		 * 
+		 * スーパーインターフェースのメソッドのシグネチャは衝突しているが
+		 * 抽象メソッドなのでエラーにならない。
+		 */
+	}
+	
+	private static class SampleImpl implements ISampleZ {
+
+		@Override
+		public int call(Callable<String> arg) {
+			try {
+				return Integer.parseInt(arg.call());
+			} catch (Exception ex) {
+				throw new IllegalStateException(ex);
+			}
+		}
+		
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleX2 {
+		Comparable call(Comparable<Integer> arg);
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleY2 {
+		Comparable<Integer> call(Comparable arg);
+	}
+
+	@FunctionalInterface
+	private static interface ISampleZ2 extends ISampleX2, ISampleY2 {
+		/**
+		 * 2つのスーパーインターフェースのメソッドの引数や戻り値の型が
+		 * 置換可能であるため，ISampleZ2は関数型インターフェースとみなされる。
+		 */
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleX3 {
+		int call(Comparable<Integer> arg);
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleY3 {
+		int call(Comparable<String> arg);
+	}
+	
+	//@FunctionalInterface
+	//private static interface ISampleZ3 extends ISampleX3, ISampleY3 {
+		/**
+		 * Comparable<Integer>とComparable<String>は置換可能でないため
+		 * ISampleZ3は複数のオーバーライドしない抽象メソッドを持つとされる。
+		 * そのため関数型インターフェースにならない。
+		 * 
+		 * それ以前にメソッド名の競合エラーになる。
+		 */
+	//}
+	
+	@FunctionalInterface
+	private static interface ISampleX4<T> {
+		void call(Comparable<T> arg);
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleY4<T> {
+		void call(Comparable<T> arg);
+	}
+	
+	//@FunctionalInterface
+	//private static interface ISampleZ4<A, B> extends ISampleX4<A>, ISampleY4<B> {
+		/**
+		 * 2つのスーパーインターフェースのメソッドの引数の型は
+		 * ISampleZ4の宣言により置換可能でなくなる。
+		 * したがってISampleZ4は関数型インターフェースでなくなるし
+		 * メソッド名の競合によりコンパイルエラーになる。
+		 */
+	//}
+	
+	@FunctionalInterface
+	private static interface ISampleZ4_1<A> extends ISampleX4<A>, ISampleY4<A> {
+		/**
+		 * これはオーバーライドできるメソッドのシグネチャが
+		 * <pre>
+		 * void call(Comparable<A> arg);
+		 * </pre>
+		 * のみに決まるのでコンパイルエラーにならないし，
+		 * 関数型インターフェースとしても有効になる。
+		 */
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleX5 {
+		int call();
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleY5 {
+		long call();
+	}
+	
+	//@FunctionalInterface
+	//private static interface ISampleZ5 extends ISampleX5, ISampleY5 {
+		/**
+		 * スーパーインターフェースのメソッドの戻り値の型に指定されている
+		 * intとlongが一致していないためコンパイルエラーになる。
+		 * やはり関数型インターフェースにはならない。
+		 * 
+		 * <strong>
+		 * オーバーライドできるメソッドのシグネチャがただ1つに決定できるかどうか
+		 * </strong>
+		 * が関数型インターフェースになれるかどうかのポイントである。
+		 */
+	//}
+	
+	private static interface ISample<T, N extends Number>{
+		void call(T arg);
+		void call(N arg);
+	}
+	
+	//@FunctionalInterface
+	private static interface ISampleX6 extends ISample<String, Integer> {
+		/**
+		 * ISampleX6はコンパイルは可能だが，オーバーライドできるメソッドが
+		 * <pre>
+		 * void call(String arg)
+		 * </pre>
+		 * と
+		 * <pre>
+		 * void call(Integer arg)
+		 * </pre>
+		 * 2つになるため関数型インターフェースとしては認められない。
+		 */
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleY6 extends ISample<Integer, Integer> {
+		/**
+		 * オーバーライドできるメソッドのシグネチャが
+		 * <pre>
+		 * void call(Integer arg)
+		 * </pre>
+		 * のただ1つに決まるためISampleY6は関数型インターフェースである。
+		 * ISample
+		 */
+	}
+	
+	@FunctionalInterface
+	private static interface MyCallable<V> extends Callable<V>{
+		
+		@Override
+		V call();
+		
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleX7 {
+		<T> T exec(MyCallable<T> r);
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleY7 {
+		<S> S exec(MyCallable<S> r);
+	}	
+	
+	@FunctionalInterface
+	private static interface ISampleZ7 extends ISampleX7, ISampleY7 {
+		/**
+		 * オーバーライドできるメソッドは
+		 * <pre>
+		 * <AnyType> AnyType exec(Callable<AnyType> r);
+		 * </pre>
+		 * のただ1つになるため，ISampleZ7は関数型インターフェースである。
+		 * AnyTypeは実行時の型を示す。
+		 */
+	}
+	
+	@Test
+	public void ジェネリックメソッドで関数型インターフェースを扱う(){
+		/**
+		 * 以下はメソッド参照で書き換えることができる。
+		 */
+		//ISampleZ7 sample0 = new ISampleZ7(){
+		//	@Override
+		//	public <T> T exec(MyCallable<T> c) {
+		//		return c.call();
+		//	}
+		//};	
+		
+		/**
+		 * 以下は型変数Tを解決できないためコンパイルエラーになる。
+		 * 書き換え元の無名クラスのメソッドがISampleZ7.execのように
+		 * ジェネリックメソッドだった時はラムダ式に書き換えられない可能性がある。
+		 */
+		//ISampleZ7 sample1 = (MyCallable<T> c) -> c.call();
+		
+		/**
+		 * MyCallable.callがチェック例外をスローしないので
+		 * 以下は有効である。
+		 */
+		ISampleZ7 sample = MyCallable::call;
+		/**
+		 * 以下のように実行時の方を明示的に指定しても問題無い。
+		 */
+		//ISampleZ7 sample = MyCallable::<Integer>call;
+		
+		assertThat(sample.exec(() -> 1), is(1));
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleY7_2 {
+		<S, T> S exec(Callable<S> r);
+	}	
+	
+	//@FunctionalInterface
+	//private static interface ISampleZ7_2 extends ISampleX7, ISampleY7_2 {
+		/**
+		 * <pre>
+		 * <T> T exec(Callable<T> r)
+		 * </pre>
+		 * と
+		 * <pre>
+		 * <S, T> S exec(Callable<S> r)
+		 * </pre>
+		 * は
+		 * シグネチャが異なっているとされコンパイルエラーになる。
+		 * 型変数の数が異なる場合はISampleZ7のように型変数に具体的な型を
+		 * 指定しないようにしてもシグネチャが異なると見なされてしまう。
+		 */
+	//}
+	
 }
