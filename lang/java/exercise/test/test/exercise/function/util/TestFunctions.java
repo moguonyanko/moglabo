@@ -46,6 +46,8 @@ import java.util.function.Consumer;
 import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.io.EOFException;
+import java.sql.SQLTransientException;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -72,6 +74,8 @@ import exercise.function.Lambda;
 import exercise.function.MyPredicate;
 import exercise.function.util.BiSupplier;
 import exercise.function.CollectionFactory;
+import java.sql.SQLException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * 参考：
@@ -3647,5 +3651,179 @@ public class TestFunctions {
 		 * 指定しないようにしてもシグネチャが異なると見なされてしまう。
 		 */
 	//}
+	
+	/**
+	 *  参考：
+	 * 「Java Language Specification Java SE 8 Edition」(オラクル)
+	 * 「9.9 Function Types」
+	 */
+	
+	@FunctionalInterface
+	private static interface IOFunction {
+		int call() throws IOException;
+	}
+	
+	@FunctionalInterface
+	private static interface EOFunction {
+		int call() throws EOFException;
+	}
+	
+	@FunctionalInterface
+	private static interface ClassNotFoundFunction {
+		int call() throws ClassNotFoundException;
+	}
+	
+	@FunctionalInterface
+	private static interface IOFEOFFunction extends IOFunction, EOFunction {
+		/**
+		 * throws以下の違いはシグネチャの違いとして扱われないため，
+		 * IOFEOFFunctionは関数型インターフェースとして有効である。
+		 */
+		
+		/**
+		 * EOFExceptionはIOExceptionのサブクラスであるため
+		 * EOFExceptionしかthrowsに指定できない。
+		 * 
+		 * 最も共通するサブクラスの例外(ここではEOFException)をスローするか，
+		 * 何もスローしないように指定できる。
+		 */
+		//@Override
+		//int call() throws IOException, EOFException;
+		
+		/**
+		 * EOFExceptionをスローするように指定していないので
+		 * 以下はコンパイルエラーになる。
+		 */
+		//@Override
+		//int call() throws IOException;
+		
+		/**
+		 * 何もメソッドを宣言していないと以下を宣言したのと同じ状態になる。
+		 */
+		//@Override
+		//int call() throws EOFException;
+		
+		//@Override
+		//int call();
+		
+	}
+	
+	@FunctionalInterface
+	private static interface NotExFunction extends IOFunction, EOFunction, ClassNotFoundFunction {
+		/**
+		 * スーパーインターフェースはそれぞれ異なる例外クラスを
+		 * throwsに指定されているが，やはりその違いは無視され
+		 * NotExFunctionは関数型インターフェースとして認められる。
+		 */
+		
+		/**
+		 * スーパーインターフェースのメソッドのthrowsに指定された各例外で
+		 * 共通するサブクラスの例外は存在しないので，このインターフェースで
+		 * オーバーライドされるcallメソッドは何もthrowsに指定できない。
+		 */
+		//@Override
+		//int call() throws ClassNotFoundException;
+		
+		/**
+		 * 例外をthrowsに指定しない宣言のみが有効である。
+		 */
+		//@Override
+		//int call();
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleA {
+		Set<String> getSet(Set<String> arg) throws IOException, SQLTransientException;
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleB {
+		Set getSet(Set<String> arg) throws EOFException, SQLException, TimeoutException;
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleC {
+		Set getSet(Set arg) throws Exception;
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleD extends ISampleA, ISampleB {
+		
+		/**
+		 * 原型とジェネリックス型の違いは許容されるので
+		 * ISampleDは関数型インターフェースになる。
+		 * 
+		 * IOExceptionとEOFExceptionではEOFExceptionがサブクラスなので
+		 * EOFExceptionをthrowsに指定できる。
+		 * SQLTransientExceptionとSQLExceptionではSQLTransientExceptionが
+		 * サブクラスなのでSQLTransientExceptionをthrowsに指定できる。
+		 * TimeoutExceptionはそれ自身もそのサブクラスも他のスーパーインターフェースの
+		 * メソッドでthrowsに指定されていないので，ISampleD.getSetのthrowsに
+		 * 指定することができない。
+		 */
+		@Override
+		Set<String> getSet(Set<String> arg) throws EOFException, SQLTransientException;
+		
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleE extends ISampleA, ISampleB, ISampleC {
+
+		/**
+		 * ISampleEは関数型インターフェースとして認められるが
+		 * 以下のメソッド宣言はコンパイルエラーになる。
+		 * 
+		 * 関数型インターフェースとして有効かどうかと
+		 * 実際にどのようなシグネチャのメソッドがオーバーライドできるかどうかは
+		 * 別問題である。
+		 */
+		//@Override
+		//Set<String> getSet(Set<String> arg) throws EOFException, SQLTransientException;		
+		
+		/**
+		 * ISampleC.getSetがthrowsに指定しているExceptionは他のgetSetがthrowsに
+		 * 指定している例外クラスとの共通のサブクラスにはなり得ないためthrowsに指定できない。
+		 */
+		//@Override
+		//Set getSet(Set arg) throws Exception;
+		
+		@Override
+		Set getSet(Set arg) throws EOFException, SQLTransientException;
+	}
+	
+	@Test
+	public void 関数型インターフェースでスローできる例外を調べる() 
+		throws IOException, EOFException, SQLTransientException{
+		/**
+		 * 以下のような書き方はできない。
+		 * コンパイルエラーになる。
+		 */
+		//IOFunction f1 = () -> 100 throws IOException;
+		/**
+		 * throwsを指定するにはやはり匿名内部クラスを利用する必要がある。
+		 */
+		IOFunction f1 = new IOFunction() {
+			@Override
+			public int call() throws IOException {
+				return 100;
+			}
+		};
+		
+		assertThat(f1.call(), is(100));
+		
+		IOFEOFFunction f2 = () -> 200;
+		
+		assertThat(f2.call(), is(200));
+		
+		NotExFunction f3 = () -> 300;
+		
+		assertThat(f3.call(), is(300));
+		
+		ISampleD f4 = args -> Collections.emptySet();
+		assertThat(f4.getSet(null), is(Collections.emptySet()));
+		
+		ISampleE f5 = args -> Collections.emptySet();
+		assertThat(f5.getSet(null), is(Collections.emptySet()));
+	}
 	
 }
