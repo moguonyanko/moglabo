@@ -3791,6 +3791,38 @@ public class TestFunctions {
 		Set getSet(Set arg) throws EOFException, SQLTransientException;
 	}
 	
+	@FunctionalInterface
+	private static interface ISampleG1 {
+		<E extends Exception> Object call() throws E;
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleG2 {
+		<F extends Exception> String call() throws Exception;
+	}
+	
+	@FunctionalInterface
+	private static interface ISampleG extends ISampleG1, ISampleG2 {
+		
+		/**
+		 * スーパーインターフェースのメソッドの戻り値の型はそれぞれ
+		 * ObjectとStringだが，より具象化されているString型を戻り値の
+		 * 型とするようにしかオーバーライドできない。
+		 * 
+		 * String型はObject型に置換できるため，このインターフェースは
+		 * 関数型インターフェースとして有効である。
+		 */
+		@Override
+		String call();
+		
+		/**
+		 * StringはObjectに置換可能だが，ObjectはStringに置換可能とは限らないため
+		 * 以下のオーバーライドはコンパイルエラーになる。
+		 */
+		//@Override
+		//Object call();
+	}
+	
 	@Test
 	public void 関数型インターフェースでスローできる例外を調べる() 
 		throws IOException, EOFException, SQLTransientException{
@@ -3808,15 +3840,12 @@ public class TestFunctions {
 				return 100;
 			}
 		};
-		
 		assertThat(f1.call(), is(100));
 		
 		IOFEOFFunction f2 = () -> 200;
-		
 		assertThat(f2.call(), is(200));
 		
 		NotExFunction f3 = () -> 300;
-		
 		assertThat(f3.call(), is(300));
 		
 		ISampleD f4 = args -> Collections.emptySet();
@@ -3824,6 +3853,9 @@ public class TestFunctions {
 		
 		ISampleE f5 = args -> Collections.emptySet();
 		assertThat(f5.getSet(null), is(Collections.emptySet()));
+		
+		ISampleG f6 = () -> "Hello";
+		assertThat(f6.call(), is("Hello"));
 	}
 	
 }
