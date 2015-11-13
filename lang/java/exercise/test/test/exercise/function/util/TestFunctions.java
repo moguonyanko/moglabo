@@ -3857,5 +3857,64 @@ public class TestFunctions {
 		ISampleG f6 = () -> "Hello";
 		assertThat(f6.call(), is("Hello"));
 	}
-	
+
+	@Test
+	public void 順次ストリームと並列ストリームを切り替える(){
+		Stream<Integer> stream = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9);
+		
+		/**
+		 * Stream.parallelとStream.sequentialを両方とも呼び出した場合，
+		 * より後に呼び出した方の命令が採用される。以下のコードでは
+		 * 最後に呼び出されているのはparallelなのでストリームは並列になる。
+		 * そのため最後のpeekではランダムな並びの数列が出力される。
+		 */
+		List<Integer> result = stream
+			.parallel()
+			.peek(i -> System.out.print(i + " "))
+			.sequential()
+			.peek(i -> System.out.print(i + " "))
+			.parallel()
+			.peek(i -> System.out.print(i + " "))
+			/**
+			 * 直前のpeekの結果はランダムな並びの数列を出力するにも関わらず，
+			 * Stream.collectの結果得られるリストはStream.ofの引数順に並んだ
+			 * 数列のリストになっている。Stream.unorderedを呼び出しても結果は変わらない。
+			 */
+			.unordered()
+			.collect(toList());
+		
+		/**
+		 * 終端操作(ここではStream.collect)が呼びだされたStreamに対して
+		 * メソッド呼び出しを行うとIllegalStateExceptionが発生することがある。
+		 */
+		//stream.peek(System.out::println);
+		//stream.count();
+		//stream.sorted();
+		/**
+		 * Stream.sequentialやStream.parallelは中間操作なのだが
+		 * 終端操作後に呼び出してもIllegalStateExceptionがスローされない。
+		 */
+		stream.sequential();
+		stream.parallel();
+		/**
+		 * Stream.unorderedはIllegalStateExceptionがスローされる。
+		 */
+		//stream.unordered();
+		
+		System.out.println("");
+		
+		/**
+		 * ストリームの終端操作を行った後のStreamに対してStream.isParallelを
+		 * 呼び出した場合は予期しない結果になるかもしれないらしい。
+		 * 
+		 * 参考：
+		 * http://docs.oracle.com/javase/jp/8/docs/api/java/util/stream/BaseStream.html
+		 */
+		System.out.println("ストリームは並列か？ : " + stream.isParallel());
+
+		System.out.println("parallelとsequentialを交互に呼び出した後にリストを生成");
+		
+		System.out.println(result);
+	}
+
 }
