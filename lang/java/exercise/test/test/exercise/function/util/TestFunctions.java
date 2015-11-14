@@ -2256,7 +2256,7 @@ public class TestFunctions {
 		List<Integer> sample = new ArrayList<>();
 		sample.add(100);
 		/**
-		 * Java7までは以下は無効。Arrays.<Number>asListと記述する必要があった。
+		 * Java7までは以下は無効。Arrays.<Integer>asListと記述する必要があった。
 		 */
 		sample.addAll(Arrays.asList(1, 2, 3, 4, 5));
 		System.out.println(sample);
@@ -3039,7 +3039,9 @@ public class TestFunctions {
 		);
 		
 		/**
-		 * 文字列で比較するコンパレータを得る。
+		 * 文字列の自然順で比較するコンパレータを得る。ここでは
+		 * Stream.maxを呼び出しているのでもっとも自然順で後ろになる
+		 * 名前を持つオブジェクトがOptional.getで得られる。
 		 */
 		Comparator<Student> comparator = Comparator.comparing(Student::getName);
 		
