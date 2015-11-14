@@ -114,6 +114,8 @@ public class InnerClassPractice {
 		return sampleString;
 	}
 	
+	private static int localClassValue = 100;
+	
 	public static String getModifiedString(String term){
 		/**
 		 * 以下はコンパイルエラー。インターフェースは本質的にstaticであるため。 
@@ -122,6 +124,8 @@ public class InnerClassPractice {
 //		interface Sample{
 //			
 //		}
+
+		int localClassValueInMethod = 1000;
 		
 		/**
 		 * ローカルクラスは静的クラスにできない。
@@ -135,10 +139,16 @@ public class InnerClassPractice {
 			/* 静的変数の宣言はできない。 */
 			//private static String staticName = "static";
 			
-			private int id;
+			/**
+			 * getModifiedStringがstaticメソッドなのでlocalClassValueが
+			 * staticでないとコンパイルエラーになる。
+			 * Java7ではlocalClassValueInMethodは明示的にfinalでなければならない。
+			 * Java8では事実上のfinalであればよい。
+			 */
+			private int id = localClassValue + localClassValueInMethod;
 
 			{
-				id = 100;
+				id += 100;
 			}
 
 			public LocalModifier(int id) {
@@ -146,6 +156,12 @@ public class InnerClassPractice {
 			}
 
 			public String modify() {
+				/**
+				 * localClassValueInMethodは事実上のfinalでなければならないので
+				 * どこで変更するのも許されない。 
+				 */
+				//localClassValueInMethod += 200;
+				
 				/* getModifiedStringが静的メソッドでなければ以下は有効。 */
 				//return KEYWORD + term + id + "@" + sampleString + SAMPLE_STRING;
 				return KEYWORD + term + id + "@" + SAMPLE_STRING;

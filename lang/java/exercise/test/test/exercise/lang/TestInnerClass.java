@@ -18,6 +18,11 @@ import exercise.lang.InnerInterfacePractice;
 import exercise.lang.InnerInterfacePractice.InnerClass;
 import exercise.lang.InnerInterfacePractice.StaticInnerClass;
 
+/**
+ * 参考：
+ * 「Exam 1Z0-810: Upgrade Java SE 7 to Java SE 8 OCP Programmer Study Guide」
+ * http://java.boot.by/ocpjp8-upgrade-guide/
+ */
 public class TestInnerClass {
 	
 	@Test
@@ -162,6 +167,55 @@ public class TestInnerClass {
 		assertNotNull(actual);
 		
 		System.out.println(actual);
+	}
+	
+	private int innerVal = 1;
+	
+	private void makeInner(){
+		InnerClass2 i = new InnerClass2();
+		i.display();
+	}
+	
+	private class InnerClass2{
+		private void display(){
+			System.out.println(innerVal);
+			/**
+			 * このthisはInnerClass2のインスタンスを指す。
+			 */
+			System.out.println(this);
+			/**
+			 * エンクロージングクラスのthisを参照するには
+			 * staticメソッドを参照するような記法でなければならない。
+			 */
+			System.out.println(TestInnerClass.this);
+		}
+	}
+	
+	@Test
+	public void 内部クラスのメンバを確認する(){
+		InnerClass2 i = new TestInnerClass().new InnerClass2();
+		i.display();
+		/**
+		 * 以下は同じ出力になる。
+		 */
+		new TestInnerClass().makeInner();
+	}
+	
+	private String shadow = "エンクロージングクラスのフィールド";
+	
+	private class InnerClass3{
+		private String shadow = "内部クラスのフィールド";
+		
+		private void printShadow(String shadow){
+			System.out.println("shadow = " + shadow);
+			System.out.println("this.shadow = " + this.shadow);
+			System.out.println("TestInnerClass.this.shadow = " + TestInnerClass.this.shadow);
+		}
+	}
+	
+	@Test
+	public void 内部クラスのフィールドのシャドウイングを調べる(){
+		new InnerClass3().printShadow("メソッドの引数");
 	}
 	
 }
