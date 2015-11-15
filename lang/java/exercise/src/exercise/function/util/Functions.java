@@ -210,8 +210,8 @@ public class Functions {
 		return result;
 	}
 
-	public static <T, U, V> Map<U, T> groupBy(Collection<T> sources, Function<T, U> classifier,
-		Comparator<T> comparator, T identify, BinaryOperator<T> op) {
+	public static <T, U, V> Map<U, T> groupBy(Collection<T> sources, Function<T, U> classifier, 
+		T identify, BinaryOperator<T> op) {
 		/**
 		 * Optionalオブジェクトをクライアント側に返さないようにidentifyを使っている。
 		 */
@@ -223,12 +223,12 @@ public class Functions {
 
 	public static <T, U, V> Map<U, T> minGroupBy(Collection<T> sources, Function<T, U> classifier,
 		Comparator<T> comparator, T identify) {
-		return groupBy(sources, classifier, comparator, identify, BinaryOperator.minBy(comparator));
+		return groupBy(sources, classifier, identify, BinaryOperator.minBy(comparator));
 	}
 
 	public static <T, U, V> Map<U, T> maxGroupBy(Collection<T> sources, Function<T, U> classifier,
 		Comparator<T> comparator, T identify) {
-		return groupBy(sources, classifier, comparator, identify, BinaryOperator.maxBy(comparator));
+		return groupBy(sources, classifier, identify, BinaryOperator.maxBy(comparator));
 	}
 
 	public static void comsumePath(Path path, Consumer<Path> consumer) throws IOException {

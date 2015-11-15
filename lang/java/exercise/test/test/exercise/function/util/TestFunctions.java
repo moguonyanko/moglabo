@@ -3919,4 +3919,32 @@ public class TestFunctions {
 		System.out.println(result);
 	}
 
+	@Test
+	public void findAnyの不定性を調べる() {
+		List<Integer> source = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+		int result = source.stream()
+			/**
+			 * 並列ストリームでなければfindAnyの結果は常に等しくなる。
+			 */
+			.parallel()
+			.filter(i -> i % 2 == 0)
+			.findAny()
+			.get();
+
+		System.out.println("findAnyの結果 ... " + result);
+	}
+	
+	@Test
+	public void 空のOptionalを調べる(){
+		Optional<String> op1 = Optional.empty();
+		Optional<String> op2 = Optional.ofNullable(null);
+		
+		/**
+		 * Optional.emptyで返されるOptionalとnullしか含まないOptionalは
+		 * 等しいと見なされる。
+		 */
+		assertEquals(op1, op2);
+	}
+	
 }
