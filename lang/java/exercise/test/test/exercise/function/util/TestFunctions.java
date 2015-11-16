@@ -48,6 +48,8 @@ import java.util.function.BiConsumer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.io.EOFException;
 import java.sql.SQLTransientException;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -75,7 +77,6 @@ import exercise.function.MyPredicate;
 import exercise.function.util.BiSupplier;
 import exercise.function.CollectionFactory;
 import java.sql.SQLException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * 参考：
@@ -3945,6 +3946,92 @@ public class TestFunctions {
 		 * 等しいと見なされる。
 		 */
 		assertEquals(op1, op2);
+	}
+	
+	@Test
+	public void 並列ストリームと順次処理を組み合わせる() {
+		IntStream sources = IntStream.range(0, 10);
+
+		List<Integer> sample = new ArrayList<>();
+
+		sources.parallel()
+			.peek(i -> {
+				/**
+				 * 並列ストリームを利用しているので要素が追加される順序は
+				 * 安定しない。
+				 */
+				sample.add(i);
+			})
+			/**
+			 * Stream.forEachOrderedは要素の検出順序が保証される。
+			 */
+			.forEachOrdered(i -> System.out.print(i + " "));
+
+		System.out.println("\n");
+
+		sample.stream()
+			.forEach(i -> System.out.print(i + " "));
+
+		System.out.println("");
+	}
+
+	@Test
+	public void 並列ストリームで原子的な計算を試みる() {
+		AtomicInteger actual = new AtomicInteger(2);
+
+		IntStream divs = IntStream.of(2, 2, 2);
+
+		divs.parallel()
+			.peek(div -> {
+				actual.getAndSet(actual.get() / div);
+			})
+			/**
+			 * 中間操作peekを実行させるためだけに終端操作count実行
+			 */
+			.count();
+
+		AtomicInteger expected = new AtomicInteger(0);
+
+		/**
+		 * AtomicIntegerにequalsやhashCodeは実装されていない。
+		 */
+		assertThat(actual.get(), is(expected.get()));
+	}
+
+	@Test
+	public void 並列ストリームでリダクションを行う() {
+		IntStream stream = IntStream.of(2, 2, 2);
+
+		/**
+		 * 3つの2に対し順番にリダクション操作で除算を適用すれば
+		 * 最後のint型の値は0になるはず。
+		 */
+		int expected = 0;
+
+		IntBinaryOperator op = (a, b) -> a / b;
+
+		int actual = stream.parallel()
+			.reduce((a, b) -> {
+				/**
+				 * 並列ストリームなのでbが一つ前に行われた除算の結果とは限らない。
+				 * a=2，b=1となっていることがある。
+				 * この場合，除算の結果は2となりテストは失敗する。
+				 */
+				System.out.println(a + ", " + b);
+				return op.applyAsInt(b, b);
+			})
+			.getAsInt();
+
+		try {
+			assertThat(actual, is(expected));
+		} catch (AssertionError e) {
+			/**
+			 * 順次ストリームならば前の除算結果を使って
+			 * 次の除算が行われることが保証される。
+			 */
+			actual = IntStream.of(2, 2, 2).reduce(op).getAsInt();
+			assertThat(actual, is(expected));
+		}
 	}
 	
 }

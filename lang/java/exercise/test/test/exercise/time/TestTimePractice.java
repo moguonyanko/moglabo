@@ -843,4 +843,34 @@ public class TestTimePractice {
 		System.out.println("formatter locale is " + formatter.getLocale());
 	}
 	
+	@Test
+	public void 時間の単位を使ってゾーンタイムの差を調べる() {
+		ZonedDateTime asiaTime1 = ZonedDateTime.of(2015, 11, 16, 15, 0, 0, 0, ZoneId.of("Asia/Tokyo"));
+		ZonedDateTime asiaTime2 = ZonedDateTime.of(2015, 11, 16, 15, 30, 0, 0, ZoneId.of("Asia/Tokyo"));
+
+		long minutesDiv = ChronoUnit.MINUTES.between(asiaTime1, asiaTime2);
+
+		assertThat(minutesDiv, is(30L));
+
+		ZonedDateTime asiaTime3 = ZonedDateTime.of(2015, 10, 16, 15, 0, 0, 0, ZoneId.of("Asia/Tokyo"));
+		ZonedDateTime euroTIme1 = ZonedDateTime.of(2015, 10, 16, 15, 0, 0, 0, ZoneId.of("Europe/London"));
+
+		long hoursDivInSummerTime = ChronoUnit.HOURS.between(asiaTime3, euroTIme1);
+
+		/**
+		 * サマータイムのある地域ではサマータイム中は時間が1時間早く進む。
+		 * すなわちサマータイムのない地域との時差が1時間小さくなる。
+		 * 生成時に渡したローカルタイムは同じでも，ZonedDateTimeは
+		 * サマータイムを考慮した該当地域の正確な時刻を表現できる。
+		 */
+		assertThat(hoursDivInSummerTime, is(8L));
+
+		ZonedDateTime asiaTime4 = ZonedDateTime.of(2015, 11, 16, 15, 0, 0, 0, ZoneId.of("Asia/Tokyo"));
+		ZonedDateTime euroTIme2 = ZonedDateTime.of(2015, 11, 16, 15, 0, 0, 0, ZoneId.of("Europe/London"));
+
+		long hoursDivNotInSummerTime = ChronoUnit.HOURS.between(asiaTime4, euroTIme2);
+
+		assertThat(hoursDivNotInSummerTime, is(9L));
+	}
+	
 }
