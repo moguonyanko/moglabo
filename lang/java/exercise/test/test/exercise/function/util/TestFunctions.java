@@ -50,6 +50,7 @@ import java.io.EOFException;
 import java.sql.SQLTransientException;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.sql.SQLException;
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -76,7 +77,6 @@ import exercise.function.Lambda;
 import exercise.function.MyPredicate;
 import exercise.function.util.BiSupplier;
 import exercise.function.CollectionFactory;
-import java.sql.SQLException;
 
 /**
  * 参考：
@@ -4032,6 +4032,18 @@ public class TestFunctions {
 			actual = IntStream.of(2, 2, 2).reduce(op).getAsInt();
 			assertThat(actual, is(expected));
 		}
+	}
+	
+	@Test
+	public void 合計値をリダクションで計算する() {
+		int result = Stream.of(1, 2, 3).reduce(0, (a, b) -> a + b);
+		assertThat(result, is(6));
+	}
+	
+	@Test
+	public void 文字列連結をリダクションで実行する() {
+		String result = Stream.of("Hello, ", "java ", "world.").reduce("", (a, b) -> a + b);
+		assertThat(result, is("Hello, java world."));
 	}
 	
 }
