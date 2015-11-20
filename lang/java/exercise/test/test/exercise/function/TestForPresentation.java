@@ -145,7 +145,12 @@ public class TestForPresentation {
 		Map<SchoolClass, List<String>> result = getSampleStudents().stream()
 			.filter(student -> student.getScore() >= BORDER_LINE)
 			/**
-			 * 以下のフィルターは名前が4文字以上の生徒を抽出する。
+			 * 次の行のfilterには名前が4文字以上の生徒を抽出する述語を渡している。
+			 * 
+			 * ラムダ式を使う場合，述語の追加が容易に行える。
+			 * 「Java8の機能無しで分類を行う」で同じことをしようとすると
+			 * 「テストに合格した生徒をリストに集める」のようなブロックが
+			 * 増えていくことになる。
 			 */
 			//.filter(student -> student.getName().length() >= 4)
 			.sorted(Comparator.comparing(Student::getScore).reversed())
@@ -184,7 +189,7 @@ public class TestForPresentation {
 			for(int score : scores){
 				sum += score;
 			}
-			double avg = sum / scores.size();
+			double avg = (double)sum / scores.size();
 			result.put(c, avg);
 		}
 		
@@ -211,11 +216,10 @@ public class TestForPresentation {
 	}
 	
 	private <T, S, C extends Collection<S>> Map<T, Double> 
-		averagingClassify(C source, Function<S, T> mapper, ToIntFunction<S> provider){
+		averagingClassify(C source, Function<S, T> classifier, ToIntFunction<S> mapper){
 		
 		Map<T, Double> result = source.parallelStream()
-			.collect(groupingByConcurrent(mapper, 
-				averagingInt(provider)));
+			.collect(groupingByConcurrent(classifier, averagingInt(mapper)));
 		
 		return result;
 	}
