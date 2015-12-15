@@ -146,5 +146,63 @@ public class TestGenericsPractice {
 
 		assertThat(actual, is(expected));
 	}
+	
+	/**
+	 * 参考：
+	 * http://docs.oracle.com/javase/tutorial/java/generics/nonReifiableVarargsType.html
+	 */
+	private static class ArrayBuilder{
+		
+		/**
+		 * Tに境界が指定されていない場合，T...はイレイジャによりObject[]になる。
+		 * 可能な限り型変数には境界を指定する方が安全ということか？
+		 */
+		private static <T> void addToList(List<T> targetList, T... elements){
+			Arrays.stream(elements).forEach(targetList::add);
+		}
+		
+		/**
+		 * faultyMethodは可変引数メソッドでありstaticでもあるので
+		 * SafeVarargsアノテーションはコンパイルエラーを発生させてくれない。
+		 * http://docs.oracle.com/javase/jp/8/docs/api/java/lang/SafeVarargs.html
+		 */
+		@SafeVarargs
+		private static void faultyMethod(List<String>... list){
+			/**
+			 * List<String>...はList[]としてコンパイラに解釈される。
+			 * List[]はObject[]のサブタイプなのでObject[]型の変数に
+			 * 代入することができる。
+			 */
+			Object[] objs = list;
+			int pollutionValue = 1000;
+			List pollutionList = Arrays.asList(pollutionValue);
+			objs[0] = pollutionList;
+			/**
+			 * listが汚染されているためlist[0]はList<Integer>になっている。
+			 * その結果ClassCastExceptionがスローされる。
+			 */
+			String heepPol = list[0].get(0);
+			System.out.println("ヒープ汚染の結果例外が発生します。" + heepPol);
+		}
+		
+	}
+	
+	@Test(expected = ClassCastException.class)
+	public void ジェネリックメソッドでヒープ汚染を発生させる(){
+		List<String> sample1 = new ArrayList<>();
+		List<String> sample2 = new ArrayList<>();
+		
+		ArrayBuilder.addToList(sample1, "foo", "bar", "baz");
+		ArrayBuilder.addToList(sample2, "hoge", "fuga", "neko");
+		
+		List<List<String>> listOfSampleLists = new ArrayList<>();
+		
+		ArrayBuilder.addToList(listOfSampleLists, sample1, sample2);
+		
+		List<String> errList1 = Arrays.asList("Hello, ");
+		List<String> errList2 = Arrays.asList("world!");
+		
+		ArrayBuilder.faultyMethod(errList1, errList2);
+	}
 
 }
