@@ -148,11 +148,14 @@
 				});
 				parentEle.appendChild(fragment);				
 			},
-			createWebSocket : function (resourceName) {
-				var host = location.host,
-					port = 8080;
+			createWebSocket : function (resourceName, opts) {
+				opts = opts || {};
+				
+				var protocol = location.protocol === "https:" ? "wss:" : "ws:",
+					host = location.host,
+					port = opts.port || 8080;
 
-				return new WebSocket("ws://" + host + ":" + port + "/webcise/" + resourceName);
+				return new WebSocket(protocol + "//" + host + ":" + port + "/webcise/" + resourceName);
 			},
 			clickListener : function(id, listener, opt_cap){
 				this.addListener(this.ref(id), "click", listener, opt_cap || false);

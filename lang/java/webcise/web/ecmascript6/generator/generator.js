@@ -83,6 +83,11 @@
 			return 1;
 		}
 	}
+	
+	function getPort(){
+		var portEle = my.ref("read-byte-port");
+		return portEle.value;
+	}
 
 	function initFileReader() {
 		var resultArea = m.ref("result-read-area"),
@@ -96,7 +101,9 @@
 		 */
 		m.clickListener("run-file-reader", function () {
 			if (ws === null || ws.readyState !== WebSocket.OPEN) {
-				ws = m.createWebSocket("myreader");
+				ws = m.createWebSocket("myreader", {
+					port : getPort()
+				});
 
 				ws.onopen = function () {
 					reader = createMyReader(this, getLineSize());
