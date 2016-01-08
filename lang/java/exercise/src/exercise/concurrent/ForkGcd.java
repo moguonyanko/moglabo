@@ -37,6 +37,10 @@ public class ForkGcd extends RecursiveTask<Integer> {
 		 */
 		ForkJoinPool pool = new ForkJoinPool();
 		
-		return pool.invoke(gcd);
+		int result =  pool.invoke(gcd);
+		
+		pool.shutdown();
+		
+		return result;
 	}
 }

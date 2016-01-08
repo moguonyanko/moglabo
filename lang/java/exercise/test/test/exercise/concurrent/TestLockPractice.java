@@ -1,17 +1,14 @@
 package test.exercise.concurrent;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import static java.util.stream.Collectors.*;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -25,35 +22,6 @@ import exercise.concurrent.SafelockPractice;
  * 「Java Tutorial」(オラクル)
  */
 public class TestLockPractice {
-
-	private <T> Set<T> getResultSet(Collection<Future<T>> src, T defaultValue) {
-		Set<T> actual = src.stream()
-			/**
-			 * メソッド参照を使うとFuture.getでスローされる例外が
-			 * Function.applyの定義に適合しないためコンパイルエラーになる。
-			 *
-			 * ExceptionまたはThrowableが型パラメータを受け取れるようになっていれば
-			 * Function.applyがチェック例外をスローできるように定義できたのでは
-			 * ないだろうか。
-			 */
-			//.map(Future::get)
-			.map(future -> {
-				try {
-					/**
-					 * タイムアウトされたタスクはキャンセルされる。
-					 */
-					if (!future.isCancelled()) {
-						return future.get();
-					}
-				} catch (InterruptedException | ExecutionException ex) {
-					throw new IllegalStateException(ex.getMessage());
-				}
-				return defaultValue;
-			})
-			.collect(toSet());
-
-		return actual;
-	}
 	
 	/**
 	 * 参考：
@@ -88,7 +56,9 @@ public class TestLockPractice {
 		 */
 		List<Future<DeadlockPractice.Friend>> results = pool.invokeAll(cs, 1000L, TimeUnit.MILLISECONDS);
 		DeadlockPractice.Friend nullFriand = new DeadlockPractice.NullFriend();
-		Set<DeadlockPractice.Friend> actual = getResultSet(results, nullFriand);
+		Set<DeadlockPractice.Friend> actual = Concurrents.getResultSet(results, nullFriand);
+		
+		pool.shutdown();
 
 		if (actual.contains(nullFriand)) {
 			System.out.println("デッドロックが発生したため並列処理はタイムアウトされました。");
@@ -124,7 +94,9 @@ public class TestLockPractice {
 		 */
 		List<Future<SafelockPractice.Friend>> futures = pool.invokeAll(cs);
 		SafelockPractice.Friend defaultVallue = new SafelockPractice.Friend("SAFE NO NAME");
-		Set<SafelockPractice.Friend> actual = getResultSet(futures, defaultVallue);
+		Set<SafelockPractice.Friend> actual = Concurrents.getResultSet(futures, defaultVallue);
+
+		pool.shutdown();
 		
 		assertThat(actual, is(expected));
 	}

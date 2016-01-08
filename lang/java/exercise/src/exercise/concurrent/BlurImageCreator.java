@@ -33,9 +33,14 @@ public class BlurImageCreator extends RecursiveAction {
 		int sidePixels = (blurWidth - 1) / 2;
 
 		for (int idx = start; idx < start + length; idx++) {
-			double r = 0;
-			double g = 0;
-			double b = 0;
+			/**
+			 * @todo
+			 * 元のサンプルに従いdoubleではなくfloatにした。
+			 * doubleではアトミックではなくなる。ローカル変数でも問題になるのか？
+			 */
+			float r = 0;
+			float g = 0;
+			float b = 0;
 
 			for (int i = -sidePixels; i <= sidePixels; i++) {
 				int pixelIdx = Math.min(Math.max(i + idx, 0), srcRgb.length - 1);
@@ -86,6 +91,8 @@ public class BlurImageCreator extends RecursiveAction {
 
 		BufferedImage dstImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		dstImg.setRGB(0, 0, width, height, dstRgb, 0, width);
+		
+		pool.shutdown();
 
 		return dstImg;
 	}
