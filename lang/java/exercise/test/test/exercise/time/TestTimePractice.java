@@ -39,6 +39,10 @@ import java.time.chrono.JapaneseChronology;
 import java.time.chrono.JapaneseEra;
 import java.time.temporal.UnsupportedTemporalTypeException;
 import java.time.format.FormatStyle;
+import java.util.Calendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import static java.time.temporal.TemporalAdjusters.*;
 
 import org.junit.After;
@@ -871,6 +875,56 @@ public class TestTimePractice {
 		long hoursDivNotInSummerTime = ChronoUnit.HOURS.between(asiaTime4, euroTIme2);
 
 		assertThat(hoursDivNotInSummerTime, is(9L));
+	}
+	
+	@Test
+	public void カレンダーから取得した日時を確認する(){
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(System.currentTimeMillis());
+
+		int hour = cal.get(Calendar.HOUR_OF_DAY);
+		int minute = cal.get(Calendar.MINUTE);
+
+		int hhmm = hour * 100 + minute;
+		
+		System.out.println("現在時刻をHHmm形式で表すと" + hhmm);
+	}
+	
+	private Date getFormattedTime(String time) throws ParseException{
+		String samplePattern = "yyyy:MM:dd HH:mm";
+		SimpleDateFormat ft = new SimpleDateFormat(samplePattern);
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(System.currentTimeMillis());
+		String year = String.valueOf(cal.get(Calendar.YEAR));
+		String month = String.valueOf(cal.get(Calendar.MONTH) + 1);
+		String day = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
+		
+		String src = year + ":" + month + ":" + day + " " + time;
+		
+		return ft.parse(src);
+	}
+	
+	@Test
+	public void 指定されたフォーマットの文字列から時刻を得て順序を比較する() throws ParseException{
+		String sampleDate1 = "00:00";
+		Date sample1 = getFormattedTime(sampleDate1);
+		String sampleDate2 = "01:00";
+		Date sample2 = getFormattedTime(sampleDate2);
+		String sampleDate3 = "02:00";
+		Date sample3 = getFormattedTime(sampleDate3);
+		
+		String start = "00:55";
+		String end = "01:30";
+		Date startDate = getFormattedTime(start);
+		Date endDate = getFormattedTime(end);
+		
+		System.out.println(startDate);
+		System.out.println(endDate);
+		
+		assertTrue(sample1.before(startDate) && sample1.before(endDate));
+		assertTrue(sample2.after(startDate) && sample2.before(endDate));
+		assertTrue(sample3.after(startDate) && sample3.after(endDate));
 	}
 	
 }
