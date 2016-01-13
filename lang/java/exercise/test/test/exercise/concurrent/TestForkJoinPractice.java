@@ -47,7 +47,7 @@ public class TestForkJoinPractice {
 
 	@Test
 	public void 並列処理で画像を加工する() throws IOException {
-		Path srcPath = Paths.get("./sample/blur_sample.png");
+		Path srcPath = Paths.get("./sample/star.png");
 		BufferedImage srcImg = ImageIO.read(srcPath.toFile());
 
 		BufferedImage dstImg = BlurImageCreator.blur(srcImg);
