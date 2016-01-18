@@ -1,4 +1,4 @@
-package test.exercise.concurrent;
+package exercise.concurrent;
 
 import java.util.ArrayList;
 import java.util.Collection;
