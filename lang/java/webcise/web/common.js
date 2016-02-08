@@ -159,6 +159,9 @@
 			},
 			clickListener : function(id, listener, opt_cap){
 				this.addListener(this.ref(id), "click", listener, opt_cap || false);
+			},
+			getStyles : function(ele){
+				return win.getComputedStyle(ele || doc.documentElement);
 			}
 		};
 	}
