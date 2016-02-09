@@ -20,6 +20,10 @@
 	 * documentElement以外からスタイルを得るようにすれば
 	 * ルート要素に対して変数定義しなくてもCSS Variablesの値を
 	 * スクリプト内で参照できるのだろうか？
+     * 
+     * Chrome48ではフラグ「試験運用版のウェブ プラットフォームの機能を有効にする」を
+     * 有効にしてもCSS Variablesを参照することができない。
+     * セレクタに対してCSS Variablesを指定できるのみである。
 	 */
 	function getCSSVariables(varName) {
 		var value = m.getStyles(doc.documentElement).getPropertyValue(varName);
