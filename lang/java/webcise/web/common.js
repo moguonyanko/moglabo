@@ -6,7 +6,7 @@
 
     function printText(ele, txt, override, newline) {
         var prop,
-                newLineChar;
+            newLineChar;
 
         if ("value" in ele) {
             prop = "value";

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Parameter Handing</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="shortcut icon" href="../favicon.ico" />
+    </head>
+    <body>
+        <header role="banner">
+            <h1>Parameter Handing</h1>
+            <p>
+                ECMAScript6で導入される演算子の拡張について調べます。<br />
+                調査の際はArrow Functionsも併用してその性質を調べます。
+            </p>
+        </header>
+
+        <div role="main">
+            <section class="spread-operator-section">
+                <h2>Spread Operator</h2>
+                <p>
+                    配列や文字列を展開することができる演算子です。<br />
+                    Rest Parameterと同じ「...」を使って表現されます。
+                </p>
+                <div>
+                    <p>数値の配列：<input id="spread-target-numbers" type="text" value="4,5,6" /></p>
+                    <p>文字列：<input id="spread-target-string" type="text" value="Hello" /></p>
+                </div>
+                <div class="result-area">
+                    <textarea rows="5" cols="60" readonly="readonly">1,2,3</textarea>
+                </div>
+                <div>
+                    <button id="spread-values">展開</button>
+                    <button id="reset-values">リセット</button>
+                </div>
+            </section>
+        </div>
+
+        <aside role="complementary">
+            <h3>参考</h3>
+            <ul>
+                <li><a href="http://es6-features.org/">ECMAScript 6 — New Features: Overview & Comparison</a></li>
+                <li><a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Spread_operator">MDN Spread operator</a></li>
+                <li><a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions">MDN Arrow functions</a></li>
+                <li><a href="http://jsrocks.org/2014/10/arrow-functions-and-their-scope/">ARROW FUNCTIONS AND THEIR SCOPE</a></li>
+            </ul>
+        </aside>
+
+        <footer role="contentinfo">
+            <small>Copyright &copy; 2016 moguonyanko All rights reserved.</small>
+        </footer>
+
+        <script src="../../common.js"></script>
+		<script src="parameterhanding.js"></script>
+    </body>
+</html>
