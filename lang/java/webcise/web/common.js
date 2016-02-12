@@ -6,7 +6,7 @@
 
     function printText(ele, txt, override, newline) {
         var prop,
-            newLineChar;
+                newLineChar;
 
         if ("value" in ele) {
             prop = "value";
@@ -27,19 +27,23 @@
         }
     }
 
-	function consoleLog() {
-        try {
-			console.log.apply(null, arguments);
-        } catch (err) {
-			console.log(arguments[0]);
+    function consoleLog() {
+        if (arguments.length > 1) {
+            Array.prototype.forEach.call(arguments, function (el) {
+                console.log(el);
+            });
+        } else {
+            console.log(arguments[0]);
         }
     }
 
-    function consoleError(){
-        try {
-			console.error.apply(null, arguments);
-        } catch (err) {
-			console.error(arguments[0]);
+    function consoleError() {
+        if (arguments.length > 1) {
+            Array.prototype.forEach.call(arguments, function (el) {
+                console.error(el);
+            });
+        } else {
+            console.error(arguments[0]);
         }
     }
 
