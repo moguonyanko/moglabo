@@ -18,6 +18,9 @@
 	 * アスタリスクをfunctionキーワードの後ろに付けることで
 	 * ジェネレータ関数を定義する。yield式を含む関数の宣言部に
 	 * アスタリスクが付いていないとChrome44ではシンタックスエラーになる。
+     * 
+     * ジェネレータ関数をArrow Functionで記述するとスクリプト読み込み時に
+     * エラーになってしまう。
 	 */
 	function* createCounter(limit) {
 		for (var i = 0; i < limit; i++) {
@@ -57,20 +60,34 @@
 		}, false);
 	}
 
+    /**
+     * @description 
+     * ファイル読み込みを行うジェネレータ関数です。
+     */
 	function* createMyReader(ws, lineSize) {
 		if (ws.readyState !== WebSocket.OPEN) {
 			return;
 		}
 		
+        /**
+         * ここでWebSocket.sendを実行しなければジェネレータ関数を
+         * 最初に実行した時にファイルの読み込みが行われない。そのため
+         * もう1回読み込みボタンを押す必要が生じる。
+         */
+        ws.send(lineSize);
+        
 		/**
-		 * 無限ループにすることによってStopIterationを送出させない。
-		 * ジェネレータのnextメソッドに渡された引数はyield式の左辺で受け取られる。
-		 * この時のnextメソッドの戻り値のvalueプロパティにはyield式の左辺値が
-		 * 割り当てられる。
+         * ジェネレータ関数の2回目以降のnextで評価されるのは
+         * 以下のwhileブロック内のコードだけである。
+		 * 無限ループさせることでStopIterationを送出させないようにしている。
+		 * ジェネレータのnextメソッドに渡された引数はyield式の右辺に渡せる。
+		 * nextメソッドの戻り値のvalueプロパティにはyield式に渡した値が
+		 * 保存される。
 		 */
 		while(true)	{
 			let newSize = yield lineSize;
 			ws.send(newSize);
+            m.log(newSize + "行読み込みました。");
 		}
 	}
 	
@@ -94,36 +111,43 @@
 			ws = null,
 			reader = null;
 
-		/**
-		 * @todo
-		 * WebSocketをopenした直後は2回ボタンをクリックしないと
-		 * ファイルを読まない。
-		 */
 		m.clickListener("run-file-reader", function () {
 			if (ws === null || ws.readyState !== WebSocket.OPEN) {
+    			m.println(resultArea, "接続を開始します。");
+                
 				ws = m.createWebSocket("myreader", {
 					port : getPort()
 				});
 
 				ws.onopen = function () {
 					reader = createMyReader(this, getLineSize());
+                    /**
+                     * このnextではWebSocket.sendされない。
+                     * nextに引数を渡してもWebSocket.sendされない。
+                     */
 					var val = reader.next().value;
-					m.log(val + "行から読み始めます。");
+					m.log(val + "行ずつ読み込みます。");
 				};
 
 				ws.onclose = function (evt) {
 					m.log(evt);
-					m.println(resultArea, "ファイルを閉じました。" + evt.reason);
+					m.println(resultArea, "接続を終了しました。" + evt.reason);
 				};
 				
 				ws.onmessage = function (evt) {
 					m.log(evt.data);
 					var res = JSON.parse(evt.data);
-					m.println(resultArea, res.result);
+                    
+                    if(res.result !== "EOF"){
+    					m.print(resultArea, res.result);
+                    }else{
+    					m.println(resultArea, "ファイルは全て読み込まれました。接続を終了します。");
+                        this.close();
+                    }
 				};
 
 				ws.onerror = function (evt) {
-					m.println(resultArea, "読み込み失敗");
+					m.println(resultArea, "ファイルの読み込みに失敗しました。");
 				};
 			}else{
 				/**

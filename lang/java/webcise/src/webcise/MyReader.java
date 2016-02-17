@@ -4,11 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.function.Supplier;
 
-import javax.websocket.CloseReason;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.OnClose;
@@ -18,61 +17,96 @@ import javax.websocket.server.ServerEndpoint;
 @ServerEndpoint("/myreader")
 public class MyReader {
 
-	private BufferedReader reader;
+    private static class DelayReaderSupplier<T extends Reader>
+            implements Supplier<T>, AutoCloseable {
 
-	@OnOpen
-	public void createReader(Session peer) throws IOException {
-		String filePath = "D:\\moglabo\\lang\\java\\webcise\\src\\webcise\\sample.txt";
+        private final T reader;
 
-		try {
-			reader = new BufferedReader(new FileReader(Paths.get(filePath).toFile()));
-		} catch (FileNotFoundException ex) {
-			String msg = filePath + "が見つかりませんでした。セッションを終了します。";
-			Logger.getLogger(MyReader.class.getName()).log(Level.SEVERE, msg, ex);
-			peer.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, msg));
-		}
-	}
+        public DelayReaderSupplier(Supplier<T> supplier) {
+            /**
+             * @todo
+             * ここでSupplier.getを呼び出したら遅延初期化にならないのでは？
+             */
+            this.reader = supplier.get();
+        }
 
-	@OnMessage
-	public String readFile(String message) {
-		int lineSize = Integer.parseInt(message);
+        @Override
+        public T get() {
+            return reader;
+        }
 
-		StringBuilder result = new StringBuilder();
-		
-		try {
-			result.append("{\"result\":").append("\"");
-			
-			while (lineSize > 0) {
-				String line = reader.readLine();
+        @Override
+        public void close() {
+            try (Reader r = reader) {
+                /**
+                 * Reader.closeを呼び出すためだけのtryブロックです。
+                 */
+            } catch (IOException ex) {
+                String msg = "ファイルを閉じる時にエラーが発生しました。";
+                System.err.println(msg + ex.getMessage());
+            }
+        }
+    }
 
-				if (line != null) {
-					result.append(line).append("\\n");
-				} else {
-					result.append("EOF");
-					break;
-				}
+    /**
+     * @todo
+     * OnOpenで毎度初期化する必要があるためfinalにできない。
+     */
+    private DelayReaderSupplier<BufferedReader> supplier;
+    private static final String FILE_PATH = "D:\\moglabo\\lang\\java\\webcise\\src\\webcise\\sample.txt";
 
-				--lineSize;
-			}
+    @OnOpen
+    public void createReader(Session peer) {
+        supplier = new DelayReaderSupplier(() -> {
+            try {
+                System.out.println("<" + FILE_PATH + ">を読むためのReaderを初期化します。");
+                return new BufferedReader(new FileReader(Paths.get(FILE_PATH).toFile()));
+            } catch (FileNotFoundException ex) {
+                throw new IllegalStateException(ex.getMessage());
+            }
+        });
+    }
 
-			result.append("\"}");
-		} catch (IOException ex) {
-			result.append("{\"message\":").append(ex.getMessage()).append("}");
-		}
+    @OnMessage
+    public String readFile(String message) {
+        int lineSize = Integer.parseInt(message);
 
-		return result.toString();
-	}
+        StringBuilder result = new StringBuilder();
 
-	@OnClose
-	public void closeReader(Session peer) {
-		if (reader != null) {
-			try {
-				reader.close();
-			} catch (IOException ex) {
-				String msg = "ファイルの終了処理でエラーが発生しました。";
-				Logger.getLogger(MyReader.class.getName()).log(Level.SEVERE, msg, ex);
-			}
-		}
-	}
+        try {
+            BufferedReader reader = supplier.get();
+
+            result.append("{\"result\":").append("\"");
+
+            while (lineSize > 0) {
+                String line = reader.readLine();
+
+                if (line != null) {
+                    result.append(line).append("\\n");
+                } else {
+                    result.append("EOF");
+                    break;
+                }
+
+                --lineSize;
+            }
+
+            result.append("\"}");
+        } catch (IOException ex) {
+            result.append("{\"message\":").append(ex.getMessage()).append("}");
+        }
+
+        return result.toString();
+    }
+
+    @OnClose
+    public void closeReader(Session peer) {
+        try (DelayReaderSupplier<BufferedReader> s = supplier) {
+            /**
+             * DelayReaderSupplier.closeを呼び出すためだけのtryブロックです。
+             */
+            System.out.println("<" + FILE_PATH + ">を読むためのReaderをクローズします。");
+        }
+    }
 
 }
