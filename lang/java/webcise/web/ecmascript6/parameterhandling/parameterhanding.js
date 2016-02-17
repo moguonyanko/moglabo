@@ -19,7 +19,7 @@
         this.printThis = function(){
             setTimeout(() => {
                /**
-                * Arrow functions内ではthisはレキシカルになる。
+                * Arrow function内ではthisはレキシカルになる。
                 * つまりここのthisはundefinedではなくSampleInfoになる。
                 * thatだのselfだのを使いスコープ外でthisを保存しておく必要は無い。
                 */
@@ -29,15 +29,54 @@
         };
     }
     
-    /**
-     * デフォルト引数はargumentsの中に含まれない。
-     * 関数内部でデフォルト引数を参照しても含まれることはない。
-     */
-    function sum(x = "[default x]", y = "[default y]", z = "[default z]"){
-        //var result = Array.prototype.reduce.call(arguments, (a, b) => a + b);
-        var result = Array.prototype.reduce.call([x, y, z], (a, b) => a + b);
+    function Parameter(value){
+        if(!isNaN(parseInt(value))){
+            this.value = parseInt(value);
+        }else{
+            /**
+             * 数値計算のデフォルト値が文字列というのはあり得ない。
+             * デフォルト値が使われたことを分かりやすくするための措置である。
+             */
+            this.value = "[default " + value + "]";
+        }
         
-        return result;
+        m.freeze(this);
+    }
+    
+    Parameter.prototype = {
+//        valueOf : () => {
+//            /**
+//             * このArrow Function内ではthisはundefinedになる。
+//             * function式を単純にArrow Functionに置き換えることはできない。
+//             */
+//            m.log(this);
+//            return this.value;
+//        }
+        /**
+         * valueOfメソッドは単項演算子での計算時に呼び出される。
+         */
+        valueOf : function(){
+            return this.value;
+        }
+    };
+    
+    /**
+     * デフォルト引数に関数呼び出しを指定することも可能である。
+     */
+    function sum(x = new Parameter("x"), y = new Parameter("y"), z = new Parameter("[z")){
+        /**
+         * デフォルト引数はargumentsの中に含まれない。
+         * 関数内部でデフォルト引数を参照しても含まれることはない。
+         */
+        //var result = Array.prototype.reduce.call(arguments, (a, b) => a + b);
+        /**
+         * Rest Parameterを使うことでargumentsを使う時と似たような書き方ができる。
+         * Rest Parameterはaugumentsとは違いArrayオブジェクトである。そのため
+         * Arrayオブジェクトのメソッドをcallなどを介さずに呼び出すことができる。
+         */
+        var f = (...args) => args.reduce((a, b) => a + b);
+        
+        return f(x, y, z);
     }
     
     var initializers = {

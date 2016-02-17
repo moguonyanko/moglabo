@@ -252,6 +252,15 @@
                  */
                 var promise = new Promise(executor);
                 promise.then(resolve).catch(reject);
+            },
+            makeArray: function (src) {
+                var a = [];
+                
+                Array.prototype.forEach.call(src, function(el){
+                    a.push(el);
+                });
+                
+                return a;
             }
         };
     }
