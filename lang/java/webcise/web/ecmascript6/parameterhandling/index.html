@@ -56,6 +56,34 @@
                     </div>
                 </div>
             </section>
+            <section class="rest-parameter-section">
+                <h2>Rest parameters</h2>
+                <p>
+                    可変長引数リストを関数宣言に記述できる。
+                </p>
+                <div>
+                    <div class="result-area">
+                        <textarea rows="5" cols="60" readonly="readonly"></textarea>
+                    </div>
+                    <div>
+                        <p>引数</p>
+                        <span>x=<input class="rest-parameter" type="number" value="100" /></span>
+                        <span>y=<input class="rest-parameter" type="number" value="10" /></span>
+                        <span>z=<input class="rest-parameter" type="number" value="5" /></span>
+                    </div>
+                    <div>
+                        <p>計算方法</p>
+                        <span><label><input type="radio" name="calc-method" checked="checked" value="add" />足し算</label></span>
+                        <span><label><input type="radio" name="calc-method" value="sub" />引き算</label></span>
+                        <span><label><input type="radio" name="calc-method" value="mul" />掛け算</label></span>
+                        <span><label><input type="radio" name="calc-method" value="div" />割り算</label></span>
+                    </div>
+                    <div>
+                        <button id="exec-calc-rest-parameter">計算実行</button>
+                        <button id="clear-rest-parameter-result">クリア</button>
+                    </div>
+                </div>
+            </section>
         </div>
 
         <aside role="complementary">
@@ -64,6 +92,7 @@
                 <li><a href="http://es6-features.org/">ECMAScript 6 — New Features: Overview & Comparison</a></li>
                 <li><a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Spread_operator">MDN Spread operator</a></li>
                 <li><a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions">MDN Arrow functions</a></li>
+                <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters">MDN Rest parameters</a></li>
                 <li><a href="http://jsrocks.org/2014/10/arrow-functions-and-their-scope/">ARROW FUNCTIONS AND THEIR SCOPE</a></li>
             </ul>
         </aside>

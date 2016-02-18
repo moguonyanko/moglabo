@@ -48,7 +48,7 @@
     }
 
     function strp(value) {
-        return value === "string";
+        return typeof value === "string";
     }
 
     function StringBuilder(opt_initialValue, opt_sep) {
@@ -66,6 +66,22 @@
             return this.values.join(this.separator);
         }
     };
+
+    function funcp(value) {
+        return typeof value === "function";
+    }
+
+    function getValueFunc(opts) {
+        opts = opts || {};
+
+        if (funcp(opts.getter)) {
+            return opts.getter;
+        } else {
+            return function (ele) {
+                return ele.value;
+            };
+        }
+    }
 
     if (!commonNS && !my) {
         win.commonNS = win.my = {
@@ -131,16 +147,13 @@
                      * 最初にchecked属性を記述していた要素が常に選択されてしまう。
                      */
                     return ele.checked;
-                },
-                        getter = typeof opts.getter === "function" ?
-                        opts.getter :
-                        function (ele) {
-                            return ele.value;
-                        };
+                };
+
+                var valGetter = getValueFunc(opts);
 
                 for (var i = 0, len = eles.length; i < len; i++) {
                     if (predicate(eles[i])) {
-                        return getter(eles[i]);
+                        return valGetter(eles[i]);
                     }
                 }
 
@@ -255,13 +268,15 @@
             },
             makeArray: function (src) {
                 var a = [];
-                
-                Array.prototype.forEach.call(src, function(el){
+
+                Array.prototype.forEach.call(src, function (el) {
                     a.push(el);
                 });
-                
+
                 return a;
-            }
+            },
+            strp: strp,
+            funcp: funcp
         };
     }
 

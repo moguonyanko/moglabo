@@ -79,6 +79,32 @@
         return f(x, y, z);
     }
     
+    /**
+     * Rest parameterは引数の最後に宣言されていなければスクリプトエラーになる。
+     * JavaScriptはオーバーロードが仕様上は存在しないのでRest parameter(可変長引数)を
+     * あまり気にせず使えるのかも…。今のところargumentsを代替するために使うことが
+     * 多くなりそう。
+     */
+    var calcMethods = {
+        add : (...args) => {
+            return args.reduce((a, b) => a + b);
+        },
+        sub : (...args) => {
+            return args.reduce((a, b) => a - b);
+        },
+        mul : (...args) => {
+            return args.reduce((a, b) => a * b);
+        },
+        div : (...args) => {
+            return args.reduce((a, b) => a / b);
+        }
+    };
+    
+    /**
+     * DOMに触れるのは初期化関数かイベントハンドラだけにしたい。つまり
+     * common.jsに定義したm.ref，m.refs, m.select等はそれらの関数内でしか
+     * 呼び出さないということである。
+     */
     var initializers = {
         spreadParameter: () => {
             var resultArea = m.select(".spread-operator-section .result-area textarea"),
@@ -151,6 +177,32 @@
                     el.value = "";
                 });
             });
+        },
+        restParameter : () => {
+            var resultArea = m.select(".rest-parameter-section .result-area textarea");
+            
+            m.clickListener("exec-calc-rest-parameter", e => {
+                var selectedMethodName = m.selected(m.refs("calc-method"));
+                var calcMethod = calcMethods[selectedMethodName];
+                
+                if(m.funcp(calcMethod)){
+                    var paramEles = m.selectAll(".rest-parameter");
+                    var params = Array.prototype.map.call(paramEles, el => parseInt(el.value));
+                
+                    /**
+                     * 普通この状況なら引数を配列で渡すがRestParametersの仕様確認の
+                     * ためにわざとバラバラにして渡す。
+                     */
+                    var x = params[0],
+                        y = params[1],
+                        z = params[2];
+                        
+                    var result = calcMethod(x, y, z);
+                    m.println(resultArea, result);
+                }
+            });
+            
+            m.clickListener("clear-rest-parameter-result", e => m.clear(resultArea));
         }
     };
 
