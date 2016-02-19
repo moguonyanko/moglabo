@@ -63,7 +63,7 @@
     /**
      * デフォルト引数に関数呼び出しを指定することも可能である。
      */
-    function sum(x = new Parameter("x"), y = new Parameter("y"), z = new Parameter("[z")){
+    function sum(x = new Parameter("x"), y = new Parameter("y"), z = new Parameter("z")){
         /**
          * デフォルト引数はargumentsの中に含まれない。
          * 関数内部でデフォルト引数を参照しても含まれることはない。
@@ -205,12 +205,16 @@
             m.clickListener("clear-rest-parameter-result", e => m.clear(resultArea));
         }
     };
-
+    
+    /**
+     * オブジェクトを反復可能にするにはIterator関数に渡す。
+     */
     function init(){
-        for(var name in initializers){
-            initializers[name]();
+        for(let [name, initializer] of Iterator(initializers)){
+            initializer();
+            m.log(name + "を初期化しました。");
         }
     }
 
-    init();
+    m.loadedHook(init);
 }(my));
