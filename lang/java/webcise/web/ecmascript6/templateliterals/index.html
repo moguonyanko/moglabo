@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Template Literals</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+            :root {
+                --common-bg-color: #ABC;
+            }
+            
+            #sample-infomation-container {
+                width: 50%;
+                height: 300px;
+                border: 1px var(--common-bg-color) solid;
+                border-radius: 5px;
+                background-color: var(--common-bg-color);
+            }
+        </style>
+    </head>
+    <body>
+        <header role="banner">
+            <h1>Template Literals</h1>
+            <p>
+                ECMAScript6で導入されるリテラルの拡張について調べます。<br />
+                調査の際はArrow Functionsも併用してその性質を調べます。
+            </p>
+        </header>
+
+        <div role="main">
+            <section>
+                <h2>String Interpolation</h2>
+                <p>
+                    ヒアドキュメントのように変数を文字列内で展開できます。
+                </p>
+                <div id="sample-infomation-container">
+                    ここにHTMLが追加されます。
+                </div>
+                <div>
+                    <div>
+                        <p>サンプル情報欄</p>
+                        <div class="sample-infomation">
+                            <label for="sample-name">名前</label>
+                            <input id="sample-name" type="text" value="NO NAME" />
+                        </div>
+                        <div class="sample-infomation">
+                            <label for="sample-age">年齢</label>
+                            <input id="sample-age" type="number" value="30" />
+                        </div>
+                        <div class="sample-infomation">
+                            <label for="sample-age">備考</label>
+                            <input id="sample-memo" type="text" value="特に無し" />
+                        </div>
+                        <div class="sample-infomation">
+                            <label for="sample-password">パスワード</label>
+                            <input id="sample-password" type="password" value="password" />
+                        </div>
+                    </div>
+                    <button id="add-infomation">情報追加</button>
+                </div>
+            </section>
+        </div>
+
+        <aside role="complementary">
+            <h3>参考</h3>
+            <ul>
+                <li><a href="http://es6-features.org/">ECMAScript 6 — New Features: Overview & Comparison</a></li>
+                <li><a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions">MDN Arrow functions</a></li>
+            </ul>
+        </aside>
+
+        <footer role="contentinfo">
+            <small>Copyright &copy; 2016 moguonyanko All rights reserved.</small>
+        </footer>
+
+        <script src="../../common.js"></script>
+        <script src="templateliterals.js"></script>
+    </body>
+</html>

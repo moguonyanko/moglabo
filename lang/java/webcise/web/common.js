@@ -210,6 +210,9 @@
             clickListener: function (id, listener, opt_cap) {
                 this.addListener(this.ref(id), "click", listener, opt_cap || false);
             },
+            loadedHook: function (listener, opt_cap) {
+                this.addListener(win, "DOMContentLoaded", listener, opt_cap || false);
+            },
             getStyles: function (ele) {
                 var style = win.getComputedStyle(ele || doc.documentElement);
                 return style;
