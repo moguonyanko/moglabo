@@ -208,7 +208,8 @@
                 return new WebSocket(protocol + "//" + host + ":" + port + "/webcise/" + resourceName);
             },
             clickListener: function (id, listener, opt_cap) {
-                this.addListener(this.ref(id), "click", listener, opt_cap || false);
+                var ele = strp(id) ? this.ref(id) : id;
+                this.addListener(ele, "click", listener, opt_cap || false);
             },
             loadedHook: function (listener, opt_cap) {
                 this.addListener(win, "DOMContentLoaded", listener, opt_cap || false);
@@ -279,7 +280,14 @@
                 return a;
             },
             strp: strp,
-            funcp: funcp
+            funcp: funcp,
+            forEach : function(targets, func){
+                if(Array.isArray(targets)){
+                    targets.forEach(func);
+                }else{
+                    Array.prototype.forEach.call(targets, func);
+                }
+            }
         };
     }
 

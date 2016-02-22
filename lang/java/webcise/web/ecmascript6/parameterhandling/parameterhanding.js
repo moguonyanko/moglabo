@@ -100,6 +100,40 @@
         }
     };
     
+    var destructurings = {
+        array : {
+            0 : (...args) => {
+                let [a, b] = ["foo", "bar"];
+                return [a, b];
+            },
+            1 : (...args) => {
+                let nums = [1, 2, 3];
+                let [x, y, z] = nums;
+                return [x, y, z];
+            },
+            2 : (...args) => {
+                let oldVal = "old value";
+                let newVal = "new value";
+                /**
+                 * 左辺にletを付けると変数の再定義になってしまいエラーになる。
+                 */
+                [newVal, oldVal] = [oldVal, newVal];
+                return [newVal, oldVal];
+            },
+            3 : (...args) => {
+                function f(...rest){
+                    return rest;
+                }
+                let [x, y, z] = f(100, 200, 300);
+                return [x, y, z];
+            },
+            4 : (...args) => {
+                let [,x , ,y] = [100, 200, 300, 400];
+                return [x, y];
+            }
+        }
+    };
+    
     /**
      * DOMに触れるのは初期化関数かイベントハンドラだけにしたい。つまり
      * common.jsに定義したm.ref，m.refs, m.select等はそれらの関数内でしか
@@ -203,6 +237,20 @@
             });
             
             m.clickListener("clear-rest-parameter-result", e => m.clear(resultArea));
+        },
+        destructuringAssignment : () => {
+            let resultArea = m.select(".destructuring-assignment-section .array-destructuring-section .result-area");
+            
+            let exeEles = m.selectAll(".exec-array-destructuring");
+            
+            m.forEach(exeEles, el => {
+                let sampleFunc = destructurings.array[el.value];
+                m.clickListener(el, e => {
+                    m.println(resultArea, sampleFunc());
+                });
+            });
+            
+            m.clickListener("clear-array-destructuring-result", e => m.clear(resultArea));
         }
     };
     
