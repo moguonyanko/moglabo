@@ -100,6 +100,57 @@
         }
     };
     
+    function objToString(obj, opt_separator){
+        obj = obj || this;
+        let s = [];
+        /**
+         * Iteratorによる反復処理ではキーと値の配列が返される。
+         * ここでは2番めの要素である値だけが必要なので，1番目の要素である
+         * キーを無視するために[, v]と記述している。
+         */
+        for(let [, v] of Iterator(obj)){
+            /* 関数は文字列表現の対象外とする。 */
+            if(!m.funcp(v)){
+                s.push(v);
+            }
+        }
+        return s.join(opt_separator || ",");
+    }
+
+/**
+ * Firefoxではバージョン45以降でないとclassは使用できない。
+ * class宣言は巻上されないらしい。
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes
+ */    
+//    class SampleKey {
+//        constructor (id) {
+//            this.id = id;
+//        }
+//        
+//        equals (other) {
+//            if(other instanceof SampleKey){
+//                return this.id === other.id;
+//            }else{
+//                return false;
+//            }
+//        }
+//    }
+
+    function SampleKey(id) {
+        this.id = id;
+        m.freeze(this);
+    }
+    
+    SampleKey.prototype = {
+        equals : function(other){
+            if(other instanceof SampleKey){
+                return this.id === other.id;
+            }else{
+                return false;
+            }
+        }
+    };
+    
     var destructurings = {
         array : {
             0 : (...args) => {
@@ -116,6 +167,7 @@
                 let newVal = "new value";
                 /**
                  * 左辺にletを付けると変数の再定義になってしまいエラーになる。
+                 * Chrome48では以下の記述でもスクリプトエラーになる。
                  */
                 [newVal, oldVal] = [oldVal, newVal];
                 return [newVal, oldVal];
@@ -131,6 +183,74 @@
                 let [,x , ,y] = [100, 200, 300, 400];
                 return [x, y];
             }
+        },
+        object : {
+           0 : (...args) => {
+               let obj = {
+                   x : 100,
+                   y : 200,
+                   toString : () => {
+                       /**
+                        * このArrowFunction内ではthisはundefinedになる。
+                        * function式を用いて関数が定義された場合はthisはobjになる。
+                        */
+                       return obj.x + ", " + obj.y;
+                   }
+               };
+               /**
+                * 左辺でプロパティ名を指定せずに分割代入する場合，
+                * 右辺のオブジェクトのプロパティ名と一致していないと
+                * 分割代入は行われず，プロパティはundefinedになる。
+                */
+               let {x, y, toString} = obj;
+               return {x, y, toString};
+           },
+           1 : (...args) => {
+               let obj = {
+                   x : "foo",
+                   y : "bar",
+                   z : "baz"
+               };
+               /**
+                * 「x : a」であれば右辺のaが新しいプロパティ名となる。
+                */
+               let {x : a, y : b, z : c} = obj;
+               return {a, b, c, toString: function(){
+                        return [this.a, this.b, this.c].join(", ");
+                    }
+               };
+           },
+           2 : (...args) => {
+               let x, y;
+               /**
+                * 丸括弧で全体を囲んでいなければスクリプトエラーとなる。
+                */
+               ({x, y} = {x : "ABC", y : "DEF"});
+               return {x, y, toString : objToString};
+           },
+           3 : (...args) => {
+               let makeKey = x => new SampleKey(x);
+               
+                let leftKey = makeKey(10),
+                    rightKey = makeKey(20);
+                    
+                m.log("leftKey is " + typeof leftKey);
+                m.log("rightKey is " + typeof rightKey);
+               
+               /**
+                * オブジェクトリテラルのキーにオブジェクトを指定できる。
+                */
+               let {[leftKey] : result} = {[rightKey] : "square value"};
+               
+               /**
+                * 両辺のキーとして指定されたオブジェクトの等値性は考慮されない？
+                * 異なるオブジェクトがキーに指定されていてもプロパティに値を代入する
+                * ことができる。
+                */
+               m.log("leftKey equals rightKey ... " + leftKey.equals(rightKey));
+               
+               return result;
+           }
         }
     };
     
@@ -139,7 +259,7 @@
      * common.jsに定義したm.ref，m.refs, m.select等はそれらの関数内でしか
      * 呼び出さないということである。
      */
-    var initializers = {
+    let initializers = {
         spreadParameter: () => {
             var resultArea = m.select(".spread-operator-section .result-area textarea"),
                 initialValue = resultArea.value;
@@ -239,18 +359,22 @@
             m.clickListener("clear-rest-parameter-result", e => m.clear(resultArea));
         },
         destructuringAssignment : () => {
-            let resultArea = m.select(".destructuring-assignment-section .array-destructuring-section .result-area");
-            
-            let exeEles = m.selectAll(".exec-array-destructuring");
-            
-            m.forEach(exeEles, el => {
-                let sampleFunc = destructurings.array[el.value];
-                m.clickListener(el, e => {
-                    m.println(resultArea, sampleFunc());
+            let initListener = (target) => {
+                let section = "." + target + "-destructuring-section";
+                let resultArea = m.select(".destructuring-assignment-section " + section + " .result-area");
+                let exeEles = m.selectAll(".exec-" + target + "-destructuring");
+
+                m.forEach(exeEles, el => {
+                    let sampleFunc = destructurings[target][el.value];
+                    m.clickListener(el, e => {
+                        m.println(resultArea, sampleFunc());
+                    });
                 });
-            });
+
+                m.clickListener("clear-" + target + "-destructuring-result", e => m.clear(resultArea));
+            };
             
-            m.clickListener("clear-array-destructuring-result", e => m.clear(resultArea));
+            ["array", "object"].forEach(initListener);
         }
     };
     

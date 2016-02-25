@@ -20,8 +20,8 @@
                 flex: 1 0 30%;
             }
 
-            .destructuring-assignment-section .array-destructuring-section .result-area {
-                height: 300px;
+            .destructuring-assignment-section .destructuring-container .result-area {
+                height: 600px;
                 overflow: scroll;
                 border: darkgrey 1px solid;
                 border-radius: 5px;
@@ -36,7 +36,7 @@
                 margin-left: 5px;
                 margin-bottom: 5px;
             }
-            
+
             .destructuring-container .sample-container .sample-element .sample-code {
                 width: fit-content;
                 padding: 5px;
@@ -44,7 +44,7 @@
                 border: 1px solid  var(--common-bg-color);
                 border-radius: 5px;
             }
-            
+
             .destructuring-container .sample-container .sample-element .exec-destructuring {
                 width: 100%;
             }
@@ -170,8 +170,7 @@ let [newVal, oldVal] = [oldVal, newVal];</pre>
 function f(...rest){
     return rest;
 }
-let [x, y, z] = f(100, 200, 300);
-return [x, y, z];</pre>
+let [x, y, z] = f(100, 200, 300);</pre>
                             </div>
                             <button class="exec-array-destructuring exec-destructuring" value="3">確認</button>
                         </div>                        
@@ -182,6 +181,66 @@ let [,x , ,y] = [100, 200, 300, 400];</pre>
                             </div>
                             <button class="exec-array-destructuring exec-destructuring" value="4">確認</button>
                         </div>                        
+                    </div>
+                </section>
+                <h3>Object destructuring</h3>
+                <section class="object-destructuring-section destructuring-container">
+                    <div class="result-container">
+                        <div class="result-area">
+                        </div>
+                        <button id="clear-object-destructuring-result">クリア</button>
+                    </div>
+                    <div class="sample-container">
+                        <div class="sample-element">
+                            <div class="sample-code">
+                                <pre>
+let obj = {
+    x : 100,
+    y : 200,
+    toString : () => {
+        return obj.x + ", " + obj.y;
+    }
+};
+let {x, y, toString} = obj;
+return {x, y, toString};</pre>
+                            </div>
+                            <button class="exec-object-destructuring exec-destructuring" value="0">確認</button>
+                        </div>
+                        <div class="sample-element">
+                            <div class="sample-code">
+                                <pre>
+let obj = {
+    x : "foo",
+    y : "bar",
+    z : "baz"
+};
+let {x: a, y: b, z: c} = obj;
+return {a, b, c, toString: function(){
+            return [this.a, this.b, this.c].join(", ");
+       }
+};</pre>
+                            </div>
+                            <button class="exec-object-destructuring exec-destructuring" value="1">確認</button>
+                        </div>
+                        <div class="sample-element">
+                            <div class="sample-code">
+                                <pre>
+let x, y;
+({x, y} = {x : "ABC", y : "DEF"});
+return {x, y, toString : objToString};</pre>
+                            </div>
+                            <button class="exec-object-destructuring exec-destructuring" value="2">確認</button>
+                        </div>
+                        <div class="sample-element">
+                            <div class="sample-code">
+                                <pre>
+let square = x => x * x;
+let x = 10;
+let {[getKey(x)] : result} = {[getKey(x)] : "sample"};
+return result;</pre>
+                            </div>
+                            <button class="exec-object-destructuring exec-destructuring" value="3">確認</button>
+                        </div>
                     </div>
                 </section>
             </section>
