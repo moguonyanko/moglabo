@@ -250,6 +250,48 @@
                m.log("leftKey equals rightKey ... " + leftKey.equals(rightKey));
                
                return result;
+           },
+           4 : (...args) => {
+               let students = [
+                   {
+                       id : "1",
+                       name : "foo",
+                       score : {
+                           test1 : 90,
+                           test2 : 50,
+                           test3 : 75
+                       }
+                   },
+                   {
+                       id : "2",
+                       name : "bar",
+                       score : {
+                           test1 : 95,
+                           test2 : 65,
+                           test3 : 90
+                       }
+                   },
+                   {
+                       id : "3",
+                       name : "baz",
+                       score : {
+                           test1 : 60,
+                           test2 : 70,
+                           test3 : 75
+                       }
+                   }
+               ];
+               
+               let maxName = null, 
+                   maxScore = null;
+               for(let {name: n, score: { test1: s }} of students){
+                   if(maxScore === null || maxScore < s){
+                       maxName = n;
+                       maxScore = s;
+                   }
+               }
+               
+               return {maxName, maxScore, toString: objToString};
            }
         }
     };
