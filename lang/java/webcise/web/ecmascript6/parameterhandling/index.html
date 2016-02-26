@@ -160,7 +160,7 @@ let [x, y, z] = nums;</pre>
                                 <pre>
 let oldVal = "old value";
 let newVal = "new value";
-let [newVal, oldVal] = [oldVal, newVal];</pre>
+[newVal, oldVal] = [oldVal, newVal];</pre>
                             </div>
                             <button class="exec-array-destructuring exec-destructuring" value="2">確認</button>
                         </div>
@@ -227,7 +227,7 @@ return {a, b, c, toString: function(){
                                 <pre>
 let x, y;
 ({x, y} = {x : "ABC", y : "DEF"});
-return {x, y, toString : objToString};</pre>
+return {x, y, toString};</pre>
                             </div>
                             <button class="exec-object-destructuring exec-destructuring" value="2">確認</button>
                         </div>
@@ -283,9 +283,59 @@ for(let {name: n, score: { test1: s }} of students){
     }
 }
 
-return {maxName, maxScore, toString : objToString};</pre>
+return {maxName, maxScore, toString};</pre>
                             </div>
                             <button class="exec-object-destructuring exec-destructuring" value="4">確認</button>
+                        </div>
+                        <div class="sample-element">
+                            <div class="sample-code">
+                                <pre>
+let student = {
+    id: "100",
+    name: "hoge",
+    score: {
+        test1: 50,
+        test2: 90,
+        test3: 85
+    }
+};
+
+let info = ({name: n, score: { test1: s }}) => {
+    return {n, s, toString};
+};
+
+return info(student);</pre>
+                            </div>
+                            <button class="exec-object-destructuring exec-destructuring" value="5">確認</button>
+                        </div>
+                        <div class="sample-element">
+                            <div class="sample-code">
+                                <pre>
+let shop = {
+    id: "123456789",
+    name: "fruit shop",
+    date: new Date("2016-02-26"),
+    item: [
+        {
+            name: "banana",
+            price: 200
+        },
+        {
+            name: "orange",
+            price: 150
+        },
+        {
+            name: "apple",
+            price: 300
+        }
+    ]
+};
+
+let { name: sn, item: [,{ name: fn, price: p},], date: d } = shop;
+
+return {sn, fn, p, d, toString};</pre>
+                            </div>
+                            <button class="exec-object-destructuring exec-destructuring" value="6">確認</button>
                         </div>
                     </div>
                 </section>

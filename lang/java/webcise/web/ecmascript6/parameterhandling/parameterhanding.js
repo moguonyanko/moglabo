@@ -116,6 +116,12 @@
         }
         return s.join(opt_separator || ",");
     }
+    
+    /**
+     * オブジェクトのtoStringメソッドが呼び出される時にここで宣言した
+     * toStringが補足される。
+     */
+    const toString = objToString;
 
 /**
  * Firefoxではバージョン45以降でないとclassは使用できない。
@@ -168,6 +174,7 @@
                 /**
                  * 左辺にletを付けると変数の再定義になってしまいエラーになる。
                  * Chrome48では以下の記述でもスクリプトエラーになる。
+                 * 丸括弧で囲んでもエラーになってしまう。
                  */
                 [newVal, oldVal] = [oldVal, newVal];
                 return [newVal, oldVal];
@@ -226,7 +233,7 @@
                 * 丸括弧で全体を囲んでいなければスクリプトエラーとなる。
                 */
                ({x, y} = {x : "ABC", y : "DEF"});
-               return {x, y, toString : objToString};
+               return {x, y, toString};
            },
            3 : (...args) => {
                let makeKey = x => new SampleKey(x);
@@ -291,7 +298,64 @@
                    }
                }
                
-               return {maxName, maxScore, toString: objToString};
+               return {maxName, maxScore, toString};
+           },
+           5 : (...args) => {
+               let student = {
+                   id: "100",
+                   name: "hoge",
+                   score: {
+                       test1: 50,
+                       test2: 90,
+                       test3: 85
+                   }
+               };
+               
+               let info = ({name: n, score: { test1: s }}) => {
+                   /**
+                    * このオブジェクトリテラルの記法を用いて値を返す時は
+                    * return文を明示しないと値を返すことができない。
+                    * () => {a, b, c} のように書くとundefinedが返される。
+                    * 右辺を () => {{a, b, c}} のように囲んでも同じである。
+                    */
+                    return {n, s, toString};
+               };
+               
+               return info(student);
+           },
+           6 : (...args) => {
+               let shop = {
+                   id: "123456789",
+                   name: "fruit shop",
+                   date: new Date("2016-02-26"),
+                   item: [
+                       {
+                           name: "banana",
+                           price: 200
+                       },
+                       {
+                           name: "orange",
+                           price: 150
+                       },
+                       {
+                           name: "apple",
+                           price: 300
+                       }
+                   ]
+               };
+               
+               /**
+                * itemNameをshopName等としてしまうと同じ変数を再定義したと見なされて
+                * スクリプトエラーになる。
+                * 配列の中から特定の要素を抽出するにはカンマを使って抽出しない要素を
+                * 無視するように促す。例えば2番めの要素を抽出するならば以下のように
+                * 配列の最初と最後にカンマを記述する。
+                * この方法では配列の要素数が多くなった時に必要なカンマの数が多くなり
+                * 要素の抽出が難しくなる。
+                */
+               let { name: sn, item: [,{ name: fn, price: p},], date: d } = shop;
+               
+               return {sn, fn, p, d, toString};
            }
         }
     };
