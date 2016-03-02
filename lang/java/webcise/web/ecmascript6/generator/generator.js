@@ -27,6 +27,16 @@
 			yield i + 1;
 		}
 	}
+    
+    /**
+     * Arrow Functionはyieldを含むことができない。従ってArrow Functionで
+     * ジェネレータ関数を表現することはできない。
+     */
+//    let createCounter = (limit) => {
+//		for (var i = 0; i < limit; i++) {
+//			yield i + 1;
+//		}
+//    };
 
 	function initCounter() {
 		var limit = 10;

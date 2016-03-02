@@ -1,8 +1,9 @@
 (function (win, doc) {
     "use strict";
 
-    var commonNS,
-            my;
+    if (typeof win.Gomakit === "function") {
+        return;
+    }
 
     function printText(ele, txt, override, newline) {
         var prop,
@@ -83,7 +84,33 @@
         }
     }
 
-    var my = {
+    function freeze(obj, names) {
+        if (!names) {
+            /**
+             * 不変(読み取り専用かつ編集不可)にするプロパティ名の配列が
+             * 引数に渡されなかった時は全ての独自プロパティを不変にする。
+             */
+            Object.freeze(obj);
+        } else {
+            for (var i = 0, len = names.length; i < len; i++) {
+                var name = names[i];
+
+                /* 設定可能でないプロパティは無視する。 */
+                if (Object.getOwnPropertyDescriptor(obj, name).configurable) {
+                    Object.defineProperty(obj, name, {
+                        writable: false,
+                        configurable: false
+                    });
+                }
+            }
+        }
+    }
+
+    function Gomakit() {
+        freeze(this);
+    }
+
+    Gomakit.prototype = {
         StringBuilder: StringBuilder,
         log: consoleLog,
         error: consoleError,
@@ -166,27 +193,7 @@
 
             return vals;
         },
-        freeze: function (obj, names) {
-            if (!names) {
-                /**
-                 * 不変(読み取り専用かつ編集不可)にするプロパティ名の配列が
-                 * 引数に渡されなかった時は全ての独自プロパティを不変にする。
-                 */
-                Object.freeze(obj);
-            } else {
-                for (var i = 0, len = names.length; i < len; i++) {
-                    var name = names[i];
-
-                    /* 設定可能でないプロパティは無視する。 */
-                    if (Object.getOwnPropertyDescriptor(obj, name).configurable) {
-                        Object.defineProperty(obj, name, {
-                            writable: false,
-                            configurable: false
-                        });
-                    }
-                }
-            }
-        },
+        freeze: freeze,
         extend: function (superClass, subClass) {
             subClass.prototype = Object.create(superClass.prototype);
         },
@@ -270,13 +277,9 @@
             promise.then(resolve).catch(reject);
         },
         makeArray: function (src) {
-            var a = [];
-
-            Array.prototype.forEach.call(src, function (el) {
-                a.push(el);
+            return Array.prototype.map.call(src, function (el) {
+                return el;
             });
-
-            return a;
         },
         strp: strp,
         funcp: funcp,
@@ -287,23 +290,33 @@
                 Array.prototype.forEach.call(targets, func);
             }
         },
-        run: function (targets) {
-            var that = this;
+        run: function (runners, opts) {
+            if (!Array.isArray(runners)) {
+                runners = [runners];
+            }
 
-            var initFunc = function () {
-                for (var name in targets) {
-                    if (funcp(targets[name])) {
-                        targets[name]();
-                        that.log(name + "を初期化しました。");
+            var that = this,
+                options = opts || {},
+                resolve = funcp(options.resolve) ? options.resolve : this.noop,
+                reject = funcp(options.reject) ? options.reject : this.noop,
+                Pm = Promise;
+
+            var promises = runners.map(function (runner) {
+                return new Pm(function (resolve, reject) {
+                    try {
+                        var value = runner(that);
+                        resolve(value);
+                    } catch (err) {
+                        reject(err);
                     }
-                }
-            };
+                });
+            });
 
-            this.loadedHook(initFunc);
+            this.loadedHook(function () {
+                Pm.all(promises).then(resolve).catch(reject);
+            });
         }
     };
 
-    if (!commonNS && !my) {
-        win.commonNS = win.my = my;
-    }
+    win.Gomakit = Gomakit;
 }(window, document));
