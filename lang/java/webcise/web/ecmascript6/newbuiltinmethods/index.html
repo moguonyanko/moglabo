@@ -6,19 +6,20 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <style>
             :root {
-                --common-bg-color: #ABC;
+                --common-bg-color: #b8b8cc;
             }
 
-            .result-area {
+            .assign-sample-area .result-area {
                 width: 50%;
                 height: 300px;
                 margin: 5px;
                 border: 1px var(--common-bg-color) solid;
                 border-radius: 5px;
                 background-color: var(--common-bg-color);
+                overflow-y: scroll;
             }
             
-            .control-area {
+            .assign-sample-area .control-area {
                 margin: 5px;
             }
         </style>
@@ -48,6 +49,8 @@
                         <label>c=<input class="assign-value" type="text" value="baz" /></label>
                         <div>
                             <button class="assign-executer">値の割り当て</button>
+                            <button class="assign-merger">マージ</button>
+                            <button class="assign-clearer">クリア</button>
                         </div>
                     </div>
                 </div>

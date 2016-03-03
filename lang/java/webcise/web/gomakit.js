@@ -109,6 +109,13 @@
     function Gomakit() {
         freeze(this);
     }
+    
+    function GomakitError(reason){
+        this.message = reason;
+        freeze(this);
+    }
+    
+    GomakitError.prototype = Object.create(Error.prototype);
 
     Gomakit.prototype = {
         StringBuilder: StringBuilder,
@@ -142,11 +149,9 @@
             win[name] = ns;
         },
         addListener: function (element, type, fn, capture) {
-            /* IE8以下には対応しない。 */
             element.addEventListener(type, fn, capture);
         },
         removeListener: function (element, type, fn, capture) {
-            /* IE8以下には対応しない。 */
             element.removeEventListener(type, fn, capture);
         },
         prevent: function (evt) {
@@ -154,12 +159,6 @@
         },
         noop: function () {
             /* Does nothing. */
-        },
-        alwaysTrue: function () {
-            return  true;
-        },
-        alwaysFalse: function () {
-            return false;
         },
         selected: function (eles, opts) {
             opts = opts || {};
@@ -186,12 +185,9 @@
             return null;
         },
         values: function (eles) {
-            var vals = [];
-            Array.prototype.forEach.call(eles, function (el) {
-                vals.push(el.value);
+            return Array.prototype.map.call(eles, function (el) {
+                return el.value;
             });
-
-            return vals;
         },
         freeze: freeze,
         extend: function (superClass, subClass) {
@@ -262,10 +258,10 @@
                     if (predicate(value)) {
                         resolve(value);
                     } else {
-                        reject(new Error(value));
+                        reject(new GomakitError(value));
                     }
                 } catch (err) {
-                    reject(err);
+                    reject(new GomakitError(err.message));
                 }
             }
 
@@ -299,15 +295,20 @@
                 options = opts || {},
                 resolve = funcp(options.resolve) ? options.resolve : this.noop,
                 reject = funcp(options.reject) ? options.reject : this.noop,
+                predicate = funcp(options.predicate) ? options.predicate : this.truthy,
                 Pm = Promise;
 
             var promises = runners.map(function (runner) {
                 return new Pm(function (resolve, reject) {
                     try {
                         var value = runner(that);
-                        resolve(value);
+                        if(predicate(value)){
+                            resolve(value);
+                        }else{
+                            reject(new GomakitError(value));
+                        }
                     } catch (err) {
-                        reject(err);
+                        reject(new GomakitError(err.message));
                     }
                 });
             });
