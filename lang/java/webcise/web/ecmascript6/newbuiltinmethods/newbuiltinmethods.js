@@ -69,7 +69,21 @@ new Gomakit().run(
             * 関数やオブジェクトもそのまま複製することができる。
             */
            let mergedObj = Object.assign({}, result, appendObj);
-               
+           
+           /**
+            * writableがfalse(読み取り専用)なプロパティを含んでいるオブジェクトも
+            * マージできる。しかしwritableがfalseだと列挙されない。
+            */
+           let nonWritableObj = Object.defineProperty({}, "ro", {
+               value: "read only test",
+               writable: false
+           });
+           mergedObj = Object.assign(nonWritableObj, mergedObj);
+           /**
+            * 以下は読み取り専用プロパティに書き込みを試みてしまうためエラーになる。
+            */
+           //mergedObj = Object.assign(nonWritableObj, mergedObj, {ro: "error test"});
+           g.log(mergedObj.ro);
            g.log(mergedObj);
            
            /**
@@ -88,6 +102,35 @@ new Gomakit().run(
             * Symbolをオブジェクトのキーにしない方がいいかもしれない。
             */
            syms.forEach(sym => g.println(resultArea, "Symbol:" + mergedObj[sym]));
+        });
+        
+        g.clickListener(g.select(assignClass + ".assign-primiteive-executer"), e => {
+            let globalSymbol = Symbol.for("sample global symbol");
+            
+            g.log(Symbol.keyFor(globalSymbol));
+            
+            let result = Object.assign(1, true, "text", globalSymbol, null, undefined);
+            
+            /**
+             * Object.assignにnullやundefinedを渡しても無視される。
+             * また自身のプロパティを列挙できない値も無視される。そのため
+             * 上のObject.assignではBooleanとNumberは無視され，Stringだけが
+             * Object.assignを適用されている。つまり上の例では
+             * <code><pre>
+             * let result = Object.assign("text");
+             * </pre></code>
+             * と同じコードが実行されている。このコードをAとおく。
+             * 
+             * 文字列は以下のコードで列挙を試みると「文字のインデックス:文字」
+             * と表現される。(注:IteratorはFirefoxのみで利用可能)
+             * <code><pre>
+             * let t = "text";
+             * for(let [k, v] of Iterator(t))console.log(k + ":" + v);
+             * </pre></code>
+             * コードAのObject.assignはこの形式で表現されたオブジェクトを返している。
+             */
+            g.forEach(result, key => 
+                    g.println(resultArea, key + ":" + result[key]));
         });
     }
 );

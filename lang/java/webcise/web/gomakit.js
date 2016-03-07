@@ -283,7 +283,9 @@
             if (Array.isArray(targets)) {
                 targets.forEach(func);
             } else {
-                Array.prototype.forEach.call(targets, func);
+                var keys = Object.keys(targets);
+                var syms = Object.getOwnPropertySymbols(targets);
+                keys.concat(syms).forEach(func);
             }
         },
         run: function (runners, opts) {
