@@ -1,6 +1,12 @@
 (function(goma){
     "use strict";
     
+    /**
+     * クラス宣言はfunction式と同様に巻き上げされないので
+     * 宣言前に参照するとエラーになる。
+     */
+    //let pt = new Point(1, 1);
+    
     class Point{
         constructor(x, y){
             this.x = x;
@@ -25,6 +31,12 @@
         }
         
         static getDistance(p1, p2){
+            /**
+             * staticメソッドの中でフィールドを参照してもエラーにならない。
+             * ただしその値はundefiendになっている。
+             */
+            goma.log(this.coords);
+            
             return p1.calcDistance(p2);
         }
     }
