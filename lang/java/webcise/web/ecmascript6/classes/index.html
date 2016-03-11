@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Classes</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <style>
+            :root {
+                --common-bg-color: #b8b8cc;
+            }
+            
+            pre {
+                background-color: rgba(204, 204, 204, 0.2);
+            }
+            
+            code {
+                font-size: 80%;
+            }
+            
+            footer {
+                padding-top: 1em;
+                border-top: 1px solid lightgray;
+            }
+
+            .class-practice-container .result-area {
+                width: 50%;
+                height: 100px;
+                margin: 5px;
+                border: 1px var(--common-bg-color) solid;
+                border-radius: 5px;
+                background-color: var(--common-bg-color);
+                overflow-y: scroll;
+            }
+        </style>
+    </head>
+    <body>
+        <header role="banner">
+            <h1>Classes</h1>
+            <p>
+                ECMAScript6からclassキーワードを使ってクラスを定義できるようになりました。<br />
+            </p>
+        </header>        
+
+        <div role="main">
+            <section class="class-practice-container">
+                <h2>クラスとメソッドの定義</h2>
+                <p>
+                    クラスにコンストラクタとメソッド，静的メソッドを定義できます。
+                </p>
+                <div>
+                    <pre><code>
+    class Point{
+        constructor(x, y){
+            this.x = x;
+            this.y = y;
+        }
+        
+        get coords(){
+            return [this.x, this.y];
+        }
+        
+        toString(){
+            return this.coords.toString();
+        }
+        
+        calcDistance(point){
+            const deltaX = this.x - point.coords[0]; 
+            const deltaY = this.y - point.coords[1]; 
+            return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+        }
+        
+        static getDistance(p1, p2){
+            return p1.calcDistance(p2);
+        }
+    }
+                    </code></pre>
+                </div>
+                <div>
+                    <div class="result-area">
+                        
+                    </div>
+                    <div>
+                        <button class="append-info">追加</button>
+                        <button class="clear-info">クリア</button>
+                        <button class="distance-info">距離計算</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <aside role="complementary">
+            <h3>参考</h3>
+            <ul>
+                <li><a href="http://es6-features.org/">ECMAScript 6 — New Features: Overview & Comparison</a></li>
+                <li><a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Classes">MDN Classes</a></li>
+                <li><a href="https://googlechrome.github.io/samples/classes-es6/">Classes (ES6) Sample</a></li>
+            </ul>
+        </aside>
+
+        <footer role="contentinfo">
+            <small>Copyright &copy; 2016 moguonyanko All rights reserved.</small>
+        </footer>
+
+        <script src="../../gomakit.js"></script>
+        <script src="classes.js"></script>
+    </body>
+</html>

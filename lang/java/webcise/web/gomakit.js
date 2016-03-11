@@ -318,8 +318,15 @@
             this.loadedHook(function () {
                 Pm.all(promises).then(resolve).catch(reject);
             });
+        },
+        rand: function(seed){
+            var n = parseInt(seed);
+            var sd = (!isNaN(n) && n > 0) ? n : 1;
+            
+            return Math.trunc(Math.random() * sd);
         }
     };
 
     win.Gomakit = Gomakit;
+    win.goma = Object.create(Gomakit.prototype);
 }(window, document));
