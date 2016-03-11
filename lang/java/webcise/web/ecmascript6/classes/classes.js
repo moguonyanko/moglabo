@@ -32,8 +32,8 @@
         
         static getDistance(p1, p2){
             /**
-             * staticメソッドの中でフィールドを参照してもエラーにならない。
-             * ただしその値はundefiendになっている。
+             * staticメソッドの中でstaticでないメンバを参照してもエラーにならない。
+             * ただし値はundefiendになっている。
              */
             goma.log(this.coords);
             
