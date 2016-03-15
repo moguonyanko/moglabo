@@ -184,9 +184,9 @@
 
             return null;
         },
-        values: function (eles) {
+        values: function (eles, opt_modifier) {
             return Array.prototype.map.call(eles, function (el) {
-                return el.value;
+                return funcp(opt_modifier) ? opt_modifier(el.value) : el.value;
             });
         },
         freeze: freeze,

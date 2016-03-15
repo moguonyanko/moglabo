@@ -8,21 +8,21 @@
             :root {
                 --common-bg-color: #b8b8cc;
             }
-            
+
             pre {
                 background-color: rgba(204, 204, 204, 0.2);
             }
-            
+
             code {
                 font-size: 80%;
             }
-            
+
             footer {
                 padding-top: 1em;
                 border-top: 1px solid lightgray;
             }
 
-            .class-practice-container .result-area {
+            .result-area {
                 width: 50%;
                 height: 100px;
                 margin: 5px;
@@ -76,9 +76,7 @@
                     </code></pre>
                 </div>
                 <div>
-                    <div class="result-area">
-                        
-                    </div>
+                    <div class="result-area"></div>
                     <div>
                         <button class="append-info">追加</button>
                         <button class="clear-info">クリア</button>
@@ -86,8 +84,26 @@
                     </div>
                 </div>
             </section>
+            <section class="class-extends-container">
+                <h2>クラスの継承</h2>
+                <p>
+                    extendsキーワードでクラスを継承することができます。
+                </p>
+                <div>
+                    <div class="result-area"></div>
+                    <div>
+                        <span>x=<input class="extends-coords" type="number" value="1" /></span>
+                        <span>y=<input class="extends-coords" type="number" value="2" /></span>
+                        <span>z=<input class="extends-coords" type="number" value="3" /></span>
+                    </div>
+                    <div>
+                        <button class="display-extends-coords">座標表示</button>
+                        <button class="clear-extends-result">クリア</button>
+                    </div>
+                </div>
+            </section>
         </div>
-        
+
         <aside role="complementary">
             <h3>参考</h3>
             <ul>
