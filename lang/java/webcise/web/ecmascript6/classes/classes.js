@@ -74,6 +74,75 @@
         }
     }
     
+    /**
+     * インターフェースのようなものを定義している。
+     * 各メソッド内ではスーパークラスのメンバにアクセスすることができる。
+     * スーパークラスの別名(ここではBase)を介してstaticメソッドに
+     * アクセスすることもできる。
+     */
+    const Sail = Base => class extends Base {
+        sail() {
+            return this.name + Base.getVersion() + "Sail::sailing!";
+        }
+    };
+    
+    const Fly = Base => class extends Base {
+        fly() {
+            return this.decoratedName + "Fly::flying!";
+        }
+    };
+    
+    class Plane {
+        /**
+         * フィールドを定義することはできない。
+         * シンタックスエラーになる。
+         */
+        //let _name = "sample";
+        
+        constructor(name) {
+            this.name = name;
+        }
+        
+        get decoratedName() {
+            return "***" + this.name + "***";
+        }
+        
+        static getVersion() {
+            return "1.0";
+        }
+        
+        cruise() {
+            return "Plane::cruising!";
+        }
+    }
+    
+    /**
+     * Java:
+     * class X extends Y implements A, B 
+     * 
+     * ECMAScript6:
+     * class X extends A(B(Y))
+     */
+    class SeaPlane extends Sail(Fly(Plane)) {
+        constructor(name){
+            super(name);
+        }
+        
+        cruise() {
+            /**
+             * thisキーワードが無いとReferenceErrorになる。
+             * このクラスが該当するメソッドを実装していたとしてもエラーになる。
+             * super.cruise()をthis.cruise()と書いてしまうと
+             * 「too much recursion」と通知されエラーになる。
+             */
+            return [this.sail(), this.fly(), super.cruise()].join(" ");
+        }
+        
+        toString() {
+            return this.name + " -> " + this.cruise();
+        }
+    }
+    
     const scripts = [
         g => {
             const base = ".class-practice-container ";
@@ -137,6 +206,22 @@
             
             g.clickListener(g.select(container + ".display-extends-coords"), displayCoords);
             g.clickListener(g.select(container + ".clear-extends-result"), clearResult);
+        },
+        g => {
+            const container = ".class-mixin-container ";
+            const resultArea = g.select(container + ".result-area");
+            
+            const diplayResult = e => {
+                const seaPlane = new SeaPlane("Sample plane");
+                g.println(resultArea, seaPlane);
+            };
+            
+            const clearResult = e => {
+                g.clear(resultArea);
+            };
+            
+            g.clickListener(g.select(container + ".display-mixin-result"), diplayResult);
+            g.clickListener(g.select(container + ".clear-mixin-result"), clearResult);
         }
     ];
     

@@ -6,14 +6,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <style>
             :root {
-                --common-bg-color: #b8b8cc;
+                --common-bg-color: rgba(102, 102, 153, 0.2);
+                --common-result-color: rgba(204, 204, 204, 0.2);
             }
 
-            pre {
-                background-color: rgba(204, 204, 204, 0.2);
-            }
-
-            code {
+            pre code {
                 font-size: 80%;
             }
 
@@ -22,6 +19,11 @@
                 border-top: 1px solid lightgray;
             }
 
+            .code-container {
+                background-color: var(--common-result-color);
+                width: fit-content;
+            }
+            
             .result-area {
                 width: 50%;
                 height: 100px;
@@ -47,7 +49,7 @@
                 <p>
                     クラスにコンストラクタとメソッド，静的メソッドを定義できます。
                 </p>
-                <div>
+                <div class="code-container">
                     <pre><code>
     class Point{
         constructor(x, y){
@@ -100,6 +102,65 @@
                         <button class="display-extends-coords">座標表示</button>
                         <button class="clear-extends-result">クリア</button>
                     </div>
+                </div>
+            </section>
+            <section class="class-mixin-container">
+                <h2>クラスのミックスイン</h2>
+                <p>
+                    ECMAScriptでは多重継承はできませんが別のクラスを<br />
+                    ミックスインしたクラスを継承することはできます。
+                </p>
+                <div class="code-container">
+                    <pre><code>
+    const Sail = Base => class extends Base {
+        sail() {
+            return this.name + Base.getVersion() + "Sail::sailing!";
+        }
+    };
+    
+    const Fly = Base => class extends Base {
+        fly() {
+            return this.decoratedName + "Fly::flying!";
+        }
+    };
+    
+    class Plane {
+        constructor(name) {
+            this.name = name;
+        }
+        
+        get decoratedName() {
+            return "***" + this.name + "***";
+        }
+        
+        static getVersion() {
+            return "1.0";
+        }
+        
+        cruise() {
+            return "Plane::cruising!";
+        }
+    }
+    
+    class SeaPlane extends Sail(Fly(Plane)) {
+        constructor(name){
+            super(name);
+        }
+        
+        cruise() {
+            return [this.sail(), this.fly(), super.cruise()].join(" ");
+        }
+        
+        toString() {
+            return this.name + " -> " + this.cruise();
+        }
+    }
+                </code></pre>
+                </div>
+                <div class="result-area"></div>
+                <div>
+                    <button class="display-mixin-result">結果表示</button>
+                    <button class="clear-mixin-result">クリア</button>
                 </div>
             </section>
         </div>
