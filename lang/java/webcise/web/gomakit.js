@@ -288,6 +288,42 @@
                 keys.concat(syms).forEach(func);
             }
         },
+        map: function (targets, func) {
+            if (Array.isArray(targets)) {
+                return targets.map(func);
+            } else {
+                var keys = Object.keys(targets);
+                var syms = Object.getOwnPropertySymbols(targets);
+                var allKeys = keys.concat(syms);
+                
+                var result = [];
+                for(var i = 0, len = allKeys.length; i < len; i++){
+                    var value = func(targets[allKeys[i]]);
+                    result.push(value);
+                }
+                
+                return result;
+            }
+        },
+        filter: function (targets, predicate) {
+            if (Array.isArray(targets)) {
+                return targets.filter(predicate);
+            } else {
+                var keys = Object.keys(targets);
+                var syms = Object.getOwnPropertySymbols(targets);
+                var allKeys = keys.concat(syms);
+                
+                var result = [];
+                for(var i = 0, len = allKeys.length; i < len; i++){
+                    var testValue = targets[allKeys[i]];
+                    if(predicate(testValue)){
+                        result.push(testValue);
+                    }
+                }
+                
+                return result;
+            }
+        },
         run: function (runners, opts) {
             if (!Array.isArray(runners)) {
                 runners = [runners];
