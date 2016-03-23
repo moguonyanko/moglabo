@@ -116,6 +116,14 @@
     }
     
     GomakitError.prototype = Object.create(Error.prototype);
+    
+    function getAllKeys(targets) {
+        var keys = Object.keys(targets);
+        var syms = Object.getOwnPropertySymbols(targets);
+        var allKeys = keys.concat(syms);
+
+        return allKeys;
+    }
 
     Gomakit.prototype = {
         StringBuilder: StringBuilder,
@@ -292,9 +300,7 @@
             if (Array.isArray(targets)) {
                 return targets.map(func);
             } else {
-                var keys = Object.keys(targets);
-                var syms = Object.getOwnPropertySymbols(targets);
-                var allKeys = keys.concat(syms);
+                var allKeys = getAllKeys(targets);
                 
                 var result = [];
                 for(var i = 0, len = allKeys.length; i < len; i++){
@@ -309,9 +315,7 @@
             if (Array.isArray(targets)) {
                 return targets.filter(predicate);
             } else {
-                var keys = Object.keys(targets);
-                var syms = Object.getOwnPropertySymbols(targets);
-                var allKeys = keys.concat(syms);
+                var allKeys = getAllKeys(targets);
                 
                 var result = [];
                 for(var i = 0, len = allKeys.length; i < len; i++){
@@ -323,6 +327,18 @@
                 
                 return result;
             }
+        },
+        findFirst: function (targets, predicate) {
+            var allKeys = getAllKeys(targets);
+
+            for (var i = 0, len = allKeys.length; i < len; i++) {
+                var testValue = targets[allKeys[i]];
+                if (predicate(testValue)) {
+                    return testValue;
+                }
+            }
+
+            return null;
         },
         run: function (runners, opts) {
             if (!Array.isArray(runners)) {

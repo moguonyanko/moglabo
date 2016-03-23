@@ -38,6 +38,13 @@
             return this.fruits.map(fruit => fruit.displayName).toString();
         }
         
+        /**
+         * Iteration protocols
+         * 実装方法自体は従来の自前のイテレータと変わらない。
+         * ただし戻り値のオブジェクトが持つnextというメソッド名は変えられない。
+         * またnextが返すオブジェクトのプロパティdoneとvalueも変えられない。
+         * doneが無いと無限ループに陥る。valueが無いと返される値はすべてundefinedになる。
+         */
         [Symbol.iterator]() {
             let current = 0;
             
@@ -63,7 +70,48 @@
                 }
             };
         }
+        
+        /**
+         * Generator function
+         * クラスのメソッドをジェネレータ関数することもできる。
+         */
+        *next() {
+            let current = 0;
+            
+            while(current < this.fruits.length){
+                yield this.fruits[current++];
+            }
+        }
     }
+    
+    const fruitPrinter = {
+        /**
+         * Iteration protocolsを実装しているオブジェクトはfor...of文で
+         * 保持している要素を反復することができる。
+         */
+        iterator: (fruitIterator, resultArea) => {
+            for(let fruit of fruitIterator){
+                g.println(resultArea, fruit);
+            }
+        },
+        generator: (fruitIterator, resultArea) => {
+            /**
+             * ジェネレータを使う場合はジェネレータ関数を毎回呼び出す必要がある。
+             */
+            for(let fruit of fruitIterator.next()){
+                g.println(resultArea, fruit);
+            }
+        },
+        spreader: (fruitIterator, resultArea) => {
+            /**
+             * Iteration protocolsを実装している場合，Spread operatorで
+             * 保持している要素から成る配列を得ることができる。
+             */
+            for(let fruit of [...fruitIterator]){
+                g.println(resultArea, fruit);
+            }
+        }
+    };
     
     const inits = [
         () => {
@@ -71,16 +119,17 @@
             
             const resultArea = g.select(prefix + ".result-area");
             
-            g.clickListener(g.select(prefix + ".fruit-iterator"), () => {
+            g.clickListener(g.select(prefix + ".fruit-getter"), () => {
                 const fruits = g.filter(g.selectAll(prefix + "option"), 
                     option => option.selected)
                     .map(el => new Fruit(el.value));
 
                 const fruitIterator = new FruitIterator(fruits);
-
-                for(let fruit of fruitIterator){
-                    g.println(resultArea, fruit);
-                }
+                
+                const checkedMethod = g.findFirst(g.refs("fruit-method"), el => el.checked);
+                const methodName = checkedMethod.value;
+                
+                fruitPrinter[methodName](fruitIterator, resultArea);
             });
             
             g.clickListener(g.select(prefix + ".fruit-clearer"), 

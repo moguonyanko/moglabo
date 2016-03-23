@@ -51,8 +51,16 @@
                             </select>
                         </div>
                         <div>
-                            <button class="fruit-iterator">選択要素を列挙</button>
-                            <button class="fruit-clearer">クリア</button>
+                            <div>
+                                <p>列挙方法</p>
+                                <label><input type="radio" name="fruit-method" value="iterator" checked="checked" />イテレータ</label>
+                                <label><input type="radio" name="fruit-method" value="generator" />ジェネレータ</label>
+                                <label><input type="radio" name="fruit-method" value="spreader" />分割</label>
+                            </div>
+                            <div>
+                                <button class="fruit-getter">選択要素を表示</button>
+                                <button class="fruit-clearer">クリア</button>
+                            </div>
                         </div>
                     </div>
                 </div>
