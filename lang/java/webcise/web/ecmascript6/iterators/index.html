@@ -19,6 +19,10 @@
                 background-color: var(--common-result-color);
                 overflow-y: scroll;
             }
+            
+            .fruit-container select {
+                width: 200px;
+            }
         </style>
     </head>
     <body>
@@ -56,6 +60,7 @@
                                 <label><input type="radio" name="fruit-method" value="iterator" checked="checked" />イテレータ</label>
                                 <label><input type="radio" name="fruit-method" value="generator" />ジェネレータ</label>
                                 <label><input type="radio" name="fruit-method" value="spreader" />分割</label>
+                                <label><input type="radio" name="fruit-method" value="destructuring" />構造化代入</label>
                             </div>
                             <div>
                                 <button class="fruit-getter">選択要素を表示</button>
@@ -73,6 +78,7 @@
                 <li><a href="http://es6-features.org/">ECMAScript 6 — New Features: Overview & Comparison</a></li>
                 <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols">MDN Iteration protocols</a></li>
                 <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of">MDN for...of</a></li>
+                <li><a href="http://www.asahi-net.or.jp/~kc7k-nd/onlispjhtml/destructuring.html">On Lisp destructuring-bind</a></li>
             </ul>
         </aside>
 
