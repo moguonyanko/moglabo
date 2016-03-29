@@ -291,9 +291,10 @@
             if (Array.isArray(targets)) {
                 targets.forEach(func);
             } else {
-                var keys = Object.keys(targets);
-                var syms = Object.getOwnPropertySymbols(targets);
-                keys.concat(syms).forEach(func);
+                var allKeys = getAllKeys(targets);
+                for(var i = 0, len = allKeys.length; i < len; i++){
+                    func(targets[allKeys[i]]);
+                }
             }
         },
         map: function (targets, func) {
