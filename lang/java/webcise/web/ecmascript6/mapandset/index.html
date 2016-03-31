@@ -32,7 +32,10 @@
         <div role="main">
             <section class="set-container">
                 <h2>Set</h2>
-                <p>Setに対し値の登録・削除ができます。</p>
+                <p>
+                    Setに対し値の登録・削除ができます。<br />
+                    Setの値は配列として得ることもできます。
+                </p>
                 <div class="result-area"></div>
                 <div class="control-set">
                     <p><label>value=<input class="set-value" type="text" value="test" /></label></p>
@@ -40,6 +43,16 @@
                     <button class="control-set-button" value="delete">削除</button>
                     <button class="control-set-button" value="values">値を全て表示</button>
                     <button class="control-set-button" value="clear">値を全て削除</button>
+                    <div>
+                        <div>
+                            <label><input class="exclude-text-value" 
+                                          type="checkbox" checked="checked" />
+                                テキストボックスの値を除外する(カンマ区切りで複数の値を指定)</label>
+                        </div>
+                        <div>
+                            <button class="change-array">配列に変換</button>
+                        </div>
+                    </div>
                 </div>
                 <button class="clear-result-area">クリア</button>
             </section>

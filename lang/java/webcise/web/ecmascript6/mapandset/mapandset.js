@@ -70,6 +70,7 @@
             
             const ctrls = g.selectAll(".control-set .control-set-button");
             const input = g.select(".control-set .set-value");
+            
             g.forEach(ctrls, ctrl => {
                 g.clickListener(ctrl, e => {
                     const actionName = ctrl.value;
@@ -84,6 +85,31 @@
             
             g.clickListener(g.select(".clear-result-area"), e => {
                 g.clear(resultArea);
+            });
+            
+            g.clickListener(g.select(".control-set .change-array"), e => {
+                const excludeCheck = g.select(".control-set .exclude-text-value");
+                let array;
+                if(excludeCheck.checked){
+                    const exSet = new Set(input.value.split(","));
+                    array = [];
+                    /**
+                     * SetはforEachを実装している。
+                     */
+                    set.forEach(v => {
+                        if(!exSet.has(v)){
+                            array.push(v);
+                        }
+                    });
+                    /**
+                     * Chrome49はリスト内包表記に対応していないのでシンタックスエラーになる。
+                     * Firefox45では正常に動作する。
+                     */
+                    //array = [v for (v of set) if (!exSet.has(v))];
+                }else{
+                    array = Array.from(set);
+                }
+                g.println(resultArea, array);
             });
         }
     ];
