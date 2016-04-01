@@ -56,6 +56,32 @@
                 </div>
                 <button class="clear-result-area">クリア</button>
             </section>
+            <section class="map-container">
+                <h2>Map</h2>
+                <p>
+                    Mapに対し値の登録と削除を行えます。<br />
+                    Mapのキーには文字列以外を用いることができますが，NaNなど一部の値を除き<br />
+                    === 演算子で等しいと見なされるキーを与えた時しか値を得ることができません。
+                </p>
+                <div class="result-area"></div>
+                <div class="control-map">
+                    <div class="map-key-conatner">
+                        <p>キータイプ</p>
+                        <label><input type="radio" name="map-key-type" checked="checked" value="string" />文字列</label>
+                        <label><input type="radio" name="map-key-type" value="number" />数値</label>
+                        <label><input type="radio" name="map-key-type" value="boolean" />真偽値</label>
+                        <label><input type="radio" name="map-key-type" value="function" />関数</label>
+                        <label><input type="radio" name="map-key-type" value="nan" />NaN</label>
+                        <label><input type="radio" name="map-key-type" value="object" />オブジェクトリテラル</label>
+                        <label><input type="radio" name="map-key-type" value="class" />独自クラスのオブジェクト</label>
+                    </div>
+                    <div>
+                        <button class="set-map-value">値追加</button>
+                        <button class="get-map-value">値取得</button>
+                    </div>
+                </div>
+                <button class="clear-result-area">クリア</button>
+            </section>
         </div>
 
         <aside role="complementary">
