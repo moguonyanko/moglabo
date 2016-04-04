@@ -68,7 +68,7 @@
         
         /**
          * equalsを実装していてもMapの値取得には全く影響を与えない。
-         * 演算子 === で等しいと見なされるキーをMapに与えた時のみ値取得に成功する。
+         * ===演算子で等しいと見なされるキーをMapに与えた時のみ値取得に成功する。
          */
         equals(other) {
             if(other instanceof SampleKey){
@@ -106,7 +106,7 @@
      */
     const SAMPLE_MAP_VALUE = "値が取得できました！";
     
-    const createMapKey = {
+    const mapKeyFactory = {
         "string": () => "sample string",
         "number": () => 1,
         "boolean": () => true,
@@ -122,15 +122,24 @@
         "class": () => new SampleKey("sample key")
     };
     
+    const mapValues = {
+        "string": "by string",
+        "number": "by number",
+        "boolean": "by boolean",
+        "function": "by function",
+        "nan": "by NaN",
+        "object": "by object",
+        "class": "by class"
+    };
+    
     let mapActions = {};
     
     const initMapActions = types => {
         for(let type of types){
-            const mapKey = createMapKey[type]();
-            mapActions[type] = new MapAction(mapKey);
+            mapActions[type] = new MapAction(mapKeyFactory[type]());
         }
     };
-            
+    
     const initializers = [
         g => {
             const resultArea = g.select(".set-container .result-area");
@@ -191,7 +200,7 @@
             const baseClass = ".control-map ";
             const typeEles = g.selectAll(baseClass + ".map-key-conatner input");
             
-            const map = new Map();
+            let map = new Map();
             
             const types = g.values(typeEles);
             initMapActions(types);
@@ -204,26 +213,88 @@
                 return type;
             };
             
-            const getMapAction = () => {
-                const action = mapActions[getType()];
-                return action;
-            };
-            
             g.clickListener(g.select(baseClass + ".set-map-value"), e => {
-                const action = getMapAction();
-                action.setValue(map, SAMPLE_MAP_VALUE);
+                const type = getType();
+                const action = mapActions[type];
+                action.setValue(map, mapValues[type]);
                 g.println(resultArea, action);
             });
             
             g.clickListener(g.select(baseClass + ".get-map-value"), e => {
-                const action = getMapAction();
-                const mapKey = createMapKey[getType()]();
-                const value = action.getValue(map, mapKey);
+                const type = getType();
+                const action = mapActions[type];
+                const value = action.getValue(map, mapKeyFactory[type]());
                 g.println(resultArea, value);
             });
             
             g.clickListener(g.select(".map-container .clear-result-area"), e => {
                 g.clear(resultArea);
+            });
+            
+            g.clickListener(g.select(baseClass + ".view-map-keys"), e => {
+                /**
+                 * Map.prototype.keysが返すオブジェクトはIteratorなので
+                 * 配列のメソッドを適用する場合はArray.fromを介して行う必要がある。
+                 * Map.prototype.valuesについても同様である。
+                 */
+                g.forEach(Array.from(map.keys()), key => g.println(resultArea, key));
+            });
+            
+            g.clickListener(g.select(baseClass + ".view-map-values"), e => {
+                g.forEach(Array.from(map.values()), value => g.println(resultArea, value));
+            });
+            
+            g.clickListener(g.select(baseClass + ".view-map-keyvalues"), e => {
+                /**
+                 * Mapはiterableなのでfor...ofで反復できる。Map.prototype.entriesを
+                 * 呼び出した時も同じ結果になる。
+                 */
+                for(let [key, value] of map){
+                    g.println(resultArea, "key=" + key + ",value=" + value);
+                }
+            });
+            
+            g.clickListener(g.select(baseClass + ".upper-map-values"), e => {
+                /**
+                 * MapはforEachを実装しているが「値，キー」の順序で引数が渡されてくる。
+                 * for...ofによる反復とは異なる。
+                 */
+                map.forEach((value, key) => {
+                    if(g.strp(value)){
+                        map.set(key, value.toUpperCase());
+                    }
+                });
+            });
+            
+            g.clickListener(g.select(baseClass + ".array-to-map"), e => {
+                const size = map.size || 10;
+                const array = [];
+                for(let i = 0; i < size; i++){
+                    array.push(null);
+                }
+                const newKeyValues = array.map((e, idx) => {
+                    return ["key" + idx, "value" + idx];
+                });
+                /**
+                 * iterableなオブジェクトからMapを生成することができる。
+                 */
+                map = new Map(newKeyValues);
+            });
+            
+            g.clickListener(g.select(baseClass + ".clear-map-values"), e => {
+                map.clear();
+            });
+            
+            g.clickListener(g.select(baseClass + ".delete-map-value"), e => {
+                const type = getType();
+                const key = mapKeyFactory[type]();
+                /**
+                 * ===演算子で等しいと見なされるキーを渡せない場合は値をを削除する
+                 * ことができない。Map.prototype.deleteが返す真偽値はMap.prototype.hasが
+                 * 返す値と同じである。
+                 */
+                const result = map.delete(key);
+                g.println(resultArea, "値が削除できたか？ ... " + result);
             });
         }
     ];
