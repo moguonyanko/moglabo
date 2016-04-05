@@ -117,6 +117,10 @@
     
     GomakitError.prototype = Object.create(Error.prototype);
     
+    GomakitError.prototype.toString = function(){
+        return "GomakitError:" + this.message;
+    };
+    
     function getAllKeys(targets) {
         var keys = Object.keys(targets);
         var syms = Object.getOwnPropertySymbols(targets);

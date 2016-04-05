@@ -97,7 +97,11 @@
         }
         
         toString() {
-            return "キー " + this.key + " で値を取得します。";
+            /**
+             * Symbolは文字列連結で暗黙的にtoStringが呼び出されて文字列に変換されない。
+             * 明示的にtoStringを呼び出さないとエラーになる。
+             */
+            return "キー " + this.key.toString() + " で値を取得します。";
         }
     }
     
@@ -119,7 +123,14 @@
          * ならない。
          */
         "object": () => { return { toString: () => "object literal" }; },
-        "class": () => new SampleKey("sample key")
+        "class": () => new SampleKey("sample key"),
+        "symbol": () => Symbol("sample symbol"),
+        /**
+         * Global symbolはSymbol生成時に渡した引数が等しいSymbol同士であれば
+         * ===演算子で比較した際にtrueを返す。つまり等しい引数で生成された
+         * Global symbolはSetに複数追加することができない。
+         */
+        "globalsymbol": () => Symbol.for("sample global symbol")
     };
     
     const mapValues = {
@@ -129,7 +140,9 @@
         "function": "by function",
         "nan": "by NaN",
         "object": "by object",
-        "class": "by class"
+        "class": "by class",
+        "symbol": "by symbol",
+        "globalsymbol": "by global symbol"
     };
     
     let mapActions = {};
@@ -161,7 +174,7 @@
                     const result = setAction(set, input.value);
                     /* 空文字は出力しない。 */
                     if(result && result.toString()){
-                        g.println(resultArea, result);
+                        g.println(resultArea, result.toString());
                     }
                 });
             });
@@ -192,7 +205,7 @@
                 }else{
                     array = Array.from(set);
                 }
-                g.println(resultArea, array);
+                g.println(resultArea, array.toString());
             });
         },
         g => {
@@ -217,14 +230,14 @@
                 const type = getType();
                 const action = mapActions[type];
                 action.setValue(map, mapValues[type]);
-                g.println(resultArea, action);
+                g.println(resultArea, action.toString());
             });
             
             g.clickListener(g.select(baseClass + ".get-map-value"), e => {
                 const type = getType();
                 const action = mapActions[type];
                 const value = action.getValue(map, mapKeyFactory[type]());
-                g.println(resultArea, value);
+                g.println(resultArea, value.toString());
             });
             
             g.clickListener(g.select(".map-container .clear-result-area"), e => {
@@ -237,11 +250,11 @@
                  * 配列のメソッドを適用する場合はArray.fromを介して行う必要がある。
                  * Map.prototype.valuesについても同様である。
                  */
-                g.forEach(Array.from(map.keys()), key => g.println(resultArea, key));
+                g.forEach(Array.from(map.keys()), key => g.println(resultArea, key.toString()));
             });
             
             g.clickListener(g.select(baseClass + ".view-map-values"), e => {
-                g.forEach(Array.from(map.values()), value => g.println(resultArea, value));
+                g.forEach(Array.from(map.values()), value => g.println(resultArea, value.toString()));
             });
             
             g.clickListener(g.select(baseClass + ".view-map-keyvalues"), e => {
@@ -250,7 +263,7 @@
                  * 呼び出した時も同じ結果になる。
                  */
                 for(let [key, value] of map){
-                    g.println(resultArea, "key=" + key + ",value=" + value);
+                    g.println(resultArea, "key=" + key.toString() + ",value=" + value.toString());
                 }
             });
             
@@ -294,10 +307,88 @@
                  * 返す値と同じである。
                  */
                 const result = map.delete(key);
-                g.println(resultArea, "値が削除できたか？ ... " + result);
+                g.println(resultArea, "値が削除できたか？ ... " + result.toString());
+            });
+        },
+        g => {
+            const c = ".weak-set-container ";
+            const resultArea = g.select(c + ".result-area");
+            
+            let wsValues = {
+                values: [
+                    {
+                        name: "hogehoge",
+                        toString: function(){
+                            return this.name;
+                        }
+                    }, 
+                    function sampleFunc(){}, 
+                    new Date()
+                    /**
+                     * Symbolは基本データ型同様nullにならないのでWeakSetに追加できない。
+                     */
+//                    ,Symbol("symbol foo"),
+//                    Symbol("symbol foo"),
+//                    Symbol.for("global symbol foo"),
+//                    Symbol.for("global symbol foo")
+                ],
+                current: 0,
+                [Symbol.iterator]: () => {
+                    next: () => {
+                        let value = wsValues.values[wsValues.current];
+                        let done = wsValues.values.length < ++wsValues.current;
+
+                        return {done, value};
+                    }
+                },
+                reset: () => {
+                    wsValues.current = 0;
+                }
+            };
+            
+            const ws = new WeakSet(wsValues.values);
+            /**
+             * @todo
+             * オブジェクトリテラルのiteration protocolsが参照されないため
+             * WeakSetに値を追加できない。
+             */
+            //const ws = new WeakSet(wsValues);
+            const copyValues = Object.assign({}, {
+                /**
+                 * Array.fromで生成された配列を元の配列と===演算子で比較してもtrueにならない。
+                 */
+                values: Array.from(wsValues.values)
+            });
+            g.clickListener(g.select(c + ".view-weakset-values"), e => {
+                /**
+                 * WeakSetには値を反復したり直接得たりするためのAPIが存在しない。
+                 * 現在のサイズを得るプロパティも無い。少なくともFirefox45のWeakSetに
+                 * lengthプロパティは存在しない。
+                 */
+                for(let v of copyValues.values){
+                    const result = "Is exist " + v.toString() + "? ..." + ws.has(v);
+                    g.println(resultArea, result);
+                }
+            });
+            
+            g.clickListener(g.select(c + ".clear-result-area"), e => {
+                g.clear(resultArea);
+            });
+            
+            g.clickListener(g.select(c + ".delete-weakset-values"), e => {
+                if(wsValues && "values" in wsValues){
+                    /**
+                     * @todo
+                     * WeakSetの値がGCの対象になるような操作を行っても
+                     * WeakSetから値が削除されない。削除される条件が不明。
+                     */
+                    wsValues.values = null;
+                    delete wsValues.values;
+                    wsValues = null;
+                }
             });
         }
     ];
     
-    goma.run(initializers);
+    goma.run(initializers, {reject: err => console.error(err.toString())});
 }(window.goma));

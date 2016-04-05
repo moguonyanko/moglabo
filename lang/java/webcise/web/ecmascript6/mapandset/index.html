@@ -74,6 +74,8 @@
                         <label><input type="radio" name="map-key-type" value="nan" />NaN</label>
                         <label><input type="radio" name="map-key-type" value="object" />オブジェクトリテラル</label>
                         <label><input type="radio" name="map-key-type" value="class" />独自クラスのオブジェクト</label>
+                        <label><input type="radio" name="map-key-type" value="symbol" />シンボル</label>
+                        <label><input type="radio" name="map-key-type" value="globalsymbol" />グローバルシンボル</label>
                     </div>
                     <div>
                         <button class="set-map-value">値追加</button>
@@ -93,6 +95,21 @@
                 </div>
                 <button class="clear-result-area">クリア</button>
             </section>
+            <section class="weak-set-container">
+                <h2>WeakSet</h2>
+                <p>
+                    WeakSetで「弱い参照」を持ったオブジェクトの集合を扱えます。<br />
+                    基本データ型のようなnullにならない値を保持することはできません。
+                </p>
+                <div class="result-area"></div>
+                <div>
+                    <button class="view-weakset-values">値の存在確認</button>
+                    <button class="delete-weakset-values">値削除(GCを促す)</button>
+                </div>
+                <div>
+                    <button class="clear-result-area">クリア</button>
+                </div>
+            </section>
         </div>
 
         <aside role="complementary">
@@ -103,6 +120,7 @@
                 <li><a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Map">MDN Map</a></li>
                 <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet">MDN WeakSet</a></li>
                 <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap">MDN WeakMap</a></li>
+                <li><a href="http://www.2ality.com/2015/01/es6-maps-sets.html">②ality – ECMAScript 6: maps and sets</a></li>
             </ul>
         </aside>
 
