@@ -311,7 +311,7 @@
             });
         },
         g => {
-            const c = ".weak-set-container ";
+            const c = ".weakset-container ";
             const resultArea = g.select(c + ".result-area");
             
             let wsValues = {
@@ -386,6 +386,80 @@
                     delete wsValues.values;
                     wsValues = null;
                 }
+            });
+        },
+        g => {
+            const base = ".weakmap-container ",
+                  resultArea = g.select(base + ".result-area");
+            
+            class SampleKey{
+                constructor(key){
+                    this.key = key;
+                }
+                
+                toString(){
+                    return "sample key is " + this.key.toString();
+                }
+            }
+            
+            let keyValues = {
+                "object": {
+                    "key": {toString: () => "key object"},
+                    "value": "by object"
+                },
+                "function": {
+                    "key": () => 1,
+                    "value": "by function"
+                },
+                "date": {
+                    "key": new Date(),
+                    "value": "by date"
+                },
+                "class": {
+                    "key": new SampleKey("key class"),
+                    "value": "by class"
+                }
+            };
+            
+            const kvs = [];
+            for(let type in keyValues){
+                kvs.push([keyValues[type].key, keyValues[type].value]);
+            }
+            
+            let wm = new WeakMap(kvs);
+            
+            /**
+             * Symbolはnullにならないのでキーにできない。
+             */
+            //wm.set(Symbol.for("key symbol"), "by symbol");
+            
+            g.clickListener(g.select(base + ".view-weakmap-values"), e => {
+                for(let type in keyValues){
+                    const key = keyValues[type].key;
+                    g.println(resultArea, key.toString() + " = " + wm.get(key));
+                }
+            });
+            
+            g.clickListener(g.select(base + ".delete-weakmap-keys"), e => {
+                for(let type in keyValues){
+                    const key = keyValues[type].key;
+                    const result = wm.delete(key);
+                    g.println(resultArea, "Succeeded in deletion value by " + key.toString() + " ... " + result);
+                }
+            });
+            
+            g.clickListener(g.select(base + ".test-weakmap-gc"), e => {
+                /**
+                 * @todo
+                 * WeakMapのキーを保持していたオブジェクトを別のオブジェクトに
+                 * 置き換えてもWeakMapのキーと値は削除されない。削除される条件が不明。
+                 */
+                keyValues = Object.assign({}, keyValues);
+                g.log(keyValues);
+            });
+            
+            g.clickListener(g.select(base + ".clear-result-area"), e => {
+                g.clear(resultArea);
             });
         }
     ];

@@ -95,16 +95,32 @@
                 </div>
                 <button class="clear-result-area">クリア</button>
             </section>
-            <section class="weak-set-container">
+            <section class="weakset-container">
                 <h2>WeakSet</h2>
                 <p>
-                    WeakSetで「弱い参照」を持ったオブジェクトの集合を扱えます。<br />
+                    WeakSetで弱参照オブジェクトの集合を扱えます。<br />
                     基本データ型のようなnullにならない値を保持することはできません。
                 </p>
                 <div class="result-area"></div>
                 <div>
-                    <button class="view-weakset-values">値の存在確認</button>
+                    <button class="view-weakset-values">値表示</button>
                     <button class="delete-weakset-values">値削除(GCを促す)</button>
+                </div>
+                <div>
+                    <button class="clear-result-area">クリア</button>
+                </div>
+            </section>
+            <section class="weakmap-container">
+                <h2>WeakMap</h2>
+                <p>
+                    WeakMapで弱参照オブジェクトをキーとしたMapを扱えます。<br />
+                    基本データ型のようなnullにならない値をキーに用いることはできません。
+                </p>
+                <div class="result-area"></div>
+                <div>
+                    <button class="view-weakmap-values">値表示</button>
+                    <button class="delete-weakmap-keys">キー削除</button>
+                    <button class="test-weakmap-gc">GC確認</button>
                 </div>
                 <div>
                     <button class="clear-result-area">クリア</button>
