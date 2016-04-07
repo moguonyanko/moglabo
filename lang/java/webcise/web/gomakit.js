@@ -291,6 +291,9 @@
         },
         strp: strp,
         funcp: funcp,
+        symp: function(target){
+            return typeof target === "symbol";
+        },
         forEach: function (targets, func) {
             if (Array.isArray(targets)) {
                 targets.forEach(func);
