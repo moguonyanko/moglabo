@@ -122,11 +122,15 @@
     };
     
     function getAllKeys(targets) {
-        var keys = Object.keys(targets);
-        var syms = Object.getOwnPropertySymbols(targets);
-        var allKeys = keys.concat(syms);
+        if("Reflect" in win && funcp(win.Reflect.ownKeys)){
+            return win.Reflect.ownKeys(targets);
+        }else{
+            var keys = Object.keys(targets);
+            var syms = Object.getOwnPropertySymbols(targets);
+            var allKeys = keys.concat(syms);
 
-        return allKeys;
+            return allKeys;
+        }
     }
 
     Gomakit.prototype = {

@@ -91,6 +91,34 @@
             g.clickListener(g.select(base + ".clear-result"), e => {
                 g.clear(resultArea);
             });
+        },
+        g => {
+            const base = ".reflect-container ",
+                resultArea = g.select(base + ".result-area");
+                
+            const sampleObj = {
+                name: "hogehoge",
+                age: 50,
+                [Symbol("symbol key")]: "symbol",
+                [Symbol.for("global symbol key")]: "global symbol",
+                [new Date().getTime()]: "now time",
+                /**
+                 * クラスでなくてもクラスのメソッドと同じ文法でメソッドを定義できる。
+                 */
+                [{toString(){ return "sample object"; }}]: "object key"
+            };
+            
+            g.clickListener(g.select(base + ".view-objects"), e => {
+                for(let key of Reflect.ownKeys(sampleObj)){
+                    const value = Reflect.get(sampleObj, key);
+                    const result = `key=${key.toString()}, value=${value.toString()}`;
+                    g.println(resultArea, result);
+                }
+            });
+            
+            g.clickListener(g.select(base + ".clear-result"), e => {
+                g.clear(resultArea);
+            });
         }
     ];
     
