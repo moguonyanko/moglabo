@@ -59,8 +59,40 @@
                 let targetContainer = m.ref("sample-infomation-container");
                 targetContainer.innerHTML = html;
             });
+        },
+        () => {
+            const base = ".string-raw-container ",
+                inputArea = m.select(base + ".input-sample-string"),
+                outputArea = m.select(base + ".output-sample-string");
+            
+            const getSampleStringKey = () => {
+                return m.selected(m.selectAll(base + ".select-sample-string"));
+            };
+            
+            /**
+             * String.rawの呼び出しは以下のように書くこともできる。
+             * const rawString = String.raw({raw: "test\ntest"});
+             * 
+             * 別の変数や定数に保存された文字列をString.rawに渡しても
+             * エスケープシーケンスを含むような元の文字列の値を得ることはできない。
+             * 即ちString.rawの引数に変数や定数を渡しても望んだ結果は得られない。
+             */
+            const sampleStrings = {
+                linefeedcode: String.raw `linefeed\ncode`,
+                tab: String.raw `tab\ttab`,
+                unicode: String.raw `unicode\u0030unicode`
+            };
+            
+            m.clickListener(m.select(base + ".view-raw-string"), () => {
+                const rawString = sampleStrings[getSampleStringKey()];
+                m.println(outputArea, rawString);
+            });
+            
+            m.clickListener(m.select(base + ".clear-output"), () => {
+                m.clear(outputArea);
+            });
         }
     ];
     
     m.loadedHook(() => initTargets.forEach(f => f()));
-}(window, document, my));
+}(window, document, window.goma));

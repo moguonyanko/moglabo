@@ -8,13 +8,30 @@
             :root {
                 --common-bg-color: #ABC;
             }
-            
+
             #sample-infomation-container {
                 width: 50%;
                 height: 300px;
                 border: 1px var(--common-bg-color) solid;
                 border-radius: 5px;
                 background-color: var(--common-bg-color);
+            }
+
+            .sample-string-container {
+                width: 600px;
+                border: yellowgreen 1px solid;
+                border-radius: 5px;
+                display: flex;
+                flex-wrap: wrap;                
+            }
+
+            .sample-string-container label {
+                flex: 1 0 150px;
+                /*
+                flex: initial;
+                */
+                border: solid 1px yellow;
+                border-radius: 5px;
             }
         </style>
     </head>
@@ -59,6 +76,32 @@
                     <button id="add-infomation">情報追加</button>
                 </div>
             </section>
+            <section class="string-raw-container">
+                <h2>Raw String Access</h2>
+                <p>
+                    エスケープシーケンス等を含む元の文字列を確認することができます。
+                </p>
+                <div class="sample-string-container">
+                    <label><input type="radio" name="sample-string" class="select-sample-string" value="linefeedcode" checked="checked" />
+                        linefeed<br />
+                        code
+                    </label>
+                    <label><input type="radio" name="sample-string" class="select-sample-string" value="tab" />
+                        tab tab
+                    </label>
+                    <label><input type="radio" name="sample-string" class="select-sample-string" value="unicode" />
+                        unicode0unicode
+                    </label>
+                </div>
+                <div>
+                    <p>出力</p>
+                    <textarea class="output-sample-string" cols="40" rows="5" readonly="readonly"></textarea>
+                </div>
+                <div>
+                    <button class="view-raw-string">元の文字列出力</button>
+                    <button class="clear-output">出力結果クリア</button>
+                </div>
+            </section>
         </div>
 
         <aside role="complementary">
@@ -73,7 +116,7 @@
             <small>Copyright &copy; 2016 moguonyanko All rights reserved.</small>
         </footer>
 
-        <script src="../../common.js"></script>
+        <script src="../../gomakit.js"></script>
         <script src="templateliterals.js"></script>
     </body>
 </html>
