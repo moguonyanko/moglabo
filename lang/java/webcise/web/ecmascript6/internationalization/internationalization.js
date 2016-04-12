@@ -79,6 +79,60 @@
             g.clickListener(g.select(base + ".clear-result"), () => {
                 g.clear(resultArea);
             });
+        },
+        () => {
+            const base = ".date-format-container ",
+                resultArea = g.select(base + ".result-area");
+            
+            g.clickListener(g.select(base + ".view-result"), () => {
+                const target = g.selected(g.selectAll(base + ".select-locale-target")),
+                    timeZone = g.selected(g.selectAll(base + ".select-timezone-target")),
+                    display24hour = g.select(base + ".check-hour-type").checked;
+                    
+                let options = {
+                    year: "numeric", 
+                    month: "long", 
+                    day: "numeric",
+                    weekday: "long", 
+                    hour: "numeric", 
+                    minute: "numeric", 
+                    second: "numeric",
+                    hour12: !display24hour,
+                    /**
+                     * timeZoneにUTC以外を扱えるかどうかはブラウザに因る。
+                     * Firefox45では扱えないようだ。Chrome49ではAsia/Tokyo等も扱える。
+                     */
+                    timeZone: timeZone,
+                    timeZoneName: "long",
+                    localeMatcher: "lookup",
+                    formatMatcher: "basic"
+                };
+                
+                let formatter, result;
+                
+                try{
+                    formatter = new Intl.DateTimeFormat(target, options);
+                    result = formatter.format(Date.now());
+                }catch(err){
+                    const msg = [
+                        "タイムゾーンのエラーです。",
+                        "デフォルトのタイムゾーンで再度フォーマットを行います。",
+                        err.message
+                    ];
+                    g.log(msg.join(""));
+                    
+                    options.timeZone = null;
+                    delete options.timeZone;
+                    formatter = new Intl.DateTimeFormat(target, options);
+                    result = formatter.format(Date.now());
+                }
+                
+                g.println(resultArea, result);
+            });
+            
+            g.clickListener(g.select(base + ".clear-result"), () => {
+                g.clear(resultArea);
+            });
         }
     ];
     
