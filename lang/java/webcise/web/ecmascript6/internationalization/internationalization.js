@@ -23,9 +23,56 @@
             const sample = list("a", "z", "ä", "ö", "ü");
             
             g.clickListener(g.select(base + ".view-result"), () => {
-                const target = g.selected(g.selectAll(base + ".select-collation-target"));
+                const target = g.selected(g.selectAll(base + ".select-locale-target"));
                 const collator = new Intl.Collator(target);
                 const result = sample.sort(collator.compare);
+                g.println(resultArea, result);
+            });
+            
+            g.clickListener(g.select(base + ".clear-result"), () => {
+                g.clear(resultArea);
+            });
+        },
+        () => {
+            const base = ".number-format-container ",
+                resultArea = g.select(base + ".result-area");
+            
+            const sample = 1234567890;
+            
+            g.clickListener(g.select(base + ".view-result"), () => {
+                const target = g.selected(g.selectAll(base + ".select-locale-target"));
+                const formatter = new Intl.NumberFormat(target);
+                /**
+                 * 以下の記述でもよいが **-** の形式でないロケールを用いたフォーマットでは
+                 * エラーになることがある。
+                 */
+                //const formatter = new Intl.NumberFormat(target.split("-", 1));
+                const result = formatter.format(sample);
+                g.println(resultArea, result);
+            });
+            
+            g.clickListener(g.select(base + ".clear-result"), () => {
+                g.clear(resultArea);
+            });
+        },
+        () => {
+            const base = ".currency-format-container ",
+                resultArea = g.select(base + ".result-area");
+            
+            const sample = 1234567890;
+            
+            g.clickListener(g.select(base + ".view-result"), () => {
+                const target = g.selected(g.selectAll(base + ".select-locale-target"));
+                const currency = g.selected(g.selectAll(base + ".select-currency-target"));
+                /**
+                 * ロケールとcurrencyの組み合わせが正しくなくてもフォーマット自体は
+                 * 成功して結果を出力できる。
+                 */
+                const formatter = new Intl.NumberFormat(target, {
+                    style: "currency",
+                    currency: currency
+                });
+                const result = formatter.format(sample);
                 g.println(resultArea, result);
             });
             

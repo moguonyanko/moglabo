@@ -20,7 +20,7 @@
                 overflow-y: scroll;
             }
             
-            .collation-container .sample-string {
+            .sample-value {
                 font-size: 1.5rem;
                 font-weight: bold;
             }
@@ -43,13 +43,61 @@
                 </p>
                 <div>
                     <p>サンプル文字列</p>
-                    <p class="sample-string">a, z, ä, ö, ü</p>
+                    <p class="sample-value">a, z, ä, ö, ü</p>
                 </div>
                 <div class="result-area"></div>
                 <div>
                     <p>ロケール選択</p>
-                    <label><input class="select-collation-target" type="radio" name="collation-target" value="de" checked="checked" />German</label>
-                    <label><input class="select-collation-target" type="radio" name="collation-target" value="sv" />Swedish</label>
+                    <label><input class="select-locale-target" type="radio" name="collation-string-locale" value="de" checked="checked" />German</label>
+                    <label><input class="select-locale-target" type="radio" name="collation-string-locale" value="sv" />Swedish</label>
+                </div>
+                <div>
+                    <button class="view-result">表示</button>
+                    <button class="clear-result">クリア</button>
+                </div>
+            </section>
+            <section class="number-format-container">
+                <h2>Number Formatting</h2>
+                <p>
+                    ロケールに応じた数値表現を行えます。
+                </p>
+                <div>
+                    <p>サンプル数値</p>
+                    <p class="sample-value">1234567890</p>
+                </div>
+                <div class="result-area"></div>
+                <div>
+                    <p>ロケール選択</p>
+                    <label><input class="select-locale-target" type="radio" name="format-number-locale" value="en-US" checked="checked" />US English</label>
+                    <label><input class="select-locale-target" type="radio" name="format-number-locale" value="de-DE" />German</label>
+                    <label><input class="select-locale-target" type="radio" name="format-number-locale" value="zh-Hans-CN-u-nu-hanidec" />Chinese decimal</label>
+                </div>
+                <div>
+                    <button class="view-result">表示</button>
+                    <button class="clear-result">クリア</button>
+                </div>
+            </section>
+            <section class="currency-format-container">
+                <h2>Currency  Formatting</h2>
+                <p>
+                    ロケールに応じた通貨表現を行えます。
+                </p>
+                <div>
+                    <p>サンプル数値</p>
+                    <p class="sample-value">1234567890</p>
+                </div>
+                <div class="result-area"></div>
+                <div>
+                    <p>ロケール選択</p>
+                    <label><input class="select-locale-target" type="radio" name="format-number-locale" value="en-US" checked="checked" />US English</label>
+                    <label><input class="select-locale-target" type="radio" name="format-number-locale" value="de-DE" />German</label>
+                    <label><input class="select-locale-target" type="radio" name="format-number-locale" value="ja-JP" />Japanese</label>
+                </div>
+                <div>
+                    <p>通貨選択</p>
+                    <label><input class="select-currency-target" type="radio" name="format-number-currency" value="USD" checked="checked" />USD</label>
+                    <label><input class="select-currency-target" type="radio" name="format-number-currency" value="EUR" />EUR</label>
+                    <label><input class="select-currency-target" type="radio" name="format-number-currency" value="JPY" />JPY</label>
                 </div>
                 <div>
                     <button class="view-result">表示</button>
