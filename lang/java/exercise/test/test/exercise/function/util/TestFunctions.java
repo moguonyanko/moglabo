@@ -77,6 +77,7 @@ import exercise.function.Lambda;
 import exercise.function.MyPredicate;
 import exercise.function.util.BiSupplier;
 import exercise.function.CollectionFactory;
+import exercise.function.util.CarefulStream;
 
 /**
  * 参考：
@@ -4045,5 +4046,15 @@ public class TestFunctions {
 		String result = Stream.of("Hello, ", "java ", "world.").reduce("", (a, b) -> a + b);
 		assertThat(result, is("Hello, java world."));
 	}
+    
+    @Test(expected = ClassNotFoundException.class)
+    public void チェック例外をスローする関数をStreamと組み合わせる() throws ClassNotFoundException {
+        CarefulStream<String> carefulStream = 
+                new CarefulStream<>(Stream.of("java.lang.Object", "java.lang.Integer", "java.lang.DummyString"));
+
+        carefulStream.map(Class::forName).collect(toList());
+        
+        System.out.println("例外無く完了しました。");
+    }
 	
 }
