@@ -4061,7 +4061,9 @@ public class TestFunctions {
         List<Class> expected = Arrays.asList(Object.class, Integer.class, String.class);
 
         List<Class> actual = CheckedStream.of("java.lang.Object", "java.lang.Integer", "java.lang.String")
-                .map(Class::forName).collect(toList());
+                .map(Class::forName)
+                .unchecked()
+                .collect(toList());
         
         assertThat(actual, is(expected));
     }
@@ -4070,7 +4072,9 @@ public class TestFunctions {
     public void チェック例外をスローする関数をStreamと組み合わせてチェック例外をスローさせる() 
             throws ClassNotFoundException {
         CheckedStream.of("java.lang.Object", "java.lang.Integer", "java.lang.DummyString")
-                .map(Class::forName).collect(toList());
+                .map(Class::forName)
+                .unchecked()
+                .collect(toList());
     }
 	
 }
