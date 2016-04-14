@@ -4060,10 +4060,8 @@ public class TestFunctions {
             throws ClassNotFoundException {
         List<Class> expected = Arrays.asList(Object.class, Integer.class, String.class);
 
-        CheckedStream<String> carefulStream = 
-                CheckedStream.of("java.lang.Object", "java.lang.Integer", "java.lang.String");
-
-        List<Class> actual = carefulStream.map(Class::forName).collect(toList());
+        List<Class> actual = CheckedStream.of("java.lang.Object", "java.lang.Integer", "java.lang.String")
+                .map(Class::forName).collect(toList());
         
         assertThat(actual, is(expected));
     }
@@ -4071,10 +4069,8 @@ public class TestFunctions {
     @Test(expected = ClassNotFoundException.class)
     public void チェック例外をスローする関数をStreamと組み合わせてチェック例外をスローさせる() 
             throws ClassNotFoundException {
-        CheckedStream<String> carefulStream = 
-                CheckedStream.of("java.lang.Object", "java.lang.Integer", "java.lang.DummyString");
-
-        carefulStream.map(Class::forName).collect(toList());
+        CheckedStream.of("java.lang.Object", "java.lang.Integer", "java.lang.DummyString")
+                .map(Class::forName).collect(toList());
     }
 	
 }
