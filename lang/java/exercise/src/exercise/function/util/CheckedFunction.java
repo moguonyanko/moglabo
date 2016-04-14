@@ -1,43 +1,49 @@
 package exercise.function.util;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * チェック例外を送出することができる関数インタフェース。
- * 
- * Function::applyにはthrowsが無いのでFunctionインタフェースを拡張する場合に
- * R apply(T t) throws X
- * とは定義できない。
- * またFunctionインタフェースを拡張する場合は
- * R eval(T t) throws X
- * と定義することもできない。Function::applyと合わせて2つ以上のメソッドが
- * 定義されることになり@FunctionalInterfaceの要件を満たさなくなるからである。
  *
+ * 参考: https://dzone.com/articles/java-8-functional-interfaces-0
  */
 @FunctionalInterface
-public interface CheckedFunction<T, R, X extends Exception> {
+public interface CheckedFunction<T, R, X extends Exception> extends Function<T, R> {
 
-	R apply(T t) throws X;
+    @Override
+    default R apply(T t) {
+        try {
+            return applyMaybeThrows(t);
+        } catch (Exception ex) {
+            throw new CheckedExceptionWrapper(ex);
+        }
+    }
 
-	/**
-	 * @todo
-	 * Functionインタフェースの再発明になってしまっている。
-	 */
-	
-	default <V> CheckedFunction<V, R, X>
-		compose(CheckedFunction<? super V, ? extends T, X> before) throws X {
-		Objects.requireNonNull(before);
-		return (V v) -> apply(before.apply(v));
-	}
+    R applyMaybeThrows(T t) throws X;
 
-	default <V> CheckedFunction<T, V, X>
-		andThen(CheckedFunction<? super R, ? extends V, X> after) {
-		Objects.requireNonNull(after);
-		return (T t) -> after.apply(apply(t));
-	}
+    default <V> CheckedFunction<V, R, X>
+            compose(CheckedFunction<? super V, ? extends T, X> before) throws X {
+        Objects.requireNonNull(before);
+        try {
+            return (V v) -> apply(before.apply(v));
+        } catch (Exception ex) {
+            throw new CheckedExceptionWrapper(ex);
+        }
+    }
 
-	static <T, X extends Exception> CheckedFunction<T, T, X> identitiy() {
-		return t -> t;
-	}
+    default <V> CheckedFunction<T, V, X>
+            andThen(CheckedFunction<? super R, ? extends V, X> after) {
+        Objects.requireNonNull(after);
+        try {
+            return (T t) -> after.apply(apply(t));
+        } catch (Exception ex) {
+            throw new CheckedExceptionWrapper(ex);
+        }
+    }
+
+    static <T, X extends Exception> CheckedFunction<T, T, X> identitiy() {
+        return t -> t;
+    }
 
 }

@@ -76,6 +76,7 @@ import exercise.function.Lambda;
 import exercise.function.MyPredicate;
 import exercise.function.util.BiSupplier;
 import exercise.function.CollectionFactory;
+import exercise.function.util.CheckedExceptionWrapper;
 import exercise.function.util.CheckedStream;
 import exercise.function.util.CheckedFunction;
 
@@ -601,18 +602,25 @@ public class TestFunctions {
 
 	}
 
-	@Test(expected = InvalidStringException.class)
-	public void FunctionalInterfaceでチェック例外を送出する() throws InvalidStringException {
-		CheckedFunction<String, String, InvalidStringException> upper = s -> {
-			if (s == null) {
-				throw new InvalidStringException(s);
-			}
+    @Test
+    public void FunctionalInterfaceでチェック例外を送出する() {
+        CheckedFunction<String, String, InvalidStringException> upper = s -> {
+            if (s == null) {
+                throw new InvalidStringException(s);
+            }
 
-			return s.toUpperCase();
-		};
+            return s.toUpperCase();
+        };
 
-		upper.apply(null);
-	}
+        try {
+            upper.apply(null);
+        } catch (CheckedExceptionWrapper wrapper) {
+            Exception ex = wrapper.getRealException();
+            if (!(ex instanceof InvalidStringException)) {
+                fail();
+            }
+        }
+    }
 
 	private static class HeavyObject {
 
