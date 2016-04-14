@@ -63,7 +63,6 @@ import static org.hamcrest.CoreMatchers.*;
 
 import exercise.function.Tower;
 import exercise.function.util.Functions;
-import exercise.function.util.CarefulFunction;
 import exercise.function.util.Memoizer;
 import exercise.function.util.Node;
 import exercise.function.util.NodeColor;
@@ -77,7 +76,8 @@ import exercise.function.Lambda;
 import exercise.function.MyPredicate;
 import exercise.function.util.BiSupplier;
 import exercise.function.CollectionFactory;
-import exercise.function.util.CarefulStream;
+import exercise.function.util.CheckedStream;
+import exercise.function.util.CheckedFunction;
 
 /**
  * 参考：
@@ -603,7 +603,7 @@ public class TestFunctions {
 
 	@Test(expected = InvalidStringException.class)
 	public void FunctionalInterfaceでチェック例外を送出する() throws InvalidStringException {
-		CarefulFunction<String, String, InvalidStringException> upper = s -> {
+		CheckedFunction<String, String, InvalidStringException> upper = s -> {
 			if (s == null) {
 				throw new InvalidStringException(s);
 			}
@@ -4047,14 +4047,26 @@ public class TestFunctions {
 		assertThat(result, is("Hello, java world."));
 	}
     
+    @Test
+    public void チェック例外をスローする関数をStreamと組み合わせて結果を得る() 
+            throws ClassNotFoundException {
+        List<Class> expected = Arrays.asList(Object.class, Integer.class, String.class);
+
+        CheckedStream<String> carefulStream = 
+                CheckedStream.of("java.lang.Object", "java.lang.Integer", "java.lang.String");
+
+        List<Class> actual = carefulStream.map(Class::forName).collect(toList());
+        
+        assertThat(actual, is(expected));
+    }
+    
     @Test(expected = ClassNotFoundException.class)
-    public void チェック例外をスローする関数をStreamと組み合わせる() throws ClassNotFoundException {
-        CarefulStream<String> carefulStream = 
-                new CarefulStream<>(Stream.of("java.lang.Object", "java.lang.Integer", "java.lang.DummyString"));
+    public void チェック例外をスローする関数をStreamと組み合わせてチェック例外をスローさせる() 
+            throws ClassNotFoundException {
+        CheckedStream<String> carefulStream = 
+                CheckedStream.of("java.lang.Object", "java.lang.Integer", "java.lang.DummyString");
 
         carefulStream.map(Class::forName).collect(toList());
-        
-        System.out.println("例外無く完了しました。");
     }
 	
 }

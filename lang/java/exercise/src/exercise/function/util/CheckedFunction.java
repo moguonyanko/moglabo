@@ -15,7 +15,7 @@ import java.util.Objects;
  *
  */
 @FunctionalInterface
-public interface CarefulFunction<T, R, X extends Exception> {
+public interface CheckedFunction<T, R, X extends Exception> {
 
 	R apply(T t) throws X;
 
@@ -24,19 +24,19 @@ public interface CarefulFunction<T, R, X extends Exception> {
 	 * Functionインタフェースの再発明になってしまっている。
 	 */
 	
-	default <V> CarefulFunction<V, R, X>
-		compose(CarefulFunction<? super V, ? extends T, X> before) throws X {
+	default <V> CheckedFunction<V, R, X>
+		compose(CheckedFunction<? super V, ? extends T, X> before) throws X {
 		Objects.requireNonNull(before);
 		return (V v) -> apply(before.apply(v));
 	}
 
-	default <V> CarefulFunction<T, V, X>
-		andThen(CarefulFunction<? super R, ? extends V, X> after) {
+	default <V> CheckedFunction<T, V, X>
+		andThen(CheckedFunction<? super R, ? extends V, X> after) {
 		Objects.requireNonNull(after);
 		return (T t) -> after.apply(apply(t));
 	}
 
-	static <T, X extends Exception> CarefulFunction<T, T, X> identitiy() {
+	static <T, X extends Exception> CheckedFunction<T, T, X> identitiy() {
 		return t -> t;
 	}
 
