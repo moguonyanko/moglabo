@@ -11,10 +11,6 @@ public class CheckedStream<T> {
         this.stream = stream;
     }
 
-    /**
-     * Stream.mapはチェック例外をスローするメソッドを引数に取ることができない。
-     * そこでチェック例外をラップした一時的な非チェック例外を作成する。
-     */
     public <R, X extends Exception> CheckedStream<R> map(CheckedFunction<? super T, ? extends R, X> mapper)
             throws X {
         try {
@@ -27,6 +23,10 @@ public class CheckedStream<T> {
             
             return new CheckedStream<>(newStream);
         } catch (CheckedExceptionWrapper ex) {
+            /**
+             * 実際にスローされた例外を取り出してスローし直す。
+             * CheckedExceptionWrapperでない非チェック例外はそのまま伝搬される。
+             */
             X x = ex.getRealException();
             throw x;
         }
