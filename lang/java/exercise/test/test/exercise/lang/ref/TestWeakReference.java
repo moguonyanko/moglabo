@@ -3,6 +3,7 @@ package test.exercise.lang.ref;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.function.Consumer;
+import java.util.WeakHashMap;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -10,6 +11,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 import exercise.lang.ref.WeakUserManager;
 import exercise.lang.ref.WeakKey;
@@ -50,7 +52,7 @@ public class TestWeakReference {
     }
 
     @Test
-    public void 弱く到達可能なオブジェクトがガベージコレクトされる() {
+    public void 弱く到達可能なオブジェクトが参照キューに入る() {
         WeakUser user = new WeakUser("hogehoge");
 
         ReferenceQueue<WeakUserManager> queue = new ReferenceQueue<>();
@@ -60,7 +62,7 @@ public class TestWeakReference {
         System.out.println("Before free memory(byte):" + beforeByte);
 
         /**
-         * nullを代入しなければガベージコレクトされない。
+         * nullを代入しなければWeakReference.isEnqueuedはtrueにならない。
          */
         user = null;
         /**
@@ -75,14 +77,14 @@ public class TestWeakReference {
         System.out.println("After free memory(byte):" + afterByte);
 
         /**
-         * WeakReference.isEnqueuedが真ならば弱参照オブジェクトは
+         * WeakReference.isEnqueuedがtrueならば弱参照オブジェクトは
          * ガベージコレクトされたと考えてよいのだろうか。
          */
         assertTrue(ref.isEnqueued());
     }
 
     @Test
-    public void 強く到達可能なオブジェクトに保持されていた弱く到達可能なオブジェクトがガベージコレクトされる() {
+    public void 強く到達可能なオブジェクトに保持されていた弱く到達可能なオブジェクトが参照キューに入る() {
         WeakUserManager stronglyReachableManager = new WeakUserManager();
         WeakKey key = new WeakKey("sample weak key 1");
         WeakUser user = new WeakUser("hogehoge");
@@ -97,13 +99,14 @@ public class TestWeakReference {
         System.out.println("Removed user name ... " + stronglyReachableManager.removeUser(key));
         System.out.println("Is WeakKey " + key + " removed? ... " + !stronglyReachableManager.has(key));
         /**
-         * エントリを削除するだけではガベージコレクトされない。
-         * エントリを削除せずuserにnullを代入しただけでもガベージコレクトされない。
+         * エントリを削除するだけではWeakReference.isEnqueuedはtrueにならない。
+         * エントリを削除せずuserにnullを代入しただけでもtrueにならない。
          * 
          * WeakUserManager.removeUserの戻り値はuserと等しい。
          * この戻り値を別のローカル変数に保存するとuserにnullを代入しても
-         * userはガベージコレクトされなくなる。強く到達可能かつuserと等しい
-         * オブジェクトが存在することになるからだろうか。
+         * WeakReference.isEnqueuedはtrueにならなくなる。
+         * 強く到達可能かつuserと等しいオブジェクトが存在することになるから
+         * かもしれない。
          */
         user = null;
         System.gc();
@@ -112,6 +115,34 @@ public class TestWeakReference {
         System.out.println("After free memory(byte):" + afterByte);
 
         assertTrue(ref.isEnqueued());
+    }
+    
+    @Test
+    public void WeakHashMapでキーが弱く到達可能でなくなった時に弱参照の値を含むエントリが削除される(){
+        WeakKey key = new WeakKey("sample weak key 2");
+        
+        ReferenceQueue<WeakUser> queue = new ReferenceQueue<>();
+        /**
+         * WeakUserをローカル変数に保持していると強く到達可能になるので
+         * WeakReference.isEnqueuedはfalseになる。
+         */
+        WeakReference<WeakUser> ref = new WeakReference(new WeakUser("foo"), queue);
+        
+        WeakHashMap<WeakKey, WeakReference<WeakUser>> wm = new WeakHashMap<>();
+        wm.put(key, ref);
+        
+        /**
+         * WeakKeyにnullを代入しなくてもWeakReference.isEnqueuedはtrueを返す。
+         * しかしnullを代入しなければエントリの削除は行われない。
+         */
+        key = null;
+        System.gc();
+        
+        assertTrue(ref.isEnqueued());
+        /**
+         * エントリが削除されているならWeakHashMapは空に戻っている。
+         */
+        assertTrue(wm.isEmpty());
     }
 
 }
