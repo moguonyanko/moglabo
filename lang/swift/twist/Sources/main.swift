@@ -3,7 +3,7 @@ func main(){
         print("Require argument as name")
     } else {
         let name = Process.arguments[1]
-        greet(name: name)
+        greet(name: name, count: 10)
     }
 }
 

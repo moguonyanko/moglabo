@@ -1,3 +1,5 @@
-func greet(name: String){
-    print("Hello, \(name)!!!")
+func greet(name: String, count: Int){
+    for _ in 1...count {
+        print("Hello, \(name)!!!")
+    }
 }
