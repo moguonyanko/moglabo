@@ -1,18 +1,20 @@
-/**
- * Hello, Swift world!
- */
-func helloSwift(count: Int){
-    var name = "no name"
-    if Process.arguments.count >= 2 {
-        name = Process.arguments[1]
-    }
-    greet(name: name, count: count)
-}
-
 func main() throws {
-    helloSwift(count: 3)
-    let testCount = try runAllTests()
-    print("\(testCount) tests finished")    
+    var mode = "unknown"
+    
+    if Process.arguments.count >= 2 {
+        mode = Process.arguments[1]
+    }
+    
+    switch mode.lowercased() {
+        case "test":
+            print("\(try runAllTests()) tests finished")    
+        case "practice":
+            runPractices()
+        case "hello":
+            helloSwift(count: 3, name: "twister")
+        default:
+            print("Unsupported mode: " + mode)
+    }
 }
 
 try main()
