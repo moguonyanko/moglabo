@@ -9,7 +9,7 @@ private func displayOptionalString(){
     
     var s4: String?
     /**
-     * nilが設定されている変数に対して!をつけて参照しようとすると実行時エラーになる。
+     * nilが設定されている変数・定数に対して!をつけて参照しようとすると実行時エラーになる。
      */
     print("Default String? value = \(s4)")
     s4 = "not constant"
@@ -54,10 +54,31 @@ private func displayOptionalBinding(){
     }
 }
 
+private func displayImplicityUnwrappedOptional() {
+    let implicityOpt: String! = "implicity unwrapped optional"
+    let normalOpt: String? = "noraml optional"
+    
+    /**
+     * Implicity unwrappedであってもOptionalなのでnilとの比較が可能。
+     */
+    if implicityOpt != nil && normalOpt != nil {
+        /**
+         * Implicity unwrappedなので!を変数・定数の最後に付けていなくても内部の値を得られる。
+         */
+        print("Implicity unwrapped optional value = \"\(implicityOpt)\"")
+        /**
+         * NormalのOptionalは!を付けて参照しないと内部の値ではなくOptionalオブジェクトが
+         * 返されてしまう。
+         */
+        print("Normal optional value = \"\(normalOpt!)\" in \(normalOpt)")
+    } 
+} 
+
 func practiceOptional(){
     displayOptionalString()
     displayOptionalInt()
     displayOptionalBinding()
+    displayImplicityUnwrappedOptional()
 }
 
 //Practices runner
