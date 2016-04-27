@@ -1,4 +1,4 @@
-//Optionals practice
+//Optional practice
 
 private func displayOptionalString(){
     let s1: String = "String"
@@ -81,10 +81,33 @@ func practiceOptional(){
     displayImplicityUnwrappedOptional()
 }
 
+// Function practice
+
+func myDivide(divisor: Int, dividend: Int) -> (quotient: Int, remainder: Int) {
+    let quotient = divisor / dividend
+    let remainder = divisor % dividend
+    
+    return (quotient, remainder)
+}
+
+func displayMultipleReturnValues() {
+    let divisor = 100, dividend = 33
+    let result = myDivide(divisor: divisor, dividend: dividend)
+    
+    print("\(divisor) / \(dividend) = \(result.quotient)")
+    print("\(divisor) % \(dividend) = \(result.remainder)")
+    print("(quotient, remainder) = \(result)")
+}
+
+func practiceFunction() {
+    displayMultipleReturnValues()
+}
+
 //Practices runner
 
 private let practices = [
-    practiceOptional
+    practiceOptional,
+    practiceFunction
 ]
 
 func runPractices(){
