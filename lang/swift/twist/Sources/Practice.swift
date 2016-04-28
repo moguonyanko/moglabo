@@ -99,8 +99,21 @@ func displayMultipleReturnValues() {
     print("(quotient, remainder) = \(result)")
 }
 
+private func mySum(start: Int = 1, end: Int = 10) -> Int {
+    var n = 0
+    for i in start...end {
+        n += i
+    }   
+    return n
+}
+
+func displayDefaultParameterFuncResult() {
+    print("Default parameter result = \(mySum())")
+}
+
 func practiceFunction() {
     displayMultipleReturnValues()
+    displayDefaultParameterFuncResult()
 }
 
 //Practices runner
