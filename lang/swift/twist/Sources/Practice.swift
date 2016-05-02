@@ -111,9 +111,33 @@ func displayDefaultParameterFuncResult() {
     print("Default parameter result = \(mySum())")
 }
 
+func myAvg(_ values: Double...) -> Double {
+    var total: Double = 0
+    for value in values {
+        total += value
+    }
+    
+    /**
+     * Doubleの値をそのままIntの値で割ることはできない。
+     */
+    return total / Double(values.count)
+}
+
+func displayVariadicParametersResult() {
+    print("Average result = \(myAvg(1, 2, 3, 4, 5))")
+    
+    /**
+     * 可変長引数が関数内では配列として扱われるとしても，関数の呼び出す時に
+     * 配列を渡すことはできない。
+     */
+    //let args: [Double] = [1, 2, 3, 4, 5]
+    //print("\(args) average = \(myAvg(args))")
+}
+
 func practiceFunction() {
     displayMultipleReturnValues()
     displayDefaultParameterFuncResult()
+    displayVariadicParametersResult()
 }
 
 //Practices runner
