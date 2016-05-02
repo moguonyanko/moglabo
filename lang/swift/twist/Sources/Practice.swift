@@ -74,7 +74,7 @@ private func displayImplicityUnwrappedOptional() {
     } 
 } 
 
-func practiceOptional(){
+private func practiceOptional(){
     displayOptionalString()
     displayOptionalInt()
     displayOptionalBinding()
@@ -83,14 +83,14 @@ func practiceOptional(){
 
 // Function practice
 
-func myDivide(divisor: Int, dividend: Int) -> (quotient: Int, remainder: Int) {
+private func myDivide(divisor: Int, dividend: Int) -> (quotient: Int, remainder: Int) {
     let quotient = divisor / dividend
     let remainder = divisor % dividend
     
     return (quotient, remainder)
 }
 
-func displayMultipleReturnValues() {
+private func displayMultipleReturnValues() {
     let divisor = 100, dividend = 33
     let result = myDivide(divisor: divisor, dividend: dividend)
     
@@ -107,11 +107,11 @@ private func mySum(start: Int = 1, end: Int = 10) -> Int {
     return n
 }
 
-func displayDefaultParameterFuncResult() {
+private func displayDefaultParameterFuncResult() {
     print("Default parameter result = \(mySum())")
 }
 
-func myAvg(_ values: Double...) -> Double {
+private func myAvg(_ values: Double...) -> Double {
     var total: Double = 0
     for value in values {
         total += value
@@ -123,7 +123,7 @@ func myAvg(_ values: Double...) -> Double {
     return total / Double(values.count)
 }
 
-func displayVariadicParametersResult() {
+private func displayVariadicParametersResult() {
     print("Average result = \(myAvg(1, 2, 3, 4, 5))")
     
     /**
@@ -134,10 +134,34 @@ func displayVariadicParametersResult() {
     //print("\(args) average = \(myAvg(args))")
 }
 
+private func mySwap<T>(_ a: inout T, _ b: inout T) {
+    let tempA = a
+    a = b
+    b = tempA
+}
+
+private func displayInOutParameters() {
+    var a = "hogehoge"
+    var b = "foobarbaz"
+    
+    print("Before swapping a = \(a), b = \(b)")
+    
+    /**
+     * 引数の先頭に&が付いていないとコンパイルエラーになる。
+     * inout parameterとして扱われる引数が定数やリテラルだった場合もコンパイルエラーになる。
+     * inout parameterを取る関数内で引数を変更していなくても，呼び出す側で渡した値が
+     * 定数だった場合はコンパイルエラーになる。
+     */
+    mySwap(&a, &b)
+    
+    print("After swapping a = \(a), b = \(b)")
+}
+
 func practiceFunction() {
     displayMultipleReturnValues()
     displayDefaultParameterFuncResult()
     displayVariadicParametersResult()
+    displayInOutParameters()
 }
 
 //Practices runner
