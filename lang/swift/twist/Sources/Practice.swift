@@ -1,3 +1,7 @@
+enum Error: ErrorProtocol {
+    case IllegalState
+}
+
 //Optional practice
 
 private func displayOptionalString(){
@@ -157,11 +161,56 @@ private func displayInOutParameters() {
     print("After swapping a = \(a), b = \(b)")
 }
 
+private func getCalcFunc(_ mode: String) throws -> (Int, Int) -> Int {
+    func add(_ a: Int, _ b: Int) -> Int {
+        return a + b
+    }
+
+    func sub(_ a: Int, _ b: Int) -> Int {
+        return a - b
+    }
+
+    func mul(_ a: Int, _ b: Int) -> Int {
+        return a * b
+    }
+
+    func div(_ a: Int, _ b: Int) -> Int {
+        return a / b
+    }
+
+    switch mode.lowercased() {
+        case "add":
+            return add 
+        case "sub":
+            return sub
+        case "mul":
+            return mul
+        case "div":
+            return div
+        default:
+            throw Error.IllegalState
+    }
+}
+
+private func displayFunctionType() {
+    let a = 100, b = 10
+    
+    var f = try! getCalcFunc("add")
+    print("Add = \(f(a, b))")
+    f = try! getCalcFunc("sub")
+    print("Sub = \(f(a, b))")
+    f = try! getCalcFunc("mul")
+    print("Mul = \(f(a, b))")
+    f = try! getCalcFunc("div")
+    print("Div = \(f(a, b))")
+}
+
 func practiceFunction() {
     displayMultipleReturnValues()
     displayDefaultParameterFuncResult()
     displayVariadicParametersResult()
     displayInOutParameters()
+    displayFunctionType()
 }
 
 //Practices runner
