@@ -126,6 +126,35 @@
                     <button class="clear-result-area">クリア</button>
                 </div>
             </section>
+            <section class="equality-test-container">
+                <h2>Mapのキーの等値性(Key equality)</h2>
+                <p>
+                    Mapから値を得るとき，キーは同値演算子(===)を使って等値性を調べられる。<br />
+                    equalsメソッドを使って調べるMapの作成を試みる。
+                </p>
+                <div class="result-area"></div>
+                <div class="equality-test-input">
+                    <label>キー：<input class="equality-test-key" type="text" value="sampleKey" /></label>
+                    <label>値：<input class="equality-test-value" type="text" value="sampleValue" /></label>
+                    <div>
+                        <button class="set-equality-test-entry">エントリ追加</button>
+                        <button class="get-equality-test-entry">入力キーで値取得</button>
+                    </div>
+                </div>
+                <h3>ユーザーをキーに持つMapから値を得る(取得時にユーザーを都度生成する)</h3>
+                <div>
+                    <p>取得対象ユーザー一覧</p>
+                    <label><input type="radio" name="equality-test-key-users" value="foo_20" checked="checked" />foo age20</label>
+                    <label><input type="radio" name="equality-test-key-users" value="bar_30" />bar age30</label>
+                    <label><input type="radio" name="equality-test-key-users" value="baz_40" />baz age40</label>
+                    <div>
+                        <button class="equality-test-get-by-user">取得</button>
+                    </div>
+                </div>
+                <div>
+                    <button class="clear-result-area">クリア</button>
+                </div>
+            </section>
         </div>
 
         <aside role="complementary">

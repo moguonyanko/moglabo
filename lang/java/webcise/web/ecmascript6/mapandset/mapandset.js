@@ -153,6 +153,128 @@
         }
     };
     
+    /**
+     * 実装中。
+     * 等値性を表現する機能のインターフェースにしたい。
+     */
+    const Equatable = Base => class extends Base {
+        equals(base) {
+            if(base instanceof Base){
+                return this.getValue() === base.getValue();
+            }else{
+                return false;
+            }
+        }
+        
+        hashCode() {
+            /**
+             * 適当なハッシュ値を返している。
+             */
+            return this.getValue().toString().length;
+        }
+    };
+    
+    /**
+     * DictionaryKeyをDictionaryの内部クラスにはできない。
+     * ECMAScript6では内部クラスは使用できない。
+     */
+    class DictionaryKey /* extends Equatable(DictionaryKey) */  {
+        constructor(key) {
+            this.key = key;
+        }
+        
+        equals(base) {
+            if(base instanceof DictionaryKey){
+                return this.key === base.key;
+            }else{
+                return false;
+            }
+        }
+        
+        hashCode() {
+            return this.key.toString().length;
+        }
+        
+        toString() {
+            return this.key.toString();
+        }
+    }
+    
+    class Dictionary {
+        constructor() {
+            this.entryMap = new Map();
+            this.keySetMap = new Map();
+        }
+        
+        /**
+         * @todo
+         * 既存のキーを指定して呼び出した時に既存の値を上書きできていない？
+         */
+        set(k, v) {
+            /**
+             * 引数のキーをハッシュ値をキーにしたマップで保持しておく。
+             */
+            const hash = k.hashCode();
+            if(!this.keySetMap.has(hash)){
+                this.keySetMap.set(hash, new Set());
+            }
+            this.keySetMap.get(hash).add(k);
+            this.entryMap.set(k, v);
+        }
+        
+        get(k) {
+            /**
+             * 受け取ったキーを内部のキーとequalsメソッドで比較し
+             * 等しい内部のキーが見つかったらそのキーでMapから値を得る。
+             */
+            const targetKeys = this.keySetMap.get(k.hashCode()) || new Set();
+            
+            for (let targetKey of targetKeys) {
+                if(targetKey.equals(k)){
+                    return this.entryMap.get(targetKey);
+                }
+            }
+            
+            return null;
+        }
+        
+        keys() {
+            return this.keySetMap.keys();
+        }
+    }
+    
+    class KeyUser {
+        constructor(name, age) {
+            this.name = name;
+            this.age = age;
+        }
+        
+        equals(other) {
+            if(other instanceof KeyUser){
+                return this.name === other.name && 
+                        this.age === other.age;
+            }else{
+                return false;
+            }
+        }
+        
+        hashCode() {
+            let hash = 0;
+            
+            Array.from(this.name).forEach((c, idx) => {
+                hash += this.name.codePointAt(idx);
+            });
+            
+            hash *= 31;
+            
+            return hash;
+        }
+        
+        toString() {
+            return `My name is ${this.name}. I am ${this.age} years old.`;
+        }
+    }
+    
     const initializers = [
         g => {
             const resultArea = g.select(".set-container .result-area");
@@ -460,6 +582,49 @@
             
             g.clickListener(g.select(base + ".clear-result-area"), e => {
                 g.clear(resultArea);
+            });
+        },
+        g => {
+            const base = ".equality-test-container ",
+                resultArea = g.select(base + ".result-area");
+            
+            const dict = new Dictionary();
+            
+            const foo = new KeyUser("foo", 20);
+            dict.set(foo, foo.toString());
+            const bar = new KeyUser("bar", 30);
+            dict.set(bar, bar.toString());
+            const baz = new KeyUser("baz", 40);
+            dict.set(baz, baz.toString());
+            
+            g.clickListener(g.select(base + ".set-equality-test-entry"), e => {
+                const keyEle = g.select(base + ".equality-test-key"),
+                    valueEle = g.select(base + ".equality-test-value");
+                dict.set(new DictionaryKey(keyEle.value), valueEle.value);
+            });
+            
+            g.clickListener(g.select(base + ".get-equality-test-entry"), e => {
+                const keyEle = g.select(base + ".equality-test-key");
+                const value = dict.get(new DictionaryKey(keyEle.value));
+                g.println(resultArea, value);
+            });
+            
+            g.clickListener(g.select(base + ".clear-result-area"), e => {
+                g.clear(resultArea);
+            });
+            
+            g.clickListener(g.select(base + ".equality-test-get-by-user"), e => {
+                const keyUserEles = g.refs("equality-test-key-users");
+                const keyUserInfo = g.selected(keyUserEles);
+                const info = keyUserInfo.split("_");
+                /**
+                 * 入力値やパラメータからキーとなるオブジェクトを生成し，
+                 * そのオブジェクトを用いて既存のMapから値を得る。
+                 * これがECMAScriptのMapに本来実現して欲しい動作である。
+                 */
+                const keyUser = new KeyUser(info[0], parseInt(info[1]));
+                const value = dict.get(keyUser);
+                g.println(resultArea, value);
             });
         }
     ];
