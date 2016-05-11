@@ -202,6 +202,11 @@
     
     class Dictionary {
         constructor() {
+            /**
+             * entryMapとkeySetMapは本当はprivateなフィールドにしたい。
+             * privateなフィールドを定義する方法はECMAScript6には存在しない。
+             * そもそもフィールドを定義する方法が存在しない。
+             */
             this.entryMap = new Map();
             this.keySetMap = new Map();
         }
@@ -232,15 +237,24 @@
         }
         
         get(k) {
-            /**
-             * 受け取ったキーを内部のキーとequalsメソッドで比較し
-             * 等しい内部のキーが見つかったらそのキーでMapから値を得る。
-             */
+            const realKey = this._getRealKey(k);
+            
+            if(realKey){
+                return this.entryMap.get(realKey);
+            }else{
+                return null;
+            }
+        }
+        
+        /**
+         * メソッドは巻き上げされるのでこれより上のコードで参照できる。
+         */
+        _getRealKey(k) {
             const targetKeys = this.keySetMap.get(k.hashCode()) || new Set();
             
             for (let targetKey of targetKeys) {
                 if(targetKey.equals(k)){
-                    return this.entryMap.get(targetKey);
+                    return targetKey;
                 }
             }
             
@@ -248,7 +262,72 @@
         }
         
         keys() {
-            return this.keySetMap.keys();
+            return this.entryMap.keys();
+        }
+        
+        values() {
+            return this.entryMap.values();
+        }
+        
+        entries() {
+            return this.entryMap.entries();
+        }
+        
+        [Symbol.iterator]() {
+            return this.entries();
+        }
+        
+        has(k) {
+            const realKey = this._getRealKey(k);
+            return this.entryMap.has(realKey);
+        }
+        
+        /**
+         * メソッド名にキーワードを使用しても問題無い。
+         */
+        delete(k) {
+            if(this.has(k)){
+                const realKey = this._getRealKey(k);
+                const deletedFromKeySet = this.keySetMap.get(k.hashCode()).delete(realKey);
+                const deletedFromEntry = this.entryMap.delete(realKey);
+                    
+                if (deletedFromKeySet && deletedFromEntry) {
+                    /**
+                     * keySetMapとentryMapの両方からの削除が成功した時だけ
+                     * 削除成功としないとキーの不整合が生じる。
+                     */
+                    return true;
+                } else {
+                    /**
+                     * エントリの削除に失敗した時は元の状態に戻るように
+                     * エントリの再登録を行う。ここに到達した時点でkeySetMapと
+                     * entryMapにキーの不整合が生じている可能性があるので
+                     * 例外をスローするのが正しいかもしれない。
+                     */
+                    this.set(k, this.get(k));
+                    return false;
+                }
+            } else {
+                /**
+                 * 引数のキーに紐付くエントリが存在しない場合は削除失敗。
+                 */
+                return false;
+            }
+        }
+        
+        clear() {
+            this.entryMap = new Map();
+            this.keySetMap = new Map();
+        }
+        
+        get size() {
+            return this.entryMap.size;
+        }
+        
+        forEach(callback) {
+            for (let [key, value] of this) {
+                callback(value, key, this);
+            }
         }
     }
     
@@ -599,12 +678,15 @@
             
             const dict = new Dictionary();
             
-            const foo = new KeyUser("foo", 20);
-            dict.set(foo, foo.toString());
-            const bar = new KeyUser("bar", 30);
-            dict.set(bar, bar.toString());
-            const baz = new KeyUser("baz", 40);
-            dict.set(baz, baz.toString());
+            /**
+             * サンプルユーザー追加
+             */
+            const users = [
+                new KeyUser("foo", 20), 
+                new KeyUser("bar", 30), 
+                new KeyUser("baz", 40)
+            ];
+            users.forEach(user => dict.set(user, user.toString()));
             
             g.clickListener(g.select(base + ".set-equality-test-entry"), e => {
                 const keyEle = g.select(base + ".equality-test-key"),
@@ -622,7 +704,7 @@
                 g.clear(resultArea);
             });
             
-            g.clickListener(g.select(base + ".equality-test-get-by-user"), e => {
+            const createKeyUser = () => {
                 const keyUserEles = g.refs("equality-test-key-users");
                 const keyUserInfo = g.selected(keyUserEles);
                 const info = keyUserInfo.split("_");
@@ -632,8 +714,42 @@
                  * これがECMAScriptのMapに本来実現して欲しい動作である。
                  */
                 const keyUser = new KeyUser(info[0], parseInt(info[1]));
+                
+                return keyUser;
+            };
+            
+            g.clickListener(g.select(base + ".equality-test-get-by-user"), e => {
+                const keyUser = createKeyUser();
+                /**
+                 * 入力値やパラメータからキーとなるオブジェクトを生成し，
+                 * そのオブジェクトを用いて既存のMapから値を得る。
+                 * これがECMAScriptのMapに本来実現して欲しい動作である。
+                 */
                 const value = dict.get(keyUser);
                 g.println(resultArea, value);
+            });
+            
+            g.clickListener(g.select(base + ".dump-equality-test-entries"), e => {
+                dict.forEach((value, key, dict) => {
+                    g.println(resultArea, `key=${key}, value=${value}`);
+                    g.log(dict);
+                });
+            });
+            
+            g.clickListener(g.select(base + ".equality-test-delete-by-user"), e => {
+                const keyUser = createKeyUser();
+                const deleted = dict.delete(keyUser);
+                g.println(resultArea, `Is value deleted? ... ${deleted}`);
+            });
+            
+            g.clickListener(g.select(base + ".equality-test-clear-by-user"), () => {
+                dict.clear();
+                g.println(resultArea, `Is dictionary clear? ... ${dict.size === 0}`);
+            });
+            
+            g.clickListener(g.select(base + ".equality-test-add-by-user"), () => {
+                const keyUser = createKeyUser();
+                dict.set(keyUser, keyUser.toString());
             });
         }
     ];
