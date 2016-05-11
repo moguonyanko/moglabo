@@ -206,10 +206,6 @@
             this.keySetMap = new Map();
         }
         
-        /**
-         * @todo
-         * 既存のキーを指定して呼び出した時に既存の値を上書きできていない？
-         */
         set(k, v) {
             /**
              * 引数のキーをハッシュ値をキーにしたマップで保持しておく。
@@ -219,7 +215,20 @@
                 this.keySetMap.set(hash, new Set());
             }
             this.keySetMap.get(hash).add(k);
-            this.entryMap.set(k, v);
+            
+            /**
+             * 登録済みのキーに === で等しいと見なされるキーが無ければ
+             * 新しいエントリが追加される。既存のエントリを置き換えたいなら，
+             * 既存のエントリのキーに置き換えて登録する。
+             */
+            let savedKey;
+            for (let targetKey of this.entryMap.keys()) {
+                if(targetKey.equals(k)){
+                    savedKey = targetKey;
+                    break;
+                }
+            }
+            this.entryMap.set((savedKey || k), v);
         }
         
         get(k) {
