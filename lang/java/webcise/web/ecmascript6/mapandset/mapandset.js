@@ -200,6 +200,10 @@
         }
     }
     
+    /**
+     * @todo
+     * キーがequalsとhashCodeを実装していることを保証するにはどうするか？
+     */
     class Dictionary {
         constructor() {
             /**
@@ -708,11 +712,6 @@
                 const keyUserEles = g.refs("equality-test-key-users");
                 const keyUserInfo = g.selected(keyUserEles);
                 const info = keyUserInfo.split("_");
-                /**
-                 * 入力値やパラメータからキーとなるオブジェクトを生成し，
-                 * そのオブジェクトを用いて既存のMapから値を得る。
-                 * これがECMAScriptのMapに本来実現して欲しい動作である。
-                 */
                 const keyUser = new KeyUser(info[0], parseInt(info[1]));
                 
                 return keyUser;
