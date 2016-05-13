@@ -1,6 +1,8 @@
 (function (goma) {
     "use strict";
     
+    const g = goma;
+    
     class SampleValue {
         constructor(value) {
             this.value = value;
@@ -154,23 +156,23 @@
     };
     
     /**
-     * 実装中。
+     * @todo
      * 等値性を表現する機能のインターフェースにしたい。
      */
     const Equatable = Base => class extends Base {
         equals(base) {
             if(base instanceof Base){
-                return this.getValue() === base.getValue();
+                return this === base;
             }else{
                 return false;
             }
         }
-        
+
+        /**
+         * デフォルトでは適当なハッシュ値を返す。
+         */
         hashCode() {
-            /**
-             * 適当なハッシュ値を返している。
-             */
-            return this.getValue().toString().length;
+            return 31;
         }
     };
     
@@ -198,6 +200,10 @@
         toString() {
             return this.key.toString();
         }
+        
+        get id() {
+            return this.key;
+        }
     }
     
     /**
@@ -205,14 +211,27 @@
      * キーがequalsとhashCodeを実装していることを保証するにはどうするか？
      */
     class Dictionary {
-        constructor() {
+        constructor(keyValues) {
             /**
              * entryMapとkeySetMapは本当はprivateなフィールドにしたい。
              * privateなフィールドを定義する方法はECMAScript6には存在しない。
              * そもそもフィールドを定義する方法が存在しない。
              */
-            this.entryMap = new Map();
-            this.keySetMap = new Map();
+            if (g.isIterable(keyValues)) {
+                this.entryMap = new Map(keyValues);
+                this.keySetMap = new Map();
+                /* 各配列の2番目の要素は値だがここでは必要無いので無視する。 */
+                for (let [key, ] of keyValues) {
+                    const hash = key.hashCode();
+                    if (!this.keySetMap.has(hash)) {
+                        this.keySetMap.set(hash, new Set());
+                    }
+                    this.keySetMap.get(hash).add(key);
+                }
+            } else {
+                this.entryMap = new Map();
+                this.keySetMap = new Map();
+            }
         }
         
         set(k, v) {
@@ -288,13 +307,25 @@
         
         /**
          * メソッド名にキーワードを使用しても問題無い。
+         * 
+         * 好ましいことではないがハッシュ値は異なるオブジェクトでたまたま
+         * 等しくなる可能性があるため，同じハッシュ値に紐付くキーが
+         * 存在しなくなった時でないとkeySetMapのエントリを削除することができない。
+         * 結果としてdelete後のkeySetMapとentryMapのサイズは必ずしも等しくならない。
          */
         delete(k) {
             if(this.has(k)){
                 const realKey = this._getRealKey(k);
                 const deletedFromKeySet = this.keySetMap.get(k.hashCode()).delete(realKey);
+                /**
+                 * ハッシュ値に関連付けられたキーが無くなった時にそのハッシュ値の
+                 * エントリをkeySetMapからdeleteする。
+                 */
+                if(this.keySetMap.get(k.hashCode()).size === 0){
+                   this.keySetMap.delete(k.hashCode()); 
+                }
                 const deletedFromEntry = this.entryMap.delete(realKey);
-                    
+                
                 if (deletedFromKeySet && deletedFromEntry) {
                     /**
                      * keySetMapとentryMapの両方からの削除が成功した時だけ
@@ -320,6 +351,10 @@
         }
         
         clear() {
+            /**
+             * constructorは直接呼び出すとエラーになる。
+             */
+            //this.constructor();
             this.entryMap = new Map();
             this.keySetMap = new Map();
         }
@@ -329,9 +364,11 @@
         }
         
         forEach(callback) {
-            for (let [key, value] of this) {
-                callback(value, key, this);
-            }
+            /**
+             * Map.prototype.forEachに従い「値，キー，Dictionary」の順で
+             * callbackに渡す。 
+             */
+            [...this].forEach(keyValue => callback(keyValue[1], keyValue[0], this));
         }
     }
     
@@ -351,19 +388,19 @@
         }
         
         hashCode() {
-            let hash = 0;
-            
-            Array.from(this.name).forEach((c, idx) => {
-                hash += this.name.codePointAt(idx);
-            });
-            
-            hash *= 31;
+            const hash = Array.from(this.name)
+                    .map((c, idx) => this.name.codePointAt(idx))
+                    .reduce((a, b) => a + b) * this.age;
             
             return hash;
         }
         
         toString() {
             return `My name is ${this.name}. I am ${this.age} years old.`;
+        }
+        
+        get id() {
+            return `${this.name.toUpperCase()}@${this.hashCode()}`;
         }
     }
     
@@ -431,8 +468,6 @@
             
             const types = g.values(typeEles);
             initMapActions(types);
-            
-            g.log(mapActions);
             
             const getType = () => {
                 const typeEle = g.findFirst(typeEles, t => t.checked);
@@ -680,8 +715,6 @@
             const base = ".equality-test-container ",
                 resultArea = g.select(base + ".result-area");
             
-            const dict = new Dictionary();
-            
             /**
              * サンプルユーザー追加
              */
@@ -690,7 +723,7 @@
                 new KeyUser("bar", 30), 
                 new KeyUser("baz", 40)
             ];
-            users.forEach(user => dict.set(user, user.toString()));
+            const dict = new Dictionary(users.map(u => [u, u.toString()]));
             
             g.clickListener(g.select(base + ".set-equality-test-entry"), e => {
                 const keyEle = g.select(base + ".equality-test-key"),
@@ -730,7 +763,7 @@
             
             g.clickListener(g.select(base + ".dump-equality-test-entries"), e => {
                 dict.forEach((value, key, dict) => {
-                    g.println(resultArea, `key=${key}, value=${value}`);
+                    g.println(resultArea, `key=${key.id}, value=${value}`);
                     g.log(dict);
                 });
             });

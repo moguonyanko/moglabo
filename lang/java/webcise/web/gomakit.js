@@ -388,6 +388,13 @@
             var sd = (!isNaN(n) && n > 0) ? n : 1;
             
             return Math.trunc(Math.random() * sd);
+        },
+        isIterable: function(target){
+            if (target) {
+                return typeof target[Symbol.iterator] === "function";
+            } else {
+                return false;
+            }
         }
     };
 
