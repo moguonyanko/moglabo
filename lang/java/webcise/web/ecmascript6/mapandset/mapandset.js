@@ -156,45 +156,55 @@
     };
     
     /**
-     * @todo
-     * 等値性を表現する機能のインターフェースにしたい。
+     * 引数の文字列から適当なハッシュ値を計算して返す。
+     */
+    const hashOf = value => {
+        if(typeof value !== "string"){
+            value = (value || "").toString();
+        }
+        
+        const hash = Array.from(value)
+                    .map((c, idx) => value.codePointAt(idx))
+                    .reduce((a, b) => a + b);
+            
+        return hash * 31;
+    };
+    
+    /**
+     * 等値性を表現する機能のインターフェースです。
+     * デフォルトのequalsやhashを実装しています。
      */
     const Equatable = Base => class extends Base {
         equals(base) {
             if(base instanceof Base){
-                return this === base;
+                return this.id === base.id;
             }else{
                 return false;
             }
         }
 
-        /**
-         * デフォルトでは適当なハッシュ値を返す。
-         */
         hashCode() {
-            return 31;
+            return hashOf(this.id);
+        }
+        
+        /**
+         * オブジェクトごとに適切なIDを返すようにオーバーライドする。
+         */
+        get id() {
+            return new String("");
         }
     };
+    
+    class BaseKey {}
     
     /**
      * DictionaryKeyをDictionaryの内部クラスにはできない。
      * ECMAScript6では内部クラスは使用できない。
      */
-    class DictionaryKey /* extends Equatable(DictionaryKey) */  {
+    class DictionaryKey extends Equatable(BaseKey) {
         constructor(key) {
+            super();
             this.key = key;
-        }
-        
-        equals(base) {
-            if(base instanceof DictionaryKey){
-                return this.key === base.key;
-            }else{
-                return false;
-            }
-        }
-        
-        hashCode() {
-            return this.key.toString().length;
         }
         
         toString() {
@@ -388,11 +398,7 @@
         }
         
         hashCode() {
-            const hash = Array.from(this.name)
-                    .map((c, idx) => this.name.codePointAt(idx))
-                    .reduce((a, b) => a + b) * this.age;
-            
-            return hash;
+            return hashOf(this.name) + this.age;
         }
         
         toString() {
