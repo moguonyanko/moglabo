@@ -52,6 +52,10 @@
         return typeof value === "string";
     }
 
+    function nump(value) {
+        return typeof value === "number";
+    }
+
     function StringBuilder(opt_initialValue, opt_sep) {
         this.values = [];
         this.separator = opt_sep || "";
@@ -303,6 +307,7 @@
         },
         strp: strp,
         funcp: funcp,
+        nump: nump,
         symp: function(target){
             return typeof target === "symbol";
         },

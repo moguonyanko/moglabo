@@ -43,7 +43,7 @@
         () => {
             const base = ".feature-arrow-functions ",
                 resultArea = g.select(base + ".resultarea"),
-                ruuner = g.select(base + ".display-result"),
+                runner = g.select(base + ".display-result"),
                 clearer = g.select(base + ".clear-result");
                 
             const featureTests = new Map([
@@ -89,7 +89,7 @@
                 return g.getSelectedValue(featureEles);
             }; 
             
-            g.clickListener(ruuner, () => {
+            g.clickListener(runner, () => {
                 try{
                     const featureName = getSelectedFeatureName();
                     const featureTest = featureTests.get(featureName);
@@ -99,6 +99,37 @@
                 }
             });
 
+            g.clickListener(clearer, () => {
+                g.clear(resultArea);
+            });
+        },
+        () => {
+            const base = ".tail-call-optimization ",
+                resultArea = g.select(base + ".resultarea"),
+                runner = g.select(base + ".display-result"),
+                clearer = g.select(base + ".clear-result"),
+                numEle = g.select(base + ".input-factorial-number");
+                
+            const factorial = (n, accumulator = 1) => {
+                if (n <= 1) {
+                    return accumulator;
+                } else {
+                    return factorial(n - 1, accumulator * n);
+                }
+            };
+            
+            g.clickListener(runner, () => {
+                const n = parseInt(numEle.value);
+                if(g.nump(n)){
+                    try {
+                        const result = factorial(n);
+                        g.println(resultArea, result);
+                    } catch(err) {
+                        g.println(resultArea, err);
+                    }
+                }
+            });
+            
             g.clickListener(clearer, () => {
                 g.clear(resultArea);
             });
