@@ -176,7 +176,7 @@
         noop: function () {
             /* Does nothing. */
         },
-        selected: function (eles, opts) {
+        getSelectedValue: function (eles, opts) {
             opts = opts || {};
 
             var predicate = opts.predicate || function (ele) {
@@ -199,6 +199,14 @@
             }
 
             return null;
+        },
+        /**
+         * @deprecated 
+         * 名前から振るまいが分かりづらいので非推奨。
+         * getSelectedValueを使用すること。
+         */
+        selected: function(eles, opts){
+            return this.getSelectedValue(eles, opts);
         },
         values: function (eles, opt_modifier) {
             return Array.prototype.map.call(eles, function (el) {
