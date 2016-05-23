@@ -811,7 +811,8 @@ public class TestFunctions {
 		}
 
 		/**
-		 * この書き方はSchemeなどではスタックオーバーフローにならないが， Javaのような言語ではスタックオーバーフローになってしまう。
+		 * この書き方はSchemeなどではスタックオーバーフローにならないが， 
+         * Javaのような言語ではスタックオーバーフローになってしまう。
 		 */
 		private static BigInteger bigCalc(BigInteger n, BigInteger accumulator) {
 			if (n.equals(BigInteger.ZERO)) {
@@ -833,12 +834,16 @@ public class TestFunctions {
 		return Factorial.bigCalc(n, BigInteger.ONE);
 	}
 
-	private static TailCall<BigInteger> factorialTailRec(BigInteger fractorial,
+    /**
+     * 末尾呼び出し最適化を実現しているわけではない。
+     * 末尾呼び出し最適化すればできることを別の手段で実現している。
+     */
+	private static TailCall<BigInteger> factorialTailRec(BigInteger factorial,
 		BigInteger n) {
 		if (n.equals(BigInteger.ONE)) {
-			return TailCalls.done(fractorial);
+			return TailCalls.done(factorial);
 		} else {
-			return TailCalls.call(() -> factorialTailRec(fractorial.multiply(n),
+			return TailCalls.call(() -> factorialTailRec(factorial.multiply(n),
 				n.subtract(BigInteger.ONE)));
 		}
 	}
@@ -848,12 +853,19 @@ public class TestFunctions {
 		return factorialTailRec(BigInteger.ONE, number).invoke();
 	}
 
+    @Test(expected = StackOverflowError.class)
+    public void 再帰の回数が多いとスタックオーバーフローが起きる() {
+        int n = 20000;
+        BigInteger result = factorialTCO(n);
+        System.out.println("n = " + n + ", result = " + result);
+    }
+    
 	@Test
-	public void 末尾呼び出し最適化できる() {
+	public void 直接再帰せず遅延呼び出しすればスタックオーバーフローは起きない() {
 		try {
 			int n = 20000;
 			BigInteger result = factorial(n);
-			System.out.println("Factorial result by TailCall interface ... " + result);
+            System.out.println("n = " + n + ", result = " + result);
 		} catch (StackOverflowError error) {
 			fail(error.getMessage());
 		}
