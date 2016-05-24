@@ -108,7 +108,8 @@
                 resultArea = g.select(base + ".resultarea"),
                 runner = g.select(base + ".display-result"),
                 clearer = g.select(base + ".clear-result"),
-                numEle = g.select(base + ".input-factorial-number");
+                numEle = g.select(base + ".input-factorial-number"),
+                enableTco = g.select(base + ".enable-tail-call-optimization");
                 
             const factorial = (n, accumulator = 1) => {
                 if (n <= 1) {
@@ -118,11 +119,24 @@
                 }
             };
             
+            const notFactorial = (n) => {
+                if (n <= 1) {
+                    return 1;
+                } else {
+                    return n * notFactorial(n - 1);
+                }
+            };
+            
             g.clickListener(runner, () => {
                 const n = parseInt(numEle.value);
                 if(g.nump(n)){
                     try {
-                        const result = factorial(n);
+                        let result;
+                        if(enableTco.checked){
+                            result = factorial(n);
+                        }else{
+                            result = notFactorial(n);
+                        }
                         g.println(resultArea, result);
                     } catch(err) {
                         g.println(resultArea, err);

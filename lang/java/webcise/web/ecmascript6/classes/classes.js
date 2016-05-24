@@ -222,8 +222,92 @@
             
             g.clickListener(g.select(container + ".display-mixin-result"), diplayResult);
             g.clickListener(g.select(container + ".clear-mixin-result"), clearResult);
+        },
+        g => {
+            const base = ".inspection-new-target ",
+                resultArea = g.select(base + ".result-area"),
+                targetTypes = g.selectAll(base + ".new-target-type-selection input[name='new-target-type']"),
+                withNewOp = g.select(base + ".with-new-operator"),
+                runner = g.select(base + ".display-result"),
+                clearer = g.select(base + ".clear-result");
+            
+            const getNewTarget = target => target || {};
+            
+            function SampleFunc() {
+                return getNewTarget(new.target);
+            }
+            
+            class BaseSample {
+                constructor() {
+                    g.log(new.target);
+                    this.targetName = getNewTarget(new.target).name; 
+                }
+                
+                get name() {
+                    /**
+                     * constructor関数以外の場所ではnew.targetはundefinedになっている。
+                     */
+                    //g.log(new.target);
+                    //return getNewTarget(new.target).name;
+                    return this.targetName;
+                }
+            }
+            
+            class SubSample extends BaseSample {
+                /**
+                 * 継承した場合new.targetの値はサブクラスを示す値になる。
+                 */
+                constructor() {
+                    super();
+                }
+            }
+            
+            /**
+             * アロー関数はnew演算子と合わせて呼び出したらエラーになるので
+             * new.targetの値を確認することができない。
+             * new演算子と合わせずに呼び出した時はundefinedである。
+             */
+            const SampleArrowFunc = () => getNewTarget(new.target);
+            
+            const newTargets = {
+                function_sentence: SampleFunc,
+                class_no_inheritance: BaseSample,
+                class_with_inheritance: SubSample,
+                arrow_function: SampleArrowFunc
+            };
+            
+            const getSelectedTargetType = () => g.getSelectedValue(targetTypes);
+            
+            g.clickListener(runner, () => {
+                const targetType = getSelectedTargetType(),
+                    Target = newTargets[targetType];
+                
+                let result;
+                try {
+                    let target;
+                    if (withNewOp.checked) {
+                        target = new Target();
+                    } else {
+                        target = Target();
+                    }
+                    result = target.name;
+                } catch(err) {
+                    result = err.message;
+                }
+                
+                g.println(resultArea, result);
+            });
+            
+            g.clickListener(clearer, () => {
+                g.clear(resultArea);
+            });
         }
     ];
     
-    goma.run(scripts);
+    goma.run(scripts, {
+        reject: err => {
+            alert(err);
+            goma.error(err);
+        }
+    });
 }(window.goma));

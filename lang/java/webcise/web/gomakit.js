@@ -374,11 +374,10 @@
                 options = opts || {},
                 resolve = funcp(options.resolve) ? options.resolve : this.noop,
                 reject = funcp(options.reject) ? options.reject : this.noop,
-                predicate = funcp(options.predicate) ? options.predicate : this.truthy,
-                Pm = Promise;
+                predicate = funcp(options.predicate) ? options.predicate : this.truthy;
 
             var promises = runners.map(function (runner) {
-                return new Pm(function (resolve, reject) {
+                return new Promise(function (resolve, reject) {
                     try {
                         var value = runner(that);
                         if(predicate(value)){
@@ -393,7 +392,7 @@
             });
 
             this.loadedHook(function () {
-                Pm.all(promises).then(resolve).catch(reject);
+                Promise.all(promises).then(resolve).catch(reject);
             });
         },
         rand: function(seed){

@@ -163,6 +163,28 @@
                     <button class="clear-mixin-result">クリア</button>
                 </div>
             </section>
+            <section class="inspection-new-target">
+                <h2>new.targetプロパティ</h2>
+                <p>
+                    new.targetプロパティでコンストラクタを調べることができる。<br />
+                    継承されたクラスのnew.targetプロパティはサブクラスの値になっている。<br />
+                    クラスのnew.targetプロパティはconstructor関数<strong>外</strong>ではundefinedになる。
+                </p>
+                <div class="result-area"></div>
+                <div class="control-new-target">
+                    <div class="new-target-type-selection">
+                        <label><input type="radio" name="new-target-type" value="function_sentence" checked="checked" />function文</label>
+                        <label><input type="radio" name="new-target-type" value="class_no_inheritance" />基底クラス</label>
+                        <label><input type="radio" name="new-target-type" value="class_with_inheritance" />サブクラス</label>
+                        <label><input type="radio" name="new-target-type" value="arrow_function" />アロー関数</label>
+                    </div>
+                    <div>
+                        <p><label><input class="with-new-operator" type="checkbox" checked="checked" />new演算子あり</label></p>
+                        <button class="display-result">プロパティ確認</button>
+                        <button class="clear-result">クリア</button>
+                    </div>
+                </div>
+            </section>
         </div>
 
         <aside role="complementary">
