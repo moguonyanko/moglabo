@@ -29,6 +29,11 @@
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
+	<!-- HTMLコメント内のJSFコードを無視するための設定 -->
+	<context-param>
+		<param-name>facelets.SKIP_COMMENTS</param-name>
+		<param-value>true</param-value>
+	</context-param>
 	<session-config>
 		<session-timeout>
 			30

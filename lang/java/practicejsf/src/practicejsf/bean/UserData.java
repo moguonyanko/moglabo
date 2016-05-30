@@ -45,11 +45,11 @@ public class UserData {
 			return "authfailed";
 		}
 	}
-	
+
 	/**
 	 * userData.nonameというコードに対しこのメソッドが呼び出される。
 	 */
-	public boolean isNoname(){
+	public boolean isNoname() {
 		return name != null && !name.isEmpty();
 	}
 	
