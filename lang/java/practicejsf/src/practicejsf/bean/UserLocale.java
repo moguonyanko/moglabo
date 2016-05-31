@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 
 /**
@@ -17,12 +18,12 @@ import javax.faces.event.ValueChangeEvent;
 @SessionScoped
 public class UserLocale implements Serializable {
 	
-	private static final long serialVersionUID = 494855863L;
+	private static final long serialVersionUID = -7987785540351434870L;
 	
-	private String selectedCountry = LocaleType.getDefaultLocaleType().getLocaleTypeName();
+	private LocaleType localeType = LocaleType.getDefaultLocaleType();
 	
 	public void localeChanged(ValueChangeEvent event) {
-		selectedCountry = event.getNewValue().toString();
+		localeType = LocaleType.parseByLocaleTypeName(event.getNewValue().toString());
 	}
 	
 	public Map<String, String> getCountries() {
@@ -30,11 +31,30 @@ public class UserLocale implements Serializable {
 	}
 
 	public String getSelectedCountry() {
-		return selectedCountry;
+		return localeType.getLocaleTypeName();
 	}
 
 	public void setSelectedCountry(String selectedCountry) {
-		this.selectedCountry = selectedCountry;
+		localeType = LocaleType.parseByLocaleTypeName(selectedCountry);
+	}
+
+	public String getGreeting() {
+		return localeType.getGreeting();
+	}
+
+	public void setGreeting(String greeting) {
+		localeType = LocaleType.parseByGreeting(greeting);
+	}
+	
+	public void changeHello(ActionEvent event){
+		localeType = LocaleType.UNITEDKINGDOM;
+	}
+	
+	/**
+	 * 遷移先のページの名前を返すだけで遷移が行われる。
+	 */
+	public String changeResultPage() {
+		return "helloworld";
 	}
 	
 }

@@ -12,7 +12,14 @@
 			<p><a href="index.html">home</a></p>
 		</header>
 		<div>
-			#{helloWorld.message}
+			<section>
+				<h2>HelloWorld?</h2>
+				<p>#{helloWorld.message}</p>
+			</section>
+			<section>
+				<h2>UserLocale?</h2>
+				<p>#{userLocale != null ? userLocale.greeting : "no data"}</p>
+			</section>
 		</div>
     </body>
 </html>
