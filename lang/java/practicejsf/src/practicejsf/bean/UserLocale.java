@@ -34,6 +34,10 @@ public class UserLocale implements Serializable {
 		return localeType.getLocaleTypeName();
 	}
 
+	/**
+	 * JSFからは文字列が送られてくるはずなのでシグネチャをString以外には
+	 * できないかもしれない。なるべく早くString以外の型に変換して保持する。
+	 */
 	public void setSelectedCountry(String selectedCountry) {
 		localeType = LocaleType.parseByLocaleTypeName(selectedCountry);
 	}

@@ -3,9 +3,9 @@ package practicejsf.bean;
 import java.util.HashMap;
 import java.util.Map;
 
-enum LocaleType {
+public enum LocaleType {
 	JAPAN("ja", "Japan", "こんにちは"),
-	UNITEDKINGDOM("en", "United Kingdom", "Hello"),
+	UNITEDKINGDOM("en", "UnitedKingdom", "Hello"),
 	GERMAN("de", "German", "Guten Tag"),
 	FRENCH("fr", "French", "Bonjour");
 

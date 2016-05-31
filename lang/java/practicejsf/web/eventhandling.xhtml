@@ -65,18 +65,29 @@
 				</div>
 			</h:form>
 		</section>
-		
+
 		<section>
 			<h2>ActionListener</h2>
 			<h:form>
+				<div>
+					<h3>Message Binding</h3>
 					<div>
-						<h3>Message Binding</h3>
-						<div>
-							<h:commandButton value="Submit" 
-											 action="#{userLocale.changeResultPage}"
-											 actionListener="#{userLocale.changeHello}" />
-						</div>
-					</div>				
+						<h:commandButton value="Submit" 
+										 action="#{userLocale.changeResultPage}"
+										 actionListener="#{userLocale.changeHello}" />
+					</div>
+				</div>				
+			</h:form>
+			<h:form>
+				<div>
+					<h3>ActionListener インターフェース</h3>
+					<div>
+						<h:commandButton value="Submit" 
+										 action="#{userLocale.changeResultPage}">
+							<f:actionListener type="practicejsf.event.UserActionListener" />
+						</h:commandButton>
+					</div>
+				</div>				
 			</h:form>
 		</section>
     </h:body>
