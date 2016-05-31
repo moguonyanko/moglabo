@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ComponentSystemEvent;
 import javax.faces.event.ValueChangeEvent;
 
 /**
@@ -20,7 +21,7 @@ public class UserLocale implements Serializable {
 	
 	private static final long serialVersionUID = -7987785540351434870L;
 	
-	private LocaleType localeType = LocaleType.getDefaultLocaleType();
+	private LocaleType localeType;
 	
 	public void localeChanged(ValueChangeEvent event) {
 		localeType = LocaleType.parseByLocaleTypeName(event.getNewValue().toString());
@@ -59,6 +60,14 @@ public class UserLocale implements Serializable {
 	 */
 	public String changeResultPage() {
 		return "helloworld";
+	}
+	
+	/**
+	 * 本来はフィールドの宣言部で初期化するべきだが，イベントハンドラの挙動を
+	 * 調べるためにこのメソッドで初期化している。
+	 */
+	public void initialize(ComponentSystemEvent event) {
+		localeType = LocaleType.getDefaultLocaleType();
 	}
 	
 }

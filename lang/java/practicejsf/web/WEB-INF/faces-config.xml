@@ -16,4 +16,24 @@
 			<to-view-id>/page2.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+	<application>
+		<!-- アプリケーション開始時のイベントリスナ設定 -->
+		<system-event-listener>
+			<system-event-listener-class>
+				practicejsf.event.ApplicationCustomEventListener
+			</system-event-listener-class>
+			<system-event-class>
+				javax.faces.event.PostConstructApplicationEvent
+			</system-event-class>
+		</system-event-listener>
+		<!-- アプリケーション終了時のイベントリスナ設定 -->
+		<system-event-listener>
+			<system-event-listener-class>
+				practicejsf.event.ApplicationCustomEventListener
+			</system-event-listener-class>
+			<system-event-class>
+				javax.faces.event.PreDestroyApplicationEvent
+			</system-event-class>
+		</system-event-listener>
+	</application>
 </faces-config>

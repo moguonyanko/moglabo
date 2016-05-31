@@ -2,7 +2,8 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	  xmlns:h="http://java.sun.com/jsf/html"
-	  xmlns:f="http://java.sun.com/jsf/core">
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
 		<meta charset="UTF-8" />
         <title>Event Handling Sample</title>
@@ -13,6 +14,14 @@
 				margin: 1em;
 				padding: 5px;
 				border: solid 1px lightgray;
+				border-radius: 5px;
+			}
+
+			.disabled-content {
+				width: 400px;
+				height: 100px;
+				background-color: rgba(204, 204, 204, 0.5);
+				border: dashed 2px lightgrey;
 				border-radius: 5px;
 			}
 		</style>
@@ -26,12 +35,13 @@
 		<section>
 			<h2>ロケール選択</h2>
 			<p>
+				button/link/text関連タグを用いる場合は&lt;h:form&gt;で囲む必要がある。<br />
 				&lt;h:selectOneMenu&gt;で選択した要素が全ての&lt;h:outputText&gt;に適用されてしまう。
 			</p>
 			<h:form>
 				<div>
 					<div>
-						<h3>Message Binding</h3>
+						<h3>Method Binding</h3>
 						<div>
 							<h:selectOneMenu value="#{userLocale.selectedCountry}" 
 											 onchange="submit()" 
@@ -70,7 +80,7 @@
 			<h2>ActionListener</h2>
 			<h:form>
 				<div>
-					<h3>Message Binding</h3>
+					<h3>Method Binding</h3>
 					<div>
 						<h:commandButton value="Submit" 
 										 action="#{userLocale.changeResultPage}"
@@ -89,6 +99,21 @@
 					</div>
 				</div>				
 			</h:form>
+		</section>
+
+		<p>
+			Application Eventsのリスナーが他のリスナーの処理を上書きしてしまう。<br />
+			暫定的に&lt;ui:remove&gt;を使って該当コードを除去している。
+		</p>
+		<section class="disabled-content">
+			<h2>Application Events</h2>
+			<ui:remove>
+				<div>
+					<p>button/link/text関連タグが無いので&lt;h:form&gt;で囲む必要が無い。</p>
+					<f:event listener="#{userLocale.initialize}" type="preRenderView" />
+					<strong>#{userLocale.greeting}</strong>
+				</div>
+			</ui:remove>
 		</section>
     </h:body>
 </html>
