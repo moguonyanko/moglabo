@@ -22,6 +22,10 @@ public class UserLocale implements Serializable {
 	private static final long serialVersionUID = -7987785540351434870L;
 	
 	private LocaleType localeType;
+
+	public UserLocale() {
+		initLocaleType();
+	}
 	
 	public void localeChanged(ValueChangeEvent event) {
 		localeType = LocaleType.parseByLocaleTypeName(event.getNewValue().toString());
@@ -62,12 +66,12 @@ public class UserLocale implements Serializable {
 		return "helloworld";
 	}
 	
-	/**
-	 * 本来はフィールドの宣言部で初期化するべきだが，イベントハンドラの挙動を
-	 * 調べるためにこのメソッドで初期化している。
-	 */
-	public void initialize(ComponentSystemEvent event) {
+	private void initLocaleType() {
 		localeType = LocaleType.getDefaultLocaleType();
+	}
+	
+	public void initialize(ComponentSystemEvent event) {
+		initLocaleType();
 	}
 	
 }

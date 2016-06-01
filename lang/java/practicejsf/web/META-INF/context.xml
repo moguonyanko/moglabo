@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/practicejsf"/>
+<Context path="/practicejsf">
+	<Resource name="jdbc/JSFTest" 
+			  auth="Container"
+			  type="javax.sql.DataSource" 
+			  username="user1" 
+			  password="user1"
+			  driverClassName="com.mysql.jdbc.Driver"
+			  url="jdbc:mysql://localhost:3306/test?autoReconnect=true"
+			  maxTotal="20" 
+			  maxIdle="10"
+	/>	
+</Context>
