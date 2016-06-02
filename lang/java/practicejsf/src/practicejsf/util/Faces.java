@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
+import javax.faces.application.Application;
 import javax.faces.context.FacesContext;
 
 public final class Faces {
@@ -52,4 +53,8 @@ public final class Faces {
 		return closed;
 	}
 
+	public static Application getApplication() {
+		return FacesContext.getCurrentInstance().getApplication();
+	}
+	
 }

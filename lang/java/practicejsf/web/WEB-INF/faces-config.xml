@@ -35,5 +35,23 @@
 				javax.faces.event.PreDestroyApplicationEvent
 			</system-event-class>
 		</system-event-listener>
+		<!--
+		<supported-locale>に設定したロケールはApplication.getSupportedLocalesを
+		呼び出した時にLocaleオブジェクトになって返される。
+		-->
+		<locale-config>
+			<default-locale>en_US</default-locale>
+			<supported-locale>en_US</supported-locale>
+			<supported-locale>de_DE</supported-locale>
+			<supported-locale>ja_JP</supported-locale>
+		</locale-config>
+		<!--
+		resources/practice/bundle/component.properties を参照する場合，
+		<base-name>は practicejsf.bundle.component となる。
+		-->
+		<resource-bundle>
+			<base-name>practicejsf.bundle.component</base-name>
+			<var>bundleComponent</var>
+		</resource-bundle>
 	</application>
 </faces-config>
