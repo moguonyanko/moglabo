@@ -1,5 +1,7 @@
 package practicejsf.bean;
 
+import java.util.Date;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
@@ -17,6 +19,9 @@ public class UserData {
 	private static final String SUCCESS_USERNAME = "testuser";
 	private static final String SUCCESS_PASSWORD = "testpassword";
 
+	private final Date createTime = new Date();
+	private final String message = "Hello world!";
+	
 	public String getName() {
 		return name;
 	}
@@ -51,6 +56,14 @@ public class UserData {
 	 */
 	public boolean isNoname() {
 		return name != null && !name.isEmpty();
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public String getMessage() {
+		return message;
 	}
 	
 }
