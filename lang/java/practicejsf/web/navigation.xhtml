@@ -11,7 +11,7 @@
 	<h:body>
 		<header>
 			<h1>Navigation</h1>
-			<p><a href="index.html">home</a></p>
+			<p><h:link outcome="index" value="home" /></p>
 		</header>
 		<section>
 			<h2>暗黙のナビゲーション</h2>
@@ -54,6 +54,9 @@
 			<h:form>
 				<h:commandLink action="#{navigationController.processPage1}" value="Page1" />
 				<h:commandLink action="#{navigationController.processPage2}" value="Page2" />
+				<h:commandLink action="#{navigationController.goHome}" value="Home">
+					<f:param name="toHome" value="true" />
+				</h:commandLink>
 			</h:form>
 		</section>
 		<section>

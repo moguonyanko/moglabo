@@ -15,6 +15,17 @@
 			<from-outcome>page</from-outcome>
 			<to-view-id>/page2.xhtml</to-view-id>
 		</navigation-case>
+		<navigation-case>
+			<from-action>#{navigationController.goHome}</from-action>
+			<from-outcome>page</from-outcome>
+			<!-- 
+			index.htmlと指定してもindex.xhtmlやindex.jspに遷移されてしまう。 
+			拡張子を指定しない場合xhtmlから検索され次にjspが検索される。htmlは
+			検索されない。
+			-->
+			<to-view-id>/index</to-view-id>
+			<if>#{navigationController.toHome}</if>
+		</navigation-case>
 	</navigation-rule>
 	<application>
 		<!-- アプリケーション開始時のイベントリスナ設定 -->

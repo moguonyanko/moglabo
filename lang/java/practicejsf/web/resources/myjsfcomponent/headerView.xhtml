@@ -28,7 +28,7 @@
 			<composite:implementation>内に記述されたコンテンツしかWebページには出力されない。
 			-->
 			<composite:implementation>
-				<link rel="stylesheet preload" type="text/css" href="#{resource['style:myjsfcomponent.css']}" media="all" />
+				<link rel="stylesheet preload" type="text/css" href="#{resource['style:common.css']}" media="all" />
 				<c:forEach var="p" items="#{headerValues}">
 					<p>
 						<h:outputText value="#{p.key}" /><span class="space">=</span>

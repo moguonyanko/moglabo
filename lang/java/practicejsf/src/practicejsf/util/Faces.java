@@ -41,7 +41,7 @@ public final class Faces {
 			@Override
 			public void close() throws IOException {
 				try {
-					if(connection != null){
+					if (connection != null) {
 						connection.close();
 					}
 				} catch (SQLException ex) {
@@ -56,5 +56,9 @@ public final class Faces {
 	public static Application getApplication() {
 		return FacesContext.getCurrentInstance().getApplication();
 	}
-	
+
+	public static boolean isNullOrEmpty(String value) {
+		return value == null || value.trim().isEmpty();
+	}
+
 }

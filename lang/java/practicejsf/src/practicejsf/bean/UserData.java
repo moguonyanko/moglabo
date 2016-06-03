@@ -3,7 +3,12 @@ package practicejsf.bean;
 import java.util.Date;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.application.FacesMessage;
+
+import practicejsf.util.Faces;
 
 /**
  * SessionScopedを指定する場合，このクラスをシリアライズ可能にしておかないと
@@ -13,7 +18,10 @@ import javax.faces.bean.RequestScoped;
 @RequestScoped
 public class UserData {
 
+	@ManagedProperty(value = "no name")
 	private String name;
+	
+	@ManagedProperty(value = "")
 	private String password;
 
 	private static final String SUCCESS_USERNAME = "testuser";
@@ -43,7 +51,28 @@ public class UserData {
 			&& SUCCESS_PASSWORD.equals(password);
 	}
 
+	/**
+	 * HTML要素のID属性を指定しなければFacesMessageは送れないのだろうか。
+	 * HTMLとの依存性が高くなってしまうので他の方法があればそちらを採用したい。
+	 */
 	public String login() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		String msgElementId = "auth:userInfo";
+		/* 空文字を返せば現在のページを再表示できる。 */
+		String currentPage = "";
+		if(Faces.isNullOrEmpty(name)){
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, 
+				"Empty user name", "ユーザー名を入力して下さい。");
+			context.addMessage(msgElementId, msg);
+			return currentPage;
+		}
+		if(Faces.isNullOrEmpty(password)){
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, 
+				"Empty user password", "パスワードを入力して下さい。");
+			context.addMessage(msgElementId, msg);
+			return currentPage;
+		}
+		
 		if (isSuccess()) {
 			return "helloworld";
 		} else {

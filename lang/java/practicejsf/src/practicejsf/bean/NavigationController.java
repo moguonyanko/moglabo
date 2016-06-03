@@ -38,6 +38,9 @@ public class NavigationController {
 	private String pageId;
 	
 	private static final String PAGE_OUTCOME = "page";
+	
+	@ManagedProperty(value = "#{param.toHome}")
+	private boolean toHome;
 
 	public String moveToPage1() {
 		return "page1";
@@ -61,6 +64,18 @@ public class NavigationController {
 
 	public void setPageId(String pageId) {
 		this.pageId = pageId;
+	}
+
+	public String goHome() {
+		return PAGE_OUTCOME;
+	}
+	
+	public boolean isToHome() {
+		return toHome;
+	}
+	
+	public void setToHome(boolean toHome) {
+		this.toHome = toHome;
 	}
 
 }

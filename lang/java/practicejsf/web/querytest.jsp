@@ -21,7 +21,7 @@
 		<div>
 			<ul>
 				<li><a href="jdbcintegration.xhtml">JSFバージョン</a></li>
-				<li><a href="index.html">home</a></li>
+				<li><a href="index.xhtml">home</a></li>
 			</ul>
 		</div>	
 	</body>

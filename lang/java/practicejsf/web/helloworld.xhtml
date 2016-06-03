@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
     <head>
 		<meta charset="UTF-8" />
         <title>Hello World JSF</title>
@@ -9,12 +10,16 @@
     <body>
 		<header>
 			<h1>Hello World JSF</h1>
-			<p><a href="index.html">home</a></p>
+			<p><h:link outcome="index" value="home" /></p>
 		</header>
 		<div>
 			<section>
 				<h2>HelloWorld?</h2>
 				<p>#{helloWorld.message}</p>
+			</section>
+			<section>
+				<h2>UserData?</h2>
+				<p>#{userData.name}</p>
 			</section>
 			<section>
 				<h2>UserLocale?</h2>

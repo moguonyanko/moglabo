@@ -9,3 +9,9 @@
 	color: blue;
 	font-weight: bold;
 }
+
+.warn {
+	color: red;
+	font-weight: bold;
+	font-style: italic;
+}
