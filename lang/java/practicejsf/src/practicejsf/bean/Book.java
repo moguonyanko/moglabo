@@ -9,14 +9,17 @@ import javax.faces.bean.RequestScoped;
 @RequestScoped
 public class Book {
 
-	/**
-	 * ManagedPropertyが指定されていなくてもbook.priceのように
-	 * JSFを利用するページからアクセスすることはできる。
-	 */
 	private int price;
 	
 	private Date publication = new Date();
 
+	/**
+	 * ManagedPropertyが指定されていなくてもbook.priceのように
+	 * JSFを利用するページからアクセスすることはできる。ManagedPropertyは
+	 * ELを使ってフィールドの初期化を行いたい時に使うものなのかもしれない。
+	 */
+	private String title;
+	
 	public int getPrice() {
 		return price;
 	}
@@ -32,5 +35,13 @@ public class Book {
 	public void setPublication(Date publication) {
 		this.publication = publication;
 	}
-	
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 }
