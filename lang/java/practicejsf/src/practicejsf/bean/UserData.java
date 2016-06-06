@@ -18,12 +18,15 @@ import practicejsf.util.Faces;
 @RequestScoped
 public class UserData {
 
+	/**
+	 * ManagedPropertyはString型でなければならない。
+	 */
 	@ManagedProperty(value = "no name")
 	private String name;
 	
 	@ManagedProperty(value = "")
 	private String password;
-
+	
 	private static final String SUCCESS_USERNAME = "testuser";
 	private static final String SUCCESS_PASSWORD = "testpassword";
 

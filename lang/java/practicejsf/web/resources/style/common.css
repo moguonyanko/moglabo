@@ -15,3 +15,8 @@
 	font-weight: bold;
 	font-style: italic;
 }
+
+.invisible {
+	display: none;
+}
+
