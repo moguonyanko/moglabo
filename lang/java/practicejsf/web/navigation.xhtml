@@ -14,6 +14,23 @@
 			<p><h:link outcome="index" value="home" /></p>
 		</header>
 		<section>
+			<h2>基本</h2>
+			<section>
+				<h3>ランダムページジャンプ</h3>
+				<h:form>
+					<h:commandButton action="#{navigationController.choosePage}" value="random" />
+				</h:form>
+			</section>
+			<section>
+				<h3>入力値でナビゲーション</h3>
+				<h:form>
+					<h:inputText value="#{navigationController.language}" />
+					<h:commandButton action="#{navigationController.showChoice}" value="check language" />
+				</h:form>
+			</section>
+		</section>
+		
+		<section>
 			<h2>暗黙のナビゲーション</h2>
 			<section>
 				<h3>マネージドBeanを使ったナビゲーション</h3>

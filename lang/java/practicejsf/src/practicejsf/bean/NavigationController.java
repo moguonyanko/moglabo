@@ -1,10 +1,14 @@
 package practicejsf.bean;
 
+import java.util.Random;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 
-@ManagedBean(name = "navigationController", eager = true)
+import practicejsf.util.Faces;
+
+@ManagedBean(eager = true)
 @RequestScoped
 public class NavigationController {
 
@@ -42,6 +46,8 @@ public class NavigationController {
 	@ManagedProperty(value = "#{param.toHome}")
 	private boolean toHome;
 
+	private String language;
+	
 	public String moveToPage1() {
 		return "page1";
 	}
@@ -76,6 +82,34 @@ public class NavigationController {
 	
 	public void setToHome(boolean toHome) {
 		this.toHome = toHome;
+	}
+	
+	public String choosePage(){
+		int pageNum = new Random().nextInt(Page.values().length);
+		Page page = Page.parse(String.valueOf(pageNum));
+		
+		return page.getPageName();
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		if(language == null){
+			language = "";
+		}
+		this.language = language.trim();
+	}
+	
+	public String showChoice(){
+		if(Faces.isNullOrEmpty(language)){
+			return Page.NAVIGATION.getPageName();
+		} else if(language.equalsIgnoreCase("java")) {
+			return Page.PAGE1.getPageName();
+		} else {
+			return Page.PAGE2.getPageName();
+		}
 	}
 
 }
