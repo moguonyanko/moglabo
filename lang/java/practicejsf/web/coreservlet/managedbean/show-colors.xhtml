@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>色選択結果</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<style>
+			.color1 { 
+				color: #{selectedColors.color1}
+			}
+			
+			.color2 { 
+				color: #{selectedColors.color2}
+			}
+			
+			.color3 { 
+				color: #{selectedColors.color3}
+			}
+			
+			.color4 { 
+				color: #{selectedColors.color4}
+			}
+		</style>
+    </h:head>
+    <h:body>
+		<header>
+			<h1>色選択結果</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<section>
+			<p>Color 1:<span class="color1">#{selectedColors.color1}</span></p>
+			<p>Color 2:<span class="color2">#{selectedColors.color2}</span></p>
+			<p>Color 3:<span class="color3">#{selectedColors.color3}</span></p>
+			<p>Color 4:<span class="color4">#{selectedColors.color4}</span></p>
+		</section>
+    </h:body>
+</html>

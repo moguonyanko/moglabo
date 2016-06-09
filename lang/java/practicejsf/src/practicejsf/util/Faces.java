@@ -1,9 +1,8 @@
 package practicejsf.util;
 
 import java.io.Closeable;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.faces.application.Application;
@@ -36,29 +35,47 @@ public final class Faces {
 		return true;
 	}
 
-	public static boolean close(final Connection connection) {
-		boolean closed = Faces.close(new Closeable() {
-			@Override
-			public void close() throws IOException {
-				try {
-					if (connection != null) {
-						connection.close();
-					}
-				} catch (SQLException ex) {
-					throw new IOException(ex);
-				}
-			}
-		});
-
-		return closed;
-	}
-
 	public static Application getApplication() {
 		return FacesContext.getCurrentInstance().getApplication();
 	}
 
 	public static boolean isNullOrEmpty(String value) {
 		return value == null || value.trim().isEmpty();
+	}
+
+	/**
+	 * @todo
+	 * ラムダ式とストリームで整理する。
+	 */
+	public static <K, V> Map<K, V> toMap(List<K> keys, List<V> values) {
+		Map<K, V> result = new HashMap<>();
+
+		int keySize = keys.size();
+		/**
+		 * List.addAllしてもサイズが足りない部分がnullで埋められたりはしない。
+		 * List<V> vs = new ArrayList<>(keySize);
+		 * //keysのサイズがvaluesのサイズより大きくてもvsのサイズはvaluesと同じ。
+		 * //Collections.fillで事前にnullで埋めておいてもサイズは増えない。
+		 * vs.addAll(values);
+		 */
+
+		for (int i = 0; i < keySize; i++) {
+			K key = keys.get(i);
+
+			V value;
+			try {
+				value = values.get(i);
+			} catch (IndexOutOfBoundsException ex) {
+				value = null;
+			}
+
+			/**
+			 * 既存のキーとそれに紐付く値は上書きされる。
+			 */
+			result.put(key, value);
+		}
+
+		return result;
 	}
 
 }
