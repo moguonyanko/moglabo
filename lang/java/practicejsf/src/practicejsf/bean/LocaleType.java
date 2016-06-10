@@ -34,7 +34,7 @@ public enum LocaleType {
 	}
 
 	public static Map<String, String> getLocaleNameMap() {
-		Map<String, String> locales = new HashMap<String, String>();
+		Map<String, String> locales = new HashMap<>();
 
 		for (LocaleType type : values()) {
 			locales.put(type.id, type.localeTypeName);
