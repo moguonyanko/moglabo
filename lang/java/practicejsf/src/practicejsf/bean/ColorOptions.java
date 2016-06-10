@@ -6,15 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.faces.bean.ApplicationScoped;
 
 import javax.faces.bean.ManagedBean;
 
 import practicejsf.util.Faces;
 
-/**
- * 何も指定しない場合はリクエストスコープになる。
- */
 @ManagedBean
+@ApplicationScoped
 public class ColorOptions {
 
 	private static final String[] SAFE_COLOR_NAMES = {

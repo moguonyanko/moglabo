@@ -14,28 +14,28 @@
 		</header>
 
 		<section>
-			<h2>色選択</h2>
+			<h2>色選択1</h2>
 			<h:form>
 				<section>
 					<h3>h:selectOneMenu</h3>
 					<p>選択要素のvalueの型:<span>String[]</span></p>
 					<p>h:selectOneMenuは何も選択されなかった時に先頭の要素が選択される。</p>
 					<p>f:selectItemsで選択された要素のvalueが親要素のh:selectXXXのvalueに設定される。</p>
-					<h:selectOneMenu value="#{selectedColors.color1}">
+					<h:selectOneMenu value="#{colors1.color1}">
 						<f:selectItems value="#{colorOptions.colorNames}" />
 					</h:selectOneMenu>
 				</section>
 				<section>
 					<h3>h:selectOneListbox</h3>
 					<p>選択要素のvalueの型:<span>List&lt;String&gt;</span></p>
-					<h:selectOneListbox value="#{selectedColors.color2}">
+					<h:selectOneListbox value="#{colors1.color2}">
 						<f:selectItems value="#{colorOptions.colorValues}" />
 					</h:selectOneListbox>
 				</section>
 				<section>
 					<h3>h:selectOneRadio</h3>
 					<p>選択要素のvalueの型:<span>Map&lt;String, String&gt;</span></p>
-					<h:selectOneRadio value="#{selectedColors.color3}">
+					<h:selectOneRadio value="#{colors1.color3}">
 						<f:selectItems value="#{colorOptions.colorMap}" />
 					</h:selectOneRadio>
 				</section>
@@ -46,7 +46,7 @@
 						オブジェクトのListをvalueに指定した場合はラベルと値に使う文字列を指定する。<br />
 						BeanのフィールドをString型のコレクションで保持しなくてもよい。
 					</p>
-					<h:selectOneListbox value="#{selectedColors.color4}">
+					<h:selectOneListbox value="#{colors1.color4}">
 						<f:selectItems value="#{colorOptions.colorList}"
 									   var="color" 
 									   itemLabel="#{color.colorName}" 
@@ -54,10 +54,96 @@
 					</h:selectOneListbox>
 				</section>
 				<div>
-					<h:commandButton action="#{selectedColors.showColors}" value="選択結果表示" />
+					<h:commandButton action="#{colors1.showColors}" value="選択結果表示" />
 				</div>
 			</h:form>
 		</section>
 
+		<section>
+			<h2>色選択2</h2>
+			<p>
+				色選択1のBeanのサブクラスでページ遷移を行う。
+			</p>
+			<h:form>
+				<section>
+					<h3>h:selectOneMenu</h3>
+					<p>選択要素のvalueの型:<span>String[]</span></p>
+					<h:selectOneMenu value="#{colors2.color1}">
+						<f:selectItems value="#{colorOptions.colorNames}" />
+					</h:selectOneMenu>
+				</section>
+				<section>
+					<h3>h:selectOneListbox</h3>
+					<p>選択要素のvalueの型:<span>List&lt;String&gt;</span></p>
+					<h:selectOneListbox value="#{colors2.color2}">
+						<f:selectItems value="#{colorOptions.colorValues}" />
+					</h:selectOneListbox>
+				</section>
+				<section>
+					<h3>h:selectOneRadio</h3>
+					<p>選択要素のvalueの型:<span>Map&lt;String, String&gt;</span></p>
+					<h:selectOneRadio value="#{colors2.color3}">
+						<f:selectItems value="#{colorOptions.colorMap}" />
+					</h:selectOneRadio>
+				</section>
+				<section>
+					<h3>h:selectOneListbox</h3>
+					<p>選択要素のvalueの型:<span>List&lt;Color&gt;</span></p>
+					<h:selectOneListbox value="#{colors2.color4}">
+						<f:selectItems value="#{colorOptions.colorList}"
+									   var="color" 
+									   itemLabel="#{color.colorName}" 
+									   itemValue="#{color.colorValue}" />
+					</h:selectOneListbox>
+				</section>
+				<div>
+					<h:commandButton action="#{colors2.showColors}" value="選択結果表示" />
+				</div>
+			</h:form>
+		</section>
+
+		<section>
+			<h2>色選択3</h2>
+			<p>
+				色選択1のBeanのサブクラスでページ遷移を行う。<br />
+				このBeanでは選択済みの状態を初期状態にする。
+			</p>
+			<h:form>
+				<section>
+					<h3>h:selectOneMenu</h3>
+					<p>選択要素のvalueの型:<span>String[]</span></p>
+					<h:selectOneMenu value="#{colors3.color1}">
+						<f:selectItems value="#{colorOptions.colorNames}" />
+					</h:selectOneMenu>
+				</section>
+				<section>
+					<h3>h:selectOneListbox</h3>
+					<p>選択要素のvalueの型:<span>List&lt;String&gt;</span></p>
+					<h:selectOneListbox value="#{colors3.color2}">
+						<f:selectItems value="#{colorOptions.colorValues}" />
+					</h:selectOneListbox>
+				</section>
+				<section>
+					<h3>h:selectOneRadio</h3>
+					<p>選択要素のvalueの型:<span>Map&lt;String, String&gt;</span></p>
+					<h:selectOneRadio value="#{colors3.color3}">
+						<f:selectItems value="#{colorOptions.colorMap}" />
+					</h:selectOneRadio>
+				</section>
+				<section>
+					<h3>h:selectOneListbox</h3>
+					<p>選択要素のvalueの型:<span>List&lt;Color&gt;</span></p>
+					<h:selectOneListbox value="#{colors3.color4}">
+						<f:selectItems value="#{colorOptions.colorList}"
+									   var="color" 
+									   itemLabel="#{color.colorName}" 
+									   itemValue="#{color.colorValue}" />
+					</h:selectOneListbox>
+				</section>
+				<div>
+					<h:commandButton action="#{colors3.showColors}" value="選択結果表示" />
+				</div>
+			</h:form>
+		</section>
     </h:body>
 </html>
