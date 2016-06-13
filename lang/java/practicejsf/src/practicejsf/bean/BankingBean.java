@@ -3,10 +3,10 @@ package practicejsf.bean;
 import java.io.Serializable;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 
 import practicejsf.bean.service.CustomerLookupService;
-import practicejsf.bean.service.simple.CustomerSimpleMap;
 import practicejsf.util.Faces;
 
 /**
@@ -26,7 +26,14 @@ public class BankingBean implements Serializable {
 	 */
 	private Customer customer;
 	
-	private static final CustomerLookupService LOOKUP_SERVICE = new CustomerSimpleMap();
+	/**
+	 * BankingBeanがManagedBeanとして参照された時しかManagedPropertyは設定されない。
+	 * つまりBankingBeanをメンバとして持つクラスがインスタンス化されたとしても
+	 * BankingBeanのManagedPropertyは設定されない。ただし別のBeanのManagedProperty経由で
+	 * BankingBeanが初期化された時は設定される。
+	 */
+	@ManagedProperty(value = "#{currentLookupService}")
+	private transient CustomerLookupService service;
 
 	private static final String SAMPLE_PASSWORD = "secret";
 
@@ -63,7 +70,7 @@ public class BankingBean implements Serializable {
 			return "wrong-password";
 		}
 
-		customer = LOOKUP_SERVICE.findCustomer(customerId);
+		customer = service.findCustomer(customerId);
 
 		if (customer == null) {
 			return "unknown-customer";
@@ -78,6 +85,10 @@ public class BankingBean implements Serializable {
 		} else {
 			return "high-balance";
 		}
+	}
+
+	public void setService(CustomerLookupService service) {
+		this.service = service;
 	}
 
 }

@@ -18,6 +18,10 @@ import practicejsf.util.Faces;
 public class SearchController {
 
 	private String searchString = "";
+	/**
+	 * searchEngineはString型のフィールドでないので
+	 * setterで値が設定される時に引数のtoStringが呼び出されない。
+	 */
 	private SearchEngine searchEngine;
 
 	public enum SearchEngine {
@@ -44,7 +48,7 @@ public class SearchController {
 		
 		@Override
 		public String toString() {
-			return name().toUpperCase();
+			return getDisplayName() + ":" + getSearchURL();
 		}
 
 	}
@@ -63,12 +67,6 @@ public class SearchController {
 
 	public void setSearchEngine(SearchEngine searchEngine) {
 		this.searchEngine = searchEngine;
-	}
-	
-	public List<String> getAvailableSearchEngineNames() {
-		return Stream.of(SearchEngine.values())
-			.map(engine -> engine.getDisplayName())
-			.collect(Collectors.toList());
 	}
 
 	public List<SearchEngine> getAvailableSearchEngines() {

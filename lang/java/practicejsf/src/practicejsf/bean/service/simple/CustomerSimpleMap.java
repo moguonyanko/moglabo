@@ -24,6 +24,7 @@ public class CustomerSimpleMap implements CustomerLookupService {
 
 	public CustomerSimpleMap() {
 		SAMPLE_CUSTOMERS.forEach(c -> addCustomer(c));
+		printOwnClassName();
 	}
 
 	private void addCustomer(Customer customer) {
@@ -37,6 +38,10 @@ public class CustomerSimpleMap implements CustomerLookupService {
 		}else{
 			return null;
 		}
+	}
+	
+	protected final void printOwnClassName() {
+		System.out.println(this.getClass().getSimpleName() + " initialized!");
 	}
 
 }

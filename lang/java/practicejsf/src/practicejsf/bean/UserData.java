@@ -19,7 +19,8 @@ import practicejsf.util.Faces;
 public class UserData {
 
 	/**
-	 * ManagedPropertyはString型でなければならない。
+	 * ManagedPropertyのvalueには文字列の値かManagedBeanのnameを指定できる。
+	 * ManagedBeanのnameはELを介して指定する必要がある。
 	 */
 	@ManagedProperty(value = "no name")
 	private String name;
