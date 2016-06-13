@@ -1,5 +1,7 @@
 package practicejsf.bean;
 
+import java.io.Serializable;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 
@@ -12,7 +14,9 @@ import practicejsf.util.Faces;
  */
 @ManagedBean
 @RequestScoped
-public class BankingBean {
+public class BankingBean implements Serializable {
+	
+	private static final long serialVersionUID = 943008722123L;
 
 	private String customerId;
 	private String password;

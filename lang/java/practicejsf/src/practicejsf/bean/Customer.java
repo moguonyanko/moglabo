@@ -1,6 +1,8 @@
 package practicejsf.bean;
 
-public class Customer {
+import java.io.Serializable;
+
+public class Customer implements Serializable {
 	
 	private final String id;
 	private final String firstName;

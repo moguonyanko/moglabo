@@ -8,8 +8,9 @@ import javax.faces.bean.SessionScoped;
 /**
  * スーパークラスのBeanがRequestScopedだとサブクラスのBeanをSessionScopedにしても
  * セッションにサブクラスのBeanオブジェクトを保存することができない。
- * SessionScopedなBeanのフィールドはSerializableでなくても
- * セッションにオブジェクトを保存することはできる。
+ * 
+ * SessionScopedなBeanのフィールドがSerializableでないと，
+ * アプリケーションサーバ終了時にNotSerializableExceptionが発生する。
  */
 @ManagedBean(name = "bankingBean2")
 @SessionScoped
