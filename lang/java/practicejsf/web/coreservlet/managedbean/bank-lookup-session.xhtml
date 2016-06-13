@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>Beanのスコープ(セッション)</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>Beanのスコープ(セッション)</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<section>
+				<h2>セッションにユーザー情報を保存</h2>
+				<fieldset>
+					<legend>顧客の残高照会(セッションスコープ)</legend>
+					<p><span>以前入力された顧客ID:</span><strong><h:outputText value="#{bankingBean2.customerId}" /></strong></p>
+					<h:form>
+						<p><span>顧客ID:</span><h:inputText value="#{bankingBean2.customerId}" /></p>
+						<p><span>パスワード:</span><h:inputSecret value="#{bankingBean2.password}" /></p>
+						<div>
+							<h:commandButton action="#{bankingBean2.showBalance}" value="照会" />
+							<div>
+								<p>
+									inputでもcommandButtonでもリセットの挙動は同じ。ページが保存している値に戻される。<br />
+									パスワードは保存されていないので入力欄は空になる。
+								</p>
+								<span><input type="reset" value="入力値クリア(input)" /></span>
+								<h:commandButton type="reset" value="入力値クリア(commandButton)"></h:commandButton>
+							</div>
+						</div>
+					</h:form>
+				</fieldset>
+			</section>
+		</main>
+    </h:body>
+</html>
