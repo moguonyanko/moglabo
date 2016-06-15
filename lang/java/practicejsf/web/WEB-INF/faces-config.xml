@@ -27,6 +27,79 @@
 			<if>#{navigationController.toHome}</if>
 		</navigation-case>
 	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>*</from-view-id>
+		<navigation-case>
+			<from-outcome>too-short</from-outcome>
+			<to-view-id>/coreservlet/navigation/error-message.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<!--
+		to-view-idに指定した値はスラッシュから始まっていなくても絶対パスとして扱われる。
+		-->
+		<navigation-case>
+			<from-outcome>page1</from-outcome>
+			<to-view-id>/coreservlet/navigation/result-page-1.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>page2</from-outcome>
+			<to-view-id>/coreservlet/navigation/result-page-2.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>page3</from-outcome>
+			<to-view-id>/coreservlet/navigation/result-page-3.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<!--
+		アスタリスクを含むfrom-view-idよりも「よりマッチする」from-view-idを持つ
+		navigation-ruleの方が優先して適用される。
+		-->
+		<from-view-id>/coreservlet/navigation/start-page-with-explicit-bean.xhtml</from-view-id>
+		<navigation-case>
+			<!-- ifでELを使いメソッドを呼び出すこともできる。 -->
+			<from-outcome>empty</from-outcome>
+			<if>#{messageHandler.message.isEmpty()}</if>
+			<!-- managed-beanの定義より前の行でもmanaged-bean-nameの値を使ってBeanにアクセスできる。 -->
+			<to-view-id>/coreservlet/navigation/#{messageHandler.emptyPage}</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>too-short</from-outcome>
+			<to-view-id>/coreservlet/navigation/error-message-explicit-bean.xhtml</to-view-id>
+		</navigation-case>
+		<!--
+		全てのfrom-outcomeを省略すると最初に定義されたnavigation-caseのto-view-idが
+		常に適用される。
+		-->
+		<navigation-case>
+			<from-outcome>page1</from-outcome>
+			<to-view-id>/coreservlet/navigation/message-page-1.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>page2</from-outcome>
+			<to-view-id>/coreservlet/navigation/message-page-2.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>page3</from-outcome>
+			<to-view-id>/coreservlet/navigation/message-page-3.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<!--
+	明示的なBeanを設定することでFaceletsページを変更せずに利用するBeanを差し替えることができる。
+	ManagedBeanアノテーションのnameを変更することでも対応可能だが，その場合はBeanを含む
+	アプリケーションのビルドと再デプロイが必要になる。また同じ名前のBeanを異なるスコープで
+	使い分けることもできる。
+	-->
+	<managed-bean>
+		<managed-bean-name>messageHandler</managed-bean-name>
+		<managed-bean-class>practicejsf.bean.EmptySupportController</managed-bean-class>
+	
+		<!--
+		managed-bean-scopeによるスコープの設定を怠るとBeanを参照するページが表示できない。 
+		デフォルトでリクエストスコープにされたりはしない。 
+		-->
+		<managed-bean-scope>request</managed-bean-scope></managed-bean>
 	<application>
 		<!-- アプリケーション開始時のイベントリスナ設定 -->
 		<system-event-listener>

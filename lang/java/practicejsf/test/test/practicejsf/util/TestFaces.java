@@ -64,4 +64,16 @@ public class TestFaces {
 		
 		assertThat(actual, is(expected));
 	}
+	
+	@Test
+	public void 指定した集合からランダムな値を取得できる(){
+		List<String> src = Arrays.asList("foo", "bar", "baz");
+		
+		String actual = Faces.getRandomElement(src);
+		
+		System.out.println(actual);
+		
+		assertTrue(src.contains(actual));
+	}
+	
 }
