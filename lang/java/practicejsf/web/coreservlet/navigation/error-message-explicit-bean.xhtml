@@ -10,6 +10,13 @@
     <h:body>
 		<header>
 			<h1>ナビゲーション(explicit-bean) Error</h1>
+			<!-- 
+			静的なナビゲーションでもh:commandButtonはh:formの内部に記述されなければエラーになる。
+			パラメータを決められたページに送信してリクエストしたい時に使うのかもしれない。
+			-->
+			<h:form>
+				<span><h:commandButton action="/index" value="ホーム" /></span>
+			</h:form>
 		</header>
 
 		<main>

@@ -10,6 +10,19 @@
     <h:body>
 		<header>
 			<h1>ナビゲーション Empty Error</h1>
+			<!--
+			h:linkやh:commandButtonはa要素と異なりコンテキストルートからパスを検索する。 
+			コンテキスト名を書かなくていいのはメリットといえる。
+			コンテキスト名を書きたくないなら相対パスを使えばよい。しかし相対パスは
+			将来ディレクトリ構成が変更される可能性を考えると同じディレクトリ内の
+			ファイルを参照するときだけ使うようにしたい。絶対パスでも変更の影響は受けるが
+			Webサーバの設定やfaces-config.xmlのnavigation-ruleで対応できる可能性がある。
+			-->
+			<p><a href="/practicejsf/">a要素でhome</a></p>
+			<p><h:link outcome="/index" value="h:linkでhome" /></p>
+			<h:form>
+				<span><h:commandButton action="/index" value="h:commandButtonでhome" /></span>
+			</h:form>
 		</header>
 
 		<main>

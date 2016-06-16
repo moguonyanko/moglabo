@@ -10,6 +10,15 @@
     <h:body>
 		<header>
 			<h1>ナビゲーション(from-outcome) Error</h1>
+			<!-- indexを省略すると目的のページを見つけることができない。 -->
+			<p><h:link outcome="/index" value="home(コンテキストルートから絶対パス)" /></p>
+			<!-- 
+			オリジンからパスを指定してもコンテキストルートの末尾にパスが付加されて
+			検索が行われてしまい意図したリンクを作成することができない。すなわち
+			外部サイトのURLはh:linkやh:commandButtonでは参照できないということである。 
+			内部的にはフォワードが行われているのだろうか。
+			-->
+			<!--<p><h:link outcome="https://gfdev/practicejsf/index" value="home(オリジンから絶対パス)" /></p>-->
 		</header>
 
 		<main>
