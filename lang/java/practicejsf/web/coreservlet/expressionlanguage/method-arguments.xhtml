@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>引数を渡してメソッド呼び出し</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+    </h:head>
+    <body>
+		<header>
+			<h1>引数を渡してメソッド呼び出し</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<p class="note">メソッドに引数を渡して呼び出せるようになったのはEL2.2から。</p>
+			<div>
+				<p>英語であいさつ:<span class="emphasis">#{testbean2.greeting(false)}</span></p>
+				<p>日本語であいさつ:<span class="emphasis">#{testbean2.greeting(true)}</span></p>
+				<p>デフォルトの言語であいさつ:<span class="emphasis">#{testbean2.greeting()}</span></p>
+				<p>小さな乱数:<span class="emphasis">#{testbean2.randomNumber(5)}</span></p>
+				<p>大きな乱数:<span class="emphasis">#{testbean2.randomNumber(500)}</span></p>
+				<p>ランダムあいさつ:<span class="emphasis">#{testbean2.greeting(testbean2.randomNumber(200) % 4 le 1)}</span></p>
+			</div>
+		</main>
+    </body>
+</html>
