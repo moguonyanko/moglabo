@@ -1,7 +1,9 @@
 package practicejsf.util;
 
 import java.io.Closeable;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +82,10 @@ public final class Faces {
 		}
 
 		return result;
+	}
+	
+	public static <K, V> Map<K, V> toMap(K[] keys, V[] values) {
+		return toMap(Arrays.asList(keys), Arrays.asList(values));
 	}
 
 	private static <T> T getElementFromStream(Stream<T> stream, int index) {

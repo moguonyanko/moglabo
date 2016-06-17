@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>Accepted</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>Accepted</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<p>申し込みを受理しました。</p>
+			<ul>
+				<li>苗字:<span class="emphasis">#{employee1.name.firstName}</span></li>
+				<li>名前:<span class="emphasis">#{employee1.name.lastName}</span></li>
+				<li>所属企業名:<span class="emphasis">#{employee1.company.companyName}</span></li>
+				<li>業務内容:<span class="emphasis">#{employee1.company.business}</span></li>
+			</ul>
+		</main>
+    </h:body>
+</html>

@@ -2,8 +2,8 @@ package practicejsf.bean;
 
 import java.util.Objects;
 
-public abstract class Employee {
-	
+public class Employee {
+
 	private final Name name;
 	private final Company company;
 
@@ -22,11 +22,11 @@ public abstract class Employee {
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof Employee) {
-			Employee another = (Employee)obj;
+		if (obj instanceof Employee) {
+			Employee another = (Employee) obj;
 			return name.equals(another.name) && company.equals(another.company);
 		}
-		
+
 		return false;
 	}
 
@@ -34,5 +34,13 @@ public abstract class Employee {
 	public int hashCode() {
 		return Objects.hash(name, company);
 	}
-	
+
+	public String processEmployee() {
+		if (Math.random() < 0.5) {
+			return "accepted";
+		} else {
+			return "rejected";
+		}
+	}
+
 }

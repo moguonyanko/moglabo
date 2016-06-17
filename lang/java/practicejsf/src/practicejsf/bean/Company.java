@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class Company {
 
-	private final String companyName;
-	private final String business;
+	private String companyName;
+	private String business;
 
 	public Company(String companyName, String business) {
 		this.companyName = companyName;
@@ -16,8 +16,16 @@ public class Company {
 		return companyName;
 	}
 
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
 	public String getBusiness() {
 		return business;
+	}
+
+	public void setBusiness(String business) {
+		this.business = business;
 	}
 
 	@Override

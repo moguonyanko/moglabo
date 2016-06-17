@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <head>
+		<meta charset="UTF-8" />
+        <title>購入完了</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+    <body>
+		<header>
+			<h1>購入完了</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+			<p><h:link outcome="using-collections" value="再購入" /></p>
+		</header>
+
+		<main>
+			<section>
+				<h2>Cheap Items</h2>
+				<p><h:outputText value="#{purchases.cheapItems[0]}" /></p>
+				<p><h:outputText value="#{purchases.cheapItems[1]}" /></p>
+				<p><h:outputText value="#{purchases.cheapItems[2]}" /></p>
+			</section>
+			<section>
+				<h2>Medium Items</h2>
+				<p><h:outputText value="#{purchases.mediumItems[0]}" /></p>
+				<p><h:outputText value="#{purchases.mediumItems[1]}" /></p>
+				<p><h:outputText value="#{purchases.mediumItems[2]}" /></p>
+			</section>
+			<section>
+				<h2>High Items</h2>
+				<p><h:outputText value="#{purchases.valuableItems[purchases.low]}" /></p>
+				<p><h:outputText value="#{purchases.valuableItems[purchases.medium]}" /></p>
+				<p><h:outputText value="#{purchases.valuableItems[purchases.high]}" /></p>
+			</section>			
+		</main>
+    </body>
+</html>
