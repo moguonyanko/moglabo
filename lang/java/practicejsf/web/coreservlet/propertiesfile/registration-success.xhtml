@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja-JP"  xml:lang="ja-JP"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head lang="ja-JP">
+		<meta charset="UTF-8" />
+        <title>#{msgs1.successTitle}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>#{msgs1.successTitle}</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+			<p><h:link outcome="simple-messages" value="再登録" /></p>
+		</header>
+
+		<main>
+			<section>
+				<h2>#{msgs1.successText}</h2>
+				<h:form>
+					<p><h:outputText value="#{person1.firstName}" /></p>
+					<p><h:outputText value="#{person1.lastName}" /></p>
+					<p><h:outputText value="#{person1.emailAddress}" /></p>
+				</h:form>
+			</section>
+		</main>
+    </h:body>
+</html>
