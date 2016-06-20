@@ -142,15 +142,16 @@
 		base-nameはmessages1のみでよい。
 		-->
 		<resource-bundle>
-			<!--
-			特定のロケールに基づくプロパティファイルを指定したければロケールを付与した
-			ファイル名を指定するしかないのかもしれない。
-			default-localeをresource-bundle毎に指定することはできない。
-			Faceletsページのタグのlang属性でロケール指定しても全く効果が無い。
-			-->
-			<!--<base-name>practicejsf.messages.messages1</base-name>-->
-			<base-name>practicejsf.messages.messages1_ja_JP</base-name>
+			<base-name>practicejsf.messages.messages1</base-name>
 			<var>msgs1</var>
+		</resource-bundle>
+		<resource-bundle>
+			<base-name>practicejsf.winner.winners</base-name>
+			<var>winMessages</var>
+		</resource-bundle>
+		<resource-bundle>
+			<base-name>practicejsf.messages.messages2</base-name>
+			<var>msgs2</var>
 		</resource-bundle>
 	</application>
 </faces-config>

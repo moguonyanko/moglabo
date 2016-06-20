@@ -8,7 +8,7 @@ public class AlwaysSuccessPerson extends Person {
 	public AlwaysSuccessPerson() {
 		super("あいう", "えおたろう", "aiueo@hapoo.ne.jp");
 	}
-
+	
 	@Override
 	public String doRegistration() {
 		return "registration-success";
