@@ -27,7 +27,7 @@
 						<legend>#{msgs2.registrationTitle}</legend>
 						<p>ロケール選択</p>
 						<h:selectOneRadio value="#{formSettings.language}"
-										  onclick="submit()"
+										  onchange="submit()"
 										  valueChangeListener="#{formSettings.updateLanguage}"
 										  immediate="true">
 							<f:selectItems value="#{formSettings.languages}" />

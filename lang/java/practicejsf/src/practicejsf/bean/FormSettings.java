@@ -25,6 +25,10 @@ public class FormSettings implements Serializable {
 	
 	private Locale locale = SupportedLocale.parse(selectedLanguage);
 	
+	/**
+	 * styleClass属性に指定されたメソッドはActionEventが発生すると，
+	 * ActionEventで何も変更が発生しなかったとしても必ず呼び出される。
+	 */
 	public String getBodyStyleClass() {
 		if (isNormalSize) {
 			return "normalsize";
@@ -41,12 +45,23 @@ public class FormSettings implements Serializable {
 		isNormalSize = false;
 	}
 
+	/**
+	 * ActionEventが発生するとFaceletsページがリロードされて
+	 * getLocaleが返すロケールに従いページが表示される。
+	 * 
+	 * actionListener属性を多用するとページのリロードが多発するかもしれない。
+	 * valueChangeListener属性についても同じことがいえる。
+	 */
 	public Locale getLocale() {
 		return locale;
 	}
 
 	public void setLocale(Locale locale) {
 		this.locale = locale;
+		/**
+		 * JSF2.0までは以下を呼び出さないとロケールの変更が反映できなかったらしい。
+		 */
+		//FacesContext.getCurrentInstance().getViewRoot().setLocale(locale);
 	}
 	
 	public String getLanguage() {
@@ -65,7 +80,7 @@ public class FormSettings implements Serializable {
 	}
 
 	public void changeRandomLocaleExceptNow(ActionEvent event) {
-		locale = SupportedLocale.getLocaleExceptNow(locale);
+		setLocale(SupportedLocale.getLocaleExceptNow(locale));
 	}
 
 	public Map<String, String> getLanguages() {
@@ -75,6 +90,14 @@ public class FormSettings implements Serializable {
 	/**
 	 * setLanguageの引数を使ってそのままロケール変更を行う方がシンプルだが
 	 * ValueChangeEventの働きを調査するためにわざとupdateLanguageを経由している。
+	 * 
+	 * Faceletsタグにonclick=submit()を指定すると，値が変更されていなくても
+	 * 対象の要素を操作した時にFaceletsページのリロードが発生する。ただし値の変更を
+	 * 伴わないならばvalueChangeListener属性に指定したメソッドは呼び出されない。
+	 * 
+	 * onchange=submit()の場合，対象の要素が変更されていなければページのリロードは
+	 * 発生しない。例えばonchange属性が指定された同じh:selectOneRadioを
+	 * クリックし続けているだけならページはリロードされない。
 	 */
 	public void updateLanguage(ValueChangeEvent event){
 		selectedLanguage = event.getNewValue().toString();
