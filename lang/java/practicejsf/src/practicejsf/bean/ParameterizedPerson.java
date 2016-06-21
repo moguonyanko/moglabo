@@ -13,5 +13,5 @@ public class ParameterizedPerson extends Person {
 	public String doRegistration() {
 		return "registration-success";
 	}
-	
+
 }

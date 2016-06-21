@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>ValueChangeEventを発生させてロケールを変更</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+    </h:head>
+    <h:body styleClass="#{formSettings.bodyStyleClass}">
+		<header>
+			<h1>ValueChangeEventを発生させてロケールを変更</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<f:view locale="#{formSettings.locale}">
+				<h:outputFormat class="note" value="#{msgs2.registrationText}">
+					<f:param value="#{msgs2.firstName}" />
+					<f:param value="#{msgs2.lastName}" />
+					<f:param value="#{msgs2.emailAddress}" />
+				</h:outputFormat>
+				<h:form>
+					<fieldset>
+						<legend>#{msgs2.registrationTitle}</legend>
+						<p>ロケール選択</p>
+						<h:selectOneRadio value="#{formSettings.language}"
+										  onclick="submit()"
+										  valueChangeListener="#{formSettings.updateLanguage}"
+										  immediate="true">
+							<f:selectItems value="#{formSettings.languages}" />
+						</h:selectOneRadio>
+						<p><span>#{msgs2.firstName}:</span><h:inputText value="#{person3.firstName}" /></p>
+						<p><span>#{msgs2.lastName}:</span><h:inputText value="#{person3.lastName}" /></p>
+						<p><span>#{msgs2.emailAddress}:</span><h:inputText value="#{person3.emailAddress}" /></p>
+						<div>
+							<h:commandButton value="#{msgs2.buttonLabel}" action="#{person3.doRegistration}" />
+						</div>
+					</fieldset>
+				</h:form>
+			</f:view>
+		</main>
+    </h:body>
+</html>
