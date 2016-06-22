@@ -31,3 +31,13 @@
 .largesize {
 	font-size: 200%;
 }
+
+.content-title::before {
+	content: counter(titlecount, lower-alpha) ". ";
+	color: red;
+}
+
+.content-title {
+	counter-increment: titlecount;
+	counter-reset: none;
+}
