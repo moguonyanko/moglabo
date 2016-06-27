@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>Beanのメソッドでバリデーション</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>Beanのメソッドでバリデーション</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<p class="warn">
+				h:panelGridはtable要素を生成するが，table要素を使ってページのレイアウトを<br />
+				行うのは表示項目のスタイルを変更しづらくし，セマンティクス上の誤りも招く非常に悪い方法である。<br />
+				したがって今回のような学習目的でなければ決して用いないこと。
+			</p>
+			<h:form>
+				<!-- h:messagesに全てのrequiredMessageが出力される。 -->
+				<h:messages styleClass="error" />
+				<h:panelGrid columns="2" styleClass="formTable">
+					<p><span>ユーザーID:</span>
+						<h:inputText value="#{bidBean1.userId}"
+									 required="true"
+									 requiredMessage="ユーザーIDは必須です。" />
+					</p>
+					<p><span>キーワード:</span>
+						<h:inputText value="#{bidBean1.keyword}"
+									 required="true"
+									 requiredMessage="キーワードは必須です。" />
+					</p>
+					<p><span>支払い金額:</span>
+						<h:inputText value="#{bidBean1.bidAmount}"
+									 required="true"
+									 requiredMessage="支払い金額は必須です。" />
+					</p>
+					<p><span>支払い期間:</span>
+						<h:inputText value="#{bidBean1.bidDuration}"
+									 required="true"
+									 requiredMessage="支払い期間は必須です。" />
+					</p>
+				</h:panelGrid>
+				<h:commandButton value="送信" action="#{bidBean1.doBid}" />
+			</h:form>
+		</main>
+    </h:body>
+</html>

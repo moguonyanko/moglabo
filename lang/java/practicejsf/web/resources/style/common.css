@@ -11,6 +11,11 @@
 }
 
 .warn {
+	color: coral;
+	font-weight: bold;
+}
+
+.error {
 	color: red;
 	font-weight: bold;
 	font-style: italic;
