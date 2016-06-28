@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>登録した日付の確認</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>登録した日付の確認</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<ul>
+				<li>出発日:<span>#{reservationBean1.startDate}</span></li>
+				<li>到着日:<span>#{reservationBean1.endDate}</span></li>
+			</ul>
+			<p><h:link outcome="resort-registration" value="エラーメッセージのカスタマイズ" /></p>
+		</main>
+    </h:body>
+</html>

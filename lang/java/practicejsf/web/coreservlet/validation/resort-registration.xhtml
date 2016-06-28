@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>エラーメッセージのカスタマイズ</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+		<style>
+			.error-report-container {
+				background-color: lightgray;
+				border: 1px solid lightgray;
+				border-radius: 5px;
+			}
+		</style>
+    </h:head>
+    <h:body>
+		<header>
+			<h1>エラーメッセージのカスタマイズ</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<p>
+				f:convertDateTimeはLocalDateに対応していない。<br />
+				DateではなくLocalDateで日付を扱いたかったら自前のコンバータを用意する必要がある。<br />
+				自前のコンバータを利用すると必須情報が入力されなくてもconverterMessage属性の<br />
+				メッセージが表示されるようになる。requiredMessage属性に指定したメッセージは表示されなくなり，<br />
+				空文字であってもコンバータを適用されるようになってしまう。即ち必須情報が入力されたかどうかの<br />
+				チェックも自前で行うしかなくなる。required属性が意味を成さなくなるということである。
+			</p>
+			<h:form>
+				<p class="note error-messages-description">エラーが発生するまでh:messagesはDOM要素をページに追加しない。</p>
+				<h:messages styleClass="error error-report-container" />
+				<div class="formTable">
+					<p><span>出発日(yyyy/MM/dd):</span>
+						<h:inputText value="#{reservationBean1.startDate}"
+									 required="true"
+									 requiredMessage="出発日は必須です。"
+									 converterMessage="無効な日付です。yyyy/MM/ddで指定して下さい。">
+							<f:converter converterId="localDateConverter" />
+						</h:inputText>
+					</p>
+					<p><span>到着日(yyyy/MM/dd):</span>
+						<h:inputText value="#{reservationBean1.endDate}"
+									 required="true"
+									 requiredMessage="到着日は必須です。"
+									 converterMessage="無効な日付です。yyyy/MM/ddで指定して下さい。">
+							<f:converter converterId="localDateConverter" />
+						</h:inputText>
+					</p>
+				</div>
+				<h:commandButton value="登録" action="#{reservationBean1.register}" />
+			</h:form>
+		</main>
+    </h:body>
+</html>
