@@ -153,5 +153,9 @@
 			<base-name>practicejsf.messages.messages2</base-name>
 			<var>msgs2</var>
 		</resource-bundle>
+		<resource-bundle>
+			<base-name>practicejsf.validation.messages</base-name>
+			<var>vmsgs</var>
+		</resource-bundle>
 	</application>
 </faces-config>

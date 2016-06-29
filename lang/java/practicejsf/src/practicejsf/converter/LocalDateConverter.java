@@ -11,25 +11,17 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.ConverterException;
 import javax.faces.convert.FacesConverter;
 
-import practicejsf.util.Faces;
-
 @FacesConverter(value = "localDateConverter")
 public class LocalDateConverter implements Converter {
 
 	private static final String LOCAL_DATE_FORMAT = "yyyy/MM/dd";
 	private static final DateTimeFormatter LOCAL_DATE_FORMATTER = DateTimeFormatter.ofPattern(LOCAL_DATE_FORMAT);
-	
+
 	@Override
 	public Object getAsObject(FacesContext fc, UIComponent uic, String string) {
-		if(Faces.isNullOrEmpty(string)){
-			FacesMessage message = new FacesMessage("日付が入力されていません。");
-			message.setSeverity(FacesMessage.SEVERITY_ERROR);
-			throw new ConverterException();
-		}
-		
-		try{
+		try {
 			return LocalDate.parse(string, LOCAL_DATE_FORMATTER);
-		}catch(DateTimeParseException ex){
+		} catch (DateTimeParseException ex) {
 			String messageContent = ex.getMessage() + ":" + ex.getParsedString();
 			FacesMessage message = new FacesMessage(messageContent);
 			message.setSeverity(FacesMessage.SEVERITY_ERROR);
@@ -46,8 +38,8 @@ public class LocalDateConverter implements Converter {
 
 	@Override
 	public String getAsString(FacesContext fc, UIComponent uic, Object o) {
-		LocalDate localDate = (LocalDate)o;
+		LocalDate localDate = (LocalDate) o;
 		return localDate.format(LOCAL_DATE_FORMATTER);
 	}
-	
+
 }

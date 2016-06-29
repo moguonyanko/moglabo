@@ -23,6 +23,15 @@
 		</header>
 
 		<main>
+			<p>
+				f:converterとf:validatorを併用するとf:converterしか使われない。<br />
+				記述した順序は関係無い。<br />
+				<span class="note">
+				<a href="http://myfaces.apache.org/wiki/commons/user-guide/myfaces-commons-validators.html">Apache MyFaces Commons Validator</a>には
+				様々な用途に応じたバリデータが定義されている。<br />
+				自前のバリデータを毎度作る必要は無いし作るべきでない。
+				</span>
+			</p>
 			<h:form>
 				<h:messages styleClass="error error-report-container" />
 				<div class="formTable">
@@ -30,16 +39,20 @@
 						<h:inputText value="#{reservationBean2.startDate}"
 									 required="true"
 									 requiredMessage="出発日は必須です。"
+									 validatorMessage="入力値が空です。"
 									 converterMessage="無効な日付です。yyyy/MM/ddで指定して下さい。">
 							<f:converter converterId="localDateConverter" />
+							<f:validator validatorId="emptyCheckValidator" />
 						</h:inputText>
 					</p>
 					<p><span>到着日(yyyy/MM/dd):</span>
 						<h:inputText value="#{reservationBean2.endDate}"
 									 required="true"
 									 requiredMessage="到着日は必須です。"
+									 validatorMessage="入力値が空です。"
 									 converterMessage="無効な日付です。yyyy/MM/ddで指定して下さい。">
 							<f:converter converterId="localDateConverter" />
+							<f:validator validatorId="emptyCheckValidator" />
 						</h:inputText>
 					</p>
 					<p><span>部屋番号:</span>

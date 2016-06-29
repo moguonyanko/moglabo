@@ -49,6 +49,10 @@ public final class Faces {
 		return value == null || value.trim().isEmpty();
 	}
 
+	public static <T, C extends Collection<T>> boolean isNullOrEmpty(C value) {
+		return value == null || value.isEmpty();
+	}
+	
 	/**
 	 * @todo
 	 * ラムダ式とストリームで整理する。
