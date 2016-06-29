@@ -3,7 +3,6 @@ package practicejsf.util;
 import java.io.Closeable;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.faces.application.Application;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 public final class Faces {
@@ -83,25 +83,32 @@ public final class Faces {
 
 		return result;
 	}
-	
+
 	public static <K, V> Map<K, V> toMap(K[] keys, V[] values) {
 		return toMap(Arrays.asList(keys), Arrays.asList(values));
 	}
 
 	private static <T> T getElementFromStream(Stream<T> stream, int index) {
-		return  stream.collect(Collectors.toList()).get(index);
+		return stream.collect(Collectors.toList()).get(index);
 	}
-	
+
 	public static <T, C extends Collection<T>> T getRandomElement(C src) {
 		int index = new Random().nextInt(src.size());
-		
+
 		return getElementFromStream(src.stream(), index);
 	}
 
 	public static <T> T getRandomElement(T[] src) {
 		int index = new Random().nextInt(src.length);
-		
+
 		return getElementFromStream(Stream.of(src), index);
 	}
-	
+
+	public static FacesMessage createErrorMessage(String content) {
+		FacesMessage fm = new FacesMessage(content);
+		fm.setSeverity(FacesMessage.SEVERITY_ERROR);
+		
+		return fm;
+	}
+
 }
