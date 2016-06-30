@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>Faceletsタグによる繰り返し</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+		<style>
+			ul {
+				list-style: none;
+			}
+
+			.fruit-name:nth-of-type(odd) {
+				color: red;
+			}
+
+			.fruit-name:nth-of-type(even) {
+				color: blue;
+			}
+			
+			.odd-user-name {
+				color: crimson;
+			}
+			
+			.even-user-name {
+				color: yellowgreen;
+			}
+		</style>
+    </h:head>
+    <h:body>
+		<header>
+			<h1>Faceletsタグによる繰り返し</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<section>
+				<h2>ui:repeatでコレクションの要素を列挙する</h2>
+				<div>
+					<ul class="fruit-list">
+						<li><span>店名:</span><span>#{fruitShop.shopName}</span></li>
+						<ul>
+							<ui:repeat var="fruit" value="#{fruitShop.fruits}">
+								<li class="fruit-name">#{fruit.displayName}</li>
+								<ui:repeat var="region" value="#{fruit.producingRegions}">
+									<li class="region-name">#{region}</li>
+								</ui:repeat>
+							</ui:repeat>
+						</ul>
+					</ul>
+				</div>
+			</section>
+
+			<section>
+				<h2>条件付き出力</h2>
+				<p>
+					varStatus属性に指定した変数を介して現在の要素のインデックスや最後の要素かどうか，<br />
+					インデックスが奇数か偶数かなどといった情報にアクセスできる。
+				</p>
+				<div>
+					<h3>三項演算子</h3>
+					<ul>
+						<ui:repeat var="emp" value="#{fruitShop.employees}" varStatus="status">
+							<li class="#{status.odd ? 'odd-user-name' :  'even-user-name'}">
+								#{not empty emp.emailAddress or !status.last and status.even ? emp.firstName.concat(" ").concat(emp.lastName) : ""}
+							</li>
+							<!-- 三項演算子内で+を使い文字列連結しようとするとNumberFormatExceptionになる。 -->
+							<!--<li>#{not empty emp.emailAddress or !status.last and status.even ? emp.firstName + " " + emp.lastName : ""}</li>-->
+						</ui:repeat>
+					</ul>
+					<h3>rendered</h3>
+					<ul>
+						<ui:repeat var="emp" value="#{fruitShop.employees}" varStatus="status">
+							<li class="#{status.odd ? 'odd-user-name' :  'even-user-name'}">
+								<h:outputText rendered="#{not empty emp.emailAddress or !status.last and status.even}" 
+											  value="#{emp.firstName} #{emp.lastName}" />
+							</li>
+						</ui:repeat>
+					</ul>
+					<h3>u:fragment</h3>
+					<p>
+						HTML要素を出力できるのが利点。単なるテキストの出力であればh:outputTextを使う方がシンプルである。
+					</p>
+					<ul>
+						<ui:repeat var="emp" value="#{fruitShop.employees}" varStatus="status">
+							<ui:fragment rendered="#{not empty emp.emailAddress or !status.last and status.even}">
+								<li class="#{status.odd ? 'odd-user-name' :  'even-user-name'}">#{emp.firstName} #{emp.lastName}</li>
+							</ui:fragment>
+						</ui:repeat>
+					</ul>
+				</div>
+			</section>
+		</main>
+    </h:body>
+</html>

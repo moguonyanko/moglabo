@@ -4,9 +4,14 @@ import javax.faces.bean.ManagedBean;
 
 @ManagedBean(name = "person1")
 public class AlwaysSuccessPerson extends Person {
-
+	
 	public AlwaysSuccessPerson() {
-		super("あいう", "えおたろう", "aiueo@hapoo.ne.jp");
+		this("あいう", "えおたろう", "aiueo@hapoo.ne.jp");
+	}
+	
+	public AlwaysSuccessPerson(String firstName, String lastName, 
+		String emailAddress) {
+		super(firstName, lastName, emailAddress);
 	}
 	
 	@Override
