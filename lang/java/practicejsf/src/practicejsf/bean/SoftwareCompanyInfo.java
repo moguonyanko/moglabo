@@ -10,7 +10,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import practicejsf.bean.service.ProgrammerService;
-import practicejsf.model.Programmer;
 
 /**
  * @todo

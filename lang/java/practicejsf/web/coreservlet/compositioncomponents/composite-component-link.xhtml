@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:mj="http://java.sun.com/jsf/composite/myjsfcomponent">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>複合コンポーネントでリンク作成</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<!--
+		レスポンシブデザインに関わるスタイルなどコンテンツを見やすくするために
+		必要不可欠なスタイル以外はクライアントのFaceletsページに定義させるべきである。
+		複合コンポーネント(＝ライブラリ)側でスタイルを決めつけるべきでない。
+		-->
+		<h:outputStylesheet library="style" name="common.css" />
+		<style>
+			.home-link {
+				width: -moz-fit-content;
+				width: fit-content;
+				border: yellow solid 10px;
+			}
+		</style>
+    </h:head>
+    <h:body>
+		<header>
+			<h1>複合コンポーネントでリンク作成</h1>
+		</header>
+
+		<main>
+			<h2>ホームに戻るリンク</h2>
+			<mj:goHome styleClass="home-link" />
+
+			<div>
+				<h:outputLink value="./linktest/sample-link-page.xhtml">
+					サンプルページへ
+				</h:outputLink>
+			</div>
+		</main>
+    </h:body>
+</html>

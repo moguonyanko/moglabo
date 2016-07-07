@@ -3,7 +3,7 @@ package practicejsf.bean.service;
 import java.util.Arrays;
 import java.util.List;
 
-import practicejsf.model.Programmer;
+import practicejsf.bean.Programmer;
 
 public class ProgrammerService {
 

@@ -1,4 +1,4 @@
-package practicejsf.model;
+package practicejsf.bean;
 
 import java.io.Serializable;
 import java.util.List;
@@ -61,12 +61,6 @@ public class Programmer implements Serializable {
 	public List<String> getLanguages() {
 		return languages.stream().collect(Collectors.toList());
 	}
-	
-	/**
-	 * @todo
-	 * 以下のようなビュー向けのテキスト出力を行うメソッドをモデルに書くべきではない。
-	 * 他に良い方法は無いか？
-	 */
 	
 	public String getFormattedSalary() {
 		return String.format("\\,.2f", getSalary());

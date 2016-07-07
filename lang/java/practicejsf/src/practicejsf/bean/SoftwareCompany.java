@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.faces.bean.ManagedBean;
 
 import practicejsf.bean.service.ProgrammerService;
-import practicejsf.model.Programmer;
 
 /**
  * 可変な状態を持たない限りリクエストスコープで良いはずだが，セッションスコープで
