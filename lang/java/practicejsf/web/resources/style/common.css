@@ -15,6 +15,10 @@
 	font-weight: bold;
 }
 
+.warn::before {
+	content: "!!!";
+}
+
 .error {
 	color: red;
 	font-weight: bold;

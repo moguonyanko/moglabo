@@ -1,6 +1,10 @@
 package practicejsf.bean;
 
-public abstract class Person {
+import java.util.Objects;
+
+import practicejsf.bean.type.Nameable;
+
+public abstract class Person implements Nameable {
 
 	private String firstName;
 	private String lastName;
@@ -16,22 +20,30 @@ public abstract class Person {
 		this("", "", "");
 	}
 
+	@Override
 	public String getFirstName() {
 		return firstName;
 	}
 
+	@Override
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
+	@Override
 	public String getLastName() {
 		return lastName;
 	}
 
+	@Override
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
 
+	public String getFullName() {
+		return firstName + " " + lastName;
+	}
+	
 	public String getEmailAddress() {
 		return emailAddress;
 	}
@@ -41,5 +53,22 @@ public abstract class Person {
 	}
 
 	public abstract String doRegistration();
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Person){
+			Person another = (Person)obj;
+			
+			return firstName.equalsIgnoreCase(another.firstName) && 
+				lastName.equalsIgnoreCase(another.lastName);
+		}else{
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(firstName, lastName);
+	}
 
 }
