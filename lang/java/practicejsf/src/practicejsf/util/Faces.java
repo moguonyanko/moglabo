@@ -1,8 +1,12 @@
 package practicejsf.util;
 
 import java.io.Closeable;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +117,18 @@ public final class Faces {
 		fm.setSeverity(FacesMessage.SEVERITY_ERROR);
 		
 		return fm;
+	}
+	
+	public static FacesMessage createErrorMessage(Throwable t) {
+		return createErrorMessage(t.getMessage());
+	}
+	
+	public static LocalDateTime getLocalDateTimeByDate(Date date) {
+		return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+	}
+	
+	public static Date getDateByLocalDateTime(LocalDateTime localDateTime){
+		return new Date(localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli());
 	}
 	
 }

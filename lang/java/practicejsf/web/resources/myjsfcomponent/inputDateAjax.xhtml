@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core"
+	  xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+	<h:head>
+		<meta charset="UTF-8" />
+		<title>Input Date Ajax</title>
+	</h:head>
+
+	<h:body>
+		<cc:interface componentType="practicejsf.component.DateComponent3">
+			<cc:attribute name="value" type="java.util.Date" />
+			<cc:attribute name="startYear" type="java.lang.Integer" default="2007" />
+			<cc:attribute name="endYear" type="java.lang.Integer" default="2070" />
+		</cc:interface>
+
+		<cc:implementation>
+			<c:set target="#{cc}" property="startYear" value="#{cc.attrs.startYear}" />
+			<c:set target="#{cc}" property="endYear" value="#{cc.attrs.endYear}" />
+			<!--
+			execute属性に@allを指定すると，コンポーネント内の入力値だけ使って
+			Ajaxリクエストを行わせることができる。
+			-->
+			<h:selectOneMenu id="year"
+							 converter="javax.faces.Integer">
+				<f:selectItems value="#{cc.years}" />
+				<f:ajax execute="@all" render="day" />
+			</h:selectOneMenu>
+			<h:selectOneMenu id="month"
+							 converter="javax.faces.Integer">
+				<f:selectItems value="#{cc.months}" />
+				<f:ajax execute="@all" render="day" />
+			</h:selectOneMenu>
+			<h:selectOneMenu id="day"
+							 converter="javax.faces.Integer">
+				<!--
+				コンポーネントのgetDaysがAjaxリクエストで呼び出される。
+				getDays内では入力された値を元に生成されたDateオブジェクトが利用される。
+				-->
+				<f:selectItems value="#{cc.days}" />
+			</h:selectOneMenu>
+		</cc:implementation>
+	</h:body>
+</html>

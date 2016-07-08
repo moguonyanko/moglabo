@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>登録日付確認</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<h:outputStylesheet library="style" name="common.css" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>登録日付確認</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<fieldset>
+				<legend>登録日付</legend>
+				<ul>
+					<li>
+						<span>名前:</span>
+						<span>#{resortBean.firstName}</span>
+						<span>#{resortBean.lastName}</span>
+					</li>
+					<li>
+						<span>出発日:</span><span>#{resortBean.startDay}</span>
+						<span>到着日:</span><span>#{resortBean.endDay}</span>
+					</li>
+				</ul>
+			</fieldset>
+			
+			<div>
+				<p><h:link outcome="input-date-page" value="バッキングコンポーネントで入力要素を表現" /></p>
+				<p><h:link outcome="input-date-year-page" value="バッキングコンポーネントのsetter" /></p>
+				<p><h:link outcome="input-date-ajax-page" value="バッキングコンポーネントでのAjax利用" /></p>
+			</div>
+		</main>
+    </h:body>
+</html>
