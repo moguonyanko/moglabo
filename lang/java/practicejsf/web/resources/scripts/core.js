@@ -3,9 +3,9 @@
 	
 	const refelt = (id, opt_doc) => (opt_doc || d).getElementById(id);
 	/**
-	 * querySelectorに渡すセレクタにコロン(:)が含まれているとシンタックスエラーになる。
+	 * querySelectorに渡すセレクタにコロン(:)が含まれていてエスケープされていないと
+	 * シンタックスエラーになる。コロンの前に\\を付ければエスケープできる。
 	 * コロン(:)はFaceletsページを解析するアプリケーションサーバ側で自動的に付与される。
-	 * 従ってFaceletsページを制御するスクリプトでquerySelectorは使いにくい。
 	 */
 	const selelt = (selector, opt_doc) => (opt_doc || d).querySelector(selector);
 	const selelts = (selector, opt_doc) => (opt_doc || d).querySelectorAll(selector);
@@ -42,6 +42,10 @@
 		
 		return nd;
 	};
+	
+	const escapeColons = s => s.replace(/:/g, "\\:");
+
+	const toId = id => "#" + escapeColons(id);
 
 	const rootNS = includeScripts("jp.ne");
 
@@ -52,7 +56,9 @@
 			selelt: selelt,
 			selelts: selelts,
 			log: log,
-			cloneArray: cloneArray
+			cloneArray: cloneArray,
+			escapeColons: escapeColons,
+			toId: toId
 		}
 	};
 })(window, document));

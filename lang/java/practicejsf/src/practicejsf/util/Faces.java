@@ -131,4 +131,10 @@ public final class Faces {
 		return new Date(localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli());
 	}
 	
+	public static Date getNextDate(Date date){
+		LocalDateTime localDateTime = getLocalDateTimeByDate(date);
+		LocalDateTime nextDateTime = localDateTime.plusDays(1);
+		return getDateByLocalDateTime(nextDateTime);
+	}
+	
 }
