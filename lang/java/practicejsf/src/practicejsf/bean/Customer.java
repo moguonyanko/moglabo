@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 public class Customer implements Serializable {
 	
-	private final String id;
-	private final String firstName;
-	private final String lastName;
-	private final double balanceNoSign;
+	private String id;
+	private String firstName;
+	private String lastName;
+	private double balanceNoSign;
 	
 	public Customer(String id, String firstName, String lastName, double balanceNoSign) {
 		this.id = id;
@@ -20,16 +20,32 @@ public class Customer implements Serializable {
 		return id;
 	}
 
+	public void setId(String id) {
+		this.id = id;
+	}
+	
 	public String getFirstName() {
 		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
 	public String getLastName() {
 		return lastName;
 	}
 
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
 	public double getBalanceNoSign() {
 		return balanceNoSign;
+	}
+
+	public void setBalanceNoSign(double balanceNoSign) {
+		this.balanceNoSign = balanceNoSign;
 	}
 	
 }

@@ -18,6 +18,6 @@ footer {
 	flex-wrap: wrap;
 }
 
-.flex-container > .frex-content {
+.flex-container > .flex-content {
 	flex: 1 0 100px;
 }

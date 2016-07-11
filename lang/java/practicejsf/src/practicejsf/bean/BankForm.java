@@ -1,9 +1,11 @@
 package practicejsf.bean;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 import practicejsf.bean.service.CustomerLookupService;
@@ -11,12 +13,11 @@ import practicejsf.bean.service.simple.CustomerSimpleMap;
 import practicejsf.util.Faces;
 
 @ManagedBean
-public class BankForm {
+@SessionScoped
+public class BankForm implements Serializable {
 
 	private String customerId = "";
 	private String password = "";
-	private String firstName = "";
-	private String lastName = "";
 
 	private Customer customer;
 
@@ -25,9 +26,9 @@ public class BankForm {
 	private static final String SAMPLE_PASSWORD = "secret";
 
 	public BankForm() {
-		customer = new Customer(customerId, firstName, lastName, 0);
+		customer = new Customer(customerId, "", "", 0);
 	}
-
+	
 	public Customer getCustomer() {
 		return customer;
 	}
@@ -52,23 +53,11 @@ public class BankForm {
 		this.password = password;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
 	public String findBalance() {
+		return findUserBalance(true);
+	}
+	
+	String findUserBalance(boolean checkPassword) {
 		customer = LOOKUP_SERVICE.findCustomer(customerId);
 
 		Map<String, String> errorMsgs = new HashMap<>();
@@ -77,7 +66,7 @@ public class BankForm {
 			errorMsgs.put("customerId", String.format("無効なIDです: %s", customerId));
 		}
 
-		if (!SAMPLE_PASSWORD.equals(password)) {
+		if (checkPassword && !SAMPLE_PASSWORD.equals(password)) {
 			errorMsgs.put("password", "パスワードが間違っています");
 		}
 
@@ -92,6 +81,10 @@ public class BankForm {
 
 			return null;
 		}
+	}
+	
+	public Customer findCustomer(String customerId) {
+		return LOOKUP_SERVICE.findCustomer(customerId);
 	}
 
 }
