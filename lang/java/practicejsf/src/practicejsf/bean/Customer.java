@@ -8,7 +8,7 @@ public class Customer implements Serializable {
 	private final String firstName;
 	private final String lastName;
 	private final double balanceNoSign;
-
+	
 	public Customer(String id, String firstName, String lastName, double balanceNoSign) {
 		this.id = id;
 		this.firstName = firstName;

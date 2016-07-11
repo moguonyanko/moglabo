@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>検索結果表示</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<h:outputStylesheet library="style" name="common.css" />
+		<style>
+			body {
+				color: #{colorPreferences.foreGround};
+				background-color: #{colorPreferences.backGround};
+			}
+		</style>
+    </h:head>
+    <h:body>
+		<header>
+			<h1>検索結果表示</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<ul>
+				<li>苗字:<span class="emphasis">#{bankForm.customer.firstName}</span></li>
+				<li>名前:<span class="emphasis">#{bankForm.customer.lastName}</span></li>
+				<li>ユーザーID:<span class="emphasis">#{bankForm.customer.id}</span></li>
+				<li>残高:<span class="emphasis">#{bankForm.customer.balanceNoSign}</span></li>
+			</ul>
+			
+			<div>
+				<p><h:link outcome="lookup" value="パラメータでページを変化させる(パラメータ無し)" /></p>
+				<p><h:link outcome="lookup.xhtml?fg=orange&amp;bg=lightgrey" value="パラメータでページを変化させる(パラメータ有り)" /></p>
+			</div>
+		</main>
+    </h:body>
+</html>
