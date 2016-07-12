@@ -4,15 +4,15 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 
 import practicejsf.bean.service.CustomerLookupService;
 import practicejsf.bean.service.simple.CustomerSimpleMap;
 import practicejsf.util.Faces;
 
-@ManagedBean
+@Named
 @SessionScoped
 public class BankForm implements Serializable {
 
@@ -28,7 +28,7 @@ public class BankForm implements Serializable {
 	public BankForm() {
 		customer = new Customer(customerId, "", "", 0);
 	}
-	
+
 	public Customer getCustomer() {
 		return customer;
 	}
@@ -36,7 +36,7 @@ public class BankForm implements Serializable {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-	
+
 	public String getCustomerId() {
 		return customerId;
 	}
@@ -56,7 +56,7 @@ public class BankForm implements Serializable {
 	public String findBalance() {
 		return findUserBalance(true);
 	}
-	
+
 	String findUserBalance(boolean checkPassword) {
 		customer = LOOKUP_SERVICE.findCustomer(customerId);
 
@@ -82,7 +82,7 @@ public class BankForm implements Serializable {
 			return null;
 		}
 	}
-	
+
 	public Customer findCustomer(String customerId) {
 		return LOOKUP_SERVICE.findCustomer(customerId);
 	}
