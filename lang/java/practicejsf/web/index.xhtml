@@ -10,95 +10,131 @@
 			footer {
 				border-top: 1px solid lightgray;
 			}
+
+			.working::before {
+				content: "!作業中!";
+				color: red;
+				font-weight: bold;
+			}
 		</style>
     </head>
     <body>
 		<header>
 			<h1>Practice JSF</h1>
-			<p>JSF練習用サイトです。JavaEE7(JSF2.2)で動作確認しています。</p>
+			<p>JSF練習用サイトです。</p>
 		</header>
-		
+
 		<main>
+			<section>
+				<h2>動作確認環境</h2>
+				<div>
+					<p>JDKバージョン:<span>8</span></p>
+					<p>アプリケーションサーバ:<span>Tomcat8.0</span></p>
+					<p>JSFバージョン:<span>2.2(JavaEE7サーバでの開発を想定)</span></p>
+				</div>
+			</section>
+			<section>
+				<h2>ライブラリ</h2>
+				<div>
+					<p>
+						マネージドBeanを用いるJSF2.xを利用するだけならJSFのライブラリにのみパスを通します。<br />
+						ただしJSTLも合わせて使いたい場合はjstl.jarとstandard.jarにもパスを通します。
+					</p>
+					<ul>
+						<li><a href="https://maven.java.net/content/repositories/releases/org/glassfish/javax.faces/">
+								JSFのライブラリ(必要なバージョン番号のライブラリをダウンロード)
+							</a></li>
+					</ul>
+					<p>
+						マネージドBeanではなくCDI名前付きBeanを用いる場合はCDI関連ライブラリにパスを通す必要があります。
+					</p>
+					<ul>
+						<li><a href="https://code.google.com/p/atinject/downloads/list">javax.inject(同名のzipファイルをダウンロード)</a></li>
+						<li><a href="http://www.cdi-spec.org/download/">CDI API(「API」からダウンロード)</a></li>
+						<li><a href="http://weld.cdi-spec.org/download/">Weld(Flowスコープを使用しないなら不要？)</a></li>
+					</ul>
+				</div>
+			</section>
 			<h2>練習ページ一覧</h2>
-			<nav>
-				<section>
-					<h3>Tutorial Point</h3>
-					<ul>
-						<li><a href="helloworld.xhtml">HelloWorld</a></li>
-						<li><a href="navigation.xhtml">ナビゲーション</a></li>
-						<li><a href="composite.xhtml">複合コンポーネント</a></li>
-						<li><a href="ajax.xhtml">Ajax</a></li>
-						<li><a href="eventhandling.xhtml">イベントハンドリング</a></li>
-						<li><a href="jdbcintegration.xhtml">JDBCの利用</a></li>
-						<li><a href="expressionlanguage.xhtml">EL</a></li>
-						<li><a href="internationalization.xhtml">国際化対応</a></li>
-						<li><a href="resourcemanagement.xhtml">リソース管理</a></li>
-						<li><a href="implicitobject.xhtml">暗黙オブジェクト</a></li>
-						<li><a href="converter.xhtml">コンバータ</a></li>
-						<li><a href="validator.xhtml">バリデータ</a></li>
-					</ul>
-				</section>
-				<section>
-					<h3>Core Servlet</h3>
-					<ul>
-						<li><a href="coreservlet/managedbean/bank-lookup.xhtml">マネージドBean(input)</a></li>
-						<li><a href="coreservlet/managedbean/selections-color.xhtml">マネージドBean(select)</a></li>
-						<li><a href="coreservlet/managedbean/study-plan-input.xhtml">マネージドBean(様々な入力要素)</a></li>
-						<li><a href="coreservlet/managedbean/bank-lookup-session.xhtml">Beanのスコープ(セッション)</a></li>
-						<li><a href="coreservlet/managedbean/bank-lookup-session-redirect.xhtml">Beanのスコープ(セッション-リダイレクト併用)</a></li>
-						<li><a href="coreservlet/managedbean/search-engine-form.xhtml">リクエスト・レスポンスオブジェクト</a></li>
-						<li><a href="coreservlet/navigation/start-page-from-outcome.xhtml">ナビゲーション(from-outcome)</a></li>
-						<li><a href="coreservlet/navigation/start-page-with-explicit-bean.xhtml">ナビゲーション(explicit-bean)</a></li>
-						<li><a href="coreservlet/expressionlanguage/bean-properties.xhtml">ELとBeanのプロパティ</a></li>
-						<li><a href="coreservlet/expressionlanguage/nested-properties.xhtml">ネストされたプロパティ</a></li>
-						<li><a href="coreservlet/expressionlanguage/submitting-properties.xhtml">プロパティでsubmit</a></li>
-						<li><a href="coreservlet/expressionlanguage/using-collections.xhtml">ELと配列・コレクション</a></li>
-						<li><a href="coreservlet/expressionlanguage/implicit-objects.xhtml?testparameter=HELLO">暗黙のオブジェクト</a></li>
-						<li><a href="coreservlet/expressionlanguage/operators.xhtml">ELと演算子</a></li>
-						<li><a href="coreservlet/expressionlanguage/confidentials.xhtml">条件付き出力</a></li>
-						<li><a href="coreservlet/expressionlanguage/method-arguments.xhtml">引数を渡してメソッド呼び出し</a></li>
-						<li><a href="coreservlet/propertiesfile/simple-messages.xhtml">プロパティファイルから値取得</a></li>
-						<li><a href="coreservlet/propertiesfile/simple-substitution.xhtml">パラメータを渡して出力</a></li>
-						<li><a href="coreservlet/propertiesfile/parameterized-messages.xhtml">Beanのプロパティを渡して出力</a></li>
-						<li><a href="coreservlet/eventhandling/register1.xhtml">ActionEventを発生させてスタイルを変更</a></li>
-						<li><a href="coreservlet/eventhandling/register2.xhtml">ActionEventを発生させてロケールを変更</a></li>
-						<li><a href="coreservlet/eventhandling/register3.xhtml">ValueChangeEventを発生させてロケールを変更</a></li>
-						<li><a href="coreservlet/ajax/randomnumber.xhtml">Ajaxリクエストで値取得</a></li>
-						<li><a href="coreservlet/ajax/multiple-input-ajax.xhtml">入力要素としてformを指定するAjaxリクエスト</a></li>
-						<li><a href="coreservlet/ajax/event-ajax.xhtml">イベントに対するAjaxリクエスト</a></li>
-						<li><a href="coreservlet/ajax/eventtype-ajax.xhtml">イベントタイプを指定してAjaxリクエスト</a></li>
-						<li><a href="coreservlet/ajax/eventhandler-ajax.xhtml">JavaScruptのイベントハンドラを指定してAjaxリクエスト</a></li>
-						<li><a href="coreservlet/validation/enter-bid.xhtml">Beanのメソッドでバリデーション</a></li>
-						<li><a href="coreservlet/validation/enter-bid-message.xhtml">エラーメッセージ表示欄を個別に指定してバリデーション</a></li>
-						<li><a href="coreservlet/validation/enter-bid-converter-message.xhtml">型変換エラーを通知するバリデーション</a></li>
-						<li><a href="coreservlet/validation/enter-bid-builtin-validator.xhtml">組み込みのバリデータによるバリデーション</a></li>
-						<li><a href="coreservlet/validation/enter-bid-alert.xhtml">修正箇所をアラートするバリデーション</a></li>
-						<li><a href="coreservlet/validation/enter-bid-alert-composite.xhtml">アラート機能を持つ複合コンポーネントを使ったバリデーション</a></li>
-						<li><a href="coreservlet/validation/resort-registration.xhtml">エラーメッセージのカスタマイズ</a></li>
-						<li><a href="coreservlet/validation/resort-registration-validator-method.xhtml">Beanのメソッドによるバリデーション</a></li>
-						<li><a href="coreservlet/validation/calculator.xhtml">バリデーションのメッセージの国際化</a></li>
-						<li><a href="coreservlet/looping/simple-repeat.xhtml">Faceletsタグによる繰り返し</a></li>
-						<li><a href="coreservlet/datatables/simple-data-tables.xhtml">dataTableによるシンプルな表</a></li>
-						<li><a href="coreservlet/datatables/ajax-data-tables.xhtml">AjaxとdataTableによる表</a></li>
-						<li><a href="coreservlet/datatables/editable-data-tables.xhtml">dataTableによる編集可能な表</a></li>
-						<li><a href="coreservlet/faceletstemplating/insert-templating.xhtml">テンプレートにコンテンツを挿入</a></li>
-						<li><a href="coreservlet/faceletstemplating/include-templating.xhtml">コンテンツをインクルード</a></li>
-						<li><a href="coreservlet/compositioncomponents/composite-component-list.xhtml">複合コンポーネントでリスト作成</a></li>
-						<li><a href="coreservlet/compositioncomponents/composite-repeat-list.xhtml">リピートしながらリスト作成</a></li>
-						<li><a href="coreservlet/compositioncomponents/composite-component-link.xhtml">複合コンポーネントでリンク作成</a></li>
-						<li><a href="coreservlet/compositioncomponents/composite-component-type.xhtml">複合コンポーネントのtype属性で実行時の型チェック</a></li>
-						<li><a href="coreservlet/compositioncomponents/input-date-page.xhtml">バッキングコンポーネントで入力要素を表現</a></li>
-						<li><a href="coreservlet/compositioncomponents/input-date-year-page.xhtml">バッキングコンポーネントのsetter</a></li>
-						<li><a href="coreservlet/compositioncomponents/input-date-ajax-page.xhtml">バッキングコンポーネントでのAjax利用</a></li>
-						<li><a href="coreservlet/compositioncomponents/input-rich-date-page.xhtml">コンポーネントでリッチなGUIを使用</a></li>
-						<li><a href="coreservlet/viewparams/lookup.xhtml">パラメータでページ変化(パラメータ無し)</a></li>
-						<li><a href="coreservlet/viewparams/lookup.xhtml?fg=orange&amp;bg=lightgrey">パラメータでページ変化(パラメータ有り)</a></li>
-						<li><a href="coreservlet/viewparams/linkers.xhtml">リンクからページ変化</a></li>
-						<li><a href="coreservlet/viewparams/non-jsf-linkers.html">通常のHTMLからパラメータを渡してページ変化</a></li>
-						<li><a href="coreservlet/viewparams/redirect-lookup.xhtml">静的リンクと動的リンクでリダイレクト</a></li>
-					</ul>
-				</section>
-			</nav>
+			<section>
+				<h3>Tutorial Point</h3>
+				<ul>
+					<li><a href="helloworld.xhtml">HelloWorld</a></li>
+					<li><a href="navigation.xhtml">ナビゲーション</a></li>
+					<li><a href="composite.xhtml">複合コンポーネント</a></li>
+					<li><a href="ajax.xhtml">Ajax</a></li>
+					<li><a href="eventhandling.xhtml">イベントハンドリング</a></li>
+					<li><a href="jdbcintegration.xhtml">JDBCの利用</a></li>
+					<li><a href="expressionlanguage.xhtml">EL</a></li>
+					<li><a href="internationalization.xhtml">国際化対応</a></li>
+					<li><a href="resourcemanagement.xhtml">リソース管理</a></li>
+					<li><a href="implicitobject.xhtml">暗黙オブジェクト</a></li>
+					<li><a href="converter.xhtml">コンバータ</a></li>
+					<li><a href="validator.xhtml">バリデータ</a></li>
+				</ul>
+			</section>
+			<section>
+				<h3>Core Servlet</h3>
+				<ul>
+					<li><a href="coreservlet/managedbean/bank-lookup.xhtml">マネージドBean(input)</a></li>
+					<li><a href="coreservlet/managedbean/selections-color.xhtml">マネージドBean(select)</a></li>
+					<li><a href="coreservlet/managedbean/study-plan-input.xhtml">マネージドBean(様々な入力要素)</a></li>
+					<li><a href="coreservlet/managedbean/bank-lookup-session.xhtml">Beanのスコープ(セッション)</a></li>
+					<li><a href="coreservlet/managedbean/bank-lookup-session-redirect.xhtml">Beanのスコープ(セッション-リダイレクト併用)</a></li>
+					<li><a href="coreservlet/managedbean/search-engine-form.xhtml">リクエスト・レスポンスオブジェクト</a></li>
+					<li><a href="coreservlet/navigation/start-page-from-outcome.xhtml">ナビゲーション(from-outcome)</a></li>
+					<li><a href="coreservlet/navigation/start-page-with-explicit-bean.xhtml">ナビゲーション(explicit-bean)</a></li>
+					<li><a href="coreservlet/expressionlanguage/bean-properties.xhtml">ELとBeanのプロパティ</a></li>
+					<li><a href="coreservlet/expressionlanguage/nested-properties.xhtml">ネストされたプロパティ</a></li>
+					<li><a href="coreservlet/expressionlanguage/submitting-properties.xhtml">プロパティでsubmit</a></li>
+					<li><a href="coreservlet/expressionlanguage/using-collections.xhtml">ELと配列・コレクション</a></li>
+					<li><a href="coreservlet/expressionlanguage/implicit-objects.xhtml?testparameter=HELLO">暗黙のオブジェクト</a></li>
+					<li><a href="coreservlet/expressionlanguage/operators.xhtml">ELと演算子</a></li>
+					<li><a href="coreservlet/expressionlanguage/confidentials.xhtml">条件付き出力</a></li>
+					<li><a href="coreservlet/expressionlanguage/method-arguments.xhtml">引数を渡してメソッド呼び出し</a></li>
+					<li><a href="coreservlet/propertiesfile/simple-messages.xhtml">プロパティファイルから値取得</a></li>
+					<li><a href="coreservlet/propertiesfile/simple-substitution.xhtml">パラメータを渡して出力</a></li>
+					<li><a href="coreservlet/propertiesfile/parameterized-messages.xhtml">Beanのプロパティを渡して出力</a></li>
+					<li><a href="coreservlet/eventhandling/register1.xhtml">ActionEventを発生させてスタイルを変更</a></li>
+					<li><a href="coreservlet/eventhandling/register2.xhtml">ActionEventを発生させてロケールを変更</a></li>
+					<li><a href="coreservlet/eventhandling/register3.xhtml">ValueChangeEventを発生させてロケールを変更</a></li>
+					<li><a href="coreservlet/ajax/randomnumber.xhtml">Ajaxリクエストで値取得</a></li>
+					<li><a href="coreservlet/ajax/multiple-input-ajax.xhtml">入力要素としてformを指定するAjaxリクエスト</a></li>
+					<li><a href="coreservlet/ajax/event-ajax.xhtml">イベントに対するAjaxリクエスト</a></li>
+					<li><a href="coreservlet/ajax/eventtype-ajax.xhtml">イベントタイプを指定してAjaxリクエスト</a></li>
+					<li><a href="coreservlet/ajax/eventhandler-ajax.xhtml">JavaScruptのイベントハンドラを指定してAjaxリクエスト</a></li>
+					<li><a href="coreservlet/validation/enter-bid.xhtml">Beanのメソッドでバリデーション</a></li>
+					<li><a href="coreservlet/validation/enter-bid-message.xhtml">エラーメッセージ表示欄を個別に指定してバリデーション</a></li>
+					<li><a href="coreservlet/validation/enter-bid-converter-message.xhtml">型変換エラーを通知するバリデーション</a></li>
+					<li><a href="coreservlet/validation/enter-bid-builtin-validator.xhtml">組み込みのバリデータによるバリデーション</a></li>
+					<li><a href="coreservlet/validation/enter-bid-alert.xhtml">修正箇所をアラートするバリデーション</a></li>
+					<li><a href="coreservlet/validation/enter-bid-alert-composite.xhtml">アラート機能を持つ複合コンポーネントを使ったバリデーション</a></li>
+					<li><a href="coreservlet/validation/resort-registration.xhtml">エラーメッセージのカスタマイズ</a></li>
+					<li><a href="coreservlet/validation/resort-registration-validator-method.xhtml">Beanのメソッドによるバリデーション</a></li>
+					<li><a href="coreservlet/validation/calculator.xhtml">バリデーションのメッセージの国際化</a></li>
+					<li><a href="coreservlet/looping/simple-repeat.xhtml">Faceletsタグによる繰り返し</a></li>
+					<li><a href="coreservlet/datatables/simple-data-tables.xhtml">dataTableによるシンプルな表</a></li>
+					<li><a href="coreservlet/datatables/ajax-data-tables.xhtml">AjaxとdataTableによる表</a></li>
+					<li><a href="coreservlet/datatables/editable-data-tables.xhtml">dataTableによる編集可能な表</a></li>
+					<li><a href="coreservlet/faceletstemplating/insert-templating.xhtml">テンプレートにコンテンツを挿入</a></li>
+					<li><a href="coreservlet/faceletstemplating/include-templating.xhtml">コンテンツをインクルード</a></li>
+					<li><a href="coreservlet/compositioncomponents/composite-component-list.xhtml">複合コンポーネントでリスト作成</a></li>
+					<li><a href="coreservlet/compositioncomponents/composite-repeat-list.xhtml">リピートしながらリスト作成</a></li>
+					<li><a href="coreservlet/compositioncomponents/composite-component-link.xhtml">複合コンポーネントでリンク作成</a></li>
+					<li><a href="coreservlet/compositioncomponents/composite-component-type.xhtml">複合コンポーネントのtype属性で実行時の型チェック</a></li>
+					<li><a href="coreservlet/compositioncomponents/input-date-page.xhtml">バッキングコンポーネントで入力要素を表現</a></li>
+					<li><a href="coreservlet/compositioncomponents/input-date-year-page.xhtml">バッキングコンポーネントのsetter</a></li>
+					<li><a href="coreservlet/compositioncomponents/input-date-ajax-page.xhtml">バッキングコンポーネントでのAjax利用</a></li>
+					<li><a href="coreservlet/compositioncomponents/input-rich-date-page.xhtml">コンポーネントでリッチなGUIを使用</a></li>
+					<li><a href="coreservlet/viewparams/lookup.xhtml">パラメータでページ変化(パラメータ無し)</a></li>
+					<li><a href="coreservlet/viewparams/lookup.xhtml?fg=orange&amp;bg=lightgrey">パラメータでページ変化(パラメータ有り)</a></li>
+					<li><a href="coreservlet/viewparams/linkers.xhtml">リンクからページ変化</a></li>
+					<li><a href="coreservlet/viewparams/non-jsf-linkers.html">通常のHTMLからパラメータを渡してページ変化</a></li>
+					<li><a href="coreservlet/viewparams/redirect-lookup.xhtml">静的リンクと動的リンクでリダイレクト</a></li>
+					<li><a href="coreservlet/facesflow/flow1/facesflow-1.xhtml">Flowによる画面遷移</a></li>
+					<li class="working"><a href="coreservlet/facesflow/flow2/flow2.xhtml">Flowスコープで属性保存</a></li>
+				</ul>
+			</section>
 		</main>
 
 		<aside role="complementary">
