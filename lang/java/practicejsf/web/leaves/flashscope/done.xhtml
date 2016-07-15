@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>処理完了</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{member.pullValuesFromFlash}" />
+		</f:metadata>
+		<h:outputStylesheet library="style" name="common.css" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>処理完了</h1>
+			<p><h:messages styleClass="note" /></p>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<section>
+				<h:panelGrid columns="2">
+					<span>苗字:</span>
+					<h:outputText value="#{flash.keep.firstName}" />
+					<span>名前:</span>
+					<h:outputText value="#{flash.keep.lastName}" />
+				</h:panelGrid>
+
+				<h:link outcome="input" value="入力画面に戻る" />
+			</section>
+
+			<aside>
+				<h2>参考サイト</h2>
+				<ul>
+					<li><a href="http://memorynotfound.com/passing-variables-in-jsf-flash-scope/">
+							Passing Variables In JSF Flash Scope
+						</a></li>
+				</ul>
+			</aside>
+		</main>
+    </h:body>
+</html>

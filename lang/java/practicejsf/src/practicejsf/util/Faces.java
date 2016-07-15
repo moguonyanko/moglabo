@@ -17,8 +17,11 @@ import java.util.stream.Stream;
 import javax.faces.application.Application;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 
 public final class Faces {
+	
+	private static final String REDIRECT_PARAM = "faces-redirect";
 
 	public static <T> T getData(String key, Class<T> klass) {
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -135,6 +138,24 @@ public final class Faces {
 		LocalDateTime localDateTime = getLocalDateTimeByDate(date);
 		LocalDateTime nextDateTime = localDateTime.plusDays(1);
 		return getDateByLocalDateTime(nextDateTime);
+	}
+	
+	public static Flash getFlash(){
+		return FacesContext.getCurrentInstance().getExternalContext().getFlash();
+	}
+	
+	public static String redirect(String page){
+		return page + "?" + REDIRECT_PARAM + "=true";
+	}
+	
+	public static <V> V getValueFromFlash(String key) {
+		Flash flash = getFlash();
+		return (V)flash.get(key);
+	}
+	
+	public static void addMessage(String content){
+		FacesMessage message = new FacesMessage(content);
+		FacesContext.getCurrentInstance().addMessage(null, message);
 	}
 	
 }
