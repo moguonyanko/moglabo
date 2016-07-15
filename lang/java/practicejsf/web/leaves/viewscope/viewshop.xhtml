@@ -41,6 +41,10 @@
 				<h:panelGroup rendered="#{!viewShop.editable}">
 					<h3>商品追加</h3>
 					<h:form>
+						<!--
+						input要素の入力履歴は各ウインドウ，各タブで共有される。
+						入力履歴はブラウザ側に保持されるのだから当然である。
+						-->
 						<p>商品名:<h:inputText value="#{viewShop.item.name}" /></p>
 						<p><h:commandButton value="追加" action="#{viewShop.add}" /></p>
 					</h:form>

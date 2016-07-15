@@ -9,6 +9,9 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
+/**
+ * ViewScopedを指定したBeanはシリアライズ可能でないとデプロイ時に例外が発生する。
+ */
 @Named
 @ViewScoped
 public class ViewShop implements Serializable {
