@@ -37,6 +37,11 @@
 		<param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
 		<param-value>true</param-value>
 	</context-param>
+	<!-- セキュリティ設定で使うUserProvider -->
+	<context-param>
+		<param-name>jsf-security-user-provider</param-name>
+		<param-value>practicejsf.security.usersession.ContainerUserProvider</param-value>
+	</context-param>
 	<!--
 	<resource-ref>の設定は記述しなくてもクエリの実行は行えたが，
 	Tomcatのドキュメントに従って記述しておくことにする。

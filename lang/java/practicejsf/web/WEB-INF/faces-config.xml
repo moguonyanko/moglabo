@@ -168,5 +168,12 @@
 			<base-name>practicejsf.validation.messages</base-name>
 			<var>vmsgs</var>
 		</resource-bundle>
+		<!-- セキュリティ設定されたメソッド群 -->
+		<action-listener>
+			practicejsf.security.SecureActionListener
+		</action-listener>
+		<navigation-handler>
+			practicejsf.security.SecureNavigationHandler
+		</navigation-handler>
 	</application>
 </faces-config>
