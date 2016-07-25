@@ -96,6 +96,17 @@
 			<to-view-id>/coreservlet/navigation/message-page-3.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/leaves/security/securenavigation.xhtml</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/leaves/security/result/securenavigation_success.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>error</from-outcome>
+			<to-view-id>/leaves/security/result/securenavigation_error.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 	<!--
 	明示的なBeanを設定することでFaceletsページを変更せずに利用するBeanを差し替えることができる。
 	ManagedBeanアノテーションのnameを変更することでも対応可能だが，その場合はBeanを含む
@@ -105,12 +116,12 @@
 	<managed-bean>
 		<managed-bean-name>messageHandler</managed-bean-name>
 		<managed-bean-class>practicejsf.bean.EmptySupportController</managed-bean-class>
-	
 		<!--
 		managed-bean-scopeによるスコープの設定を怠るとBeanを参照するページが表示できない。 
 		デフォルトでリクエストスコープにされたりはしない。 
 		-->
-		<managed-bean-scope>request</managed-bean-scope></managed-bean>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
 	<application>
 		<!-- アプリケーション開始時のイベントリスナ設定 -->
 		<system-event-listener>
@@ -168,12 +179,5 @@
 			<base-name>practicejsf.validation.messages</base-name>
 			<var>vmsgs</var>
 		</resource-bundle>
-		<!-- セキュリティ設定されたメソッド群 -->
-		<action-listener>
-			practicejsf.security.SecureActionListener
-		</action-listener>
-		<navigation-handler>
-			practicejsf.security.SecureNavigationHandler
-		</navigation-handler>
 	</application>
 </faces-config>

@@ -4,8 +4,14 @@
 		Practice JavaServerFaces(JSF) Application
 	</description>
 	<context-param>
+		<!--
+		指定する値によってアプリケーションの動作が変化するらしい。
+		デフォルトはDevelopmentである。
+		http://docs.oracle.com/javaee/6/tutorial/doc/bnaxj.html
+		-->
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
+		<!--<param-value>Production</param-value>-->
 	</context-param>
 	<context-param>
 		<param-name>javax.faces.CONFIG_FILES</param-name>
@@ -37,11 +43,35 @@
 		<param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
 		<param-value>true</param-value>
 	</context-param>
-	<!-- セキュリティ設定で使うUserProvider -->
-	<context-param>
-		<param-name>jsf-security-user-provider</param-name>
-		<param-value>practicejsf.security.usersession.ContainerUserProvider</param-value>
-	</context-param>
+	<!-- セキュリティ制約 -->
+	<security-role>
+		<role-name>testuser</role-name>
+	</security-role>
+	<security-constraint>
+		<display-name>MyJSFSampleConstraint</display-name>
+		<web-resource-collection>
+			<web-resource-name>TestResource</web-resource-name>
+			<url-pattern>/leaves/security/securenavigation.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<!-- ここで指定したユーザーしかurl-patternのページにアクセスできない。 -->
+			<role-name>testuser</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<!--
+	realm-nameにUserDatabaseRealmを指定するとtomcat-users.xmlに定義されている
+	ユーザー設定を利用して認証を行う。login-configを削除するとsecurity-constraintの
+	url-patternで指定したページにアクセスできなくなる。
+	あらゆる入力値やあらゆるnavigation-ruleを無視して常にform-login-pageが表示されてしまう。
+	-->
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>UserDatabaseRealm</realm-name>
+		<form-login-config>
+			<form-login-page>/leaves/security/securenavigation.xhtml</form-login-page>
+			<form-error-page>/leaves/security/result/securenavigation_error.xhtml</form-error-page>
+		</form-login-config>
+	</login-config>
 	<!--
 	<resource-ref>の設定は記述しなくてもクエリの実行は行えたが，
 	Tomcatのドキュメントに従って記述しておくことにする。

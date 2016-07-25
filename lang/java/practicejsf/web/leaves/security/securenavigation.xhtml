@@ -15,13 +15,19 @@
 		</header>
 
 		<main>
-			<h:form id="secure-form">
-				<h:commandButton id="unprotected-button" 
-								  value="表示"
-								  action="#{customerBean.view}" />
-				<h:commandButton id="protected-button" 
-								  value="削除"
-								  action="#{customerBean.delete}" />
+			<p class="warn">
+				あらゆる入力値やあらゆるnavigation-ruleを無視して<br />常にweb.xmlの
+				form-login-pageに指定したページ(つまりこのページ)が表示されてしまう。
+			</p>
+			
+			<h:form>
+				<p><span>ユーザー名:</span>
+					<span><h:inputText value="#{secureBean.userName}" /></span></p>
+				<p><span>パスワード:</span>
+					<span><h:inputSecret value="#{secureBean.password}" /></span></p>
+				<div>
+					<h:commandButton value="登録" action="#{secureBean.register}" />
+				</div>
 			</h:form>
 
 			<aside>
@@ -29,6 +35,9 @@
 				<ul>
 					<li><a href="https://blogs.oracle.com/enterprisetechtips/entry/improving_jsf_security_configuration_with">
 							Improving JSF Security Configuration With Secured Managed Beans
+						</a></li>
+					<li><a href="https://docs.oracle.com/cd/E19798-01/821-1841/6nmq2cpl7/index.html">
+							Example: Form-Based Authentication with a JavaServer Faces Application
 						</a></li>
 				</ul>
 			</aside>
