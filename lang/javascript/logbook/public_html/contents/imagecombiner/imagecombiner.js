@@ -69,7 +69,7 @@
 		/**
 		 * 画像を一度全て読み込みcanvasのサイズを決定してcanvas要素を生成する。
 		 */
-		let maxW, maxH;
+		let minW, minH;
 		
 		lB.forEach(imgFiles, (imgFile, index) => {
 			const img = doc.createElement("img");
@@ -77,15 +77,15 @@
 			img.onload = () => {
 				lB.revokeBlobURL(url);
 				
-				if(!maxW || img.width > maxW){
-					maxW = img.width;
+				if(!minW || img.width < minW){
+					minW = img.width;
 				}
-				if(!maxH || img.height > maxH){
-					maxH = img.height;
+				if(!minH || img.height < minH){
+					minH = img.height;
 				}
 				
 				if(index >= imgFiles.length - 1){
-					canvas = createCanvas(maxW, maxH);
+					canvas = createCanvas(minW, minH);
 					ctx = canvas.getContext("2d");
 					draw(imgFiles.shift(), 0, 0);
 				}
