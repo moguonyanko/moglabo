@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+.emphasis {
+	color: blue;
+	font-weight: bold;
+}
+
+.error {
+	color: blue;
+	font-weight: bold;
+	font-style: italic;
+}
