@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>JDBC Integration</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!--
+		library属性はresourcesディレクトリ以下のディレクトリ名を指す。
+		<h:head>内で<h:outputStylesheet>が使われていない場合はエラーになる。
+		-->
+		<h:outputStylesheet library="style" name="jdbcintegration.css" />
+    </h:head>
+    <body>
+        <header>
+			<h1>JDBC Integration</h1>
+		</header>
+
+		<section>
+			<h2>テーブル検索テスト</h2>
+			<h:dataTable value="#{library.authors}" 
+						 var="author"
+						 styleClass="author-table"
+						 headerClass="author-table-header"
+						 rowClasses="author-table-row">
+				<h:column>
+					<f:facet name="header">ID</f:facet>
+					<span>#{author.id}</span>
+				</h:column>
+				<h:column>
+					<f:facet name="header">名前</f:facet>
+					<span>#{author.name}</span>
+				</h:column>
+			</h:dataTable>
+		</section>
+
+		<div>
+			<ul>
+				<li><a href="querytest.jsp">JSPバージョン</a></li>
+				<li><h:link outcome="index" value="home" /></li>
+			</ul>
+		</div>
+    </body>
+</html>

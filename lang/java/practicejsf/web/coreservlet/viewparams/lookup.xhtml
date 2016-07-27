@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core">
+	<f:metadata>
+		<f:viewParam name="fg" value="#{colorPreferences.foreGround}" />
+		<f:viewParam name="bg" value="#{colorPreferences.backGround}" />
+	</f:metadata>
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>パラメータでページ変化</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<h:outputStylesheet library="style" name="common.css" />
+		<style>
+			body {
+				color: #{colorPreferences.foreGround};
+				background-color: #{colorPreferences.backGround};
+			}
+		</style>
+    </h:head>
+    <h:body>
+		<header>
+			<h1>パラメータでページ変化</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<h:form prependId="false">
+				<p>
+					<span class="emphasis">*</span><span>ユーザーID:</span>
+					<h:inputText id="customerId"
+								 value="#{bankForm.customerId}"
+								 required="true"
+								 requiredMessage="ユーザーIDは必須です！" />
+					<h:message for="customerId" styleClass="error" />
+				</p>
+				<p>
+					<span class="emphasis">*</span><span>パスワード:</span>
+					<h:inputSecret id="password"
+								 value="#{bankForm.password}"
+								 required="true"
+								 requiredMessage="パスワードは必須です！" />
+					<h:message for="password" styleClass="error" />
+				</p>
+				<p>
+					<span>好みの色:</span>
+					<h:inputText value="#{colorPreferences.foreGround}" />
+				</p>
+				<p>
+					<span>好みの背景色:</span>
+					<h:inputText value="#{colorPreferences.backGround}" />
+				</p>
+				<div>
+					<h:commandButton value="実行" action="#{bankForm.findBalance}" />
+				</div>
+			</h:form>
+		</main>
+    </h:body>
+</html>

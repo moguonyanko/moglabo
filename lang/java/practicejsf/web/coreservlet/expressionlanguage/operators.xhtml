@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>ELと演算子</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+		<style>
+			.operator-sample {
+				width: 50%;
+				padding: 0.5em;
+				background-color: rgba(153, 204, 204, 0.2);
+				border-top: solid lightgrey 1px;
+				border-left: solid lightgrey 1px;
+				border-bottom: solid darkgray 1px;
+				border-right: solid darkgray 1px;
+				border-radius: 5px;
+			}
+
+			.eq {
+				margin-left: 0.5em;
+				margin-right: 0.5em;
+			}
+		</style>
+    </h:head>
+    <h:body>
+		<header>
+			<h1>ELと演算子</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<div>
+				<p class="note">ELの先頭に\を付けると後続のELが評価されなくなる。</p>
+			</div>
+			<div class="operator-sample">
+				<div>
+					<p class="note">算術演算子はJavaと同じだが比較演算子は異なる。</p>
+					<p><span>\#{3 + 2 - 1}</span><span class="eq">=</span><span class="emphasis">#{3 + 2 - 1}</span></p>
+					<p><span>\#{1 lt 2}</span><span class="eq">=</span><span class="emphasis">#{1 lt 2}</span></p>
+				</div>
+				<div>
+					<p class="note">文字列で表現された数値は数値型へ暗黙の型変換される。</p>
+					<p><span>\#{"1" + 2}</span><span class="eq">=</span><span class="emphasis">#{"1" + 2}</span></p>
+				</div>
+				<div>
+					<p class="note">文字列は自然順に従って比較される。</p>
+					<p><span>\#{"a" lt "b"}</span><span class="eq">=</span><span class="emphasis">#{"a" lt "b"}</span></p>
+				</div>
+				<div>
+					<p class="note">算術演算子の優先度は通常の計算と同じ。</p>
+					<p><span>\#{1 + 2 * 3 + 3 / 4}</span><span class="eq">=</span><span class="emphasis">#{1 + 2 * 3 + 3 / 4}</span></p>
+					<p><span>\#{2 / 3 ge 3 / 2}</span><span class="eq">=</span><span class="emphasis">#{2 / 3 ge 3 / 2}</span></p>
+					<p><span>\#{3 % 2}</span><span class="eq">=</span><span class="emphasis">#{3 % 2}</span></p>
+					<p><span>\#{3 / 4 == 0.75}</span><span class="eq">=</span><span class="emphasis">#{3 / 4 == 0.75}</span></p>
+				</div>
+				<div>
+					<p class="note">
+						空文字と文字列の0はfalseにされてしまう。<br />
+						数値の0を直接Booleanと比較すると例外になる。<br />
+						nullは偽値だがfalseと比較してもtrueを返さない。
+					</p>
+					<p><span>\#{"" == false}</span><span class="eq">=</span><span class="emphasis">#{"" == false}</span></p>
+					<p><span>\#{"0" == false}</span><span class="eq">=</span><span class="emphasis">#{"0" == false}</span></p>
+					<p><span>\#{!"0"}</span><span class="eq">=</span><span class="emphasis">#{!"0"}</span></p>
+					<p><span>\#{null ? "nullは真" :  "nullは偽"}</span><span class="eq">=</span><span class="emphasis">#{null ? "nullは真" :  "nullは偽"}</span></p>
+					<p><span>\#{null == false}</span><span class="eq">=</span><span class="emphasis">#{null == false}</span></p>
+				</div>
+			</div>
+		</main>
+    </h:body>
+</html>

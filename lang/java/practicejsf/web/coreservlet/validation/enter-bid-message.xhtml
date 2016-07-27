@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>エラーメッセージ表示欄を個別に指定してバリデーション</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>エラーメッセージ表示欄を個別に指定してバリデーション</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<h:form>
+				<h:panelGrid columns="3" styleClass="formTable">
+					<p><span>ユーザーID:</span>
+						<h:inputText id="userId"
+									 value="#{bidBean1.userId}"
+									 required="true"
+									 requiredMessage="ユーザーIDは必須です。" />
+						<h:message styleClass="error" for="userId" />
+					</p>
+					<p><span>キーワード:</span>
+						<h:inputText id="keyword"
+									 value="#{bidBean1.keyword}"
+									 required="true"
+									 requiredMessage="キーワードは必須です。" />
+						<h:message styleClass="error" for="keyword" />
+					</p>
+					<p><span>支払い金額:</span>
+						<h:inputText id="amount"
+									 value="#{bidBean1.bidAmount}"
+									 required="true"
+									 requiredMessage="支払い金額は必須です。" />
+						<h:message styleClass="error" for="amount" />
+					</p>
+					<p><span>支払い期間:</span>
+						<h:inputText id="duration"
+									 value="#{bidBean1.bidDuration}"
+									 required="true"
+									 requiredMessage="支払い期間は必須です。" />
+						<h:message styleClass="error" for="duration" />
+					</p>
+				</h:panelGrid>
+				<h:commandButton value="送信" action="#{bidBean1.doBid}" />
+			</h:form>
+		</main>
+    </h:body>
+</html>

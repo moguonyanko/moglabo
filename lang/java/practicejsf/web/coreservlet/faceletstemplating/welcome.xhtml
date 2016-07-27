@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>サンプル1</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!--
+		<ui:composition template="/resources/templates/sample-template.xhtml"></ui:composition>
+		-->
+		<!--
+		<ui:composition template="/resources/templates/eboats-template.xhtml">
+			<ui:define name="style">
+				<h:outputStylesheet library="style" name="common.css" />
+			</ui:define>
+		</ui:composition>
+		-->
+    </h:head>
+    <h:body>
+		<p>
+			このページはサービス提供者が提供するテンプレートを利用するクライアントのページになる。<br />
+			ui:compositionの外側にあるのでこの文章は表示されない。<br />
+			ui:compositionは先勝ちである。後に書かれたui:compositionは無視される。<br />
+			異なるテンプレートを参照していても，より後ろのui:compositionは無視されてしまう。
+		</p>
+		
+		<ui:composition template="/resources/templates/eboats-template.xhtml">
+			<p>
+				このページのheadでCSSを読み込もうとしても無視される。テンプレートを介して<br />
+				読み込まれるようにui:defineを使わなければならない。<br />
+				基本的にテンプレートが本体でありクライアントのページはページ間の差異を表現するための<br />
+				断片と考えた方がいい。
+			</p>
+			<ui:define name="style">
+				<h:outputStylesheet library="style" name="common.css" />
+			</ui:define>
+			
+			<ui:define name="title">
+				ようこそeboatsへ！
+			</ui:define>
+			
+			<p>
+				ui:includeで外部のFaceletsコード断片をインクルードして<br />
+				そのままテンプレートのui:insertに渡している。
+			</p>
+			<ui:define name="menu">
+				<ui:include src="/resources/snippets/google-search-box.xhtml" />
+			</ui:define>
+			
+			<ui:define name="body">
+				<h:graphicImage library="image" name="sample1.png" />
+			</ui:define>
+			
+			<ui:define name="footer">
+				<ui:include src="/resources/snippets/footer-full.xhtml" />
+			</ui:define>
+		</ui:composition>
+    </h:body>
+</html>

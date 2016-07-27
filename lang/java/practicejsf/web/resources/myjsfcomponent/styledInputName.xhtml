@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:cc="http://xmlns.jcp.org/jsf/composite">
+	<h:head>
+		<meta charset="UTF-8" />
+		<title>Styled Input Name</title>
+	</h:head>
+
+	<h:body>
+		<!--
+		ui:compositionを用いて既存のコンポーネントをテンプレートにし，
+		新しいコンポーネントを定義しようとしてもできない。
+		-->
+		<!--
+		<ui:composition template="/resources/myjsfcomponent/inputName.xhtml">
+			<ui:define name="errorStyleClass">
+				<cc:attribute name="errorStyleClass" required="false"
+							  default="name-error"/>				
+			</ui:define>			
+		</ui:composition>
+		-->
+		
+		<cc:interface>
+			<cc:attribute name="value" required="true" 
+						  type="practicejsf.bean.type.Nameable" />
+			<cc:attribute name="firstNamePrompt" required="false" 
+						  default="苗字" />
+			<cc:attribute name="lastNamePrompt" required="false" 
+						  default="名前" />
+			<cc:attribute name="required" required="false" 
+						  default="true" />
+			<cc:attribute name="requiredMessage" required="false" 
+						  default="必須入力要素です" />
+			<cc:attribute name="errorStyleClass" required="false" 
+						  default="name-error" />
+		</cc:interface>
+
+		<cc:implementation>
+			<h:outputStylesheet library="style" name="common.css" />
+			<h:outputStylesheet library="style" name="composition.css" />
+
+			<h:panelGrid columns="3" styleClass="formTable">
+				#{cc.attrs.firstNamePrompt}:
+				<h:inputText value="#{cc.attrs.value.firstName}" 
+							 id="firstName"
+							 required="#{cc.attrs.required}"
+							 requiredMessage="#{cc.attrs.requiredMessage}" />
+				<h:message for="firstName" class="#{cc.attrs.errorStyleClass}" />
+				#{cc.attrs.lastNamePrompt}:
+				<h:inputText value="#{cc.attrs.value.lastName}" 
+							 id="lastName"
+							 required="#{cc.attrs.required}"
+							 requiredMessage="#{cc.attrs.requiredMessage}" />
+				<h:message for="lastName" class="#{cc.attrs.errorStyleClass}" />
+			</h:panelGrid>
+		</cc:implementation>
+	</h:body>
+</html>

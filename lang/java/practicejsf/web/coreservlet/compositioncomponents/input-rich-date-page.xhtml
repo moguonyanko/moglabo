@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:mj="http://java.sun.com/jsf/composite/myjsfcomponent">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>コンポーネントでリッチなGUIを使用</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<h:outputStylesheet library="style" name="common.css" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>コンポーネントでリッチなGUIを使用</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<h:form id="registrationForm">
+				<fieldset>
+					<legend>日付入力</legend>
+					<mj:styledInputName value="#{resortBean2}"
+										firstNamePrompt="苗字を入力して下さい"
+										lastNamePrompt="名前を入力して下さい" />
+
+
+					<p><span>出発日:</span>
+						<mj:inputRichDate value="#{resortBean2.startDate}" />
+					</p>
+					<p><span>到着日:</span>
+						<mj:inputRichDate id="checkoutDate" 
+										  value="#{resortBean2.endDate}"
+										  changeMonth="true"
+										  changeYear="true" 
+										  numberOfMonths="2" />
+					</p>
+
+					<h:message for="registrationForm:checkoutDate" styleClass="error" />
+					<div>
+						<h:commandButton action="#{resortBean2.register}"
+										 value="登録" />
+					</div>
+				</fieldset>
+			</h:form>
+		</main>
+    </h:body>
+</html>

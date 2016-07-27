@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <head>
+		<meta charset="UTF-8" />
+        <title>ELと配列・コレクション</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+    <body>
+        <header>
+			<h1>ELと配列・コレクション</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<h:form>
+				<section>
+					<h2>Cheap Items</h2>
+					<p>
+						該当する要素が存在しない場合は空文字で置き換えられてページが表示される。<br />
+						しかしh:commandButtonをクリックしてページ遷移しようとすると例外が発生する。
+					</p>
+					<p><h:inputText value="#{purchases.cheapItems[0]}" /></p>
+					<p><h:inputText value="#{purchases.cheapItems[1]}" /></p>
+					<p><h:inputText value="#{purchases.cheapItems[2]}" /></p>
+				</section>
+				<section>
+					<h2>Medium Items</h2>
+					<p><h:inputText value="#{purchases.mediumItems[0]}" /></p>
+					<p><h:inputText value="#{purchases.mediumItems[1]}" /></p>
+					<p><h:inputText value="#{purchases.mediumItems[2]}" /></p>
+				</section>
+				<section>
+					<h2>High Items</h2>
+					<p>
+						Mapのキーに文字列を直接指定する場合はシングルクォートで囲むか，<br />
+						valueの値をシングルクォートで囲む必要がある。<br />
+						MapのキーはString型ではなく独自のオブジェクト型にできる。<br />
+						その場合はBeanにキーのgetterを実装する必要がある。
+					</p>
+					<p><h:inputText value="#{purchases.valuableItems[purchases.low]}" /></p>
+					<p><h:inputText value="#{purchases.valuableItems[purchases.medium]}" /></p>
+					<p><h:inputText value="#{purchases.valuableItems[purchases.high]}" /></p>
+				</section>
+				<div>
+					<h:commandButton value="購入" action="#{purchases.purchaseItem}" />
+				</div>
+			</h:form>
+		</main>
+    </body>
+</html>

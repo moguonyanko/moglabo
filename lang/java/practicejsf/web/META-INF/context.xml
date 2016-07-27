@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/practicejsf">
+	<!-- fot Test project -->
+	<Resource auth="Container" 
+			  name="jdbc/JSFTest" 
+			  driverClassName="com.mysql.jdbc.Driver" 
+			  maxIdle="10" 
+			  maxTotal="20" 
+			  username="testuser" 
+			  password="testpassword" 
+			  type="javax.sql.DataSource" 
+			  url="jdbc:mysql://localhost:13306/test?autoReconnect=true" 
+	/>
+	
+	<!-- for CDI -->
+	<Resource name="BeanManager"
+			  auth="Container"
+			  type="javax.enterprise.inject.spi.BeanManager"
+			  factory="org.jboss.weld.resources.ManagerObjectFactory"/>
+	
+	<!-- for Tomcat8.5 -->
+	<Resources cacheMaxSize="102400" />
+</Context>

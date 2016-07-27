@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>ナビゲーション Empty Error</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>ナビゲーション Empty Error</h1>
+			<!--
+			h:linkやh:commandButtonはa要素と異なりコンテキストルートからパスを検索する。 
+			コンテキスト名を書かなくていいのはメリットといえる。
+			コンテキスト名を書きたくないなら相対パスを使えばよい。しかし相対パスは
+			将来ディレクトリ構成が変更される可能性を考えると同じディレクトリ内の
+			ファイルを参照するときだけ使うようにしたい。絶対パスでも変更の影響は受けるが
+			Webサーバの設定やfaces-config.xmlのnavigation-ruleで対応できる可能性がある。
+			-->
+			<p><a href="/practicejsf/">a要素でhome</a></p>
+			<p><h:link outcome="/index" value="h:linkでhome" /></p>
+			<h:form>
+				<span><h:commandButton action="/index" value="h:commandButtonでhome" /></span>
+			</h:form>
+		</header>
+
+		<main>
+			<em>何か文字を入力して下さい！</em>
+			<p><h:link outcome="start-page-with-explicit-bean" value="再入力" /></p>
+		</main>
+    </h:body>
+</html>

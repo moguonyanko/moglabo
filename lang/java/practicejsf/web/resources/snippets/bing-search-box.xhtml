@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <head>
+		<meta charset="UTF-8" />
+        <title>検索ボックス(Bing)</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </head>
+    <body>
+		<ui:composition template="/resources/templates/search-box-template.xhtml">
+			<ui:define name="search-form">
+				<form action="http://bing.com/search">
+					<p><input type="text" name="q" /></p>
+					<p><input type="submit" value="Bing検索" /></p>
+				</form>
+			</ui:define>
+		</ui:composition>
+    </body>
+</html>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <head>
+		<meta charset="UTF-8" />
+        <title>Expression Language</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+		<header>
+			<h1>Expression Language</h1>
+			<p><h:link outcome="index" value="home" /></p>
+		</header>
+		<section>
+			<h2>EL表示テスト</h2>
+			<p><span>ユーザー作成時刻:</span><h:outputText value="#{userData.createTime}" /></p>
+			<p><span>メッセージ:</span><h:outputText value="#{userData.message}" /></p>
+		</section>
+    </body>
+</html>

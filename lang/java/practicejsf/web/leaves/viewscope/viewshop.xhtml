@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>Viewスコープ</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<h:outputStylesheet library="style" name="common.css" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>Viewスコープ</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<section>
+				<h2>Viewスコープのプロパティを更新する</h2>
+				<p>
+					セッションスコープではないので新規のウインドウやタブで表示すると変更前の状態が表示される。<br />
+					ウインドウやタブの数だけセッションが増えたりはしない。<br />
+					データベース等で共有しているのでなければ別のタブで変更した内容が現在のタブに反映されたりしない。<br />
+					ページリロードしてもBeanに対して行った変更は保持されるが，サーバ再起動するとセッションが<br />
+					維持されていてもページは初期状態に戻ってしまう。<br />
+					ブラウザの「戻る」で変更前のページを表示することができる。
+				</p>
+
+				<h:form rendered="#{not empty viewShop.list}">
+					<h:dataTable value="#{viewShop.list}" var="item">
+						<h:column><f:facet name="header">商品ID</f:facet>#{item.id}</h:column>
+						<h:column><f:facet name="header">商品名</f:facet>#{item.name}</h:column>
+						<h:column><h:commandButton value="編集" action="#{viewShop.edit(item)}" /></h:column>
+						<h:column><h:commandButton value="削除" action="#{viewShop.delete(item)}" /></h:column>
+					</h:dataTable>
+				</h:form>
+				<h:panelGroup rendered="#{empty viewShop.list}">
+					<p>商品が何もありません。新しい商品を追加して下さい。</p>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{!viewShop.editable}">
+					<h3>商品追加</h3>
+					<h:form>
+						<!--
+						input要素の入力履歴は各ウインドウ，各タブで共有される。
+						入力履歴はブラウザ側に保持されるのだから当然である。
+						-->
+						<p>商品名:<h:inputText value="#{viewShop.item.name}" /></p>
+						<p><h:commandButton value="追加" action="#{viewShop.add}" /></p>
+					</h:form>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{viewShop.editable}">
+					<h3>商品編集<span>#{viewShop.item.id}</span></h3>
+					<p>商品ID<span class="emphasis">#{viewShop.item.id}</span>の商品を編集しています。</p>
+					<h:form>
+						<p>商品名:<h:inputText value="#{viewShop.item.name}" /></p>
+						<p><h:commandButton value="保存" action="#{viewShop.save}" /></p>
+					</h:form>
+				</h:panelGroup>
+			</section>
+
+			<aside>
+				<h2>参考サイト</h2>
+				<ul>
+					<li><a href="http://balusc.omnifaces.org/2010/06/benefits-and-pitfalls-of-viewscoped.html">
+							The benefits and pitfalls of @ViewScoped
+						</a></li>
+				</ul>
+			</aside>
+		</main>
+    </h:body>
+</html>

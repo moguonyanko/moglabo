@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>ナビゲーション(explicit-bean) Error</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>ナビゲーション(explicit-bean) Error</h1>
+			<!-- 
+			静的なナビゲーションでもh:commandButtonはh:formの内部に記述されなければエラーになる。
+			パラメータを決められたページに送信してリクエストしたい時に使うのかもしれない。
+			-->
+			<h:form>
+				<span><h:commandButton action="/index" value="ホーム" /></span>
+			</h:form>
+		</header>
+
+		<main>
+			<em>入力メッセージが短すぎます。</em>
+			<p><h:outputText value="#{messageHandler.message}" /></p>
+			<p>最低<strong>#{messageHandler.getMinimumMessageLength()}</strong>文字入力して下さい。</p>
+			<p><h:link outcome="start-page-with-explicit-bean" value="再入力" /></p>
+		</main>
+    </h:body>
+</html>

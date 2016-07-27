@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>バリデーションのメッセージの国際化</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+		<style>
+			.locale-symbol {
+				display: inline-block;
+				width: 200px;
+				height: 100px;
+			}
+
+			.en-us {
+				border: 3px solid blue;
+			}
+
+			.ja-jp {
+				border: 3px solid  red;
+			}
+		</style>
+    </h:head>
+    <h:body>
+		<header>
+			<h1>バリデーションのメッセージの国際化</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<p>
+				入力値にエラーがある状態ではロケールの変更が行えない。<br />
+				Beanのプロパティとして定義されているロケールの変更とページ再表示よりも<br />
+				入力値のバリデーションの方が優先的に実行されるということである。
+			</p>
+			<f:view locale="#{localeBean.currentLocale}">
+				<h:form>
+					<h:commandLink action="#{localeBean.setEnglish}">
+						<span class="locale-symbol en-us">English</span>
+					</h:commandLink>
+					<h:commandLink action="#{localeBean.setJapanese}">
+						<span class="locale-symbol ja-jp">日本語</span>
+					</h:commandLink>
+					<div>
+						<p><span>#{vmsgs.num1Prompt}</span>
+							<h:inputText id="num1"
+										 value="#{calculatorBean.firstNumber}"
+										 required="true"
+										 requiredMessage="#{vmsgs.numRequiredMessage}"
+										 converterMessage="#{vmsgs.numConverterMessage}" />
+							<h:message class="error" for="num1" />
+						</p>
+						<p><span>#{vmsgs.num2Prompt}</span>
+							<h:inputText id="num2"
+										 value="#{calculatorBean.secondNumber}"
+										 required="true"
+										 requiredMessage="#{vmsgs.numRequiredMessage}"
+										 converterMessage="#{vmsgs.numConverterMessage}" />
+							<h:message class="error" for="num2" />
+						</p>
+						<div>
+							<h:commandButton value="#{vmsgs.buttonLabel}" action="#{calculatorBean.computeSum}" />
+						</div>
+					</div>
+				</h:form>
+			</f:view>
+		</main>
+    </h:body>
+</html>

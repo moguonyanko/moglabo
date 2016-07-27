@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:mj="http://java.sun.com/jsf/composite/myjsfcomponent">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>複合コンポーネントでリスト作成</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<style>
+			.blue {
+				color: blue;
+			}
+		</style>
+    </h:head>
+    <h:body>
+		<header>
+			<h1>複合コンポーネントでリスト作成</h1>
+		</header>
+		
+		<main>
+			<fieldset>
+				<legend>複合コンポーネントによるリクエスト情報出力</legend>
+				<mj:requestInfo styleClass="blue" />
+			</fieldset>
+		</main>
+    </h:body>
+</html>

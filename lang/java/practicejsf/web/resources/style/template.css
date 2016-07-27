@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+ul {
+	list-style: none;
+}
+
+nav {
+	background-color: beige;
+}
+
+footer {
+	margin-top: 1rem;
+	border-top: solid 1px lightgray;
+}
+
+.flex-container {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.flex-container > .flex-content {
+	flex: 1 0 100px;
+}

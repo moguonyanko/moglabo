@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>リクエスト・レスポンスオブジェクト</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>リクエスト・レスポンスオブジェクト</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<section>
+				<h2>選択された検索エンジンで文字列検索</h2>
+				<h:form>
+					<div>
+						<span>検索エンジン:</span>
+						<h:selectOneMenu value="#{searchController.searchEngine}">
+							<f:selectItems value="#{searchController.availableSearchEngines}"
+										   var="engine"
+										   itemLabel="#{engine.displayName}"
+										   itemValue="#{engine}" />
+						</h:selectOneMenu>
+					</div>
+					<div>
+						<span>検索文字列:</span><h:inputText value="#{searchController.searchString}" />
+					</div>
+					<div>
+						<h:commandButton value="検索" action="#{searchController.doSearch}" />
+					</div>
+				</h:form>
+			</section>
+		</main>
+    </h:body>
+</html>

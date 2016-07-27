@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>結果表示</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<h:outputStylesheet library="style" name="common.css" />
+		<style>
+			.result-area {
+				border: solid 2px #{conversationBean.colorValue};
+			}
+		</style>
+    </h:head>
+    <h:body>
+		<header>
+			<h1>結果表示</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<div class="result-area">
+				<p>カウント=<span class="emphasis"><h:outputText value="#{conversationBean.counter}" /></span></p>
+			</div>
+
+			<h:form>
+				<h:commandLink value="終了して戻る" action="#{conversationBean.endConversation}" />
+			</h:form>
+		</main>
+    </h:body>
+</html>

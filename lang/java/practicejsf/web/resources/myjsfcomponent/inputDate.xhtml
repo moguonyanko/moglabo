@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core">
+	<h:head>
+		<meta charset="UTF-8" />
+		<title>Input Date</title>
+	</h:head>
+
+	<h:body>
+		<cc:interface componentType="practicejsf.component.DateComponent1">
+			<cc:attribute name="value" type="java.util.Date" />
+		</cc:interface>
+
+		<!--
+		バッキングコンポーネントでは入力される複数の値を使って
+		１つのBeanのプロパティ(ここではDate)を生成することができる。
+		-->
+		<cc:implementation>
+			<h:selectOneMenu id="year"
+							 converter="javax.faces.Integer">
+				<f:selectItems value="#{dateChoices.years}" />
+			</h:selectOneMenu>
+			<h:selectOneMenu id="month"
+							 converter="javax.faces.Integer">
+				<f:selectItems value="#{dateChoices.months}" />
+			</h:selectOneMenu>
+			<h:selectOneMenu id="day"
+							 converter="javax.faces.Integer">
+				<f:selectItems value="#{dateChoices.days}" />
+			</h:selectOneMenu>
+		</cc:implementation>
+	</h:body>
+</html>

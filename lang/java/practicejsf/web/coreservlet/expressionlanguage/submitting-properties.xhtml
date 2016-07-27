@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>プロパティでsubmit</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>プロパティでsubmit</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+		
+		<main>
+			<h:form>
+				<legend>雇用希望者情報</legend>
+				<p>苗字:<span><h:inputText value="#{employee1.name.firstName}" /></span></p>
+				<p>名前:<span><h:inputText value="#{employee1.name.lastName}" /></span></p>
+				<p>所属企業名:<span><h:inputText value="#{employee1.company.companyName}" /></span></p>
+				<p>業務内容:<span><h:inputText value="#{employee1.company.business}" /></span></p>
+				<div>
+					<!-- 
+					action属性末尾の括弧はあってもなくても構わないが，ない方が
+					汎用性がある。括弧を付けなければアクセッサメソッド呼び出しでも
+					それ以外のメソッド呼び出しでも構わない。
+					-->
+					<h:commandButton value="申し込み" action="#{employee1.processEmployee}" />
+				</div>
+			</h:form>
+		</main>
+    </h:body>
+</html>

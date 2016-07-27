@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>支払い成功</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+    </h:head>
+    <h:body>
+		<header>
+			<h1>支払い成功</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<h2>支払いは成功しました。</h2>
+			<ul>
+				<li>ユーザーID:<span>#{bidBean1.userId}</span></li>
+				<li>キーワード:<span>#{bidBean1.keyword}</span></li>
+				<li>支払い金額:<span>#{bidBean1.bidAmount}</span></li>
+				<li>支払い期間:<span>#{bidBean1.bidDuration}</span></li>
+			</ul>
+			<p><h:link outcome="enter-bid" value="戻る" /></p>
+		</main>
+    </h:body>
+</html>

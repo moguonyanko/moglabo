@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:h="http://xmlns.jcp.org/jsf/html"
+	  xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+		<meta charset="UTF-8" />
+        <title>dataTableによるシンプルな表</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<h:outputStylesheet library="style" name="common.css" />
+		<style>
+			.mainTable {
+				margin-left: auto;
+				margin-right: auto;
+			}
+
+			.caption1 {
+				font-family: sans-serif;
+				font-weight: bold;
+				font-size: 24px;
+				color: blue;
+			}
+
+			.caption2 {
+				font-family: sans-serif;
+				font-weight: bold;
+				font-size: 24px;
+				color: red;
+			}
+
+			.heading {
+				font-family: sans-serif;
+				font-weight: bold;
+				font-size: 20px;
+				color: black;
+				background-color: silver;
+				text-align: center; 
+			}
+
+			.even {
+				font-family: Times New Roman, serif;
+				font-size: 18px;
+				color: black;
+				background-color: white;
+				text-indent: 20px;
+			}
+
+			.odd {
+				font-family: Times New Roman, serif;
+				font-size: 18px;
+				color: white;
+				background-color: black;
+				text-indent: 20px;
+			}
+		</style>
+    </h:head>
+    <h:body>
+		<header>
+			<h1>dataTableによるシンプルな表</h1>
+			<p><h:link outcome="/index" value="home" /></p>
+		</header>
+
+		<main>
+			<div>
+				<h:dataTable var="programmer" 
+							 value="#{company1.programmers}" 
+							 border="1"
+							 styleClass="mainTable"
+							 captionClass="caption1"
+							 headerClass="heading"
+							 rowClasses="even,odd">
+					<f:facet name="caption">#{company1.companyName}に所属するプログラマー</f:facet>
+					<h:column>
+						<f:facet name="header">苗字</f:facet>
+							#{programmer.firstName}
+					</h:column>
+					<h:column>
+						<f:facet name="header">名前</f:facet>
+							#{programmer.lastName}
+					</h:column>
+					<h:column>
+						<f:facet name="header">練度</f:facet>
+							#{programmer.level}
+					</h:column>
+					<h:column>
+						<f:facet name="header">経験した言語</f:facet>
+							#{programmer.joinedLanguages}
+					</h:column>
+				</h:dataTable>
+			</div>
+		</main>
+    </h:body>
+</html>
