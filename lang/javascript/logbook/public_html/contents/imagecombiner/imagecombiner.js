@@ -1,6 +1,8 @@
 (((win, doc, lB) => {
 	"use strict";
 	
+	let selectedImages = [];
+	
 	const getColumnSize = () => {
 		const columnEle = lB.select(".column-size");
 		return parseInt(columnEle.value);
@@ -23,14 +25,12 @@
 	};
 	
 	/**
-	 * @todo
-	 * 要整理。
-	 * 
-	 * 更新日時など元のファイル群の並び順に従った順序でしか画像を結合できない。
-	 * 画像を1つずつ選択して結合するモードも用意した方がいいかもしれない。
+	 * canvasに画像を並べて描画する。
+	 * canvasの描画結果は画像として右クリックから保存することができる。
+	 * プログラム内でcanvasの描画結果をBlobに変換して保存する必要は無い。
 	 */
-	const combineSelectedImages = files => {
-		if(!files || files.length <= 0){
+	const combineSelectedImages = imgFiles => {
+		if(!imgFiles || imgFiles.length <= 0){
 			return;
 		}
 		
@@ -38,8 +38,7 @@
 		imgContainer.innerHTML = "";
 		
 		let canvas, ctx;
-		
-		const imgFiles = Array.from(files);
+		let imgIdx = 0;
 		
 		const draw = (file, col, row) => {
 			const img = doc.createElement("img");
@@ -49,7 +48,9 @@
 				
 				ctx.drawImage(img, col * img.width, row * img.height);
 				
-				const nextImgFile = imgFiles.shift();
+				imgIdx += 1;
+				
+				const nextImgFile = imgFiles[imgIdx];
 				if (nextImgFile) {
 					const goToNextRow = (col + 1) * img.width >= canvas.width;
 					if (goToNextRow) {
@@ -87,20 +88,24 @@
 				if(index >= imgFiles.length - 1){
 					canvas = createCanvas(minW, minH);
 					ctx = canvas.getContext("2d");
-					draw(imgFiles.shift(), 0, 0);
+					draw(imgFiles[imgIdx], 0, 0);
 				}
 			}
 			img.src = url;
 		});
 	};
 	
-	/**
-	 * Chromeでは選択したファイルがそれ以前に選択されたファイルと同じだった場合
-	 * changeイベントが発生しない。Firefoxでは発生する。
-	 */
-	const init = () => lB.hookChange(lB.select(".file-selector"), evt => {
-		combineSelectedImages(evt.target.files);
-	});
+	const init = () => {
+		lB.select(".file-selector").addEventListener("change", evt => {
+			if(evt.target.files && evt.target.files.length > 0){
+				selectedImages = Array.from(evt.target.files);
+				combineSelectedImages(selectedImages);
+			}
+		}, false);
+		
+		lB.select(".image-remaker").addEventListener("click", 
+			() => combineSelectedImages(selectedImages), false);
+	};
 	
 	lB.hookDocumentLoad(init);
 	

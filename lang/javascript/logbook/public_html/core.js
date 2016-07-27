@@ -40,12 +40,6 @@
 		hookDocumentLoad : function (listener) {
 			win.addEventListener("DOMContentLoaded", listener, false);
 		},
-		hookClick : function (ele, listener, opt_capture) {
-			ele.addEventListener("click", listener, opt_capture);
-		},
-		hookChange : function (ele, listener, opt_capture) {
-			ele.addEventListener("change", listener, opt_capture);
-		},
 		forEach : function (src, func) {
 			if (Array.isArray(src)) {
 				src.forEach(func);

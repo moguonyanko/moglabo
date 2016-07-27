@@ -6,7 +6,11 @@
 }
 
 .error {
-	color: blue;
-	font-weight: bold;
+	color: red;
 	font-style: italic;
+}
+
+.info {
+	color: navy;
+	font-size: small;
 }

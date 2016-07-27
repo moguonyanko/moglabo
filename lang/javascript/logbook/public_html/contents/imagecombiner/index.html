@@ -5,35 +5,44 @@
 		<title>画像結合</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="stylesheet" href="../../common.css" />
+		<style>
+			.image-config-panel {
+				margin: 1rem;
+			}
+		</style>
 	</head>
 	<body>
 		<header>
 			<h1>画像結合</h1>
 			<p>
-				選択された複数の画像を結合して表示します。
+				選択された複数の画像を結合します。画像はファイル名順で結合されます。
 			</p>
 		</header>
 
 		<main>
 			<section>
-				<h2>コンテナ設定</h2>
-				<div class="container-config">
-					<label>行:<input class="container-size row-size" type="number" value="3" min="1" max="10" required="required" /></label>
-					<label>列:<input class="container-size column-size" type="number" value="2" min="1" max="10" required="required" /></label>
-				</div>
-			</section>
-			<section>
-				<h2>ファイル選択</h2>
-				<p>結合したい画像を全て選択して下さい。選択が完了すると結合が行われます。</p>
-				<div class="file-select-container">
-					<p><input class="file-selector" type="file" accept="image/*" multiple="multiple" /></p>
-				</div>
+				<h2>結合画像設定</h2>
+				<section>
+					<h3>画像の枚数</h3>
+					<div class="image-config-panel">
+						<label>縦:<input class="container-size row-size" type="number" value="3" min="1" max="10" required="required" /></label>
+						<label>横:<input class="container-size column-size" type="number" value="2" min="1" max="10" required="required" /></label>
+					</div>
+					<div class="image-config-panel">
+						<button class="image-remaker">前と同じ画像で再結合</button>
+					</div>
+				</section>
+				<section>
+					<h3>ファイル選択(結合したい画像を全て選択)</h3>
+					<div class="file-select-container image-config-panel">
+						<label><input class="file-selector" type="file" accept="image/*" multiple="multiple" /></label>
+					</div>
+				</section>
 			</section>
 			<section>
 				<h2>結合結果</h2>
-				<div class="image-container">
-					<p>画像は右クリックから保存できます。</p>
-				</div>
+				<p class="info">画像は右クリックから保存できます。</p>
+				<div class="image-container"></div>
 			</section>
 		</main>
 
