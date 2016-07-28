@@ -13,13 +13,13 @@
 
 	var lB = {};
 
-	function noop() {}
-
 	function log(txt) {
 		win.console && win.console.log(txt);
 	}
 
 	/**
+	 * @name baseFunctions
+	 * @type Object
 	 * @description 
 	 * lB名前空間の直下に公開される汎用関数群です。
 	 */
@@ -33,12 +33,6 @@
 		},
 		selectAll : function (selector, opt_doc) {
 			return (opt_doc || doc).querySelectorAll(selector);
-		},
-		imagep : function (file) {
-			return /^image\//.test(file.type);
-		},
-		hookDocumentLoad : function (listener) {
-			win.addEventListener("DOMContentLoaded", listener, false);
 		},
 		forEach : function (src, func) {
 			if (Array.isArray(src)) {
