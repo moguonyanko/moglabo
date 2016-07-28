@@ -62,8 +62,8 @@
                 return appendToShadowDOM(shadowRootId, htmlInfo, cssInfo);
             }
 
-            function resolve(value) {
-                m.log(value);
+            function resolve(shadowRoot) {
+                m.log(shadowRoot);
             }
 
             function reject(err) {

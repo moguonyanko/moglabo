@@ -7,7 +7,7 @@
 
     function printText(ele, txt, override, newline) {
         var prop,
-                newLineChar;
+            newLineChar;
 
         if ("value" in ele) {
             prop = "value";
@@ -375,7 +375,7 @@
                 resolve = funcp(options.resolve) ? options.resolve : this.noop,
                 reject = funcp(options.reject) ? options.reject : this.noop,
                 predicate = funcp(options.predicate) ? options.predicate : this.truthy;
-
+        
             var promises = runners.map(function (runner) {
                 return new Promise(function (resolve, reject) {
                     try {
@@ -411,5 +411,8 @@
     };
 
     win.Gomakit = Gomakit;
-    win.goma = Object.create(Gomakit.prototype);
+    /**
+     * myにも代入するのは後方互換のため。
+     */
+    win.goma = win.my = Object.create(Gomakit.prototype);
 }(window, document));
