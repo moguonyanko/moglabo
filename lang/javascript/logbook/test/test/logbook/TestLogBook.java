@@ -11,7 +11,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class TestLogBook {
 	
-	private static final String TOP_PAGE_URL = "http://gfdev/logbook/";
+	private static final String TOP_PAGE_URL = "http://localhost/logbook/";
 	
 	private static final Map<String, Supplier<WebDriver>> DRIVER_SUPPLIERS = new HashMap<>();
 	
