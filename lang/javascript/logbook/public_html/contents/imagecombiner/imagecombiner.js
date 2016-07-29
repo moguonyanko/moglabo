@@ -19,6 +19,9 @@
 		canvas.setAttribute("width", w);
 		canvas.setAttribute("height", h);
 		
+		canvas.baseWidth = baseW;
+		canvas.baseHeight = baseH;
+		
 		return canvas;
 	};
 	
@@ -31,18 +34,25 @@
 		img.onload = () => {
 			lB.revokeBlobURL(url);
 			
-			if(!drawer.minW || img.width < drawer.minW){
-				drawer.minW = img.width;
+			if(!drawer.maxW || img.width > drawer.maxW){
+				drawer.maxW = img.width;
 			}
-			if(!drawer.minH || img.height < drawer.minH){
-				drawer.minH = img.height;
+			if(!drawer.maxH || img.height > drawer.maxH){
+				drawer.maxH = img.height;
 			}
 			
 			if(index >= imgFiles.length - 1){
-				drawer(createCanvas(drawer.minW, drawer.minH));
+				drawer(createCanvas(drawer.maxW, drawer.maxH));
 			}
 		}
 		img.src = url;
+	};
+	
+	const setImageSmoothingEnable = (ctx, enable) => {
+		ctx.imageSmoothingEnabled = true;
+		ctx.mozImageSmoothingEnabled = true;
+		ctx.webkitImageSmoothingEnabled = true;
+		ctx.msImageSmoothingEnabled = true;
 	};
 	
 	/**
@@ -57,11 +67,17 @@
 		img.onload = () => {
 			lB.revokeBlobURL(url);
 			
-			ctx.drawImage(img, col * img.width, row * img.height);
+			setImageSmoothingEnable(ctx, true);
+			const dWidth = canvas.baseWidth,
+				dHeight = canvas.baseHeight,
+				dx = col * dWidth,
+				dy = row * dHeight;
+			ctx.drawImage(img, dx, dy, dWidth, dHeight);
 			
-			const nextImgFile = imgFiles[(col + 1) + getColumnSize() * row];
+			const colSize = getColumnSize();
+			const nextImgFile = imgFiles[(col + 1) + colSize * row];
 			if (nextImgFile) {
-				const goToNextRow = (col + 1) * img.width >= canvas.width;
+				const goToNextRow = (col + 1) >= colSize;
 				if (goToNextRow) {
 					col = 0;
 					row += 1;
@@ -81,11 +97,21 @@
 			return;
 		}
 		
-		const func = ((imgFile, index, imgFiles) => withCanvas(imgFile, index, imgFiles, 
-			(canvas => draw(canvas, imgFiles, 
-				(canvas => lB.select(".image-container").replaceChild(canvas, lB.select(".image-container canvas")))))));
+		/**
+		 * 呼び出し元の配列に影響を与えないように念のため複製する。
+		 */
+		const clonedImages = [...targetImages];
 		
-		lB.forEach(targetImages, func);
+		/**
+		 * 以下のアロー関数を変数等に保存せずwithCanvasの引数として直接記述すると
+		 * withCanvasの呼び出しのたびにアロー関数が生成される。
+		 */
+		const drawer = canvas => draw(canvas, clonedImages, 
+				canvas => lB.select(".image-container").replaceChild(canvas, 
+				lB.select(".image-container canvas")));
+				
+		lB.forEach(clonedImages, (imgFile, index, imgFiles) => 
+			withCanvas(imgFile, index, imgFiles, drawer));
 	};
 	
 	const init = () => {
