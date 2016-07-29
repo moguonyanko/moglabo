@@ -20,6 +20,7 @@
 	 * lB名前空間の直下に公開される汎用関数群です。
 	 */
 	const baseFunctions = {
+		noop : () => {},
 		element (id, opt_doc) {
 			return (opt_doc || doc).getElementById(id);
 		},

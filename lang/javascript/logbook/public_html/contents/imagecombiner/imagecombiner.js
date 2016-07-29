@@ -54,36 +54,47 @@
 		}
 	}
 	
-	/**
-	 * 画像を一度全て読み込みcanvasのサイズを決定してcanvas要素を生成する。
-	 * canvasのサイズは最も大きい画像のサイズを基準にして決定する。
-	 */
-	const withCanvas = (imgFile, index, imgFiles, drawer) => {
-		const img = doc.createElement("img");
-		const url = lB.createBlobURL(imgFile);
-		img.onload = () => {
-			lB.revokeBlobURL(url);
-			
-			if(!drawer.maxW || img.width > drawer.maxW){
-				drawer.maxW = img.width;
-			}
-			if(!drawer.maxH || img.height > drawer.maxH){
-				drawer.maxH = img.height;
-			}
-			
-			if(index >= imgFiles.length - 1){
-				drawer(new CombiledImageCanvas(drawer.maxW, drawer.maxH));
-			}
+	class CanvasBuilder {
+		constructor (imgFiles) {
+			this.maxW = 0;
+			this.maxH = 0;
+			this.imgFiles = imgFiles;
 		}
-		img.src = url;
-	};
+		
+		/**
+		 * 画像を一度全て読み込みcanvasのサイズを決定してから
+		 * CombiledImageCanvasオブジェクトを生成する。
+		 * canvasのサイズは最も大きい画像のサイズを基準にして決定する。
+		 */
+		build (callback) {
+			this.imgFiles.forEach((imgFile, index) => {
+				const img = doc.createElement("img");
+				const url = lB.createBlobURL(imgFile);
+				img.onload = () => {
+					lB.revokeBlobURL(url);
+
+					if(img.width > this.maxW){
+						this.maxW = img.width;
+					}
+					if(img.height > this.maxH){
+						this.maxH = img.height;
+					}
+
+					if(index >= this.imgFiles.length - 1){
+						callback(new CombiledImageCanvas(this.maxW, this.maxH));
+					}
+				}
+				img.src = url;
+			});
+		}
+	}
 	
 	/**
 	 * canvasに画像を並べて描画する。
 	 * canvasの描画結果は画像として右クリックから保存することができる。
 	 * プログラム内でcanvasの描画結果をBlobに変換して保存する必要は無い。
 	 */
-	const draw = (combinedImageCanvas, imgFiles, onDrawn, 
+	const draw = (combinedImageCanvas, imgFiles, callback = lB.noop, 
 		imgFile = imgFiles[0], col = 0, row = 0) => {
 		const img = doc.createElement("img");
 		const url = lB.createBlobURL(imgFile);
@@ -102,9 +113,9 @@
 				} else {
 					col += 1;
 				}
-				draw(combinedImageCanvas, imgFiles, onDrawn, nextImgFile, col, row);
+				draw(combinedImageCanvas, imgFiles, callback, nextImgFile, col, row);
 			} else {
-				onDrawn(combinedImageCanvas);
+				callback(combinedImageCanvas);
 			}
 		};
 		img.src = url;
@@ -122,17 +133,15 @@
 		
 		const imageContainerClassName = ".image-container";
 		
-		/**
-		 * 以下のアロー関数を変数等に保存せずwithCanvasの引数として直接記述すると
-		 * withCanvasの呼び出しのたびにアロー関数が生成される。
-		 */
-		const drawer = combinedImageCanvas => 
-			draw(combinedImageCanvas, clonedImages, combinedImageCanvas => 
+		const drawCallback = combinedImageCanvas => 
 				lB.select(imageContainerClassName).replaceChild(combinedImageCanvas.element, 
-				lB.select(imageContainerClassName + " canvas")));
+				lB.select(imageContainerClassName + " canvas"));
+		
+		const drawFunc = combinedImageCanvas => draw(combinedImageCanvas, 
+			clonedImages, drawCallback);
 				
-		lB.forEach(clonedImages, (imgFile, index, imgFiles) => 
-			withCanvas(imgFile, index, imgFiles, drawer));
+		const builder = new CanvasBuilder(clonedImages);
+		builder.build(drawFunc);
 	};
 	
 	const init = () => {
