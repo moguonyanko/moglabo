@@ -4,8 +4,7 @@
  * @version 0.1
  * 
  * @description 
- * logbookアプリケーションを制御する基幹となるスクリプトです。
- * あまり深い階層を持ったライブラリにせずシンプルで使い易くすることを心がけます。
+ * logbookアプリケーションを制御するための共通スクリプトです。
  */
 
 (((win, doc) => {
@@ -34,14 +33,18 @@
 			if (Array.isArray(src)) {
 				src.forEach(func);
 			} else {
-				Array.prototype.forEach.call(src, func);
+				Array.from(src).forEach(func);
 			}
 		},
 		map (src, func) {
 			if (Array.isArray(src)) {
 				return src.map(func);
 			} else {
-				return Array.prototype.map.call(src, func);
+				/**
+				 * Iteratorなどmapメソッドを持っていないオブジェクトは
+				 * 一度配列に変換してmapメソッドが使えるようにする。
+				 */
+				return Array.from(src).map(func);
 			}
 		},
 		list (size, opt_defaultValue) {
