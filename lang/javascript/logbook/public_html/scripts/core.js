@@ -47,6 +47,13 @@
 				return Array.from(src).map(func);
 			}
 		},
+		reduce (src, func) {
+			if (Array.isArray(src)) {
+				return src.reduce(func);
+			} else {
+				return Array.from(src).reduce(func);
+			}
+		},
 		list (size, opt_defaultValue) {
 			const siz = size || 0,
 				defValue = opt_defaultValue || null;
