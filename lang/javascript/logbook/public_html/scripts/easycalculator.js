@@ -137,7 +137,10 @@
 			this.slots = new Map(lB.map(loadingList, (size, idx) => {
 				return [idx + 1, new Slot(size)];
 			}));
-			this.selected = false;
+		}
+		
+		get slotSize () {
+			return this.slots.size;
 		}
 		
 		getSlot (slotNo) {
@@ -202,24 +205,36 @@
 		}
 	}
 	
+	class NoNameShip extends Ship {
+		constructor () {
+			super("noname", [0, 0, 0, 0]);
+		}
+		
+		setSlot () {
+			/* Does nothing. */
+		}
+	}
+	
 	const SHIPS = {
-		ag: new Ship("ag", [20, 20, 32, 10]),
-		kg: new Ship("kg", [20, 20, 46, 12]),
-		sr2: new Ship("sr2", [18, 35, 20, 6]),
-		hr2: new Ship("hr2", [18, 36, 22, 3]),
-		sk2k: new Ship("sk2k", [34, 21, 12, 9]),
-		zk2k: new Ship("zk2k", [34, 24, 12, 6])
+		ag: () => new Ship("ag", [20, 20, 32, 10]),
+		kg: () => new Ship("kg", [20, 20, 46, 12]),
+		sr2: () => new Ship("sr2", [18, 35, 20, 6]),
+		hr2: () => new Ship("hr2", [18, 36, 22, 3]),
+		sk2k: () => new Ship("sk2k", [34, 21, 12, 9]),
+		zk2k: () => new Ship("zk2k", [34, 24, 12, 6]),
+		hs: () => new Ship("hs", [14, 16, 12])
 	};
 	
-	const initPage = () => {
-		/**
-		 * @todo 
-		 * implement
-		 */
+	const getShip = name => {
+		if (name in SHIPS) {
+			return SHIPS[name]();
+		} else {
+			return new NoNameShip();
+		}		
 	};
 	
-	const test = () => {
-		const ship1 = SHIPS.ag;
+	const testCalculateMastery = () => {
+		const ship1 = SHIPS.ag();
 		
 		ship1.setAircraft(1, AIRCRAFTS_FACTORY.rp());
 		ship1.setAircraft(2, AIRCRAFTS_FACTORY.rp601());
@@ -229,7 +244,7 @@
 		console.log(ship1.toString());
 		console.log(ship1.mastery);
 		
-		const ship2 = SHIPS.kg;
+		const ship2 = SHIPS.kg();
 		
 		ship2.setAircraft(1, AIRCRAFTS_FACTORY.rp());
 		ship2.setAircraft(2, AIRCRAFTS_FACTORY.rp601());
@@ -246,8 +261,98 @@
 		console.log(ship1.mastery + ship2.mastery);
 	};
 	
+	/* 計算対象指定用ページの構築 */
+	
+	const selectAllShipElements = () => {
+		return lB.selectAll(".ships .ship");
+	};
+	
+	const appendAircraft = (aircraftSelector, name) => {
+		const aircraftEle = new Option(name, name);
+		aircraftSelector.appendChild(aircraftEle);
+	};
+	
+	const appendAircraftSelectors = (slotSize, selectBase) => {
+		const baseClassName = "aircraft-selector-base";
+		const aircraftBase = doc.createElement("div");
+		aircraftBase.setAttribute("class", baseClassName);
+			
+		for (let i = 0; i < slotSize; i++) {
+			const aircraftSubBase = doc.createElement("div");
+			const aircraftSelector = doc.createElement("select");
+			aircraftSelector.setAttribute("class", "aircraft-selector");
+			const empOpt = new Option("", "", true, true);
+			aircraftSelector.appendChild(empOpt);
+			aircraftSubBase.appendChild(aircraftSelector);
+			aircraftBase.appendChild(aircraftSubBase);
+		}
+			
+		/**
+		 * @todo
+		 * append aircraft elements.
+		 */
+		
+		if(lB.select("." + baseClassName, selectBase)){
+			selectBase.replaceChild(aircraftBase, lB.select("." + baseClassName, selectBase));
+		} else {
+			selectBase.appendChild(aircraftBase);
+		}
+	};
+	
+	const appendShip = (shipName, selectBase) => {
+		const shipEle = new Option(shipName, shipName);
+		const shipSel = lB.select(".ship-selector", selectBase);
+		shipSel.appendChild(shipEle);
+		shipSel.addEventListener("change", evt => {
+			const value = evt.target.value;
+			const ship = getShip(value);
+			const slotSize = ship.slotSize;
+			appendAircraftSelectors(slotSize, selectBase);
+		}, false);
+	};
+	
+	const appendAllShips = () => {
+		lB.forEach(selectAllShipElements(), selectBase => {
+			lB.forEach(Object.keys(SHIPS), shipName => {
+				appendShip(shipName, selectBase);
+			});
+		});
+	};
+	
+	const getSelectedShip = selectBase => {
+		const shipSel = lB.select(".ship-selector", selectBase);
+		if (shipSel.value in SHIPS) {
+			return getShip(shipSel.value);
+		} else {
+			return new NoNameShip();
+		}
+	};
+	
+	const getAllSelectedShips = () => {
+		return lB.map(selectAllShipElements(), selectBase => {
+			return getSelectedShip(selectBase);
+		});
+	};
+	
+	const setupShips = () => {
+		appendAllShips();
+	};
+	
+	const initPage = () => {
+		setupShips();
+		
+		lB.select(".calculator").addEventListener("click", evt => {
+			const ships = getAllSelectedShips();
+			const masteries = lB.map(ships, ship => ship.mastery);
+			const result = lB.reduce(masteries, (m1, m2) => m1 + m2);
+			const resultArea = lB.select(".result .result-area");
+			resultArea.innerText = result;
+		}, false);
+	};
+	
 	const init = () => {
-		test();
+		testCalculateMastery();
+		initPage();
 	};
 	
 	init();
