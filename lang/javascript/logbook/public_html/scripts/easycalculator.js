@@ -207,11 +207,15 @@
 	
 	class NoNameShip extends Ship {
 		constructor () {
-			super("noname", [0, 0, 0, 0]);
+			super("", []);
 		}
 		
 		setSlot () {
 			/* Does nothing. */
+		}
+		
+		get mastery () {
+			return 0;
 		}
 	}
 	
