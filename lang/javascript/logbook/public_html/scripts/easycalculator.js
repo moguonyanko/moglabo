@@ -1,11 +1,14 @@
 (((win, doc, lB) => {
 	"use strict";
-	
-	const CORRECTION_VALUES = {
-		KS: 0.2,
-		KB: 0.25
-	};
 		
+	const AIRCRAFT_TYPE_NAMES = {
+		KS: "kansen", 
+		KK: "kankou", 
+		KB: "kanbaku", 
+		SB: "suibaku", 
+		SS: "suisen"
+	};
+	
 	class AircraftType {
 		constructor (name, bonus) {
 			this.name = name;
@@ -22,11 +25,29 @@
 	 * 常に最大skillのボーナス値が設定されている。
 	 */
 	const AIRCRAFT_TYPES = {
-		KS: new AircraftType("KS", 25),
-		KK: new AircraftType("KK", 3),
-		KB: new AircraftType("KB", 3),
-		SB: new AircraftType("SB", 9),
-		SS: new AircraftType("SS", 25)
+		[AIRCRAFT_TYPE_NAMES.KS]: new AircraftType(AIRCRAFT_TYPE_NAMES.KS, 25),
+		[AIRCRAFT_TYPE_NAMES.KK]: new AircraftType(AIRCRAFT_TYPE_NAMES.KK, 3),
+		[AIRCRAFT_TYPE_NAMES.KB]: new AircraftType(AIRCRAFT_TYPE_NAMES.KB, 3),
+		[AIRCRAFT_TYPE_NAMES.SB]: new AircraftType(AIRCRAFT_TYPE_NAMES.SB, 9),
+		[AIRCRAFT_TYPE_NAMES.SS]: new AircraftType(AIRCRAFT_TYPE_NAMES.SS, 25)
+	};
+	
+	/**
+	 * AircraftTypeの名前ではなくAircraftTypeオブジェクトをキーにしたい。
+	 * Mapを使って表現すれば可能だが，現状のMapは値取得時に渡されたキーを
+	 * 同値演算子(===)でしか既存のキーと比較できない。
+	 */
+	const CORRECTION_VALUES = {
+		[AIRCRAFT_TYPE_NAMES.KS]: 0.2,
+		[AIRCRAFT_TYPE_NAMES.KB]: 0.25
+	};
+	
+	const getCorrectionValue = aircraft => {
+		if (aircraft.type.name in CORRECTION_VALUES) {
+			return CORRECTION_VALUES[aircraft.type.name];
+		} else {
+			return 0;
+		}
 	};
 	
 	const getSkillBonus = aircraft => {
@@ -34,7 +55,7 @@
 	};
 	
 	const getValueByImprovement = aircraft => {
-		const cv = CORRECTION_VALUES[aircraft.type.name];
+		const cv = getCorrectionValue(aircraft);
 		return cv * aircraft.improvement;
 	};
 	
@@ -79,12 +100,14 @@
 		}
 	}
 	
+	const getAircraftType = typeName => AIRCRAFT_TYPES[typeName];
+	
 	const AIRCRAFTS_FACTORY = {
-		rp: () => new Aircraft("rp", AIRCRAFT_TYPES.KS, 10),
-		rp601: () => new Aircraft("rp601", AIRCRAFT_TYPES.KS, 11),
-		rpk: () => new Aircraft("rpk", AIRCRAFT_TYPES.KS, 12),
-		z62i: () => new Aircraft("z62i", AIRCRAFT_TYPES.KB, 7),
-		z53i: () => new Aircraft("z53i", AIRCRAFT_TYPES.KS, 12),
+		rp: () => new Aircraft("rp", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 10),
+		rp601: () => new Aircraft("rp601", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 11),
+		rpk: () => new Aircraft("rpk", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 12),
+		z62i: () => new Aircraft("z62i", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 7),
+		z53i: () => new Aircraft("z53i", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 12),
 	};
 	
 	class Slot {
@@ -114,6 +137,7 @@
 			this.slots = new Map(lB.map(loadingList, (size, idx) => {
 				return [idx + 1, new Slot(size)];
 			}));
+			this.selected = false;
 		}
 		
 		getSlot (slotNo) {
