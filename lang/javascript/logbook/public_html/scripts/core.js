@@ -20,9 +20,6 @@
 	 */
 	const baseFunctions = {
 		noop : () => {},
-		element (id, opt_doc) {
-			return (opt_doc || doc).getElementById(id);
-		},
 		select (selector, opt_doc) {
 			return (opt_doc || doc).querySelector(selector);
 		},

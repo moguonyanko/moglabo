@@ -1,5 +1,11 @@
 (((win, doc, lB) => {
 	"use strict";
+	
+	const IMPROVEMENT_VALUES = {
+		MIN: 0,
+		MAX: 10,
+		DEFAULT: 0
+	};
 		
 	const AIRCRAFT_TYPE_NAMES = {
 		KS: "kansen", 
@@ -77,15 +83,23 @@
 		//function fail(){}
 		
 		improve (value) {
-			if (value < 0) {
-				value = 0;
+			let impValue = parseInt(value);
+			
+			/**
+			 * Number.isNaNはグローバル関数のisNaNと異なり暗黙の型変換を行わない。
+			 * 引数の型がnumberでなければ常にfalseを返す。
+			 */
+			if (Number.isNaN(value)) {
+				impValue = IMPROVEMENT_VALUES.DEFAULT;
+			} else if (impValue < IMPROVEMENT_VALUES.MIN) {
+				impValue = IMPROVEMENT_VALUES.MIN;
+			} else if (IMPROVEMENT_VALUES.MAX < impValue) {
+				impValue = IMPROVEMENT_VALUES.MAX;
+			} else {
+				/* 範囲内の値はそのまま使用する。 */
 			}
 			
-			if (10 < value) {
-				value = 10;
-			}
-			
-			this.improvement = value;
+			this.improvement = impValue;
 		}
 		
 		toString () {
@@ -215,7 +229,9 @@
 		}
 		
 		setSlot () {
-			/* Does nothing. */
+			/**
+			 * NoNameShipのスロットはからの状態から変更させない。
+			 */
 		}
 		
 		get mastery () {
@@ -286,6 +302,53 @@
 		});
 	};
 	
+	const getImprovementText = impValue => {
+		const value = parseInt(impValue);
+		
+		if (Number.isNaN(value) || value <= IMPROVEMENT_VALUES.MIN) {
+			return "　";
+		} else if (IMPROVEMENT_VALUES.MAX <= value) {
+			return "★max";
+		} else {
+			return "★" + value;
+		}
+	};
+	
+	const createImprovementRange = (ship, slotNo) => {
+		const impEle = doc.createElement("input");
+		impEle.setAttribute("class", "aircraft-improve-range");
+		impEle.setAttribute("type", "range");
+		impEle.setAttribute("min", IMPROVEMENT_VALUES.MIN);
+		impEle.setAttribute("max", IMPROVEMENT_VALUES.MAX);
+		impEle.setAttribute("value", IMPROVEMENT_VALUES.DEFAULT);
+		
+		const improveAircraft = evt => {
+			const aircraft = ship.getAircraft(slotNo);
+			if (aircraft) {
+				const impValue = evt.target.value;
+				aircraft.improve(impValue);
+				ship.setAircraft(slotNo, aircraft);
+				impValEle.innerText = getImprovementText(impValue);
+			}
+		};
+		impEle.addEventListener("change", improveAircraft, false);
+		
+		const acImpContainer = doc.createElement("span");
+		acImpContainer.appendChild(impEle);
+		const impValEle = doc.createElement("span");
+		impValEle.innerText = getImprovementText(null);
+		acImpContainer.appendChild(impValEle);
+		
+		return acImpContainer;
+	};
+	
+	const resetImprovementRange = rangeBase => {
+		const impEle = lB.select(".aircraft-improve-range", rangeBase);
+		if (impEle) {
+			impEle.value = IMPROVEMENT_VALUES.DEFAULT;
+		}
+	};
+	
 	const changeShipSlot = (ship, slotNo) => {
 		return evt => {
 			const acName = evt.target.value;
@@ -295,7 +358,30 @@
 			} else {
 				ship.removeAircraft(slotNo);
 			}
+			
+			/**
+			 * 要素の親子や兄弟の関係はサードパーディのライブラリ利用時に
+			 * 変更されることがあるので，parentNodeやchildNodes等は極力
+			 * 使うべきでない。
+			 */
+			resetImprovementRange(evt.target.parentNode);
 		};
+	};
+	
+	const createAircraftSelector = (ship, slotNo) => {
+		const aircraftSubBase = doc.createElement("div");
+		const aircraftSelector = doc.createElement("select");
+		aircraftSelector.setAttribute("class", "aircraft-selector");
+		const empOpt = new Option("", "", true, true);
+		aircraftSelector.appendChild(empOpt);
+		appendAllAircrafts(aircraftSelector);
+		aircraftSelector.addEventListener("change", changeShipSlot(ship, slotNo), false);
+		aircraftSubBase.appendChild(aircraftSelector);
+		
+		const improvementRange = createImprovementRange(ship, slotNo);
+		aircraftSubBase.appendChild(improvementRange);
+		
+		return aircraftSubBase;
 	};
 	
 	const appendAircraftSelectors = (ship, selectBase) => {
@@ -304,18 +390,11 @@
 		aircraftBase.setAttribute("class", baseClassName);
 			
 		for (let i = 0; i < ship.slotSize; i++) {
-			const aircraftSubBase = doc.createElement("div");
-			const aircraftSelector = doc.createElement("select");
-			aircraftSelector.setAttribute("class", "aircraft-selector");
-			const empOpt = new Option("", "", true, true);
-			aircraftSelector.appendChild(empOpt);
-			appendAllAircrafts(aircraftSelector);
-			aircraftSelector.addEventListener("change", changeShipSlot(ship, i + 1), false);
-			aircraftSubBase.appendChild(aircraftSelector);
-			aircraftBase.appendChild(aircraftSubBase);
+			const aircraftSelector = createAircraftSelector(ship, i + 1);
+			aircraftBase.appendChild(aircraftSelector);
 		}
 			
-		if(lB.select("." + baseClassName, selectBase)){
+		if (lB.select("." + baseClassName, selectBase)) {
 			selectBase.replaceChild(aircraftBase, lB.select("." + baseClassName, selectBase));
 		} else {
 			selectBase.appendChild(aircraftBase);
@@ -339,7 +418,7 @@
 		 */
 		selectedShips[shipIdx] = {};
 		
-		if (ship.name in SHIPS){
+		if (ship.name in SHIPS) {
 			selectedShips[shipIdx][ship.name] = ship;
 		}
 	};
