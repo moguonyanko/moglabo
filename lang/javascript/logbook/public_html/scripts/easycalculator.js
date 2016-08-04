@@ -120,8 +120,27 @@
 		rp: () => new Aircraft("rp", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 10),
 		rp601: () => new Aircraft("rp601", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 11),
 		rpk: () => new Aircraft("rpk", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 12),
-		z62i: () => new Aircraft("z62i", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 7),
 		z53i: () => new Aircraft("z53i", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 12),
+		z62i: () => new Aircraft("z62i", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 7),
+		fw: () => new Aircraft("fw", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 10),
+		ms: () => new Aircraft("ms", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 8),
+		z21j: () => new Aircraft("z21j", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 8),
+		z32j: () => new Aircraft("z32j", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 8),
+		z52j: () => new Aircraft("z52j", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 9),
+		z52h601: () => new Aircraft("z52h601", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 9),
+		z62: () => new Aircraft("z62", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 4),
+		sd2: () => new Aircraft("sd2", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 9),
+		zu601: () => new Aircraft("zu601", getAircraftType(AIRCRAFT_TYPE_NAMES.SB), 3),
+		zu12: () => new Aircraft("zu12", getAircraftType(AIRCRAFT_TYPE_NAMES.SB), 3),
+		sr: () => new Aircraft("sr", getAircraftType(AIRCRAFT_TYPE_NAMES.SB), 0),
+		ns: () => new Aircraft("ns", getAircraftType(AIRCRAFT_TYPE_NAMES.SS), 3),
+		rs: () => new Aircraft("rs", getAircraftType(AIRCRAFT_TYPE_NAMES.SS), 2),
+		sse: () => new Aircraft("sse", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 1),
+		ss601: () => new Aircraft("ss601", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 0),
+		tzt: () => new Aircraft("tzt", getAircraftType(AIRCRAFT_TYPE_NAMES.KK), 1),
+		tzm: () => new Aircraft("tzm", getAircraftType(AIRCRAFT_TYPE_NAMES.KK), 1),
+		rs601: () => new Aircraft("rs601", getAircraftType(AIRCRAFT_TYPE_NAMES.KK), 0),
+		shinden: () => new Aircraft("shinden", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 15)
 	};
 	
 	class Slot {
@@ -244,14 +263,45 @@
 		}
 	}
 	
+	/**
+	 * 仕様検討中。
+	 * 正常に動作はするが，必須パラメータをRest Parameterで
+	 * 扱うべきではないかもしれない。
+	 */
+	const getShipMaker = (name, ...slots) => {
+		return () => new Ship(name, slots);
+	};
+	
 	const SHIPS = {
 		ag: () => new Ship("ag", [20, 20, 32, 10]),
 		kg: () => new Ship("kg", [20, 20, 46, 12]),
 		sr2: () => new Ship("sr2", [18, 35, 20, 6]),
 		hr2: () => new Ship("hr2", [18, 36, 22, 3]),
+		sk2: () => new Ship("sk2", [27, 27, 27, 12]),
 		sk2k: () => new Ship("sk2k", [34, 21, 12, 9]),
+		zk2: () => new Ship("zk2", [28, 26, 26, 13]),
 		zk2k: () => new Ship("zk2k", [34, 24, 12, 6]),
-		hs: () => new Ship("hs", [14, 16, 12])
+		hs: () => new Ship("hs", [14, 16, 12]),
+		th: () => new Ship("th", [30, 24, 24, 8]),
+		ur: () => new Ship("ur", [18, 21, 27, 3]),
+		amg: () => new Ship("amg", [18, 21, 27, 3]),
+		ktg: () => new Ship("ktg", [18, 21, 27, 3]),
+		sh: () => new Ship("sh", [18, 12, 12, 6]),
+		zh: () => new Ship("zh", [18, 12, 12, 6]),
+		rh: () => new Ship("rh", [21, 9, 9, 6]),
+		hy: () => new Ship("hy", [18, 18, 18, 12]),
+		jy2: () => new Ship("jy2", [24, 18, 20, 3]),
+		cht2: () => new Ship("cht2", [24, 18, 11, 8]),
+		chy2: () => new Ship("chy2", [24, 18, 11, 8]),
+		rj2: () => new Ship("rj2", [18, 28, 6, 3]),
+		gz: () => new Ship("gz", [30, 13, 10, 3]),
+		aks: () => new Ship("aks", [1, 1, 1]),
+		akm: () => new Ship("akm", [8, 8, 8]),
+		i401: () => new Ship("i401", [3, 3]),
+		i58: () => new Ship("i58", [1, 1]),
+		i19: () => new Ship("i19", [1, 1]),
+		i8: () => new Ship("i8", [1, 1]),
+		hys: () => new Ship("hys", [6, 3, 1])
 	};
 	
 	const getShip = name => {
