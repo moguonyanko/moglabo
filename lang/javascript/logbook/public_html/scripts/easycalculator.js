@@ -170,6 +170,10 @@
 			this.setSlot(slotNo, slot);
 		}
 		
+		removeAircraft (slotNo) {
+			this.setAircraft(slotNo, null);
+		}
+		
 		getMasteryOneSlot (slotNo) {
 			if (this.slots.has(slotNo)) {
 				const slot = this.getSlot(slotNo);
@@ -271,31 +275,46 @@
 		return lB.selectAll(".ships .ship");
 	};
 	
-	const appendAircraft = (aircraftSelector, name) => {
-		const aircraftEle = new Option(name, name);
+	const appendAircraft = (aircraftSelector, acName) => {
+		const aircraftEle = new Option(acName, acName);
 		aircraftSelector.appendChild(aircraftEle);
 	};
 	
-	const appendAircraftSelectors = (slotSize, selectBase) => {
+	const appendAllAircrafts = aircraftSelector => {
+		lB.forEach(Object.keys(AIRCRAFTS_FACTORY), acName => {
+			appendAircraft(aircraftSelector, acName);
+		});
+	};
+	
+	const changeShipSlot = (ship, slotNo) => {
+		return evt => {
+			const acName = evt.target.value;
+			if (acName in AIRCRAFTS_FACTORY) {
+				const aircraft = AIRCRAFTS_FACTORY[acName]();
+				ship.setAircraft(slotNo, aircraft);
+			} else {
+				ship.removeAircraft(slotNo);
+			}
+		};
+	};
+	
+	const appendAircraftSelectors = (ship, selectBase) => {
 		const baseClassName = "aircraft-selector-base";
 		const aircraftBase = doc.createElement("div");
 		aircraftBase.setAttribute("class", baseClassName);
 			
-		for (let i = 0; i < slotSize; i++) {
+		for (let i = 0; i < ship.slotSize; i++) {
 			const aircraftSubBase = doc.createElement("div");
 			const aircraftSelector = doc.createElement("select");
 			aircraftSelector.setAttribute("class", "aircraft-selector");
 			const empOpt = new Option("", "", true, true);
 			aircraftSelector.appendChild(empOpt);
+			appendAllAircrafts(aircraftSelector);
+			aircraftSelector.addEventListener("change", changeShipSlot(ship, i + 1), false);
 			aircraftSubBase.appendChild(aircraftSelector);
 			aircraftBase.appendChild(aircraftSubBase);
 		}
 			
-		/**
-		 * @todo
-		 * append aircraft elements.
-		 */
-		
 		if(lB.select("." + baseClassName, selectBase)){
 			selectBase.replaceChild(aircraftBase, lB.select("." + baseClassName, selectBase));
 		} else {
@@ -303,38 +322,64 @@
 		}
 	};
 	
-	const appendShip = (shipName, selectBase) => {
+	const selectedShips = ((() => {
+		let selShips = {};
+		
+		lB.forEach(selectAllShipElements(), (selectBase, idx) => {
+			selShips[idx] = {};
+		});
+		
+		return selShips;
+	})());
+	
+	const saveSelectedShip = (shipIdx, ship) => {
+		/**
+		 * 現在選択されていないShipの情報は削除してよい。
+		 * ただしもう一度選択した際に以前設定した状態で復帰させたい場合は必要になる。
+		 */
+		selectedShips[shipIdx] = {};
+		
+		if (ship.name in SHIPS){
+			selectedShips[shipIdx][ship.name] = ship;
+		}
+	};
+	
+	const findSelectedShip = (shipIdx, shipName) => {
+		if (shipIdx in selectedShips) {
+			return selectedShips[shipIdx][shipName] || new NoNameShip();
+		} else {
+			return new NoNameShip();
+		}
+	};
+	
+	const appendShip = (shipName, selectBase, idx) => {
 		const shipEle = new Option(shipName, shipName);
 		const shipSel = lB.select(".ship-selector", selectBase);
 		shipSel.appendChild(shipEle);
 		shipSel.addEventListener("change", evt => {
 			const value = evt.target.value;
 			const ship = getShip(value);
-			const slotSize = ship.slotSize;
-			appendAircraftSelectors(slotSize, selectBase);
+			appendAircraftSelectors(ship, selectBase);
+			saveSelectedShip(idx, ship);
 		}, false);
 	};
 	
 	const appendAllShips = () => {
-		lB.forEach(selectAllShipElements(), selectBase => {
+		lB.forEach(selectAllShipElements(), (selectBase, idx) => {
 			lB.forEach(Object.keys(SHIPS), shipName => {
-				appendShip(shipName, selectBase);
+				appendShip(shipName, selectBase, idx);
 			});
 		});
 	};
 	
-	const getSelectedShip = selectBase => {
+	const getSelectedShip = (selectBase, idx) => {
 		const shipSel = lB.select(".ship-selector", selectBase);
-		if (shipSel.value in SHIPS) {
-			return getShip(shipSel.value);
-		} else {
-			return new NoNameShip();
-		}
+		return findSelectedShip(idx, shipSel.value);
 	};
 	
 	const getAllSelectedShips = () => {
-		return lB.map(selectAllShipElements(), selectBase => {
-			return getSelectedShip(selectBase);
+		return lB.map(selectAllShipElements(), (selectBase, idx) => {
+			return getSelectedShip(selectBase, idx);
 		});
 	};
 	
