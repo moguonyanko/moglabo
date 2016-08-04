@@ -126,7 +126,7 @@
 	
 	class Slot {
 		constructor (size) {
-			this.size = size;
+			this.size = size || 0;
 			this.aircraft = null;
 		}
 		
@@ -144,6 +144,13 @@
 			return "Invalid slot number : " + this.slotNo;
 		}
 	}
+	
+	const calculateMastery = (ac, slot) => {
+		const mastery = (ac.ack + getValueByImprovement(ac)) * 
+			Math.sqrt(slot.size) + getSkillBonus(ac);
+		
+		return parseInt(mastery);
+	};
 	
 	class Ship {
 		constructor (name, loadingList) {
@@ -193,9 +200,7 @@
 				const slot = this.getSlot(slotNo);
 				const ac = this.getAircraft(slotNo);
 				if (ac) {
-					const m = (ac.ack + getValueByImprovement(ac)) * 
-						Math.sqrt(slot.size) + getSkillBonus(ac);
-					return parseInt(m);
+					return calculateMastery(ac, slot);
 				} else {
 					return 0;
 				}
@@ -334,9 +339,11 @@
 		impEle.addEventListener("change", improveAircraft, false);
 		
 		const acImpContainer = doc.createElement("span");
+		acImpContainer.setAttribute("class", "aircraft-improve-range-container");
 		acImpContainer.appendChild(impEle);
 		const impValEle = doc.createElement("span");
-		impValEle.innerText = getImprovementText(null);
+		impValEle.setAttribute("class", "aircraft-improve-value");
+		impValEle.innerText = getImprovementText(IMPROVEMENT_VALUES.DEFAULT);
 		acImpContainer.appendChild(impValEle);
 		
 		return acImpContainer;
@@ -346,6 +353,11 @@
 		const impEle = lB.select(".aircraft-improve-range", rangeBase);
 		if (impEle) {
 			impEle.value = IMPROVEMENT_VALUES.DEFAULT;
+		}
+		
+		const impValEle = lB.select(".aircraft-improve-value", rangeBase);
+		if (impValEle) {
+			impValEle.innerText = getImprovementText(IMPROVEMENT_VALUES.DEFAULT);
 		}
 	};
 	
@@ -370,6 +382,8 @@
 	
 	const createAircraftSelector = (ship, slotNo) => {
 		const aircraftSubBase = doc.createElement("div");
+		aircraftSubBase.setAttribute("class", "aircraft-selector-container");
+		
 		const aircraftSelector = doc.createElement("select");
 		aircraftSelector.setAttribute("class", "aircraft-selector");
 		const empOpt = new Option("", "", true, true);
@@ -377,6 +391,12 @@
 		appendAllAircrafts(aircraftSelector);
 		aircraftSelector.addEventListener("change", changeShipSlot(ship, slotNo), false);
 		aircraftSubBase.appendChild(aircraftSelector);
+		
+		const slotLoadingSize = ship.getSlot(slotNo).size;
+		const slotLoadingEle = doc.createElement("span");
+		slotLoadingEle.setAttribute("class", "aircraft-loading-size");
+		slotLoadingEle.innerText = slotLoadingSize;
+		aircraftSubBase.appendChild(slotLoadingEle);
 		
 		const improvementRange = createImprovementRange(ship, slotNo);
 		aircraftSubBase.appendChild(improvementRange);
@@ -390,7 +410,8 @@
 		aircraftBase.setAttribute("class", baseClassName);
 			
 		for (let i = 0; i < ship.slotSize; i++) {
-			const aircraftSelector = createAircraftSelector(ship, i + 1);
+			const slotNo = i + 1;
+			const aircraftSelector = createAircraftSelector(ship, slotNo);
 			aircraftBase.appendChild(aircraftSelector);
 		}
 			
