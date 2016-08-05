@@ -69,7 +69,8 @@
 		/**
 		 * Parameter Context Matchingのデフォルト値を[]や{}の右辺に書くことができる。
 		 */
-		constructor (name, type, ack, {skill = 7, improvement = 0} = {}) {
+		constructor (name, type, ack, { skill = 7, 
+			improvement = IMPROVEMENT_VALUES.DEFAULT } = {}) {
 			this.name = name;
 			this.type = type;
 			this.ack = ack;
@@ -115,32 +116,24 @@
 	}
 	
 	const getAircraftType = typeName => AIRCRAFT_TYPES[typeName];
+
+	const AIRCRAFTS_FACTORY = {};
 	
-	const AIRCRAFTS_FACTORY = {
-		rp: () => new Aircraft("rp", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 10),
-		rp601: () => new Aircraft("rp601", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 11),
-		rpk: () => new Aircraft("rpk", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 12),
-		z53i: () => new Aircraft("z53i", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 12),
-		z62i: () => new Aircraft("z62i", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 7),
-		fw: () => new Aircraft("fw", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 10),
-		ms: () => new Aircraft("ms", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 8),
-		z21j: () => new Aircraft("z21j", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 8),
-		z32j: () => new Aircraft("z32j", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 8),
-		z52j: () => new Aircraft("z52j", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 9),
-		z52h601: () => new Aircraft("z52h601", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 9),
-		z62: () => new Aircraft("z62", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 4),
-		sd2: () => new Aircraft("sd2", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 9),
-		zu601: () => new Aircraft("zu601", getAircraftType(AIRCRAFT_TYPE_NAMES.SB), 3),
-		zu12: () => new Aircraft("zu12", getAircraftType(AIRCRAFT_TYPE_NAMES.SB), 3),
-		sr: () => new Aircraft("sr", getAircraftType(AIRCRAFT_TYPE_NAMES.SB), 0),
-		ns: () => new Aircraft("ns", getAircraftType(AIRCRAFT_TYPE_NAMES.SS), 3),
-		rs: () => new Aircraft("rs", getAircraftType(AIRCRAFT_TYPE_NAMES.SS), 2),
-		sse: () => new Aircraft("sse", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 1),
-		ss601: () => new Aircraft("ss601", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 0),
-		tzt: () => new Aircraft("tzt", getAircraftType(AIRCRAFT_TYPE_NAMES.KK), 1),
-		tzm: () => new Aircraft("tzm", getAircraftType(AIRCRAFT_TYPE_NAMES.KK), 1),
-		rs601: () => new Aircraft("rs601", getAircraftType(AIRCRAFT_TYPE_NAMES.KK), 0),
-		shinden: () => new Aircraft("shinden", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 15)
+	const setAircraftMaker = acData => {
+		AIRCRAFTS_FACTORY[acData.name] = () => new Aircraft(acData.name, 
+			getAircraftType(AIRCRAFT_TYPE_NAMES[acData.type]), 
+			acData.ack, { skill: acData.skill, improvement: acData.improvement });
+	};
+
+	const toAircraftsJSON = () => {
+		let result = [];
+		
+		for(let name in AIRCRAFTS_FACTORY){
+			const ac = AIRCRAFTS_FACTORY[name]();
+			result.push("\"" + ac.name + "\":" + JSON.stringify(ac));
+		}
+		
+		return "{" + result.join(",") + "}";
 	};
 	
 	class Slot {
@@ -172,9 +165,9 @@
 	};
 	
 	class Ship {
-		constructor (name, loadingList) {
+		constructor (name, slotComposition) {
 			this.name = name;
-			this.slots = new Map(lB.map(loadingList, (size, idx) => {
+			this.slots = new Map(lB.map(slotComposition, (size, idx) => {
 				return [idx + 1, new Slot(size)];
 			}));
 		}
@@ -263,45 +256,20 @@
 		}
 	}
 	
-	/**
-	 * 仕様検討中。
-	 * 正常に動作はするが，必須パラメータをRest Parameterで
-	 * 扱うべきではないかもしれない。
-	 */
-	const getShipMaker = (name, ...slots) => {
-		return () => new Ship(name, slots);
+	const SHIPS = {};
+	
+	const setShipMaker = shipData => {
+		SHIPS[shipData.name] = () => new Ship(shipData.name, shipData.slotComposition);
 	};
 	
-	const SHIPS = {
-		ag: () => new Ship("ag", [20, 20, 32, 10]),
-		kg: () => new Ship("kg", [20, 20, 46, 12]),
-		sr2: () => new Ship("sr2", [18, 35, 20, 6]),
-		hr2: () => new Ship("hr2", [18, 36, 22, 3]),
-		sk2: () => new Ship("sk2", [27, 27, 27, 12]),
-		sk2k: () => new Ship("sk2k", [34, 21, 12, 9]),
-		zk2: () => new Ship("zk2", [28, 26, 26, 13]),
-		zk2k: () => new Ship("zk2k", [34, 24, 12, 6]),
-		hs: () => new Ship("hs", [14, 16, 12]),
-		th: () => new Ship("th", [30, 24, 24, 8]),
-		ur: () => new Ship("ur", [18, 21, 27, 3]),
-		amg: () => new Ship("amg", [18, 21, 27, 3]),
-		ktg: () => new Ship("ktg", [18, 21, 27, 3]),
-		sh: () => new Ship("sh", [18, 12, 12, 6]),
-		zh: () => new Ship("zh", [18, 12, 12, 6]),
-		rh: () => new Ship("rh", [21, 9, 9, 6]),
-		hy: () => new Ship("hy", [18, 18, 18, 12]),
-		jy2: () => new Ship("jy2", [24, 18, 20, 3]),
-		cht2: () => new Ship("cht2", [24, 18, 11, 8]),
-		chy2: () => new Ship("chy2", [24, 18, 11, 8]),
-		rj2: () => new Ship("rj2", [18, 28, 6, 3]),
-		gz: () => new Ship("gz", [30, 13, 10, 3]),
-		aks: () => new Ship("aks", [1, 1, 1]),
-		akm: () => new Ship("akm", [8, 8, 8]),
-		i401: () => new Ship("i401", [3, 3]),
-		i58: () => new Ship("i58", [1, 1]),
-		i19: () => new Ship("i19", [1, 1]),
-		i8: () => new Ship("i8", [1, 1]),
-		hys: () => new Ship("hys", [6, 3, 1])
+	const toShipsJSON = () => {
+		let res = [];
+		
+		for(let name in SHIPS){
+			res.push("\"" + name + "\":" + JSON.stringify(SHIPS[name]()));
+		}
+		
+		return "{" + res.join(",") + "}";
 	};
 	
 	const getShip = name => {
@@ -313,24 +281,24 @@
 	};
 	
 	const testCalculateMastery = () => {
-		const ship1 = SHIPS.ag();
+		const ship1 = new Ship("ag", [20, 20, 32, 10]);
 		
-		ship1.setAircraft(1, AIRCRAFTS_FACTORY.rp());
-		ship1.setAircraft(2, AIRCRAFTS_FACTORY.rp601());
-		ship1.setAircraft(3, AIRCRAFTS_FACTORY.rpk());
-		ship1.setAircraft(4, AIRCRAFTS_FACTORY.z62i());
+		ship1.setAircraft(1, new Aircraft("rp", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 10));
+		ship1.setAircraft(2, new Aircraft("rp601", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 11));
+		ship1.setAircraft(3, new Aircraft("rpk", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 12));
+		ship1.setAircraft(4, new Aircraft("z62i", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 7));
 		
 		console.log(ship1.toString());
 		console.log(ship1.mastery);
 		
-		const ship2 = SHIPS.kg();
+		const ship2 = new Ship("kg", [20, 20, 46, 12]);
 		
-		ship2.setAircraft(1, AIRCRAFTS_FACTORY.rp());
-		ship2.setAircraft(2, AIRCRAFTS_FACTORY.rp601());
-		const z53i = AIRCRAFTS_FACTORY.z53i();
+		ship2.setAircraft(1, new Aircraft("rp", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 10));
+		ship2.setAircraft(2, new Aircraft("rp601", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 11));
+		const z53i = new Aircraft("z53i", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 12);
 		z53i.improve(5);
 		ship2.setAircraft(3, z53i);
-		const z62i = AIRCRAFTS_FACTORY.z62i();
+		const z62i = new Aircraft("z62i", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 7);
 		z62i.improve(5);
 		ship2.setAircraft(4, z62i);
 		
@@ -375,7 +343,12 @@
 		impEle.setAttribute("type", "range");
 		impEle.setAttribute("min", IMPROVEMENT_VALUES.MIN);
 		impEle.setAttribute("max", IMPROVEMENT_VALUES.MAX);
-		impEle.setAttribute("value", IMPROVEMENT_VALUES.DEFAULT);
+		
+		let impValue = IMPROVEMENT_VALUES.DEFAULT;
+		if(ship.getAircraft(slotNo)){
+			impValue = ship.getAircraft(slotNo).improvement;
+		} 
+		impEle.setAttribute("value", impValue);
 		
 		const improveAircraft = evt => {
 			const aircraft = ship.getAircraft(slotNo);
@@ -393,7 +366,7 @@
 		acImpContainer.appendChild(impEle);
 		const impValEle = doc.createElement("span");
 		impValEle.setAttribute("class", "aircraft-improve-value");
-		impValEle.innerText = getImprovementText(IMPROVEMENT_VALUES.DEFAULT);
+		impValEle.innerText = getImprovementText(impValue);
 		acImpContainer.appendChild(impValEle);
 		
 		return acImpContainer;
@@ -533,12 +506,8 @@
 		});
 	};
 	
-	const setupShips = () => {
-		appendAllShips();
-	};
-	
 	const initPage = () => {
-		setupShips();
+		appendAllShips();
 		
 		lB.select(".calculator").addEventListener("click", evt => {
 			const ships = getAllSelectedShips();
@@ -547,11 +516,62 @@
 			const resultArea = lB.select(".result .result-area");
 			resultArea.innerText = result;
 		}, false);
+		
+		console.info("Finished init page: " + new Date());
+	};
+	
+	const reportError = err => {
+		const reportEle = doc.createElement("span");
+		/**
+		 * classListでは複数のクラスを一度に設定できない。
+		 * addの引数にスペースが含まれているとシンタックスエラーになる。
+		 */
+		reportEle.setAttribute("class", "error error-report");
+		reportEle.appendChild(doc.createTextNode(err.message));
+		lB.select(".result").replaceElement(reportEle);
+	};
+	
+	const createSetupPromise = (name, callback) => {
+		const promise = new Promise((resolve, reject) => {
+			lB.loadConfig(name, {
+				onsuccess: res => {
+					for (let key in res) {
+						callback(res[key]);
+					}
+					resolve(name);
+				},
+				onerror: err => {
+					reject(err);
+				}
+			});
+		});
+		
+		return promise;
 	};
 	
 	const init = () => {
 		testCalculateMastery();
-		initPage();
+		
+		const promises = [
+			createSetupPromise("aircrafts.json", setAircraftMaker),
+			createSetupPromise("ships.json", setShipMaker)
+		];
+		
+		/**
+		 * 各Promiseでresolveを呼び出していても，Promise.all使用時は
+		 * 全てのPromiseの処理が完了した後の1回しかthenの関数は呼び出されない。
+		 * 後続のthenが引数として受け取りたい値はその前のthenで返す。
+		 */
+		Promise.all(promises)
+			/**
+			 * Promise.all使用時は各Promiseで呼び出したresolveの引数を
+			 * 全て含む配列がthenに渡される。
+			 */
+			.then(loadedConfigNames => {
+				console.info("Loaded config files: " + loadedConfigNames);
+				initPage();
+			})
+			.catch(reportError);
 	};
 	
 	init();

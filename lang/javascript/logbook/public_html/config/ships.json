@@ -1,0 +1,118 @@
+{
+	"ag": {
+		"name": "ag",
+		"slotComposition": [20, 20, 32, 10]
+	},
+	"kg": {
+		"name": "kg",
+		"slotComposition": [20, 20, 46, 12]
+	},
+	"sr2": {
+		"name": "sr2",
+		"slotComposition": [18, 35, 20, 6]
+	},
+	"hr2": {
+		"name": "hr2",
+		"slotComposition": [18, 36, 22, 3]
+	},
+	"sk2": {
+		"name": "sk2",
+		"slotComposition": [27, 27, 27, 12]
+	},
+	"sk2k": {
+		"name": "sk2k",
+		"slotComposition": [34, 21, 12, 9]
+	},
+	"zk2": {
+		"name": "zk2",
+		"slotComposition": [28, 26, 26, 13]
+	},
+	"zk2k": {
+		"name": "zk2k",
+		"slotComposition": [34, 24, 12, 6]
+	},
+	"hs": {
+		"name": "hs",
+		"slotComposition": [14, 16, 12]
+	},
+	"th": {
+		"name": "th",
+		"slotComposition": [30, 24, 24, 8]
+	},
+	"ur": {
+		"name": "ur",
+		"slotComposition": [18, 21, 27, 3]
+	},
+	"amg": {
+		"name": "amg",
+		"slotComposition": [18, 21, 27, 3]
+	},
+	"ktg": {
+		"name": "ktg",
+		"slotComposition": [18, 21, 27, 3]
+	},
+	"sh": {
+		"name": "sh",
+		"slotComposition": [18, 12, 12, 6]
+	},
+	"zh": {
+		"name": "zh",
+		"slotComposition": [18, 12, 12, 6]
+	},
+	"rh": {
+		"name": "rh",
+		"slotComposition": [21, 9, 9, 6]
+	},
+	"hy": {
+		"name": "hy",
+		"slotComposition": [18, 18, 18, 12]
+	},
+	"jy2": {
+		"name": "jy2",
+		"slotComposition": [24, 18, 20, 3]
+	},
+	"cht2": {
+		"name": "cht2",
+		"slotComposition": [24, 18, 11, 8]
+	},
+	"chy2": {
+		"name": "chy2",
+		"slotComposition": [24, 18, 11, 8]
+	},
+	"rj2": {
+		"name": "rj2",
+		"slotComposition": [18, 28, 6, 3]
+	},
+	"gz": {
+		"name": "gz",
+		"slotComposition": [30, 13, 10, 3]
+	},
+	"aks": {
+		"name": "aks",
+		"slotComposition": [1, 1, 1]
+	},
+	"akm": {
+		"name": "akm",
+		"slotComposition": [8, 8, 8]
+	},
+	"i401": {
+		"name": "i401",
+		"slotComposition": [3, 3]
+	},
+	"i58": {
+		"name": "i58",
+		"slotComposition": [1, 1]
+	},
+	"i19": {
+		"name": "i19",
+		"slotComposition": [1, 1]
+	},
+	"i8": {
+		"name": "i8",
+		"slotComposition": [1, 1]
+	},
+	"hys": {
+		"name": "hys",
+		"slotComposition": [6, 3, 1]
+	}
+}

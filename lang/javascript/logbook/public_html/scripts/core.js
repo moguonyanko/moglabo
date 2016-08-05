@@ -12,8 +12,92 @@
 
 	const lB = {};
 	
-	const noop = () => {};
+	const forEach = (src, func) => {
+		if (Array.isArray(src)) {
+			src.forEach(func);
+		} else {
+			Array.from(src).forEach(func);
+		}
+	};
+	
+	const map = (src, func) => {
+		if (Array.isArray(src)) {
+			return src.map(func);
+		} else {
+			/**
+			 * Iteratorなどmapメソッドを持っていないオブジェクトは
+			 * 一度配列に変換してmapメソッドが使えるようにする。
+			 */
+			return Array.from(src).map(func);
+		}
+	};
+		
+	const reduce = (src, func) => {
+		if (Array.isArray(src)) {
+			return src.reduce(func);
+		} else {
+			return Array.from(src).reduce(func);
+		}
+	};
+	
+	/**
+	 * 現在はGETリクエストのみの対応となっている。
+	 */
+	const doRequest = (path, { 
+			type = "json", /* 空文字をデフォルト値にするとDOMStringになってしまう。 */
+			onsuccess = () => {}, 
+			onerror = () => {}, 
+			timeout = 0 /* 単位はミリ秒。デフォルトはタイムアウト無し。 */
+		} = {}) => {
+		const xhr = new XMLHttpRequest();
+		
+		xhr.responseType = type;
+		xhr.timeout = timeout;
+		
+		xhr.onreadystatechange = evt => {
+			if (xhr.status >= 400) {
+				onerror({
+					status: xhr.status,
+					message: xhr.statusText
+				});
+				xhr.abort();
+				return;
+			}
+			
+			if (xhr.readyState === XMLHttpRequest.DONE) {
+				/**
+				 * responseTypeにjsonを指定した時はパース済みのJSONのオブジェクトが
+				 * 返されてくる。従ってJSON.parseを適用するとシンタックスエラーに
+				 * なってしまう。
+				 */
+				onsuccess(xhr.response);
+			}
+		};
+			
+		xhr.ontimeout = err => {
+			onerror({
+				status: xhr.status,
+				message: err.message
+			});
+			xhr.abort();
+		};
+		
+		xhr.open("GET", path);
+		xhr.send(null);
+	};
 
+	const select = (selector, opt_doc) => {
+		return (opt_doc || doc).querySelector(selector);
+	};
+		
+	const selectAll = (selector, opt_doc) => {
+		return (opt_doc || doc).querySelectorAll(selector);
+	};
+	
+	const toClassSelector = ele => {
+		return map(ele.classList, cls => "." + cls).join(" ");
+	};
+		
 	/**
 	 * @name baseFunctions
 	 * @type Object
@@ -21,38 +105,11 @@
 	 * lB名前空間の直下に公開される汎用関数群です。
 	 */
 	const baseFunctions = {
-		noop: noop,
-		select (selector, opt_doc) {
-			return (opt_doc || doc).querySelector(selector);
-		},
-		selectAll (selector, opt_doc) {
-			return (opt_doc || doc).querySelectorAll(selector);
-		},
-		forEach (src, func) {
-			if (Array.isArray(src)) {
-				src.forEach(func);
-			} else {
-				Array.from(src).forEach(func);
-			}
-		},
-		map (src, func) {
-			if (Array.isArray(src)) {
-				return src.map(func);
-			} else {
-				/**
-				 * Iteratorなどmapメソッドを持っていないオブジェクトは
-				 * 一度配列に変換してmapメソッドが使えるようにする。
-				 */
-				return Array.from(src).map(func);
-			}
-		},
-		reduce (src, func) {
-			if (Array.isArray(src)) {
-				return src.reduce(func);
-			} else {
-				return Array.from(src).reduce(func);
-			}
-		},
+		select: select,
+		selectAll: selectAll,
+		forEach: forEach,
+		map: map,
+		reduce: reduce,
 		list (size, opt_defaultValue) {
 			const siz = size || 0,
 				defValue = opt_defaultValue || null;
@@ -77,43 +134,31 @@
 		revokeBlobURL (url) {
 			win.URL.revokeObjectURL(url);
 		},
-		/**
-		 * @todo
-		 * 動作検証中。
-		 * 引数のfunc内に非同期処理が含まれていると，2つ目以降のthenに渡した関数が
-		 * 先に呼び出されてBlobURLを想定より早くrevokeしてしまう。
-		 * 
-		 * 引数の宣言部分で定義済みの関数を指定することはできない。
-		 * 引数の関数のデフォルト値にnoopを指定したりできないということである。
-		 */
-		withBlobURL (blob, {func = () => {}, 
-			onsuccess = () => {}, onerror = () => {}} = {}) {
+		loadConfig (path, { type = "json", 
+			onsuccess = () => {}, onerror = () => {}, timeout } = {}) {
+			if (!path) {
+				return;
+			}
 			
-			const promise = new Promise((resolve, reject) => {
-				const url = this.createBlobURL(blob);
-				try {
-					resolve(url);
-				} catch (err) {
-					reject(url, err);
-				}
+			let requestPath = path, 
+				onlyFileName = !path.includes("/");
+			
+			if (onlyFileName) {
+				requestPath = "/logbook/config/" + path;
+			} 
+			
+			doRequest(requestPath, {
+				type, onsuccess, onerror, timeout
 			});
-				
-			const revoke = url => this.revokeBlobURL(url);
-				
-			promise.then(url => {
-				func(url);
-				/**
-				 * 後続のthenで参照させたい値はreturnすればよい。
-				 */
-				return url;
-			}).then(url => {
-				revoke(url);
-				/* revokeしたURLはコールバック関数に渡さない。 */
-				onsuccess();
-			}).catch((url, err) => { 
-				revoke(url); 
-				onerror(err); 
-			});
+		},
+		replaceElement (base, newEle) {
+			const selector = toClassSelector(newEle);
+			const oldEle = select(selector, base);
+			if (oldEle) {
+				base.replaceChild(newEle, oldEle);
+			} else {
+				base.appendChild(newEle);
+			}
 		}
 	};
 

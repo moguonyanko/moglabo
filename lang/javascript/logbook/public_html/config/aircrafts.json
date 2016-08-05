@@ -1,0 +1,122 @@
+{
+	"rp": {
+		"name": "rp",
+		"type": "KS",
+		"ack": 10
+	},
+	"rp601": {
+		"name": "rp601",
+		"type": "KS",
+		"ack": 11
+	},
+	"rpk": {
+		"name": "rpk",
+		"type": "KS",
+		"ack": 12
+	},
+	"z53i": {
+		"name": "z53i",
+		"type": "KS",
+		"ack": 12
+	},
+	"z62i": {
+		"name": "z62i",
+		"type": "KB",
+		"ack": 7
+	},
+	"fw": {
+		"name": "fw",
+		"type": "KS",
+		"ack": 10
+	},
+	"ms": {
+		"name": "ms",
+		"type": "KS",
+		"ack": 8
+	},
+	"z21j": {
+		"name": "z21j",
+		"type": "KS",
+		"ack": 8
+	},
+	"z32j": {
+		"name": "z32j",
+		"type": "KS",
+		"ack": 8
+	},
+	"z52j": {
+		"name": "z52j",
+		"type": "KS",
+		"ack": 9
+	},
+	"z52h601": {
+		"name": "z52h601",
+		"type": "KS",
+		"ack": 9
+	},
+	"z62": {
+		"name": "z62",
+		"type": "KB",
+		"ack": 4
+	},
+	"sd2": {
+		"name": "sd2",
+		"type": "KS",
+		"ack": 9
+	},
+	"zu601": {
+		"name": "zu601",
+		"type": "SB",
+		"ack": 3
+	},
+	"zu12": {
+		"name": "zu12",
+		"type": "SB",
+		"ack": 3
+	},
+	"sr": {
+		"name": "sr",
+		"type": "SB",
+		"ack": 0
+	},
+	"ns": {
+		"name": "ns",
+		"type": "SS",
+		"ack": 3
+	},
+	"rs": {
+		"name": "rs",
+		"type": "SS",
+		"ack": 2
+	},
+	"sse": {
+		"name": "sse",
+		"type": "KB",
+		"ack": 1
+	},
+	"ss601": {
+		"name": "ss601",
+		"type": "KB",
+		"ack": 0
+	},
+	"tzt": {
+		"name": "tzt",
+		"type": "KK",
+		"ack": 1
+	},
+	"tzm": {
+		"name": "tzm",
+		"type": "KK",
+		"ack": 1
+	},
+	"rs601": {
+		"name": "rs601",
+		"type": "KK",
+		"ack": 0
+	},
+	"shinden": {
+		"name": "shinden",
+		"type": "KS",
+		"ack": 15
+	}
+}
