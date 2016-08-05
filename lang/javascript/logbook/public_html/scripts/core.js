@@ -11,6 +11,8 @@
 	"use strict";
 
 	const lB = {};
+	
+	const noop = () => {};
 
 	/**
 	 * @name baseFunctions
@@ -19,7 +21,7 @@
 	 * lB名前空間の直下に公開される汎用関数群です。
 	 */
 	const baseFunctions = {
-		noop : () => {},
+		noop: noop,
 		select (selector, opt_doc) {
 			return (opt_doc || doc).querySelector(selector);
 		},
@@ -74,6 +76,44 @@
 		},
 		revokeBlobURL (url) {
 			win.URL.revokeObjectURL(url);
+		},
+		/**
+		 * @todo
+		 * 動作検証中。
+		 * 引数のfunc内に非同期処理が含まれていると，2つ目以降のthenに渡した関数が
+		 * 先に呼び出されてBlobURLを想定より早くrevokeしてしまう。
+		 * 
+		 * 引数の宣言部分で定義済みの関数を指定することはできない。
+		 * 引数の関数のデフォルト値にnoopを指定したりできないということである。
+		 */
+		withBlobURL (blob, {func = () => {}, 
+			onsuccess = () => {}, onerror = () => {}} = {}) {
+			
+			const promise = new Promise((resolve, reject) => {
+				const url = this.createBlobURL(blob);
+				try {
+					resolve(url);
+				} catch (err) {
+					reject(url, err);
+				}
+			});
+				
+			const revoke = url => this.revokeBlobURL(url);
+				
+			promise.then(url => {
+				func(url);
+				/**
+				 * 後続のthenで参照させたい値はreturnすればよい。
+				 */
+				return url;
+			}).then(url => {
+				revoke(url);
+				/* revokeしたURLはコールバック関数に渡さない。 */
+				onsuccess();
+			}).catch((url, err) => { 
+				revoke(url); 
+				onerror(err); 
+			});
 		}
 	};
 

@@ -68,7 +68,7 @@
 		 */
 		build (callback) {
 			this.imgFiles.forEach((imgFile, index) => {
-				const img = doc.createElement("img");
+				const img = new Image();
 				const url = lB.createBlobURL(imgFile);
 				img.onload = () => {
 					lB.revokeBlobURL(url);
@@ -83,7 +83,7 @@
 					if(index >= this.imgFiles.length - 1){
 						callback(new CombiledImageCanvas(this.maxW, this.maxH));
 					}
-				}
+				};
 				img.src = url;
 			});
 		}
