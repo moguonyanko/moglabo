@@ -531,47 +531,39 @@
 		lB.select(".result").replaceElement(reportEle);
 	};
 	
-	const createSetupPromise = (name, callback) => {
-		const promise = new Promise((resolve, reject) => {
+	/**
+	 * Promiseの関数が非同期で実行される場合はresolveやreject呼び出しを
+	 * コールバック関数内で行うようにしないと期待した結果が得られない。
+	 */
+	const configLoader = (name, callback) => {
+		return (oncomplete, onerror) => {
 			lB.loadConfig(name, {
 				onsuccess: res => {
 					for (let key in res) {
 						callback(res[key]);
 					}
-					resolve(name);
+					oncomplete(name);
 				},
-				onerror: err => {
-					reject(err);
-				}
+				onerror
 			});
-		});
-		
-		return promise;
+		};
 	};
 	
 	const init = () => {
 		testCalculateMastery();
 		
-		const promises = [
-			createSetupPromise("aircrafts.json", setAircraftMaker),
-			createSetupPromise("ships.json", setShipMaker)
+		const funcs = [
+			configLoader("aircrafts.json", setAircraftMaker),
+			configLoader("ships.json", setShipMaker)
 		];
 		
-		/**
-		 * 各Promiseでresolveを呼び出していても，Promise.all使用時は
-		 * 全てのPromiseの処理が完了した後の1回しかthenの関数は呼び出されない。
-		 * 後続のthenが引数として受け取りたい値はその前のthenで返す。
-		 */
-		Promise.all(promises)
-			/**
-			 * Promise.all使用時は各Promiseで呼び出したresolveの引数を
-			 * 全て含む配列がthenに渡される。
-			 */
-			.then(loadedConfigNames => {
+		lB.funcall(funcs, {
+			oncomplete: loadedConfigNames => {
 				console.info("Loaded config files: " + loadedConfigNames);
 				initPage();
-			})
-			.catch(reportError);
+			},
+			onerror: reportError
+		});
 	};
 	
 	init();

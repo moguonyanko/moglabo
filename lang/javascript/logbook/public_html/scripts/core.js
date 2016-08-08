@@ -10,6 +10,8 @@
 (((win, doc) => {
 	"use strict";
 
+	const CONTEXT_NAME = "logbook";
+
 	const lB = {};
 	
 	const forEach = (src, func) => {
@@ -40,6 +42,14 @@
 		}
 	};
 	
+	class InvalidStateError extends Error {
+		constructor ({ result = {}, message = "", status = 500 } = {}) {
+			super(message);
+			this.result = result;
+			this.status = status;
+		}
+	}
+	
 	/**
 	 * 現在はGETリクエストのみの対応となっている。
 	 */
@@ -56,10 +66,10 @@
 		
 		xhr.onreadystatechange = evt => {
 			if (xhr.status >= 400) {
-				onerror({
+				onerror(new InvalidStateError({
 					status: xhr.status,
 					message: xhr.statusText
-				});
+				}));
 				xhr.abort();
 				return;
 			}
@@ -75,10 +85,10 @@
 		};
 			
 		xhr.ontimeout = err => {
-			onerror({
+			onerror(new InvalidStateError({
 				status: xhr.status,
 				message: err.message
-			});
+			}));
 			xhr.abort();
 		};
 		
@@ -110,6 +120,7 @@
 		forEach: forEach,
 		map: map,
 		reduce: reduce,
+		InvalidStateError: InvalidStateError,
 		list (size, opt_defaultValue) {
 			const siz = size || 0,
 				defValue = opt_defaultValue || null;
@@ -144,7 +155,7 @@
 				onlyFileName = !path.includes("/");
 			
 			if (onlyFileName) {
-				requestPath = "/logbook/config/" + path;
+				requestPath = "/" + CONTEXT_NAME + "/config/" + path;
 			} 
 			
 			doRequest(requestPath, {
@@ -159,6 +170,19 @@
 			} else {
 				base.appendChild(newEle);
 			}
+		},
+		funcall (funcs, { oncomplete = arg => arg, onerror = err => { throw err; } } = {}) {
+			const promises = lB.map(funcs, func => {
+				return new Promise((resolve, reject) => func(resolve, reject));		
+			});
+			
+			/**
+			 * 各Promiseでresolveを呼び出していても，Promise.all使用時は
+			 * 全てのPromiseの処理が完了した後の1回しかthenの関数は呼び出されない。
+			 * resolveの関数が実行される回数はthenの数と同じということである。
+			 * 後続のthenが引数として受け取りたい値はその前のthenで返す。
+			 */
+			Promise.all(promises).then(oncomplete).catch(onerror);
 		}
 	};
 
