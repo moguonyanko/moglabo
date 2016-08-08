@@ -171,18 +171,21 @@
 				base.appendChild(newEle);
 			}
 		},
-		funcall (funcs, { oncomplete = arg => arg, onerror = err => { throw err; } } = {}) {
-			const promises = lB.map(funcs, func => {
-				return new Promise((resolve, reject) => func(resolve, reject));		
-			});
-			
+		/**
+		 * Promiseの関数が非同期で実行される場合はresolveやrejectの呼び出しが
+		 * コールバック関数内で行われないと期待した結果が得られない。
+		 */
+		funcall (funcs, { oncomplete = arg => arg, 
+			onerror = err => { throw err; } } = {}) {
 			/**
 			 * 各Promiseでresolveを呼び出していても，Promise.all使用時は
 			 * 全てのPromiseの処理が完了した後の1回しかthenの関数は呼び出されない。
 			 * resolveの関数が実行される回数はthenの数と同じということである。
 			 * 後続のthenが引数として受け取りたい値はその前のthenで返す。
 			 */
-			Promise.all(promises).then(oncomplete).catch(onerror);
+			Promise.all(lB.map(funcs, f => new Promise(f)))
+				.then(oncomplete)
+				.catch(onerror);
 		}
 	};
 

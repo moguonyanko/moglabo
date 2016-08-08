@@ -531,10 +531,6 @@
 		lB.select(".result").replaceElement(reportEle);
 	};
 	
-	/**
-	 * Promiseの関数が非同期で実行される場合はresolveやreject呼び出しを
-	 * コールバック関数内で行うようにしないと期待した結果が得られない。
-	 */
 	const configLoader = (name, callback) => {
 		return (oncomplete, onerror) => {
 			lB.loadConfig(name, {
