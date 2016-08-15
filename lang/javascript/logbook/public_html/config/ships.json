@@ -1,118 +1,118 @@
 {
 	"ag": {
-		"name": "ag",
+		"name": "赤城改",
 		"slotComposition": [20, 20, 32, 10]
 	},
 	"kg": {
-		"name": "kg",
+		"name": "加賀改",
 		"slotComposition": [20, 20, 46, 12]
 	},
 	"sr2": {
-		"name": "sr2",
+		"name": "蒼龍改二",
 		"slotComposition": [18, 35, 20, 6]
 	},
 	"hr2": {
-		"name": "hr2",
+		"name": "飛龍改二",
 		"slotComposition": [18, 36, 22, 3]
 	},
 	"sk2": {
-		"name": "sk2",
+		"name": "翔鶴改二",
 		"slotComposition": [27, 27, 27, 12]
 	},
 	"sk2k": {
-		"name": "sk2k",
+		"name": "翔鶴改二甲",
 		"slotComposition": [34, 21, 12, 9]
 	},
 	"zk2": {
-		"name": "zk2",
+		"name": "瑞鶴改二",
 		"slotComposition": [28, 26, 26, 13]
 	},
 	"zk2k": {
-		"name": "zk2k",
+		"name": "瑞鶴改二甲",
 		"slotComposition": [34, 24, 12, 6]
 	},
 	"hs": {
-		"name": "hs",
+		"name": "鳳翔改",
 		"slotComposition": [14, 16, 12]
 	},
 	"th": {
-		"name": "th",
+		"name": "大鳳改",
 		"slotComposition": [30, 24, 24, 8]
 	},
 	"ur": {
-		"name": "ur",
+		"name": "雲龍改",
 		"slotComposition": [18, 21, 27, 3]
 	},
 	"amg": {
-		"name": "amg",
+		"name": "天城改",
 		"slotComposition": [18, 21, 27, 3]
 	},
 	"ktg": {
-		"name": "ktg",
+		"name": "葛城改",
 		"slotComposition": [18, 21, 27, 3]
 	},
 	"sh": {
-		"name": "sh",
+		"name": "祥鳳改",
 		"slotComposition": [18, 12, 12, 6]
 	},
 	"zh": {
-		"name": "zh",
+		"name": "瑞鳳改",
 		"slotComposition": [18, 12, 12, 6]
 	},
 	"rh": {
-		"name": "rh",
+		"name": "龍鳳改",
 		"slotComposition": [21, 9, 9, 6]
 	},
 	"hy": {
-		"name": "hy",
+		"name": "飛鷹改",
 		"slotComposition": [18, 18, 18, 12]
 	},
 	"jy2": {
-		"name": "jy2",
+		"name": "隼鷹改二",
 		"slotComposition": [24, 18, 20, 3]
 	},
 	"cht2": {
-		"name": "cht2",
+		"name": "千歳航改二",
 		"slotComposition": [24, 18, 11, 8]
 	},
 	"chy2": {
-		"name": "chy2",
+		"name": "千代田航改二",
 		"slotComposition": [24, 18, 11, 8]
 	},
 	"rj2": {
-		"name": "rj2",
+		"name": "龍驤改二",
 		"slotComposition": [18, 28, 6, 3]
 	},
 	"gz": {
-		"name": "gz",
+		"name": "グラーフ・ツェッペリン改",
 		"slotComposition": [30, 13, 10, 3]
 	},
 	"aks": {
-		"name": "aks",
+		"name": "秋津洲改",
 		"slotComposition": [1, 1, 1]
 	},
 	"akm": {
-		"name": "akm",
+		"name": "あきつ丸",
 		"slotComposition": [8, 8, 8]
 	},
 	"i401": {
-		"name": "i401",
+		"name": "伊401",
 		"slotComposition": [3, 3]
 	},
 	"i58": {
-		"name": "i58",
+		"name": "伊58",
 		"slotComposition": [1, 1]
 	},
 	"i19": {
-		"name": "i19",
+		"name": "伊19",
 		"slotComposition": [1, 1]
 	},
 	"i8": {
-		"name": "i8",
+		"name": "伊8",
 		"slotComposition": [1, 1]
 	},
 	"hys": {
-		"name": "hys",
+		"name": "速吸改",
 		"slotComposition": [6, 3, 1]
 	}
 }

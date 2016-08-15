@@ -1,121 +1,121 @@
 {
 	"rp": {
-		"name": "rp",
+		"name": "烈風",
 		"type": "KS",
 		"ack": 10
 	},
 	"rp601": {
-		"name": "rp601",
+		"name": "烈風(六○一空)",
 		"type": "KS",
 		"ack": 11
 	},
 	"rpk": {
-		"name": "rpk",
+		"name": "烈風改",
 		"type": "KS",
 		"ack": 12
 	},
 	"z53i": {
-		"name": "z53i",
+		"name": "零式艦戦53型(岩本隊)",
 		"type": "KS",
 		"ack": 12
 	},
 	"z62i": {
-		"name": "z62i",
+		"name": "零式艦戦62型(岩井隊)",
 		"type": "KB",
 		"ack": 7
 	},
 	"fw": {
-		"name": "fw",
+		"name": "Fw190T改",
 		"type": "KS",
 		"ack": 10
 	},
 	"ms": {
-		"name": "ms",
+		"name": "Bf109T改",
 		"type": "KS",
 		"ack": 8
 	},
 	"z21j": {
-		"name": "z21j",
+		"name": "零式艦戦21型(熟練)",
 		"type": "KS",
 		"ack": 8
 	},
 	"z32j": {
-		"name": "z32j",
+		"name": "零式艦戦32型(熟練)",
 		"type": "KS",
 		"ack": 8
 	},
 	"z52j": {
-		"name": "z52j",
+		"name": "零式艦戦52型(熟練)",
 		"type": "KS",
 		"ack": 9
 	},
 	"z52h601": {
-		"name": "z52h601",
+		"name": "零式艦戦52型丙(六○一空)",
 		"type": "KS",
 		"ack": 9
 	},
 	"z62": {
-		"name": "z62",
+		"name": "零式艦戦62型(爆戦)",
 		"type": "KB",
 		"ack": 4
 	},
 	"sd2": {
-		"name": "sd2",
+		"name": "紫電改二",
 		"type": "KS",
 		"ack": 9
 	},
 	"zu601": {
-		"name": "zu601",
+		"name": "瑞雲(六○一空)",
 		"type": "SB",
 		"ack": 3
 	},
 	"zu12": {
-		"name": "zu12",
+		"name": "瑞雲12型",
 		"type": "SB",
 		"ack": 3
 	},
 	"sr": {
-		"name": "sr",
+		"name": "試製晴嵐",
 		"type": "SB",
 		"ack": 0
 	},
 	"ns": {
-		"name": "ns",
+		"name": "二式水戦改",
 		"type": "SS",
 		"ack": 3
 	},
 	"rs": {
-		"name": "rs",
+		"name": "Ro.44水上戦闘機",
 		"type": "SS",
 		"ack": 2
 	},
 	"sse": {
-		"name": "sse",
+		"name": "彗星(江草隊)",
 		"type": "KB",
 		"ack": 1
 	},
 	"ss601": {
-		"name": "ss601",
+		"name": "彗星(六○一空)",
 		"type": "KB",
 		"ack": 0
 	},
 	"tzt": {
-		"name": "tzt",
+		"name": "天山一二型(友永隊)",
 		"type": "KK",
 		"ack": 1
 	},
 	"tzm": {
-		"name": "tzm",
+		"name": "天山一二型(村田隊)",
 		"type": "KK",
 		"ack": 1
 	},
 	"rs601": {
-		"name": "rs601",
+		"name": "流星(六○一空)",
 		"type": "KK",
 		"ack": 0
 	},
 	"shinden": {
-		"name": "shinden",
+		"name": "震電改",
 		"type": "KS",
 		"ack": 15
 	}
