@@ -56,8 +56,79 @@
             
             g.select(baseClass + ".enumerate-runner").addEventListener("click", display);
             g.select(baseClass + ".enumerate-clearer").addEventListener("click", clear);
-        }  
+        },
+        symbolSpecies(g) {
+            const base = ".species-sample ",
+                resultArea = g.select(base + ".result-area"),
+                inspecter = g.select(base + ".type-inspecter"),
+                clearer = g.select(base + ".clear-result"),
+                useSpecies = g.select(base + ".use-species"),
+                isSpecies = () => useSpecies.checked;
+            
+            class SpeciesMap extends Map {
+                static get [Symbol.species]() {
+                    return Map;
+                }
+                
+                /**
+                 * Mapを拡張しているのだからSymbol.iteratorを実装しなくても
+                 * iterableなはず…。つまりこのクラスのインスタンスはMapの
+                 * コンストラクタ関数の引数としてそのまま渡すことができる。
+                 */
+                //[Symbol.iterator]() {
+                //    super[Symbol.iterator]();
+                //}
+            }
+            
+            class NoSpeciesMap extends Map {
+                /**
+                 * @todo
+                 * Symbol.speciesを実装しない。 それにも関わらず
+                 * SpeciesMapを用いて調査した場合と結果が変わらない。
+                 */
+                
+                //[Symbol.iterator]() {
+                //    super[Symbol.iterator]();
+                //}
+            }
+            
+            const entries = [["foo", 100], ["bar", 200], ["baz", 300]];
+            
+            const speciesMap = new SpeciesMap(entries);
+            const noSpeciesMap = new NoSpeciesMap(entries);
+            
+            const inspectWithMap = m => m instanceof Map,
+                inspectSpeciesMap = m => m instanceof SpeciesMap,
+                inspectNoSpeciesMap = m => m instanceof NoSpeciesMap;
+            
+            inspecter.addEventListener("click", () => {
+                let result = [];
+                const orgMap = isSpecies() ? speciesMap : noSpeciesMap;
+                /**
+                 * Mapを拡張したクラスのインスタンスではなくそのインスタンスを元に
+                 * 生成したインスタンスで調査を行う。
+                 */
+                const clonedMap = new Map(orgMap);
+                
+                if (isSpecies()) {
+                    result.push(`clonedMap instanceof SpeciesMap === ${inspectSpeciesMap(clonedMap)}`);
+                } else {
+                    result.push(`clonedMap instanceof NoSpeciesMap === ${inspectNoSpeciesMap(clonedMap)}`);
+                }
+                result.push(`clonedMap instanceof Map === ${inspectWithMap(clonedMap)}`);
+                
+                result.forEach(res => g.println(resultArea, res));
+                
+                /* Map.entries()の戻り値は配列ではない。 */
+                //Array.from(clonedMap.entries()).forEach(entry => 
+                //        g.println(resultArea, entry[0] + ":" + entry[1]));
+            });
+            
+            clearer.addEventListener("click", () => g.clear(resultArea));
+        }
     };
     
-    win.goma.run(Object.values(samples));
+    win.goma.run(Object.values(samples), {
+        reject: err => console.error(err)
+    });
 })(window, document));
