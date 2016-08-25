@@ -301,6 +301,74 @@
             g.clickListener(clearer, () => {
                 g.clear(resultArea);
             });
+        },
+        g => {
+            const base = ".override-constructor ",
+                resultArea = g.select(base + ".result-area"),
+                clearer = g.select(base + ".clear-result"),
+                runner = g.select(base + ".display-result");
+                
+            class Parent {
+                constructor (value) {
+                    this.value = value;
+                }
+                
+                add (v) {
+                    return this.value + v;
+                }
+                
+                get version() {
+                    return 1;
+                }
+            };
+            
+            class ChildNoOverride extends Parent {
+                /**
+                 * スーパークラスのコンストラクタ関数をオーバーライドしない。
+                 * この場合このクラスのインスタンス生成時もスーパークラスの
+                 * コンストラクタが使用される。
+                 */
+            }
+            
+            class ChildWithOverride extends Parent {
+                constructor (value) {
+                    /**
+                     * super()を書かなかったりスーパークラスのコンストラクタ呼び出しを
+                     * <pre>
+                     * super.constructor(value);
+                     * </pre>
+                     * と書いてしまうと，スーパークラスのメソッド呼び出した時点で
+                     * エラーになる。呼ばれたメソッド内でthisを参照しているかどうかは
+                     * 関係無い。
+                     */
+                    super(value);
+                    this.value = String(value);
+                }
+                
+                get version() {
+                    return super.version + ".B";
+                }
+            }
+            
+            runner.addEventListener("click", () => {
+                const param = 1;
+                const result = [];
+                
+                try{
+                    const o1 = new ChildNoOverride(param);
+                    result.push("ChildNoOverride result ... " + o1.add(param));
+                    result.push("ChildNoOverride version ... " + o1.version);
+                    const o2 = new ChildWithOverride(param);
+                    result.push("ChildWithOverride result ... " + o2.add(param));
+                    result.push("ChildWithOverride version ... " + o2.version);
+                } catch (err) {
+                    result.push(err.message);
+                }
+                
+                g.println(resultArea, result.join("<br />"));
+            });
+            
+            clearer.addEventListener("click", () => g.clear(resultArea));
         }
     ];
     

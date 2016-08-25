@@ -185,6 +185,21 @@
                     </div>
                 </div>
             </section>
+            <section class="override-constructor">
+                <h2>constructorのオーバーライド</h2>
+                <p>
+                   constructor関数をオーバーライドした時はその内部において<br />
+                   super()を使いスーパークラスのコンストラクタを呼び出しておかないと<br />
+                   スーパークラスのメソッドが参照された時にエラーになる。<br />
+                   呼び出されたメソッド内でthisを参照しているかどうかは関係なくエラーになる。<br />
+                   シンタックスエラーにはならない。
+                </p>
+                <div>
+                    <button class="display-result">結果表示</button>
+                    <button class="clear-result">クリア</button>
+                </div>
+                <div class="result-area"></div>
+            </section>
         </div>
 
         <aside role="complementary">
