@@ -147,8 +147,57 @@
             g.clickListener(clearer, () => {
                 g.clear(resultArea);
             });
+        },
+        g => {
+            const base = ".lexically-this ",
+                resultArea = g.select(base + ".resultarea"),
+                runner = g.select(base + ".display-result"),
+                clearer = g.select(base + ".clear-result"),
+                checkes = g.refs("func-type");
+            
+            const isArrow = () => {
+                const checkedEle = Array.from(checkes).filter(el => el.checked);
+                const funcType = checkedEle[0].value;
+                return funcType === "arrow";
+            };
+            
+            const sample = {
+                value: "Hello ",
+                greet (name) {
+                    return this.value + name;
+                },
+                greetCall(name, arrow) {
+                    let f;
+                    const context = {
+                        value: "こんにちは "
+                    };
+                    
+                    if (arrow) {
+                        f = n => this.value + n;
+                    } else{
+                        f = function(n){
+                            return this.value + n;
+                        };
+                    }
+                    
+                    return f.call(context, name);
+                }
+            };
+            
+            runner.addEventListener("click", () => {
+                const name = "Hoge";
+                g.println(resultArea, "greet ... " + sample.greet(name));
+                g.println(resultArea, "greetCall ... " + sample.greetCall(name, isArrow()));
+            });
+            
+            clearer.addEventListener("click", () => g.clear(resultArea));
         }
     ];
     
-    g.run(funcs);
+    g.run(funcs, {
+        reject: (err) => {
+            console.error(err);
+            throw err;
+        }
+    });
 })(window.goma));
