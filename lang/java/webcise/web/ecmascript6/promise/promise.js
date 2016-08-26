@@ -546,4 +546,4 @@
 		m.addListener(m.ref("promise-prime-calc-executer"), "click", getPrimes, false);
 	}());
 
-}(window, document, my));
+}(window, document, goma));
