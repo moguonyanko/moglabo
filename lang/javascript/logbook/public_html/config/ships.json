@@ -114,5 +114,9 @@
 	"hys": {
 		"name": "速吸改",
 		"slotComposition": [6, 3, 1]
+	},
+	"aqla": {
+		"name": "Aquila改",
+		"slotComposition": [15, 26, 15, 10]
 	}
 }

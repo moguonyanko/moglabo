@@ -118,5 +118,20 @@
 		"name": "震電改",
 		"type": "KS",
 		"ack": 15
+	},
+	"re2001or": {
+		"name": "Re.2001 OR改",
+		"type": "KS",
+		"ack": 6
+	},
+	"re2001g": {
+		"name": "Re.2001 G改",
+		"type": "KK",
+		"ack": 4
+	},
+	"re2005": {
+		"name": "Re.2005 改",
+		"type": "KS",
+		"ack": 11
 	}
 }
