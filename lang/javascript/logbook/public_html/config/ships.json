@@ -96,19 +96,23 @@
 		"slotComposition": [8, 8, 8]
 	},
 	"i401": {
-		"name": "伊401",
+		"name": "伊401改",
 		"slotComposition": [3, 3]
 	},
 	"i58": {
-		"name": "伊58",
+		"name": "伊58改",
 		"slotComposition": [1, 1]
 	},
 	"i19": {
-		"name": "伊19",
+		"name": "伊19改",
 		"slotComposition": [1, 1]
 	},
 	"i8": {
-		"name": "伊8",
+		"name": "伊8改",
+		"slotComposition": [1, 1]
+	},
+	"i26": {
+		"name": "伊26改",
 		"slotComposition": [1, 1]
 	},
 	"hys": {
@@ -118,5 +122,81 @@
 	"aqla": {
 		"name": "Aquila改",
 		"slotComposition": [15, 26, 15, 10]
+	},
+	"mgm": {
+		"name": "最上改",
+		"slotComposition": [5, 6, 5, 11]
+	},
+	"mkm": {
+		"name": "三隈改",
+		"slotComposition": [5, 6, 5, 8]
+	},
+	"szy": {
+		"name": "鈴谷改",
+		"slotComposition": [5, 6, 5, 6]
+	},
+	"kmn": {
+		"name": "熊野改",
+		"slotComposition": [5, 6, 5, 6]
+	},
+	"tone": {
+		"name": "利根改二",
+		"slotComposition": [2, 2, 9, 5]
+	},
+	"ckm": {
+		"name": "筑摩改二",
+		"slotComposition": [2, 2, 9, 5]
+	},
+	"ise": {
+		"name": "伊勢改",
+		"slotComposition": [11, 11, 11, 14]
+	},
+	"hyga": {
+		"name": "日向改",
+		"slotComposition": [11, 11, 11, 14]
+	},
+	"fuso": {
+		"name": "扶桑改二",
+		"slotComposition": [4, 4, 9, 23]
+	},
+	"ymsr": {
+		"name": "山城改二",
+		"slotComposition": [4, 4, 9, 23]
+	},
+	"ctsk": {
+		"name": "千歳甲",
+		"slotComposition": [12, 6, 6]
+	},
+	"cydk": {
+		"name": "千代田甲",
+		"slotComposition": [12, 6, 6]
+	},
+	"mzh": {
+		"name": "瑞穂改",
+		"slotComposition": [12, 12, 6]
+	},
+	"ymt": {
+		"name": "大和改",
+		"slotComposition": [7, 7, 7, 7]
+	},
+	"mss": {
+		"name": "武蔵改",
+		"slotComposition": [7, 7, 7, 7]
+	},
+	"ngt": {
+		"name": "長門改",
+		"slotComposition": [3, 3, 3, 3]
+	},
+	"mtu": {
+		"name": "陸奥改",
+		"slotComposition": [3, 3, 3, 3]
+	},
+	"itla": {
+		"name": "Italia",
+		"slotComposition": [3, 3, 3, 3]
+	},
+	"roma": {
+		"name": "Roma改",
+		"slotComposition": [3, 3, 3, 3]
 	}
 }
