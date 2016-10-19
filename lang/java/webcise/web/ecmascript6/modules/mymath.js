@@ -1,5 +1,5 @@
 (function(){
-    "use strict";
+   "use strict";
     
    function sum(...args){
        return args.reduce((a, b) => a + b);

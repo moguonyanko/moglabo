@@ -3,6 +3,8 @@
  * gomakit.jsに移行すること。
  */
 
+console.warn("common.jsは破棄予定です。gomakit.jsに移行して下さい。");
+
 (function (win, doc) {
     "use strict";
 

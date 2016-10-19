@@ -5,7 +5,7 @@
     
     const inits = [
         () => {
-            const baseCls = ".import-container "
+            const baseCls = ".import-container ";
             const resultArea = g.select(baseCls + ".result-area");
             g.clickListener(g.select(baseCls + ".calc-executer"), function(){
                 const values = g.values(g.selectAll(baseCls + ".calc-source-value"), Number);
