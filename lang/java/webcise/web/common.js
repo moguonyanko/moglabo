@@ -1,3 +1,8 @@
+/**
+ * @deprecated 
+ * gomakit.jsに移行すること。
+ */
+
 (function (win, doc) {
     "use strict";
 
