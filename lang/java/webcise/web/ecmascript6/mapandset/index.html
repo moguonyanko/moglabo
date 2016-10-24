@@ -159,6 +159,30 @@
                     <button class="clear-result-area">クリア</button>
                 </div>
             </section>
+            <section class="json-interoperation">
+                <h2>JSONとの相互運用</h2>
+                <p>
+                    MapをSpread Operatorで展開したオブジェクトはJSON.stringifyで
+                    文字列表現に変換できる。<br />その文字列にJSON.parseを適用し，
+                    戻り値をMapコンストラクタに渡せばMapオブジェクトが得られる。<br />
+                    但しそもそもIteratableでないオブジェクトをMapコンストラクタに渡しても
+                    Mapオブジェクトを得ることはできない。
+                </p>
+                <div class="result-area"></div>
+                <div>
+                    <div>
+                        <button class="json-checker-xhr">Get JSON(by XHR)</button>
+                    </div>
+                    <div>
+                        <label><input class="json-checker-ws-port" type="number" min="1" value="28081" /></label>
+                        <button class="json-checker-ws">Get JSON(by WebSocket)</button>
+                        <button class="json-closer-ws">Close</button>
+                    </div>
+                    <div>
+                        <button class="json-clearer">Clear</button>
+                    </div>
+                </div>
+            </section>
         </div>
 
         <aside role="complementary">

@@ -789,6 +789,96 @@
                 const keyUser = createKeyUser();
                 dict.set(keyUser, keyUser.toString());
             });
+        },
+        g => {
+            const url = "/webcise/shopinfo";
+            const base = ".json-interoperation ";
+            const resultArea = g.select(base + ".result-area");
+            
+            const printJSON = json => {
+                g.log(JSON.stringify(json));
+                const array = g.jsonToArray(json, 
+                    key => key + "=" + Object.values(json[key]));
+                const map = new Map(array);
+                map.forEach(v => g.println(resultArea, v));
+            };
+            
+            g.clickListener(g.select(base + ".json-checker-xhr"), () => {
+                /**
+                 * Promiseを使うことで「どういう条件の時に処理が成功とされるのか」と
+                 * 「成功した時に結果をどう扱うのか」を分離できる。つまり関心の分離を
+                 * 促進しやすくなる。
+                 */
+                const promise = new Promise((resolve, reject) => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("GET", url);
+                    xhr.responseType = "json";
+                    xhr.onreadystatechange = () => {
+                        if(xhr.readyState === XMLHttpRequest.DONE){
+                            if (xhr.status >= 400) {
+                                reject(xhr.statusText);
+                                return;
+                            }
+                            
+                            const type = xhr.getResponseHeader("Content-Type");
+                            if (type.match(new RegExp(xhr.responseType))) {
+                                resolve(xhr.response);
+                            } else {
+                                reject("Invalid response type:" + type);
+                            }
+                        }
+                    };
+                    xhr.send(null);
+                });
+                
+                promise.then(printJSON).catch(message => {
+                    g.println(resultArea, message);
+                });
+            });
+            
+            let ws;
+            
+            g.clickListener(g.select(base + ".json-checker-ws"), () => {
+                if(ws){
+                    ws.send(null);
+                } else {
+                    const protocol = g.isSSL() ? "wss" : "ws";
+                    const port = g.select(base + ".json-checker-ws-port").value;
+                    /* WebSocketはクロスオリジンでもリクエストできる。 */
+                    ws = new WebSocket(protocol + "://localhost:" + port + url);
+                    /**
+                     * XMLHttpRequestのように直接JSONオブジェクトを返すことを
+                     * 指定してリクエストを行うことは指定できない。
+                     * binaryTypeにjsonと指定しても効果は無い。 
+                     */
+                    //ws.binaryType = "blob";
+                    //ws.onmessage = evt => printJSON(evt.data);
+                    ws.onmessage = evt => printJSON(JSON.parse(evt.data));
+                    ws.onopen = () => ws.send(null);
+                    ws.onerror = evt => {
+                        g.println(resultArea, evt.message);
+                        ws = null;
+                    };
+                }
+            });
+            
+            g.clickListener(g.select(base + ".json-closer-ws"), () => {
+                if(ws){
+                   ws.onclose = evt => {
+                       ws = null;
+                       let msg = evt.code;
+                       if (evt.wasClean) {
+                           g.println(resultArea, msg);
+                       } else {
+                           g.println(resultArea, msg + ":" + evt.reason);
+                       }
+                   };
+                   ws.close();
+                }
+            });
+            
+            g.clickListener(g.select(base + ".json-clearer"), 
+                () => g.clear(resultArea));
         }
     ];
     

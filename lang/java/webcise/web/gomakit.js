@@ -4,6 +4,18 @@
     if (typeof win.Gomakit === "function") {
         return;
     }
+    
+    function noop(){
+        /* Does nothing. */
+    }
+    
+    /**
+     * この関数をarrow functionで定義するとargumentsが定義されていないため
+     * エラーとなる。
+     */
+    function always() {
+        return arguments;
+    }
 
     function printText(ele, txt, override, newline) {
         var prop,
@@ -177,9 +189,8 @@
         prevent: function (evt) {
             evt.preventDefault();
         },
-        noop: function () {
-            /* Does nothing. */
-        },
+        noop: noop,
+        always: always,
         getSelectedValue: function (eles, opts) {
             opts = opts || {};
 
@@ -232,7 +243,7 @@
             opts = opts || {};
 
             var protocol = location.protocol === "https:" ? "wss:" : "ws:",
-                    host = location.host,
+                    host = opts.host || location.host,
                     port = opts.port || 8080;
 
             return new WebSocket(protocol + "//" + host + ":" + port + "/webcise/" + resourceName);
@@ -407,6 +418,16 @@
             } else {
                 return false;
             }
+        },
+        jsonToArray: function(json, valMapper) {
+            valMapper = valMapper || always;
+            return Object.keys(json).map(key => [key, valMapper(key)]);
+        },
+        isOpenWebSocket: function(ws) {
+            return ws.readyState === WebSocket.OPEN;
+        },
+        isSSL: function(){
+            return location.protocol === "https:";
         }
     };
 
