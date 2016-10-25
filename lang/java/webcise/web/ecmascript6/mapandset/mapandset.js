@@ -844,7 +844,10 @@
                 } else {
                     const protocol = g.isSSL() ? "wss" : "ws";
                     const port = g.select(base + ".json-checker-ws-port").value;
-                    /* WebSocketはクロスオリジンでもリクエストできる。 */
+                    /**
+                     * WebSocketはクロスオリジンでもリクエストできる。 
+                     * プロトコルにwsやwss以外を指定するとエラーになる。
+                     */
                     ws = new WebSocket(protocol + "://localhost:" + port + url);
                     /**
                      * XMLHttpRequestのように直接JSONオブジェクトを返すことを
