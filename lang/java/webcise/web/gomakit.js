@@ -428,7 +428,59 @@
         },
         isSSL: function(){
             return location.protocol === "https:";
-        }
+        },
+		/**
+		 * ajaxメソッドの第2引数は，引数のデフォルト値を残しつつ引数が渡されれば
+		 * それを利用できるようにするための定義方法を用いている。
+		 * 例えば次のようにデフォルト引数を定義してしまうと，引数をオブジェクトで
+		 * 受け取った時にオブジェクトに含まれていなかったプロパティが対応する引数は
+		 * undefinedが設定されてしまいデフォルト値を利用することができない。
+		 * <code>
+		 * {
+		 *	a: 1,
+		 *	b: 2,
+		 *	c: 3
+		 * }
+		 * </code>
+		 * 
+		 * 参考:
+		 * http://es6-features.org/#ObjectMatchingShorthandNotation
+		 * http://es6-features.org/#FailSoftDestructuring
+		 */
+		ajax (url, {
+				method = "GET",
+				resolve = noop,
+				reject = noop,
+				responseType = "json",
+				data = null,
+				timeout = 0
+			} = {}) {
+			const p = new Promise(function (resolve, reject) {
+				const xhr = new XMLHttpRequest();
+				xhr.open(method, url);
+				xhr.responseType = responseType;
+				xhr.timeout = timeout;
+				xhr.onreadystatechange = () => {
+					if (xhr.readyState === XMLHttpRequest.DONE) {
+						if (xhr.status < 400) {
+							const type = xhr.getResponseHeader("Content-Type");
+							if (!responseType || type.match(new RegExp(xhr.responseType))) {
+								resolve(xhr.response);
+							} else {
+								reject(new GomakitError("Invalid response type:" + type));
+							}
+						} else {
+							reject(new GomakitError("Request error:" + xhr.statusText));
+						}
+					}
+				};
+				xhr.ontimeout = () => reject(new GomakitError("Request timeout"));
+				xhr.onerror = evt => reject(new GomakitError(evt));
+				xhr.send(data);
+			});
+
+			p.then(resolve).catch(reject);
+		}
     };
 
     win.Gomakit = Gomakit;

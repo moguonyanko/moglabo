@@ -1,4 +1,4 @@
-(function (goma) {
+((goma => {
     "use strict";
     
     const g = goma;
@@ -791,16 +791,19 @@
             });
         },
         g => {
-            const url = "/webcise/shopinfo";
+            const root = "/webcise/";
             const base = ".json-interoperation ";
             const resultArea = g.select(base + ".result-area");
             
-            const printJSON = json => {
+			/**
+			 * JSONをMapに変換するには配列等のIteratableなオブジェクトに
+			 * 一度変換する必要がある。
+			 */
+            const printJSON = (json, f = v => v) => {
                 g.log(JSON.stringify(json));
-                const array = g.jsonToArray(json, 
-                    key => key + "=" + Object.values(json[key]));
+                const array = g.jsonToArray(json, key => f(json[key]));
                 const map = new Map(array);
-                map.forEach(v => g.println(resultArea, v));
+                map.forEach((v, k) => g.println(resultArea, [k, v].join("=")));
             };
             
             g.clickListener(g.select(base + ".json-checker-xhr"), () => {
@@ -811,7 +814,7 @@
                  */
                 const promise = new Promise((resolve, reject) => {
                     const xhr = new XMLHttpRequest();
-                    xhr.open("GET", url);
+                    xhr.open("GET", root + "shopinfo");
                     xhr.responseType = "json";
                     xhr.onreadystatechange = () => {
                         if(xhr.readyState === XMLHttpRequest.DONE){
@@ -831,10 +834,39 @@
                     xhr.send(null);
                 });
                 
-                promise.then(printJSON).catch(message => {
+                promise.then(json => {
+					printJSON(json, Object.values);
+				}).catch(message => {
                     g.println(resultArea, message);
                 });
             });
+            
+            const getPort = () => {
+                const val = g.select(base + ".json-checker-ws-port").value;
+                return parseInt(val);
+            };
+			
+			const getWebSocket = () => {
+				/**
+				 * Chromeではhttpsを用いて表示されたページ内でwsスキームを使い
+				 * WebSocketのリクエストを送信してもエラーにならない。
+				 * Firefoxではセキュアな通信ではないとしてエラーになる。
+				 */
+				const protocol = g.isSSL() ? "wss" : "ws";
+				/**
+				 * クロスオリジンにするためにlocalhostを指定している。
+				 * WebSocketはクロスオリジンでもリクエストできる。 
+				 * プロトコルにwsやwss以外を指定するとエラーになる。
+				 */
+				const host = "localhost";
+				const port = getPort();
+				const path = root + "shopinfo";
+				if (!isNaN(port)) {
+					return new WebSocket(protocol + "://" + host + ":" + port + path);
+				} else {
+					return new WebSocket(protocol + "://" + host + path);
+				}
+			};
             
             let ws;
             
@@ -842,21 +874,13 @@
                 if(ws){
                     ws.send(null);
                 } else {
-                    const protocol = g.isSSL() ? "wss" : "ws";
-                    const port = g.select(base + ".json-checker-ws-port").value;
-                    /**
-                     * WebSocketはクロスオリジンでもリクエストできる。 
-                     * プロトコルにwsやwss以外を指定するとエラーになる。
-                     */
-                    ws = new WebSocket(protocol + "://localhost:" + port + url);
+                    ws = getWebSocket();
                     /**
                      * XMLHttpRequestのように直接JSONオブジェクトを返すことを
                      * 指定してリクエストを行うことは指定できない。
                      * binaryTypeにjsonと指定しても効果は無い。 
                      */
-                    //ws.binaryType = "blob";
-                    //ws.onmessage = evt => printJSON(evt.data);
-                    ws.onmessage = evt => printJSON(JSON.parse(evt.data));
+                    ws.onmessage = evt => printJSON(JSON.parse(evt.data), Object.values);
                     ws.onopen = () => ws.send(null);
                     ws.onerror = evt => {
                         g.println(resultArea, evt.message);
@@ -882,8 +906,22 @@
             
             g.clickListener(g.select(base + ".json-clearer"), 
                 () => g.clear(resultArea));
+				
+			g.clickListener(g.select(base + ".json-reader"), () => {
+				let url = root + "shopreader?shop=";
+				const param = g.select(base + ".json-reader-param").value;
+				url += param;
+				
+				g.ajax(url, {
+					resolve: res => printJSON(res),
+					reject: err => {
+						g.println(resultArea, err.message);
+					}
+				});
+			});
         }
     ];
     
     goma.run(initializers, {reject: err => console.error(err.toString())});
-}(window.goma));
+	
+})(window.goma));
