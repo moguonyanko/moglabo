@@ -795,13 +795,17 @@
             const base = ".json-interoperation ";
             const resultArea = g.select(base + ".result-area");
             
-			/**
-			 * JSONをMapに変換するには配列等のIteratableなオブジェクトに
-			 * 一度変換する必要がある。
-			 */
             const printJSON = (json, f = v => v) => {
                 g.log(JSON.stringify(json));
-                const array = g.jsonToArray(json, key => f(json[key]));
+                /**
+				 * 配列はJSONとして有効でありIteratableでもあるが
+				 * Mapコンストラクタの引数にはIteratableかつ配列「のような」
+				 * オブジェクトを渡さなければエラーになる。
+				 * 即ち配列をそのまま渡してMapオブジェクトを得ることはできない。
+				 * もちろんIteratableの要件を満たしていないJSONオブジェクトを
+				 * Mapコンストラクタに渡してもエラーになる。
+				 */
+				const array = g.jsonToArray(json, key => f(json[key]));
                 const map = new Map(array);
                 map.forEach((v, k) => g.println(resultArea, [k, v].join("=")));
             };
@@ -913,7 +917,20 @@
 				url += param;
 				
 				g.ajax(url, {
-					resolve: res => printJSON(res),
+					resolve: printJSON,
+					reject: err => {
+						g.println(resultArea, err.message);
+					}
+				});
+			});
+			
+			g.clickListener(g.select(base + ".json-parser"), () => {
+				let url = root + "shopitems?shopname=";
+				const param = g.select(base + ".json-parser-param").value;
+				url += param;
+				
+				g.ajax(url, {
+					resolve: printJSON,
 					reject: err => {
 						g.println(resultArea, err.message);
 					}

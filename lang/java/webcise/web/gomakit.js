@@ -419,9 +419,9 @@
                 return false;
             }
         },
-        jsonToArray: function(json, valMapper) {
-            valMapper = valMapper || always;
-            return Object.keys(json).map(key => [key, valMapper(key)]);
+        jsonToArray: function(json, mapper) {
+            mapper = mapper || always;
+            return Object.keys(json).map(key => [key, mapper(key)]);
         },
         isOpenWebSocket: function(ws) {
             return ws.readyState === WebSocket.OPEN;
