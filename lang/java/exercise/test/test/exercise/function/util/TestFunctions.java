@@ -4088,5 +4088,22 @@ public class TestFunctions {
                 .unchecked()
                 .collect(toList());
     }
+    
+	/**
+	 * 参考:
+	 * Joshua Bloch氏の2016/10/26のツイート
+	 */
+    @Test
+    public void int型の配列をMIN_VALUEを加算しながらソートする() {
+		int[] a = {5, 8, 1, 7, 3, 2, 4, 9, 0, 6};
+		
+		a = Arrays.stream(a)
+			.map(i -> i + Integer.MIN_VALUE)
+			.sorted()
+			.map(i -> i + Integer.MIN_VALUE)
+			.toArray();
+		
+		System.out.println(Arrays.toString(a));
+    }
 	
 }
