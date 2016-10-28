@@ -15,7 +15,7 @@
 		
 		<div id="ReceivedMessageContainer"></div>
 		
-		<script src="/webcise/common.js"></script>
+		<script src="/webcise/gomakit.js"></script>
 		<script>
 			(function(win, doc, m){
 				function ref(id){
@@ -50,7 +50,7 @@
 					m.addListener(win, "message", receiveMessage, false);
 					m.addListener(ref("MessageSender"), "click", sendMessage, false);
 				}());
-			}(window, document, my));
+			}(window, document, window.goma));
 		</script>
 	</body>
 </html>

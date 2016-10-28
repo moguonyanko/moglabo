@@ -22,11 +22,11 @@
 		<div id="ReceiveMessageArea"></div>
 
 		<div>
-			<label><input id="MessageOrigin" type="url" value="http://gfdev" /></label>
+			<label><input id="MessageOrigin" type="url" value="https://gfdev" /></label>
 			<label><input id="MessageText" type="text" value="メッセージ送信" /></label>
 			<button id="MessageSender">メッセージ送信</button>
 		</div>
-		<script src="/webcise/common.js"></script>
+		<script src="/webcise/gomakit.js"></script>
 		<script>
 			(function(win, m) {
 				var acceptedProtocols = {
@@ -115,7 +115,7 @@
 					m.addListener(m.ref("MessageSender"), "click", sendMessage, false);
 					m.addListener(win, "message", receiveMessage, false);
 				}());
-			}(window, my));
+			}(window, window.goma));
 		</script>
 	</body>
 </html>
