@@ -174,9 +174,15 @@
         selectAll: function (selector, doc) {
             return (doc || document).querySelectorAll(selector);
         },
+		selall (selector, doc) {
+			return this.selectAll(selector, doc);
+		},
         select: function (selector, doc) {
             return (doc || document).querySelector(selector);
         },
+		sel (selector, doc) {
+			return this.select(selector, doc);
+		},
         export: function (name, ns) {
             win[name] = ns;
         },
@@ -429,6 +435,37 @@
         isSSL: function(){
             return location.protocol === "https:";
         },
+		fetch(url, {
+				method = "GET",
+				responseType = "json",
+				data = null,
+				timeout = 0
+			} = {}) {
+				
+			return new Promise(function (resolve, reject) {
+				const xhr = new XMLHttpRequest();
+				xhr.open(method, url);
+				xhr.responseType = responseType;
+				xhr.timeout = timeout;
+				xhr.onreadystatechange = () => {
+					if (xhr.readyState === XMLHttpRequest.DONE) {
+						if (xhr.status < 400) {
+							const type = xhr.getResponseHeader("Content-Type");
+							if (!responseType || type.match(new RegExp(xhr.responseType))) {
+								resolve(xhr.response);
+							} else {
+								reject(new GomakitError("Invalid response type:" + type));
+							}
+						} else {
+							reject(new GomakitError("Request error:" + xhr.statusText));
+						}
+					}
+				};
+				xhr.ontimeout = () => reject(new GomakitError("Request timeout"));
+				xhr.onerror = evt => reject(new GomakitError(evt));
+				xhr.send(data);
+			});
+		},
 		/**
 		 * ajaxメソッドの第2引数は，引数のデフォルト値を残しつつ引数が渡されれば
 		 * それを利用できるようにするための定義方法を用いている。
@@ -455,31 +492,11 @@
 				data = null,
 				timeout = 0
 			} = {}) {
-			const p = new Promise(function (resolve, reject) {
-				const xhr = new XMLHttpRequest();
-				xhr.open(method, url);
-				xhr.responseType = responseType;
-				xhr.timeout = timeout;
-				xhr.onreadystatechange = () => {
-					if (xhr.readyState === XMLHttpRequest.DONE) {
-						if (xhr.status < 400) {
-							const type = xhr.getResponseHeader("Content-Type");
-							if (!responseType || type.match(new RegExp(xhr.responseType))) {
-								resolve(xhr.response);
-							} else {
-								reject(new GomakitError("Invalid response type:" + type));
-							}
-						} else {
-							reject(new GomakitError("Request error:" + xhr.statusText));
-						}
-					}
-				};
-				xhr.ontimeout = () => reject(new GomakitError("Request timeout"));
-				xhr.onerror = evt => reject(new GomakitError(evt));
-				xhr.send(data);
+			const promise = this.fetch(url, {
+				method, responseType, data, timeout
 			});
 
-			p.then(resolve).catch(reject);
+			promise.then(resolve).catch(reject);
 		}
     };
 
