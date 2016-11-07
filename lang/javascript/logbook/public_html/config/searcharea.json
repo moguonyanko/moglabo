@@ -1,0 +1,26 @@
+{
+	"2-5": [
+		{
+			"name": "H",
+			"junction": 1,
+			"border": 33
+		},
+		{
+			"name": "I",
+			"junction": 1,
+			"border": 33
+		}
+	],
+	"6-2": [
+		{
+			"name": "F",
+			"junction": 3,
+			"border": 43
+		},
+		{
+			"name": "H",
+			"junction": 3,
+			"border": 40
+		}
+	]
+}

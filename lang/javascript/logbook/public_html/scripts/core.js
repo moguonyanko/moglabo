@@ -186,6 +186,41 @@
 			Promise.all(lB.map(funcs, f => new Promise(f)))
 				.then(oncomplete)
 				.catch(onerror);
+		},
+		fetch(url, {
+				method = "GET",
+				responseType = "json",
+				data = null,
+				timeout = 0
+			} = {}) {
+				
+			return new Promise(function (resolve, reject) {
+				const xhr = new XMLHttpRequest();
+				xhr.open(method, url);
+				xhr.responseType = responseType;
+				xhr.timeout = timeout;
+				xhr.onreadystatechange = () => {
+					if (xhr.readyState === XMLHttpRequest.DONE) {
+						if (xhr.status < 400) {
+							resolve(xhr.response);
+						} else {
+							reject(new Error("Request error:" + xhr.statusText));
+						}
+					}
+				};
+				xhr.ontimeout = () => reject(new Error("Request timeout"));
+				xhr.onerror = evt => reject(new Error(evt));
+				xhr.send(data);
+			});
+		},
+		objToMap(obj, opt_valueFunc = (k, v) => v) {
+			const param = Object.keys(obj)
+				.map(k => [k, opt_valueFunc(k, obj[k])]);
+			return new Map(param);
+		},
+		arrayToMap(array = [], opt_keyFunc = k => k, opt_valueFunc = v => v) {
+			const param = array.map(v => [opt_keyFunc(v), opt_valueFunc(v)]);
+			return new Map(param);
 		}
 	};
 

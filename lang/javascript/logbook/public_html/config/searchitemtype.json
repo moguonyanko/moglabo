@@ -1,0 +1,26 @@
+{
+	"WS": {
+		"scalefactor": 1.2,
+		"improvement": 1.2
+	},
+	"SS": {
+		"scalefactor": 1.0,
+		"improvement": 0
+	},
+	"WB": {
+		"scalefactor": 1.1,
+		"improvement": 0
+	},
+	"SED": {
+		"scalefactor": 0.6,
+		"improvement": 1.25
+	},
+	"BED": {
+		"scalefactor": 0.6,
+		"improvement": 1.4
+	},
+	"SL": {
+		"scalefactor": 0.6,
+		"improvement": 0
+	}
+}

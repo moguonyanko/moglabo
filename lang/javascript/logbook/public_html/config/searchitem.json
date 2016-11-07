@@ -1,0 +1,52 @@
+{
+	"zk": {
+		"name": "zerokan",
+		"type": "WS",
+		"value": 6
+	},
+	"su": {
+		"name": "siun",
+		"type": "WS",
+		"value": 8
+	},
+	"ro43": {
+		"name": "ro.43",
+		"type": "WS",
+		"value": 4
+	},
+	"zu": {
+		"name": "zuiun",
+		"type": "WB",
+		"value": 6
+	},
+	"su": {
+		"name": "saiun",
+		"type": "SS",
+		"value": 9
+	},
+	"32k": {
+		"name": "32goukai",
+		"type": "BED",
+		"value": 11
+	},
+	"33": {
+		"name": "33gou",
+		"type": "SED",
+		"value": 7
+	},
+	"22k4": {
+		"name": "22goukai4",
+		"type": "SED",
+		"value": 5
+	},
+	"fumo": {
+		"name": "FUMO",
+		"type": "BED",
+		"value": 9
+	},
+	"sl": {
+		"name": "searchlight",
+		"type": "SL",
+		"value": 2
+	}
+}

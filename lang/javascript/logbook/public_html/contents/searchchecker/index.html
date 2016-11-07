@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8" />
+		<title>検索確認</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<style>
+			.param-panel {
+				display: flex;
+				min-width: 100vw;
+			}
+
+			.param-panel section {
+				flex: 1;
+				margin: 0.5em;
+			}
+			
+			.result-area {
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>検索確認</h1>
+		</header>
+
+		<main>
+			<section>
+				<h2>パラメータ</h2>
+				<div class="param-panel">
+					<section>
+						<h3>item list</h3>
+						<!--
+						select要素は(4スロット*6隻)個用意する。
+						-->
+						<div>
+							<select>
+								<option></option>
+								<option>dummy1</option>
+								<option>dummy2</option>
+								<option>dummy3</option>
+								<option>dummy4</option>
+								<option>dummy5</option>
+							</select>
+						</div>
+					</section>
+
+					<section>
+						<h3>ships</h3>
+						<div>
+							<label>ship1<input type="number" value="50" min="0" max="200" /></label>
+						</div>
+						<div>
+							<label>ship2<input type="number" value="50" min="0" max="200" /></label>
+						</div>
+						<div>
+							<label>ship3<input type="number" value="50" min="0" max="200" /></label>
+						</div>
+						<div>
+							<label>ship4<input type="number" value="50" min="0" max="200" /></label>
+						</div>
+						<div>
+							<label>ship5<input type="number" value="50" min="0" max="200" /></label>
+						</div>
+						<div>
+							<label>ship6<input type="number" value="50" min="0" max="200" /></label>
+						</div>
+					</section>
+
+					<section>
+						<h3>area</h3>
+						<select>
+							<option></option>
+							<option>dummy1</option>
+							<option>dummy2</option>
+						</select>
+					</section>
+				</div>
+			</section>
+
+			<section>
+				<h2>計算</h2>
+				<button class="calc-runner">実行</button>
+				<p>スコア=<span class="result-area"></span></p>
+			</section>
+		</main>
+
+		<aside>
+			<p><a href="/logbook/">home</a></p>
+		</aside>
+
+		<script src="/logbook/scripts/core.js"></script>
+		<script src="/logbook/scripts/searchchecker.js"></script>
+	</body>
+</html>
