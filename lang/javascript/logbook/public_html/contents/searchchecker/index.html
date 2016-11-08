@@ -5,14 +5,52 @@
 		<title>検索確認</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<style>
+			main {
+				min-width: 100vw;
+			}
+			
 			.param-panel {
 				display: flex;
-				min-width: 100vw;
+				flex-wrap: wrap;
 			}
 
 			.param-panel section {
+				margin: 0.5rem;
+			}
+			
+			.search-item-section {
+				flex: 2;
+				max-height: 50vh;
+				overflow-y: scroll;
+			}
+
+			.ships-section {
 				flex: 1;
-				margin: 0.5em;
+			}
+
+			.search-area-section {
+				flex: 1;
+			}
+			
+			.level-section {
+				flex: 1;
+			}
+
+			.ship {
+				margin: 0.5rem;
+			}
+			
+			.search-area-panel {
+				display: flex;
+				align-items: flex-start;
+			}
+			
+			.search-area-panel .search-area-element {
+				margin: 0.5rem;
+			}
+			
+			.search-area-panel .search-point-list {
+				min-width: 4rem;
 			}
 			
 			.result-area {
@@ -36,35 +74,41 @@
 						-->
 					</section>
 
-					<section>
+					<section class="ships-section">
 						<h3>ships</h3>
-						<div>
-							<label>ship1<input type="number" value="50" min="0" max="200" /></label>
+						<div class="ship">
+							<label>1=<input type="number" value="26" min="0" max="200" /></label>
 						</div>
-						<div>
-							<label>ship2<input type="number" value="50" min="0" max="200" /></label>
+						<div class="ship">
+							<label>2=<input type="number" value="26" min="0" max="200" /></label>
 						</div>
-						<div>
-							<label>ship3<input type="number" value="50" min="0" max="200" /></label>
+						<div class="ship">
+							<label>3=<input type="number" value="30" min="0" max="200" /></label>
 						</div>
-						<div>
-							<label>ship4<input type="number" value="50" min="0" max="200" /></label>
+						<div class="ship">
+							<label>4=<input type="number" value="33" min="0" max="200" /></label>
 						</div>
-						<div>
-							<label>ship5<input type="number" value="50" min="0" max="200" /></label>
+						<div class="ship">
+							<label>5=<input type="number" value="49" min="0" max="200" /></label>
 						</div>
-						<div>
-							<label>ship6<input type="number" value="50" min="0" max="200" /></label>
+						<div class="ship">
+							<label>6=<input type="number" value="68" min="0" max="200" /></label>
 						</div>
 					</section>
 
-					<section>
+					<section class="search-area-section">
 						<h3>area</h3>
-						<select>
-							<option></option>
-							<option>dummy1</option>
-							<option>dummy2</option>
-						</select>
+						<div class="search-area-panel">
+							<div class="search-area-container search-area-element"></div>
+							<select class="search-point-list search-area-element"></select>
+						</div>
+					</section>
+					
+					<section class="level-section">
+						<h3>level</h3>
+						<div>
+							<label>level=<input type="number" min="1" max="120" value="119" /></label>
+						</div>
 					</section>
 				</div>
 			</section>

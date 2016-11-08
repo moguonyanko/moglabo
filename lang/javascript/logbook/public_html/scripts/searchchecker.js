@@ -1,7 +1,9 @@
 ((win, doc, lb) => {
 	"use strict";
 	
-	let searchItemTypeConfig;
+	let searchItemConfig,
+		searchItemTypeConfig,
+		searchAreaConfig;
 	
 	class SearchItem {
 		constructor({
@@ -29,6 +31,16 @@
 		}
 	}
 	
+	const createSearchItem = (config, opt_impValue = 0) => {
+		const item = new SearchItem({
+			name: config.name,
+			type: config.type,
+			value: config.value,
+			improvement: opt_impValue
+		});
+		return item;
+	};
+	
 	class Ship {
 		constructor(value) {
 			this.value = value;
@@ -40,10 +52,23 @@
 	}
 	
 	class SearchPoint {
-		constructor({name, junction = 1, border} = {}) {
+		constructor(parentAreaName, {name, junction = 1, border} = {}) {
+			this.parentAreaName = parentAreaName;
 			this.name = name;
 			this.junction = junction;
 			this.border = border;
+		}
+		
+		toString() {
+			return `${this.parentAreaName}-${this.name}`;
+		}
+		
+		toJSON() {
+			const obj = {};
+			obj.name = this.name;
+			obj.junction = this.junction;
+			obj.border = this.border;
+			return JSON.stringify(obj);
 		}
 	}
 	
@@ -52,11 +77,11 @@
 			this.areaName = areaName;
 			this.points = lb.arrayToMap(infos, 
 				info => info.name, 
-				info => new SearchPoint(info));
+				info => new SearchPoint(areaName, info));
 		}
 		
 		getPoint(pointName) {
-			return this.points[pointName];
+			return this.points.get(pointName);
 		}
 	}
 	
@@ -85,7 +110,7 @@
 			
 		const p2 = searchItems
 			.map(item => item.searchScore)
-			.reduce((v1, v2) => v1 + v2);
+			.reduce((v1, v2) => v1 + v2, 0);
 		
 		const p3 = ships
 			.map(ship => ship.searchScore)
@@ -221,29 +246,8 @@
 	};
 	
 	/**
-	 * DOMからパラメータを取得するコード
+	 * DOMからパラメータを取得する関数群
 	 */
-	
-	const getJunctionPoint = () => {
-		/**
-		 * @todo
-		 * implement
-		 */
-	};
-	
-	const getShips = () => {
-		/**
-		 * @todo
-		 * implement
-		 */
-	};
-	
-	const getImprovement = () => {
-		/**
-		 * @todo
-		 * implement
-		 */
-	};
 	
 	const appendSearchItems = searchItems => {
 		const maxSlotSize = 4,
@@ -253,6 +257,7 @@
 		
 		for(let i = 0; i < eleSize; i++){
 			const container = doc.createElement("div");
+			container.setAttribute("class", "search-item-element");
 			const sel = doc.createElement("select");
 			const emptyOpt = doc.createElement("option");
 			emptyOpt.selected = "selected";
@@ -264,22 +269,149 @@
 				sel.appendChild(opt);
 			});
 			container.appendChild(sel);
+			const impInfoEle = doc.createElement("span");
+			const imp = doc.createElement("input");
+			imp.type = "range";
+			imp.value = 0;
+			imp.min = 0;
+			imp.max = 10;
+			imp.addEventListener("change", () => {
+				const val = parseInt(imp.value);
+				if (imp.min < val && val < imp.max) {
+					impInfoEle.innerHTML = "★" + val;
+				} else if (val <= imp.min) {
+					impInfoEle.innerHTML = "";
+				} else {
+					impInfoEle.innerHTML = "★max";
+				}
+			});
+			sel.addEventListener("change", () => {
+				impInfoEle.innerHTML = "";
+				imp.value = 0;
+			});
+			container.appendChild(imp);
+			container.appendChild(impInfoEle);
 			lb.select(".search-item-section").appendChild(container);
 		}
+	};
+	
+	const getSearchItems = () => {
+		const allItems = lb.selectAll(".search-item-element");
+		const selectedSearchItems = [];
+		Array.from(allItems).forEach(itemEle => {
+			const sel = lb.select("select", itemEle);
+			if(searchItemConfig.has(sel.value)){
+				const config = searchItemConfig.get(sel.value);
+				const impRange = lb.select("input[type='range']", itemEle);
+				const searchItem = createSearchItem(config, impRange.value);
+				selectedSearchItems.push(searchItem);
+			}
+		});
+		
+		return selectedSearchItems;
+	};
+	
+	const getPointAppender = searchArea => {
+		const appender = () => {
+			const searchPointList = lb.select(".search-point-list");
+			searchPointList.options.length = 0;
+			searchArea.points.forEach((searchPoint, pointName) => {
+				const opt = doc.createElement("option");
+				opt.value = pointName;
+				opt.appendChild(doc.createTextNode(pointName));
+				searchPointList.appendChild(opt);
+			});
+		};
+
+		return appender;
+	};
+	
+	const appendSearchAreas = searchAreas => {
+		const container = lb.select(".search-area-container");
+		Array.from(searchAreas.entries()).forEach((entry, idx) => {
+			const areaName = entry[0];
+			const searchArea = entry[1];
+			const p = doc.createElement("div");
+			const label = doc.createElement("label");
+			const areaInput = doc.createElement("input");
+			areaInput.type = "radio";
+			areaInput.value = areaName;
+			areaInput.name = "searcharea";
+			const appender = getPointAppender(searchArea);
+			areaInput.addEventListener("click", () => {
+				if(areaInput.checked){
+					appender();
+				}
+			});
+			
+			if (idx === 0) {
+				areaInput.checked = "checked";
+				appender();
+			}
+			
+			label.appendChild(areaInput);
+			label.appendChild(doc.createTextNode(areaName));
+			p.appendChild(label);
+			container.appendChild(p);
+		});
+	};
+	
+	const getSearchAreaName = () => {
+		const areaContainer = lb.select(".search-area-container");
+		const checkedAreaEle = lb.select("input[type='radio']:checked", areaContainer);
+		if (checkedAreaEle) {
+			return checkedAreaEle.value;
+		} else {
+			return "";
+		}
+	};
+	
+	const getShips = () => {
+		const shipEles = lb.selectAll(".ship");
+		const ships = Array.from(shipEles).map(ele => {
+			const input = lb.select("input[type='number']", ele);
+			return new Ship(parseInt(input.value));
+		});
+		return ships;
+	};
+	
+	const printCheckResult = () => {
+		const searAreaName = getSearchAreaName();
+		const searchArea = searchAreaConfig.get(searAreaName);
+		const searchPointName = lb.select(".search-point-list").value;
+		const searchPoint = searchArea.getPoint(searchPointName);
+		const junction = searchPoint.junction;
+
+		const searchItems = getSearchItems();
+		
+		const ships = getShips();
+		
+		const levelEle = lb.select(".level-section input[type='number']");
+		const level = levelEle.value;
+
+		const args = {
+			junction,
+			searchItems,
+			ships,
+			level
+		};
+
+		const result = calc(args);
+		const resultArea = lb.select(".result-area");
+		resultArea.innerHTML = result;
 	};
 	
 	const main = async () => {
 		const {searchItems, searchItemTypes, searchAreas} = await loadSearchConfig();
 		
+		searchItemConfig = searchItems;
 		searchItemTypeConfig = searchItemTypes;
+		searchAreaConfig = searchAreas;
 		
 		appendSearchItems(searchItems);
+		appendSearchAreas(searchAreas);
 		
-		lb.select(".calc-runner").addEventListener("click", () => {
-			const testResult = testCalc();
-			const resultArea = lb.select(".result-area");
-			resultArea.innerHTML = testResult;
-		});
+		lb.select(".calc-runner").addEventListener("click", printCheckResult);
 	};
 	
 	win.addEventListener("DOMContentLoaded", main);
