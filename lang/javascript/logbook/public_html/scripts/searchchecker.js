@@ -262,10 +262,10 @@
 			const emptyOpt = doc.createElement("option");
 			emptyOpt.selected = "selected";
 			sel.appendChild(emptyOpt);
-			searchItems.forEach((v, k) => {
+			Array.from(searchItems.keys()).sort().forEach(key => {
 				const opt = doc.createElement("option");
-				opt.value = k;
-				opt.appendChild(doc.createTextNode(v.name));
+				opt.value = key;
+				opt.appendChild(doc.createTextNode(searchItems.get(key).name));
 				sel.appendChild(opt);
 			});
 			container.appendChild(sel);

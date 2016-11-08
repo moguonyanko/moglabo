@@ -1,61 +1,61 @@
 {
 	"zk": {
-		"name": "zerokan",
+		"name": "零式水上観測機",
 		"type": "WS",
 		"value": 6
 	},
 	"su": {
-		"name": "siun",
+		"name": "紫雲",
 		"type": "WS",
 		"value": 8
 	},
 	"ro43": {
-		"name": "ro.43",
+		"name": "Ro.43",
 		"type": "WS",
 		"value": 4
 	},
 	"yt": {
-		"name": "yatei",
+		"name": "九八式水上偵察機(夜偵)",
 		"type": "WS",
 		"value": 3
 	},
 	"zu": {
-		"name": "zuiun",
+		"name": "瑞雲",
 		"type": "WB",
 		"value": 6
 	},
 	"su": {
-		"name": "saiun",
+		"name": "彩雲",
 		"type": "SS",
 		"value": 9
 	},
 	"32": {
-		"name": "32gou",
+		"name": "32号対水上電探",
 		"type": "BED",
 		"value": 10
 	},
 	"32k": {
-		"name": "32goukai",
+		"name": "32号対水上電探改",
 		"type": "BED",
 		"value": 11
 	},
 	"33": {
-		"name": "33gou",
+		"name": "33号対水上電探",
 		"type": "SED",
 		"value": 7
 	},
 	"22k4": {
-		"name": "22goukai4",
+		"name": "22号対水上電探改四",
 		"type": "SED",
 		"value": 5
 	},
 	"fumo": {
-		"name": "FUMO",
+		"name": "FuMO25 レーダー",
 		"type": "BED",
 		"value": 9
 	},
 	"sl": {
-		"name": "searchlight",
+		"name": "探照灯",
 		"type": "SL",
 		"value": 2
 	}
