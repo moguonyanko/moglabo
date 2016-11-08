@@ -221,6 +221,16 @@
 		arrayToMap(array = [], opt_keyFunc = k => k, opt_valueFunc = v => v) {
 			const param = array.map(v => [opt_keyFunc(v), opt_valueFunc(v)]);
 			return new Map(param);
+		},
+		async getConfig(name) {
+			const url = `/${CONTEXT_NAME}/config/` + name;
+			const json = await this.fetch(url);
+
+			if(!json){
+				throw new Error(`設定ファイル読み込み失敗: ${url}`);
+			}
+
+			return json;
 		}
 	};
 
