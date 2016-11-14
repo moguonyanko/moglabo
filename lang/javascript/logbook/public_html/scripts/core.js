@@ -14,6 +14,10 @@
 
 	const lB = {};
 	
+	const noop = () => {};
+	
+	const identity = v => v; 
+	
 	const forEach = (src, func) => {
 		if (Array.isArray(src)) {
 			src.forEach(func);
@@ -115,6 +119,8 @@
 	 * lB名前空間の直下に公開される汎用関数群です。
 	 */
 	const baseFunctions = {
+		noop: noop,
+		identity: identity,
 		select: select,
 		selectAll: selectAll,
 		forEach: forEach,

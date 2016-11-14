@@ -131,19 +131,36 @@
 	 * 副作用の結果を関数の呼び出し側で参照することができない。
 	 */
 	const loadSearchConfig = async () => {
-		const items = await lb.getConfig("searchitem.json");
-		const searchItems = lb.objToMap(items);
-		
-		const types = await lb.getConfig("searchitemtype.json");
-		const searchItemTypes = lb.objToMap(types);
-		
-		const areas = await lb.getConfig("searcharea.json");
-		const searchAreas = lb.objToMap(areas, 
-			(areaName, areaInfo) => new SearchArea(areaName, areaInfo));
-			
-		return {
-			searchItems, searchItemTypes, searchAreas
+		const loadItems = async () => {
+			const items = await lb.getConfig("searchitem.json");
+			const searchItems = lb.objToMap(items);
+			return searchItems;
 		};
+		
+		const loadItemTypes = async () => {
+			const types = await lb.getConfig("searchitemtype.json");
+			const searchItemTypes = lb.objToMap(types);
+			return searchItemTypes;
+		};
+		
+		const loadAreas = async () => {
+			const areas = await lb.getConfig("searcharea.json");
+			const searchAreas = lb.objToMap(areas, 
+				(areaName, areaInfo) => new SearchArea(areaName, areaInfo));
+			return searchAreas;
+		};
+			
+		const funcs = [ loadItems, loadItemTypes, loadAreas ];
+		
+		/**
+		 * Prmoise.allに当たる処理をawait*と書くことはできない。
+		 * ECMAScriptの仕様から削除されたようである。
+		 * https://github.com/rwaldron/tc39-notes/blob/aad8937063ab32eb33ec2a5b40325b1d9f171180/es6/2014-04/apr-10.md#preview-of-asnycawait
+		 */
+		const [ searchItems, searchItemTypes, searchAreas ] = 
+			await Promise.all(funcs.map(f => f()));
+		
+		return { searchItems, searchItemTypes, searchAreas };
 	};
 	
 	const testCalc = () => {
@@ -402,7 +419,7 @@
 	};
 	
 	const main = async () => {
-		const {searchItems, searchItemTypes, searchAreas} = await loadSearchConfig();
+		const { searchItems, searchItemTypes, searchAreas } = await loadSearchConfig();
 		
 		searchItemConfig = searchItems;
 		searchItemTypeConfig = searchItemTypes;
