@@ -125,7 +125,74 @@
             });
             
             clearer.addEventListener("click", () => g.clear(resultArea));
-        }
+        },
+		symbolHasInstance(g) {
+			const elt = cls => g.select(".hasinstance-sample " + cls);
+			
+			const runner = elt(".type-inspecter"),
+				clearer = elt(".clear-result"),
+				resultArea = elt(".result-area");
+				
+			const display = txt => g.println(resultArea, txt.toString());
+			
+			class NotMapExtendsMap {
+				constructor(keyValues) {
+					this.map = new Map(keyValues);
+				}
+				
+				static [Symbol.hasInstance](instance) {
+					/**
+					 * 後述する無限再帰を回避するためにconstructorプロパティを使って
+					 * 型の確認を行っている。
+					 */
+					if (instance.constructor === NotMapExtendsMap) {
+						return true;
+					}
+					
+					const types = [
+						/**
+						 * NotMapExtendsMapにinstanceofを適用すると無限に
+						 * Symbol.hasInstanceが呼び出され続けてしまう。
+						 */
+						//NotMapExtendsMap, 
+						Map
+					];
+					
+					return types.some(type => instance instanceof type);
+				}
+				
+				forEach(func) {
+					this.map.forEach((value, key, mp) => {
+						const entry = { 
+							key, 
+							value,
+							toString() {
+								return `key=${key}:value=${value}`;
+							}
+						};
+						func(entry, mp);
+					});
+				}
+			}
+		
+			runner.addEventListener("click", () => {
+				const keyValues = [
+					["Apple", 200], ["Orange", 300], ["Banana", 1000]
+				];
+				const myMap = new NotMapExtendsMap(keyValues);
+				const map = new Map(keyValues);
+				
+				display(`Is NotMapExtendsMap instanceof NotMapExtendsMap? ... 
+					${myMap instanceof NotMapExtendsMap}`);
+				myMap.forEach(display);
+				
+				display(`Is Map instanceof NotMapExtendsMap? ... 
+					${map instanceof NotMapExtendsMap}`);
+				map.forEach(display);
+			});
+		
+			clearer.addEventListener("click", () => g.clear(resultArea));
+		}
     };
     
     win.goma.run(Object.values(samples), {

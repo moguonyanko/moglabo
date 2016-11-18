@@ -451,6 +451,11 @@
 					if (xhr.readyState === XMLHttpRequest.DONE) {
 						if (xhr.status < 400) {
 							const type = xhr.getResponseHeader("Content-Type");
+							/**
+							 * @todo
+							 * blobをリクエストした時にマッチしない可能性がある。
+							 * ContentTypeがimage/*かもしれないため。
+							 */
 							if (!responseType || type.match(new RegExp(xhr.responseType))) {
 								resolve(xhr.response);
 							} else {
