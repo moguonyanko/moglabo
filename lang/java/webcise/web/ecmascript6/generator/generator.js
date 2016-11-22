@@ -178,16 +178,112 @@
 			m.print(resultArea, "", true);
 		});
 	}
+	
+	const initAsyncEmulator = () => {
+		const base = ".async-emulator ",
+			runner = m.select(base + ".run-test"),
+			clearer = m.select(base + ".clear-result"),
+			resultArea = m.select(base + ".result-area");
+		
+		/**
+		 * 非同期処理を行う時にasync/awaitを使う場合に近いコードを
+		 * 記述できるようにする関数。以下のリンク先の内容を参考にした。
+		 * https://gist.github.com/jakearchibald/31b89cba627924972ad6
+		 */
+		const spawn = generatorFunc => {
+			let generator,
+				onFulfilled,
+				onRejected;
+			
+			const continuer = (action, args) => {
+				let result;
+
+				try {
+					/**
+					 * ジェネレータのnextが呼び出され，generatorFunc内でyieldが
+					 * 指定されたコードの処理結果が評価される。
+					 */
+					result = generator[action](args);
+				} catch (err) {
+					return Promise.reject(err);
+				}
+
+				if (result.done) {
+					return result.value;
+				} else {
+					return Promise.resolve(result.value).then(onFulfilled, onRejected);
+				}
+			};
+			
+			generator = generatorFunc();
+			onFulfilled = continuer.bind(continuer, "next");
+			onRejected = continuer.bind(continuer, "throw");
+			
+			return onFulfilled();
+		};
+		
+		/**
+		 * async/awaitをエミュレートすることを狙っているのでコールバック関数を
+		 * 引数に取らない。
+		 */
+		const loadJSON = url => {
+			/**
+			 * ArrowFunctionでジェネレータ関数を記述することは仕様上できない。
+			 * http://wiki.ecmascript.org/doku.php?id=harmony:generators#generator_functions
+			 */
+			return spawn(function* () {
+				try {
+					const asyncOperation = () => {
+						/**
+						 * spwan内でジェネレータのnextが呼び出された時にyieldを
+						 * 指定したコード(ここではreadJSONの呼び出し)が評価される。
+						 */
+						console.log(`Try to read ${url}`);
+						/**
+						 * urlで参照されるファイルを読み込む非同期処理の関数呼び出し。
+						 * 値を返さないとyieldが指定された式の左辺はundefinedになる。
+						 */
+						return m.fetch(url);
+					};
+					/**
+					 * 従来はasyncOperation(callback)といった形で非同期処理を行い
+					 * callback内でその結果を処理する。
+					 * async/awaitをエミュレートできていれば，asyncOperationの
+					 * コールバック関数を定義しなくてもJSONが得られる。
+					 */
+					const result = yield asyncOperation();
+					console.log(result);
+					return result;
+				} catch (err) {
+					return {
+						message : err.message
+					};
+				}
+			});
+		};
+		
+		const display = s => m.println(resultArea, JSON.stringify(s));
+		
+		runner.addEventListener("click", () => {
+			/**
+			 * 呼び出し側でasync/awaitを指定しない場合はPromiseを使わないと
+			 * 非同期処理の結果を受け取ることができない。
+			 * Promise.resolveの引数にはthenの関数が受け取る引数を指定する。
+			 */
+			const promise = Promise.resolve(loadJSON("sample.json"));
+			promise.then(result => display(result), err => display(err));
+		});
+		
+		clearer.addEventListener("click", () => m.clear(resultArea));
+	};
 
 	function init() {
 		initCounter();
 		initFileReader();
+		initAsyncEmulator();
 	}
 
-	return {
-		init : init
-	};
-	
+	doc.addEventListener("DOMContentLoaded", init, false);
 }
 ));
 

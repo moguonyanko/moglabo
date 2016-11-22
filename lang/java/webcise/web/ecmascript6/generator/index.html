@@ -50,19 +50,37 @@
 					</label>
 				</div>
 			</section>
+			<section class="async-emulator">
+				<h2>ジェネレータでasync/awaitをエミュレートする</h2>
+				<p>
+					async/awaitをエミュレートする関数をジェネレータを使って記述できる。
+				</p>
+				<div>
+					<div>
+						<button class="run-test">run</button>
+						<button class="clear-result">clear</button>
+					</div>
+					<label>
+						<textarea class="result-area" rows="10" cols="80"></textarea>
+					</label>
+				</div>
+			</section>
 		</div>
 
+        <aside>
+            <h2>参考サイト</h2>
+            <ul>
+                <li>
+                    <a href="https://jakearchibald.com/2014/es7-async-functions/">ES7 async functions</a>
+                </li>
+            </ul>
+        </aside>
+		
 		<footer role="contentinfo">
-			<small>Copyright &copy; 2015- moguonyanko All rights reserved.</small>
+			<small>Copyright &copy; 2016- moguonyanko All rights reserved.</small>
 		</footer>
 
-		<script src="/webcise/common.js"></script>
-		<!-- Firefox用 -->
-		<script type="application/javascript;version=1.7" src="generator.js"></script>
-		<!-- Chrome用 -->
+		<script src="/webcise/gomakit.js"></script>
 		<script src="generator.js"></script>
-		<script>
-			document.addEventListener("DOMContentLoaded", mygenerator.init, false);
-		</script>
 	</body>
 </html>
