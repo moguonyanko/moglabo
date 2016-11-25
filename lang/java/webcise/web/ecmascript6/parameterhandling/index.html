@@ -48,6 +48,14 @@
             .destructuring-container .sample-container .sample-element .exec-destructuring {
                 width: 100%;
             }
+			
+			.result-area {
+				max-width: 50vw;
+				height: 10vh;
+				background-color: beige;
+				border: 1px solid beige;
+				overflow-y: scroll;
+			}
         </style>
     </head>
     <body>
@@ -340,6 +348,26 @@ return {sn, fn, p, d, toString};</pre>
                     </div>
                 </section>
             </section>
+			<section class="destructuring-rest-parameters-sample">
+				<h2>Destructuring rest parameters</h2>
+				<div>
+					<p>引数を分配してaのn乗/xを計算する。</p>
+					<div>
+						<label>a=
+							<input id="destructuring-arguments-a" type="number" value="2" />
+						</label>
+						<label>n=
+							<input id="destructuring-arguments-n" type="number" value="3" />
+						</label>
+						<label>x=
+							<input id="destructuring-arguments-x" type="number" value="4" />
+						</label>
+					</div>
+					<button class="runner">run</button>
+					<button class="clearer">clear</button>
+					<div class="result-area"></div>
+				</div>
+			</section>
         </div>
 
         <aside role="complementary">
@@ -358,7 +386,7 @@ return {sn, fn, p, d, toString};</pre>
             <small>Copyright &copy; 2016 moguonyanko All rights reserved.</small>
         </footer>
 
-        <script src="../../common.js"></script>
+        <script src="/webcise/gomakit.js"></script>
         <script src="parameterhanding.js"></script>
     </body>
 </html>

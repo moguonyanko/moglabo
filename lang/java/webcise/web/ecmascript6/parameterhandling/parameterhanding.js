@@ -119,45 +119,25 @@
     
     /**
      * オブジェクトのtoStringメソッドが呼び出される時にここで宣言した
-     * toStringが補足される。
+     * toStringが参照される。
      */
     const toString = objToString;
 
-/**
- * Firefoxではバージョン45以降でないとclassは使用できない。
- * class宣言は巻上されないらしい。
- * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes
- */    
-//    class SampleKey {
-//        constructor (id) {
-//            this.id = id;
-//        }
-//        
-//        equals (other) {
-//            if(other instanceof SampleKey){
-//                return this.id === other.id;
-//            }else{
-//                return false;
-//            }
-//        }
-//    }
-
-    function SampleKey(id) {
-        this.id = id;
-        m.freeze(this);
-    }
-    
-    SampleKey.prototype = {
-        equals : function(other){
+    class SampleKey {
+        constructor (id) {
+            this.id = id;
+        }
+        
+        equals (other) {
             if(other instanceof SampleKey){
                 return this.id === other.id;
             }else{
                 return false;
             }
         }
-    };
+    }
     
-    var destructurings = {
+    const destructurings = {
         array : {
             0 : (...args) => {
                 let [a, b] = ["foo", "bar"];
@@ -238,11 +218,11 @@
            3 : (...args) => {
                let makeKey = x => new SampleKey(x);
                
-                let leftKey = makeKey(10),
-                    rightKey = makeKey(20);
+               let leftKey = makeKey(10),
+                   rightKey = makeKey(20);
                     
-                m.log("leftKey is " + typeof leftKey);
-                m.log("rightKey is " + typeof rightKey);
+               m.log("leftKey is " + typeof leftKey);
+               m.log("rightKey is " + typeof rightKey);
                
                /**
                 * オブジェクトリテラルのキーにオブジェクトを指定できる。
@@ -481,7 +461,51 @@
             };
             
             ["array", "object"].forEach(initListener);
-        }
+        },
+		destructuringRestParameters() {
+			const g = m;
+			
+			const base = ".destructuring-rest-parameters-sample ";
+			
+			const runner = g.select(base + ".runner"),
+				clearer = g.select(base + ".clearer"),
+				resultArea = g.select(base + ".result-area");
+			
+			const dp = s => g.println(resultArea, s),
+				cr = () => g.clear(resultArea);
+			
+			const calc = (...[a, n, x]) => {
+				/**
+				 * *演算子や/演算子が混ざっていたとしても**演算子が優先して
+				 * 評価される。
+				 */
+				return a ** n / x;
+			};
+			
+			runner.addEventListener("click", () => {
+				/**
+				 * type="number"が指定されたinput要素から得た値でも文字列になっている。
+				 * 従ってそのまま+演算子を適用すると文字列連結が行われてしまう。
+				 * *演算子であれば数値への暗黙の型変換が行われて乗算が行われる。
+				 * いずれにせよ明示的に型変換を行っておくべきである。
+				 */
+				const _a = g.ref("destructuring-arguments-a").value,
+					_n = g.ref("destructuring-arguments-n").value,
+					_x = g.ref("destructuring-arguments-x").value;
+					
+				console.log(typeof _a, typeof _n, typeof _x);	
+					
+				const [a, n, x]	= [_a, _n, _x].map(i => parseInt(i));
+					
+				console.log(typeof a, typeof n, typeof x);	
+				
+				const result = calc(a, n, x);
+				
+				dp(result);
+			});
+			
+			clearer.addEventListener("click", cr);
+		}
     };
     
     /**
