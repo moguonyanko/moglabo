@@ -936,7 +936,45 @@
 					}
 				});
 			});
-        }
+        },
+		g => {
+			const base = ".map-object-interoperation ", 
+				resultArea = g.select(base + ".result-area"),
+				runner = g.select(base + ".runner"),
+				clearer = g.select(base + ".clearer");
+				
+			const display = content => g.println(resultArea, content);
+				
+			const clear = () => g.clear(resultArea);
+				
+			const obj = {
+				"apple" : 100,
+				"dict" : {
+					100 : "A",
+					300 : "C",
+					200 : "B",
+					toString() {
+						return Object.entries(this).toString();
+					}
+				},
+				"taro" : [2, 3, 1, 5, 7]
+			};
+			
+			runner.addEventListener("click", () => {
+				/**
+				 * Map.entries()の戻り値はMap IteratorだがObject.entries()の
+				 * 戻り値はArrayである。何故統一しないのか。
+				 * MapコンストラクタはIteratorを引数に取ることができるので
+				 * Object.entries()の戻り値をIteratorにしたとしてもMapとの
+				 * 相互運用に問題は無かったはずである。
+				 */
+				const entries = Object.entries(obj);
+				const map = new Map(entries);
+				display(Array.from(map.entries()));
+			});
+			
+			g.select(base + ".clearer").addEventListener("click", clear);
+		}
     ];
     
     goma.run(initializers, {reject: err => console.error(err.toString())});
