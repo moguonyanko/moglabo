@@ -198,5 +198,21 @@
 	"roma": {
 		"name": "Roma改",
 		"slotComposition": [3, 3, 3, 3]
+	},
+	"zara": {
+		"name": "Zara改",
+		"slotComposition": [2, 2, 2, 2]
+	},
+	"pola": {
+		"name": "Pola改",
+		"slotComposition": [2, 2, 2, 2]
+	},
+	"cmdtest": {
+		"name": "CommandanTest改",
+		"slotComposition": [12, 12, 7, 7]
+	},
+	"sara": {
+		"name": "Saratoga改",
+		"slotComposition": [36, 18, 18, 18]
 	}
 }

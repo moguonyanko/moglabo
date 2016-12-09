@@ -193,6 +193,10 @@
 				.then(oncomplete)
 				.catch(onerror);
 		},
+		/**
+		 * @deprecated 
+		 * 組み込み関数のfetchを使用すること。
+		 */
 		fetch(url, {
 				method = "GET",
 				responseType = "json",
