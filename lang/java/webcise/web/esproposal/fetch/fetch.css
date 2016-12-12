@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
-.result-image-area {
-	width: 20em;
+.result-area {
+	width: 50vw;
 	height: 20em;
 	background-color: beige;
 }
