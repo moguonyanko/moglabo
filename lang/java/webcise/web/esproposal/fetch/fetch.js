@@ -17,7 +17,11 @@
 			"X-webcise-sample-default-header": "WEBSICE_DEFAULT"
 		})
 	} = {}) => {
-		return new Request(resource, args);
+		const request = new Request(resource, args);
+		
+		console.log(request);
+		
+		return request;
 	};
 	
 	const validContentType = (response, type) => {
@@ -131,6 +135,56 @@
 					cache: "default"
 				};
 				const resource = "samplestar.png";
+				const img = await loadImage(resource, options);
+				area.innerHTML = "";
+				area.appendChild(img);
+			});
+		},
+		modeSelectionSample() {
+			const base = ".request-mode-sample ";
+
+			const loader = g.select(base + ".load-image"),
+				area = getResultArea(base),
+				modeEles = g.selectAll(base + ".mode-type-select-panel input[type='radio']");
+			
+			/**
+			 * クロスオリジンになるようなリソースを指定する。
+			 */
+			const resource = "//localhost/webcise/esproposal/fetch/samplestar.png";
+			
+			const getMode = () => {
+				const eles = Array.from(modeEles).filter(ele => ele.checked);
+				
+				if (eles.length > 0) {
+					return eles[0].value;
+				} else {
+					/**
+					 * FirefoxではRequestオブジェクト生成時の引数に渡すmodeに
+					 * nullや空文字を渡すとデフォルトのmodeを使おうとせずエラーになる。
+					 */
+					return undefined;
+				}
+			};
+			
+			loader.addEventListener("click", async () => {
+				const options = {
+					method: "GET",
+					mode: getMode(),
+					cache: "no-cache",
+					/**
+					 * HTTPレスポンスヘッダのAccess-Control-Allow-Credentialsに
+					 * trueが指定されていないとcredentialsにincludeを指定してリクエスト
+					 * した時エラーになる。Access-Control-Allow-Credentialsに
+					 * trueを指定する場合，Access-Control-Allow-Originに*ではなく
+					 * 明示的なオリジンを指定しなければやはりエラーになる。
+					 * Access-Control-Allow-OriginにはHTTPリクエストヘッダの
+					 * Originに指定されている値と同じ値を指定する。
+					 * 
+					 * 参考:
+					 * https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS
+					 */
+					credentials: "include"
+				};
 				const img = await loadImage(resource, options);
 				area.innerHTML = "";
 				area.appendChild(img);

@@ -9,6 +9,7 @@
 	<body>
 		<header>
 			<h1>Fetch</h1>
+			<p><a href="/webcise/esproposal/">home</a></p>
 		</header>
 		
 		<main>
@@ -30,6 +31,32 @@
 				<h2>Requestオブジェクトを作成してリクエストを行う</h2>
 				<div class="result-area"></div>
 				<div>
+					<button class="load-image">画像読込</button>
+				</div>
+			</section>
+			<section class="request-mode-sample">
+				<h2>モードを指定してリクエストを行う</h2>
+				<p>
+					クロスオリジンのリソースをfetch関数でリクエストする際はRequestのmodeにcorsを指定し，<br />
+					かつWebサーバが適切にAccess-Control-Allow-Originヘッダを設定していなければならない。
+				</p>
+				<div>
+					<h3>Apache設定例</h3>
+					<pre class="sample-code">
+&lt;Location /webcise/esproposal/fetch/&gt;
+	ProxyPass ajp://127.0.0.1:28009/webcise/esproposal/fetch/ ttl=30
+	Header set Access-Control-Allow-Origin https://gfdev
+	Header set Access-Control-Allow-Credentials true
+&lt;/Location&gt;</pre>
+				</div>
+				<div class="result-area"></div>
+				<div>
+					<div class="mode-type-select-panel">
+						<label><input name="request-mode" type="radio" value="cors" checked="checked" />cors</label>
+						<label><input name="request-mode" type="radio" value="no-cors" />no-cors</label>
+						<label><input name="request-mode" type="radio" value="same-origin" />same-origin</label>
+						<label><input name="request-mode" type="radio" value="navigate" />navigate</label>
+					</div>
 					<button class="load-image">画像読込</button>
 				</div>
 			</section>
