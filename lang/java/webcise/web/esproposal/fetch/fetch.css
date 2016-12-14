@@ -1,7 +1,17 @@
 @charset "UTF-8";
 
-.result-image-area {
-	width: 20em;
+:root {
+	--common-width: 50vw;
+}
+
+.result-area {
+	width: var(--common-width);
 	height: 20em;
 	background-color: beige;
+}
+
+.sample-code {
+	width: var(--common-width);
+	font-size: 90%;
+	background-color: lightgrey;
 }
