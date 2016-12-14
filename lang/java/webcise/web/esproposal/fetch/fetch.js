@@ -34,6 +34,35 @@
 		}
 	};
 	
+	class FetchError extends Error {
+		constructor(status, statusText) {
+			/**
+			 * superを呼び出していないとこのクラスのインスタンスが初期化されていないとして
+			 * エラーが発生する。
+			 */
+			super();
+			this.status = status;
+			this.statusText = statusText;
+		}
+		
+		toJSON() {
+			const json = {
+				status: this.status,
+				statusText: this.statusText
+			};
+			
+			/**
+			 * JSON.stringifyを呼び出した結果を返すと不要にクォートされた結果が
+			 * 表示されてしまう。
+			 */
+			return json;
+		}
+		
+		get message() {
+			return "Fetch error!:" + this.statusText + " " + this.status;
+		}
+	}
+	
 	/**
 	 * 組み込みのfetch関数をasync/awaitで呼び出してBodyオブジェクトを
 	 * 得る。awaitイコールthen1回分resolveすると考える。
@@ -43,7 +72,7 @@
 		dumpHeaders(response.headers);
 
 		if (!response.ok) {
-			throw new Error("Fetch error!:" + response.statusText + " " + response.status);
+			throw new FetchError(response.status, response.statusText);
 		}
 		
 		return response;
@@ -188,6 +217,59 @@
 				const img = await loadImage(resource, options);
 				area.innerHTML = "";
 				area.appendChild(img);
+			});
+		},
+		requestBodySample() {
+			const base = ".request-body-sample ";
+			
+			const inputArea = doc.querySelector(base + ".url-text"),
+				resultArea = doc.querySelector(base + ".result-area"),
+				runner = doc.querySelector(base + ".post-data");
+			
+			const login = async params => {
+				let result;
+				
+				try {
+					const response = await doFetch(getRequest("/webcise/login", {
+						method : "POST",
+						body : params
+					}));
+
+					if (response.ok) {
+						result = await response.json();
+					} else {
+						/**
+						 * statusTextの値はブラウザによって異なる。エラーが発生して
+						 * いても値が空文字のこともある。従ってstatusTextを用いて
+						 * 判定処理を行ってはならない。
+						 * 
+						 * サーバ側で適切にエラーを送信していればここに到達することは
+						 * ないのではないか？
+						 */
+						throw new FetchError(response.status, response.statusText);
+					}
+				} catch (err) {
+					console.error(err.message);
+					result = err;
+				}
+				
+				return result;
+			};
+			
+			runner.addEventListener("click", async () => {
+				const inputUrl = inputArea.value.trim();
+				/* reduceの第2引数を常に返すことでsplit結果の最後の要素を得る。 */
+				const search = inputUrl.split("?").reduce((a, b) => b);
+				/**
+				 * URLSearchParamsはクエリ文字列(?より後ろの部分)を自動的に
+				 * 抽出してくれたりはしない。最初の&が現れるまでをパラメータ名と
+				 * 解釈してしまう。
+				 */
+				const params = new URLSearchParams(search);
+
+				Array.from(params).forEach(console.log);
+
+				resultArea.innerHTML = JSON.stringify(await login(params));
 			});
 		}
 	};
