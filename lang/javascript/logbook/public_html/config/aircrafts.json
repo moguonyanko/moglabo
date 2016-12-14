@@ -143,5 +143,15 @@
 		"name": "Re.2005 改",
 		"type": "KS",
 		"ack": 11
+	},
+	"kikkakai": {
+		"name": "橘花改",
+		"type": "HB",
+		"ack": 12
+	},
+	"keiunkai": {
+		"name": "噴式景雲改",
+		"type": "HB",
+		"ack": 6
 	}
 }

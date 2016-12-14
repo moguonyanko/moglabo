@@ -11,6 +11,18 @@
 			"border": 33
 		}
 	],
+	"6-1": [
+		{
+			"name": "E",
+			"junction": 4,
+			"border": 16
+		},
+		{
+			"name": "F",
+			"junction": 4,
+			"border": 25
+		}
+	],
 	"6-2": [
 		{
 			"name": "F",
