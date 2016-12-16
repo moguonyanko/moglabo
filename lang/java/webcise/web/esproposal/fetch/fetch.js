@@ -230,7 +230,7 @@
 				let result;
 				
 				try {
-					const response = await doFetch(getRequest("/webcise/login", {
+					const response = await doFetch(getRequest("/webcise/Login", {
 						method : "POST",
 						body : params
 					}));
@@ -270,6 +270,55 @@
 				Array.from(params).forEach(console.log);
 
 				resultArea.innerHTML = JSON.stringify(await login(params));
+			});
+		},
+		responseSample() {
+			const base = ".new-response-sample ";
+			
+			const area = doc.querySelector(base + ".result-area"),
+				fileSelector = doc.querySelector(base + ".file-selector"),
+				runner = doc.querySelector(base + ".runner");
+				
+			/**
+			 * 以下のコードが呼び出されることはない。
+			 * FetchEventはServiceWorker内でしか発生しないのかもしれない。
+			 */
+			win.addEventListener("fetch", evt => {
+				const dummy = {
+					message: "dummy response"
+				};
+
+				const headers = new Headers();
+				headers.append("Content-Type", "application/json");
+				headers.append("X-webcise-dummy-response-header", "Replaced header!");
+				
+				const response = new Response(dummy, {
+					headers
+				});
+				
+				evt.responseWith(response);
+			});
+			
+			runner.addEventListener("click", async () => {
+				const files = fileSelector.files;
+				
+				if (files.length <= 0) {
+					return;
+				}
+				
+				const formData = new FormData();
+				const file = files[0];
+				formData.append("filename", file.name);
+				formData.append("samplefile", files[0]);
+					
+				area.innerHTML = "アップロード中...";	
+					
+				const response = await doFetch(getRequest("/webcise/Upload", {
+					method : "POST",
+					body : formData
+				}));
+					
+				area.innerHTML = JSON.stringify(await response.json());
 			});
 		}
 	};

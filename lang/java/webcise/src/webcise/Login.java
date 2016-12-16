@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * urlPatternsの大文字小文字が区別されるのでLoginでリクエストすると
+ * urlPatternsの大文字小文字は区別される。異なった名前でリクエストすると
  * 404エラーになる。
  */
-@WebServlet(name = "Login", urlPatterns = {"/login"})
+@WebServlet(name = "Login", urlPatterns = {"/Login"})
 public class Login extends HttpServlet {
 
 	@Override
