@@ -12,7 +12,8 @@
 		KK: "kankou", 
 		KB: "kanbaku", 
 		SB: "suibaku", 
-		SS: "suisen"
+		SS: "suisen",
+		HB: "hunbaku",
 	};
 	
 	class AircraftType {
@@ -35,7 +36,8 @@
 		[AIRCRAFT_TYPE_NAMES.KK]: new AircraftType(AIRCRAFT_TYPE_NAMES.KK, 3),
 		[AIRCRAFT_TYPE_NAMES.KB]: new AircraftType(AIRCRAFT_TYPE_NAMES.KB, 3),
 		[AIRCRAFT_TYPE_NAMES.SB]: new AircraftType(AIRCRAFT_TYPE_NAMES.SB, 9),
-		[AIRCRAFT_TYPE_NAMES.SS]: new AircraftType(AIRCRAFT_TYPE_NAMES.SS, 25)
+		[AIRCRAFT_TYPE_NAMES.SS]: new AircraftType(AIRCRAFT_TYPE_NAMES.SS, 25),
+		[AIRCRAFT_TYPE_NAMES.HB]: new AircraftType(AIRCRAFT_TYPE_NAMES.HB, 3)
 	};
 	
 	/**
