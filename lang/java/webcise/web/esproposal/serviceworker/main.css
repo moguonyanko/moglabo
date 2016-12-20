@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+main {
+	margin: 0.5em;
+}
+
+footer {
+	border-top: solid black 1px;
+}
+
+.result-area {
+	width: 50vw;
+	height: 20vh;
+	background-color: whitesmoke;
+	overflow-y: scroll;
+}
