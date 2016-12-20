@@ -153,5 +153,15 @@
 		"name": "噴式景雲改",
 		"type": "HB",
 		"ack": 6
+	},
+	"99kbj": {
+		"name": "九九式艦爆(熟練)",
+		"type": "KB",
+		"ack": 1
+	},
+	"sbd": {
+		"name": "SBD",
+		"type": "KB",
+		"ack": 2
 	}
 }
