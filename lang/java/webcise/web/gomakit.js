@@ -435,6 +435,10 @@
         isSSL: function(){
             return location.protocol === "https:";
         },
+		/**
+		 * @deprecated 
+		 * 組み込み関数のfetchを使用すること。
+		 */
 		fetch(url, {
 				method = "GET",
 				responseType = "json",
@@ -502,6 +506,13 @@
 			});
 
 			promise.then(resolve).catch(reject);
+		},
+		getCommonUI(base) {
+			const runner = this.select(base + " .runner"),
+				clearer = this.select(base + " .clearer"),
+				output = this.select(base + " .output"); 
+
+			return { runner, clearer, output };
 		}
     };
 
