@@ -513,6 +513,9 @@
 				output = this.select(base + " .output"); 
 
 			return { runner, clearer, output };
+		},
+		init(funcs) {
+			Object.values(funcs).forEach(func => func(this));
 		}
     };
 

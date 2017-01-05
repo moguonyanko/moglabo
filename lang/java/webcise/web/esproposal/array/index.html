@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Array</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="../../gomakit.css" />
+		<style>
+			.source {
+				background-color: beige;
+				/*margin: 0.5em;*/
+				padding: 0.5em;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>Array</h1>
+			<p>Arrayに関して提案されているAPIを調べます。</p>
+		</header>
+
+		<main>
+			<section class="array-includes-sample">
+				<h2>Array.prototype.includes</h2>
+				<p>検索対象数値列</p>
+				<div class="source"></div>
+				<div>
+					<button class="initializer">reload</button>
+				</div>
+				<p>検索結果</p>
+				<div class="output"></div>
+				<div>
+					<div>
+						<label>検索対象数値<input class="target" type="number" 
+										  value="5" min="0" max="100" 
+										  required="required" /></label>
+						<button class="runner">run</button>
+						<button class="clearer">clear</button>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<footer role="contentinfo">
+			<small>Copyright &copy; 2016 moguonyanko All rights reserved.</small>
+		</footer>
+
+		<script src="../../gomakit.js"></script>
+		<script src="main.js"></script>
+	</body>
+</html>
