@@ -8,8 +8,11 @@
 		<style>
 			.source {
 				background-color: beige;
-				/*margin: 0.5em;*/
 				padding: 0.5em;
+			}
+			
+			.input-container input[type='number'] {
+				width: 3em;
 			}
 		</style>
 	</head>
@@ -30,11 +33,15 @@
 				<p>検索結果</p>
 				<div class="output"></div>
 				<div>
-					<div>
+					<div class="input-container">
 						<label>検索対象数値<input class="target" type="number" 
-										  value="5" min="0" max="100" 
-										  required="required" /></label>
-						<button class="runner">run</button>
+											value="5" min="0" max="100" 
+											required="required" /></label>
+						<label>検索開始インデックス<input class="from-index" type="number" 
+												value="0" required="required" /></label>
+					</div>
+					<div>
+						<button class="runner">search</button>
 						<button class="clearer">clear</button>
 					</div>
 				</div>

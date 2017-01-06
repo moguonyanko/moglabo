@@ -148,6 +148,68 @@
             return allKeys;
         }
     }
+	
+	const isIteratable = target => {
+		if (!target) {
+			return false;
+		}
+		
+		return funcp(target[Symbol.iterator]);
+	};
+	
+	/**
+	 * 現状クラスとして定義する必要は無いがクラスとして定義した方が
+	 * 今後メソッドを追加しやすくはなる。Arrayを直接継承するより安全で
+	 * 拡張性が高いかもしれない。
+	 */
+	class GomakitArray {
+		constructor() {
+			//Does nothing.
+		}
+		
+		static create({
+			size = 0,
+			initial = null,
+			values = null,
+			debug = false
+		} = {}) {
+			const accessor = {
+				get(target, index) {
+					const value = target[index];
+					if (debug) {
+						console.log(`get value=${value} at index=${index}`);
+					}
+					return value;
+				},
+				set(target, index, value) {
+					if (debug) {
+						console.log(`set value=${value} to index=${index}`);
+					}
+					target[index] = value;
+					/**
+					 * ProxyのsetメソッドはBooleanの値を返さないとエラーになる。
+					 */
+					return true;
+				}
+			};
+			
+			/**
+			 * Array.isArrayでチェックするとArray以外のIteratableなオブジェクトを
+			 * 使って配列を生成できなくなる。
+			 */
+			const proxyTarget = isIteratable(values) ? 
+				Array.of(...values) : 
+				Array(size).fill(initial);	
+			
+			/**
+			 * Arrayを継承せずにArrayの全てのメソッドを呼び出せるようにするため
+			 * Array.prototypeを含むオブジェクトをProxyに渡す。
+			 */
+			const handler = Object.assign(Array.prototype, accessor);
+			
+			return new Proxy(proxyTarget, handler);
+		}
+	}
 
     Gomakit.prototype = {
         StringBuilder: StringBuilder,
@@ -516,7 +578,9 @@
 		},
 		init(funcs) {
 			Object.values(funcs).forEach(func => func(this));
-		}
+		},
+		isIteratable: isIteratable,
+		Array: GomakitArray
     };
 
     win.Gomakit = Gomakit;
