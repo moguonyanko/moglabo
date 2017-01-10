@@ -9,8 +9,13 @@
                 --common-bg-color: rgba(102, 102, 153, 0.2);
                 --common-result-color: rgba(204, 204, 204, 0.2);
             }
+			
+			footer {
+				border-top: 1px solid black;
+			}
 
-            .result-area {
+            .result-area,
+			.output {
                 width: 50%;
                 height: 10rem;
                 margin: 5px;
@@ -31,7 +36,7 @@
 
         <div role="main">
             <section class="proxy-container">
-                <h2>Proxy</h2>
+                <h2>Proxyによるgetメソッドの挙動変更</h2>
                 <p>
                     Proxyで既存オブジェクトのプロパティ参照時の操作を追加することができます。
                 </p>
@@ -44,8 +49,8 @@
                     <button class="clear-result">クリア</button>
                 </div>
             </section>
-             <section class="reflect-container">
-                <h2>Reflect</h2>
+			<section class="reflect-container">
+                <h2>Reflectによるプロパティ列挙</h2>
                 <p>
                     ReflectはObjectとほぼ同じstaticメソッドを持っています。<br />
                     シンボルを含むオブジェクトのキーを列挙することができます。
@@ -57,7 +62,26 @@
                 <div>
                     <button class="clear-result">クリア</button>
                 </div>
-             </section>
+			</section>
+			<section class="reflect-methods-sample">
+				<h2>Reflectのメソッド調査</h2>
+				<p>
+					Reflectのstaticメソッドでオブジェクトを生成したりメソッドを呼び出したり
+					できる。<br />プロパティの削除も行える。
+				</p>
+				<div class="output"></div>
+				<div>
+					<div>
+						<label>name:<input class="sample-person-name" type="text" value="hogehoge" /></label>
+						<label>age:<input class="sample-person-age" type="number" value="30" 
+										   min="0" /></label>
+					</div>
+					<div>
+						<button class="runner">run</button>
+						<button class="clearer">clear</button>
+					</div>
+				</div>
+			</section>
         </div>
 
         <aside role="complementary">

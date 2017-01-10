@@ -119,7 +119,94 @@
             g.clickListener(g.select(base + ".clear-result"), e => {
                 g.clear(resultArea);
             });
-        }
+        },
+		g => {
+			const base = ".reflect-methods-sample ";
+			const { runner, clearer, output } = g.getCommonUI(base);
+			
+			class Person {
+				constructor(...args) {
+					const [name, age] = args;
+					this.name = name;
+					this.age = age;
+				}
+				
+				getDecoratedName(prefix, suffix) {
+					return prefix + this.name.toUpperCase() + suffix;
+				}
+				
+				toString() {
+					const values = Reflect.ownKeys(this).map(key => {
+						if (!g.funcp(this[key])) {
+							return this[key];
+						} else {
+							return key;
+						}
+					});
+					
+					return values.join(" : ");
+				}
+			}
+			
+			const construct = (...args) => {
+				console.log(args);
+				/**
+				 * Reflect.constructの第2引数は配列か配列のようなオブジェクトしか受け取れない。
+				 * Reflect.applyの第3引数も同様。
+				 * オブジェクトで引数を受け取る関数とは相性が悪いかもしれない。
+				 */
+				return Reflect.construct(Person, args);
+			};
+			
+			const defineProperty = ({ target, name, value = null } = {}) => {
+				return Reflect.defineProperty(target, name, { value });
+			};
+			
+			const deleteProperty = ({ target, name } = {}) => {
+				return Reflect.deleteProperty(target, name);
+			};
+			
+			const apply = (fn, context, args) => {
+				return Reflect.apply(fn, context, args);
+			};
+			
+			const runTest = () => {
+				const nameEle = g.select(base + ".sample-person-name"),
+					ageEle =  g.select(base + ".sample-person-age");
+				const { name, age } = { name: nameEle.value, age: ageEle.value };
+				
+				const display = text => Reflect.apply(g.println, null, [output, text]);
+				
+				const person = construct(name, age);
+				
+				const propName = "hobby";
+				
+				const defined = defineProperty({
+					target: person,
+					name: propName,
+					value: "programming"
+				});
+				
+				defined ? display(person) : display(`Failed define property ${propName}`);
+				
+				const deleted = deleteProperty({
+					target: person,
+					name: propName
+				});
+				
+				deleted ? display(person) : display(`Failed delete property ${propName}`);
+				
+				const fn = person.getDecoratedName;
+				const args = ["+++++", "*****"];
+				const result = apply(fn, person, args);
+				
+				display(result);
+			};
+			
+			runner.addEventListener("click", runTest);
+			
+			clearer.addEventListener("click", () => g.clear(output));
+		}
     ];
     
     g.run(funcs);
