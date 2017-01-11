@@ -158,8 +158,8 @@
 				return Reflect.construct(Person, args);
 			};
 			
-			const defineProperty = ({ target, name, value = null } = {}) => {
-				return Reflect.defineProperty(target, name, { value });
+			const defineProperty = ({ target, name, attributes = null } = {}) => {
+				return Reflect.defineProperty(target, name, attributes);
 			};
 			
 			const deleteProperty = ({ target, name } = {}) => {
@@ -181,10 +181,22 @@
 				
 				const propName = "hobby";
 				
+				const attributes = {
+					value : "programming",
+					/**
+					 * Object.definePropertyと同じくenumerable，configurable，
+					 * writableは指定されないと全てデフォルトでfalseになる。
+					 * その場合，Reflect.deletePropertyは失敗する。
+					 */
+					enumerable : true,
+					configurable : true,
+					writable : true
+				};
+				
 				const defined = defineProperty({
 					target: person,
 					name: propName,
-					value: "programming"
+					attributes
 				});
 				
 				defined ? display(person) : display(`Failed define property ${propName}`);
