@@ -1,5 +1,30 @@
 @charset "UTF-8";
 
 body {
-	background-color: lightgrey;
+	background-color: beige;
+}
+
+aside {
+	max-width: 70vw;
+	/**
+     * aside自体を中央揃え 
+     * asideはブロック要素なので margin: auto で中央揃えされる。
+     */
+	margin: auto; 
+	border: orange 1px solid;
+	border-radius: 5px;
+}
+
+aside .aside-text {
+	/**
+     * aside内のインライン要素を中央揃え
+     * aside-textクラスを指定した要素がインライン要素だった場合は中央揃えされない。
+     * text-align: center は中央揃えしたいインライン要素を含むブロック要素に対して指定する。
+     */
+	text-align: center;
+	text-decoration: underline darkgray;
+}
+
+footer[role='contentinfo'] {
+	border-top: 1px solid black;
 }

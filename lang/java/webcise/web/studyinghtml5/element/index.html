@@ -7,7 +7,7 @@
 		<!-- ページ内の相対URLの基点を指定します。 -->
 		<base target="_blank" href="/webcise/studyinghtml5/element/" />
 		<link rel="shortcut icon" href="../../favicon.ico" />
-		<link rel="stylesheet" type="text/css" href="element.css" />
+		<link rel="stylesheet" href="element.css" />
 	</head>
 	<body>
 		<header role="banner">
@@ -16,7 +16,7 @@
 		</header>
 
 		<section role="application">
-			<h1>HTML5で追加された要素や属性</h1>
+			<h2>HTML5で追加された要素や属性</h2>
 
 			<article>
 				<h2>abbr</h2>
@@ -152,8 +152,13 @@
 			<article>
 				<h2>dir, bdi</h2>
 				<p>dir要素，bdi要素で文字の表記順を指定できます。</p>
-				<p dir="ltr">テキストの向きが<bdi>54321</bdi>左から右になる予定</p>
+				<p dir="ltr">テキストの向きが左から右になる予定</p>
 				<p dir="rtl">右から始まる文章</p>
+				<p>
+					bdi要素に対応していないブラウザはコロンの後に記述した
+					数値の表示位置がコロンより前になってしまう。
+				</p>
+				<p><bdi>شلاؤيث</bdi>: 54321 test</p>
 			</article>
 
 			<article contenteditable="true">
@@ -327,6 +332,7 @@
 				<h2>itemscope, itemprop, itemtype</h2>
 				<p>マイクロデータで文書のメタデータを伝えます。</p>
 				<section itemscope="" itemtype="http://schema.org/Person">
+					<h2>Micro Datas</h2>
 					<p itemprop="name">Hoge</p>
 					<div itemprop="location">
 						<p itemprop="name">Hoge Center</p>
@@ -462,10 +468,38 @@
 				</div>
 			</article>
 
+			<article>
+				<style scoped="scoped">
+					section {
+						background-color: whitesmoke;
+					}
+				</style>
+				<h2>article内のheaderとfooter</h2>
+				<p>
+					article内にheaderやfooterを記述することができる。
+				</p>
+				<header>
+					<h3>sample header</h3>
+				</header>
+				<section>
+					<h3>sample content</h3>
+					<p>
+						sample text
+					</p>
+				</section>
+				<footer>
+					<span>sample footer</span>
+				</footer>
+			</article>
 		</section>
 
+		<aside>
+			<h3 class="aside-text">参考サイト</h3>
+			<p class="aside-text"><a href="http://www.w3schools.com/">w3schools.com</a></p>
+		</aside>
+		
 		<footer role="contentinfo">
-			<small>Copyright &copy; 2014 moguonyanko All rights reserved.</small>
+			<small>Copyright &copy; 2016 moguonyanko All rights reserved.</small>
 		</footer>
 
 		<script src="element.js" async="async"></script>
