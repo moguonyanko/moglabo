@@ -491,6 +491,94 @@
 					<span>sample footer</span>
 				</footer>
 			</article>
+			
+			<article class="table-element-sample">
+				<h2>table</h2>
+				<section>
+					<h3>table関連要素の各種属性</h3>
+					<div class="table-element-description">
+						<p>
+							HTML5から多くの属性が非サポートになっている。
+							特にスタイルを指定する属性が非サポートになっている。
+							theadはどこに記述しても表のヘッダーとして表示されるが
+							tbodyやtfootよりは先に記述していないとエディタに警告される。
+							tfootはどこに記述しても表のフッターとして表示され警告もされない。
+						</p>
+						<p>
+							colgroup要素にはtable要素内共通の設定を記述する。
+							ページ上に表示されることはない。
+							プレーンテキストも含めcol以外を記述することはできない。
+							<span class="table-element-description-memo">
+								colgroupもcolもスタイルを指定するためだけの要素にしか思えない。
+								テーブルの列単位でスタイルを指定するための
+								プロパティがCSSに定義されているべきではないか。
+								行単位のスタイルはtrに指定すればいい。
+							</span>
+							colgroupはcaptionより後theadやtbody，tfoot，trより前に
+							記述されていなければならない。
+						</p>
+						<p>
+							col要素のstyle属性の値はCSSに記述しても有効。
+							最初のcolのspanに2と書くと「最初2つの列の設定を指定する」という意味になる。
+							colのspanとcolの数で算出される列数がtableの列数と一致しないと
+							エディタは警告は出す。以下の例だとtableの列数は4でなければならない。
+						</p>
+					</div>
+					<table>
+						<caption>SAMPLE TABLE</caption>
+						<colgroup>
+							<!-- 1から2列目の設定(CSSに記述) -->
+							<col span="2"/>
+							<!-- 3列目の設定  -->
+							<col style="background-color: yellow;" />
+							<!-- 4列目の設定(CSSに記述) -->
+							<col />
+						</colgroup>
+						<thead>
+							<tr>
+								<th>ヘッダー</th>
+								<th>は</th>
+								<th>最初に書かないと</th>
+								<th>エディタから警告される</th>
+							</tr>
+						</thead>
+						<tfoot>
+							<tr>
+								<td>フッター</td>
+								<td>は</td>
+								<td>必ず最後の行</td>
+								<td>に表示される</td>
+							</tr>
+						</tfoot>
+						<tbody>
+							<tr>
+								<td>foo</td>
+								<td>bar</td>
+								<td>baz</td>
+								<td>fuga</td>
+							</tr>
+							<tr>
+								<td>おはよう</td>
+								<td>こんにちは</td>
+								<td>こんばんは</td>
+								<td>おやすみ</td>
+							</tr>
+							<tr>
+								<td>11111</td>
+								<td>22222</td>
+								<td>33333</td>
+								<td>44444</td>
+							</tr>
+							<tr>
+								<td>Java</td>
+								<td>Python</td>
+								<td>Swift</td>
+								<td>C</td>
+							</tr>
+						</tbody>
+					</table>
+				</section>
+			</article>
 		</section>
 
 		<aside>
