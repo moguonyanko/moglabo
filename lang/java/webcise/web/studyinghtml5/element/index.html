@@ -231,13 +231,22 @@
 			</article>
 
 			<article>
+				<style scoped="scoped">
+					.context-area {
+						background-color: yellowgreen;
+						width: 150px;
+						height: 100px;
+					}
+				</style>
 				<h2>menu</h2>
-				<p>コンテキストメニューに追加する選択肢をボタンとして定義します</p>
-				<div contextmenu="menusamplecontainer">ここを右クリック</div>
-				<menu id="menusamplecontainer">
-					<button onclick="alert('button1');">button1</button>
-					<button onclick="alert('button2');">button2</button>
-					<button onclick="alert('button3');">button3</button>
+				<p>コンテキストメニューに追加する選択肢を定義します</p>
+				<p>menuやmenuitemに非対応だとmenuitemの内容がそのままページ上に表示されてしまいます。</p>
+				<div class="context-area" contextmenu="menusamplecontainer">ここを右クリック</div>
+				<menu type="context" id="menusamplecontainer">
+					<menuitem onclick="alert(this.innerText);">サンプルメニュー1</menuitem>
+					<menuitem onclick="alert(this.innerText);">サンプルメニュー2</menuitem>
+					<hr />
+					<menuitem onclick="alert(this.innerText);">サンプルメニュー3</menuitem>
 				</menu>	
 			</article>
 
@@ -442,11 +451,29 @@
 				</div>
 			</article>
 
-			<article>
+			<article class="dialog-element-sample">
 				<h2>dialog</h2>
-				<p>dialog要素は2014/08時点では殆どサポートされていない。</p>
-				<dialog open="open">
-					<p>sample dialog</p>
+				<p>ダイアログを表示します。</p>
+				<dialog open="open" contextmenu="dialog-sample-1">
+					<p>sample dialog 1</p>
+					<menu type="context" id="dialog-sample-1">
+						<menuitem>dialog menu 1</menuitem>
+						<menuitem>dialog menu 2</menuitem>
+						<menuitem>dialog menu 3</menuitem>
+					</menu>
+				</dialog>
+				<button class="dialog-open-button">sample dialog 2</button>
+				<dialog class="dialog-sample-2">
+					<p>sample dialog 2</p>
+					<form>
+						<section>
+							<h2>サンプルフォーム</h2>
+							<p><label>text<input type="text" value="Hello" /></label></p>
+							<p><label>number<input type="number" value="1" /></label></p>
+							<p><label>datetime-local<input type="datetime-local" value="" /></label></p>
+						</section>
+						<button class="dialog-close-button">close</button>
+					</form>
 				</dialog>
 			</article>
 

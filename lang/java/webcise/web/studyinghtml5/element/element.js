@@ -1,4 +1,5 @@
 (function(w, d) {
+	"use strict";
 
 	function ref(id, node) {
 		return (node || d).getElementById(id);
@@ -112,17 +113,56 @@
 		};
 	}
 
-	var myModules = {
+    const InitTarget = Base => class extends Base {
+        init() {
+            throw new Error(`${Base.name} is not implemented "init"!`);
+        }
+    };
+	
+	class BaseDialog {
+		constructor(baseClass) {
+			this.base = baseClass;
+		}
+	}
+	
+	class SampleDialog extends InitTarget(BaseDialog) {
+		constructor() {
+			super(".dialog-element-sample ");
+		}
+		
+		init() {
+			const opener = d.querySelector(this.base + ".dialog-open-button");
+			opener.addEventListener("click", () => {
+				const dialog = d.querySelector(this.base + ".dialog-sample-2");
+				/**
+				 * Firefox53ではダイアログの表示・非表示を切り替えることができない。
+				 */
+				dialog.showModal();
+				const closer = d.querySelector(this.base + ".dialog-close-button");
+				closer.addEventListener("click", evt => {
+					evt.preventDefault();
+					/**
+					 * Chrome55ではcloseを呼び出す前にopenプロパティを設定しておかないと
+					 * 2回目以降のcloseでエラーが発生する。
+					 */
+					dialog.setAttribute("open", "open");
+					dialog.close();
+				});
+			});
+		}
+	}
+
+	const myModules = {
 		progress: Progress,
 		dataset: Dataset,
-		hidden : Hidden
+		hidden : Hidden,
+		dialog: SampleDialog
 	};
 
 	function init() {
-		for (var name in myModules) {
+		for (let name in myModules) {
 			if (myModules[name]) {
 				var myModule = new myModules[name]();
-
 				myModule.init();
 			}
 		}
