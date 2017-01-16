@@ -124,6 +124,16 @@
 		"type": "KK",
 		"ack": 0
 	},
+	"rsk": {
+		"name": "流星改",
+		"type": "KK",
+		"ack": 0
+	},
+	"97kk931": {
+		"name": "九七式艦攻(九三一空)",
+		"type": "KK",
+		"ack": 0
+	},
 	"shinden": {
 		"name": "震電改",
 		"type": "KS",
@@ -163,5 +173,20 @@
 		"name": "SBD",
 		"type": "KB",
 		"ack": 2
-	}
+	},
+	"f4f3": {
+		"name": "F4F-3",
+		"type": "KS",
+		"ack": 4
+	},
+	"f4f4": {
+		"name": "F4F-4",
+		"type": "KS",
+		"ack": 5
+	},
+	"f6f3": {
+		"name": "F6F-3",
+		"type": "KS",
+		"ack": 8
+	}	
 }
