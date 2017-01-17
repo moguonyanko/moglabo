@@ -88,8 +88,7 @@
 		},
 		inputEventSample() {
 			const base = ".input-event-sample ",
-				sampleTextEle = doc.querySelector(base + ".input-event-text");
-				
+				sampleTextEle = doc.querySelector(base + ".sample-textarea");
 			
 			const onInput = evt => {
 				g.log(evt);
@@ -101,6 +100,28 @@
 			};
 			
 			sampleTextEle.addEventListener("input", onInput);
+		},
+		keyboardEventSample() {
+			const base = ".keyboard-event-sample ",
+				inputArea = doc.querySelector(base + ".keyboard-input-textarea"),
+				outputArea = doc.querySelector(base + ".keyboard-output-textarea");
+			
+			const onKeydown = evt => {
+				evt.preventDefault();
+				g.log(evt);
+				
+				const key = evt.key.toLowerCase();
+				if (key.length === 1) {
+					outputArea.value += key;
+				} else if (key === "backspace") {
+					const s = outputArea.value;
+					outputArea.value = s.slice(0, s.length - 1);
+				} else {
+					outputArea.value += `[${key}]`;
+				}
+			};
+			
+			inputArea.addEventListener("keydown", onKeydown);
 		}
 	};
 	
