@@ -85,6 +85,22 @@
 			capEle.addEventListener("click", evt => init(evt.target.checked));
 				
 			init(capEle.checked);
+		},
+		inputEventSample() {
+			const base = ".input-event-sample ",
+				sampleTextEle = doc.querySelector(base + ".input-event-text");
+				
+			
+			const onInput = evt => {
+				g.log(evt);
+				const target = evt.target;
+				/**
+				 * InputEvent発生のたびにスタイルを切り替える。
+				 */
+				target.classList.toggle("inputted");
+			};
+			
+			sampleTextEle.addEventListener("input", onInput);
 		}
 	};
 	

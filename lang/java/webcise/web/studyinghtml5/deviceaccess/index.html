@@ -5,22 +5,7 @@
 	<title>Device Access API</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link href="../../gomakit.css" rel="stylesheet" />
-	<style>
-	  :root {
-		  --common-focus-color: rgba(0, 0, 255, 0.5);
-		  --common-unfocus-color: rgba(255, 0, 0, 0.5);
-	  }
-	  
-	  .focused {
-		  border: solid 1px var(--common-focus-color);
-		  background-color: var(--common-focus-color);
-	  }
-	  
-	  .unfocused {
-		  border: solid 1px var(--common-unfocus-color);
-		  background-color: var(--common-unfocus-color);
-	  }
-	</style>
+	<link href="deviceaccess.css" rel="stylesheet" />
   </head>
   <body>
 	<header>
@@ -28,6 +13,7 @@
 	  <p class="description">
 		様々なデバイスが発生させるイベントやそれを扱うAPIについてまとめます。
 	  </p>
+	  <a href="../">home</a>
 	</header>
 
 	<main>
@@ -46,7 +32,7 @@
 			イベントリスナーは各form要素に対して登録している。
 			form要素からイベントが伝搬しない場合，イベントリスナーが処理されない。
 		  </p>
-		  
+
 		  <form class="focus-sample-form-with-bubbles">
 			<fieldset>
 			  <legend>focusinとfocusoutはバブリングあり</legend>
@@ -54,7 +40,7 @@
 			  <label>password:<input class="focus-sample-password" type="password" value="" /></label>
 			</fieldset>
 		  </form>
-		  
+
 		  <form class="focus-sample-form-without-bubbles">
 			<fieldset>
 			  <legend>focusとblurはバブリングなし</legend>
@@ -62,9 +48,22 @@
 			  <label>password:<input class="focus-sample-password" type="password" value="" /></label>
 			</fieldset>
 		  </form>
-		  
+
 		  <div>
 			<label><input class="enable-focus-events-capture" type="checkbox" />capture(※イベントの伝播方向が逆になる。)</label>
+		  </div>
+		</section>
+
+		<section class="input-event-sample">
+		  <h3>Input Events</h3>
+		  <p class="description">
+			input要素やtextarea要素の内容に変更が加えられた時にInputEventが発生する。
+			ただし同じテキストをコピー・アンド・ペーストしてもInputEventは発生する。
+			テキストが空になった時も発生する。
+		  </p>
+
+		  <div class="input-text-container">
+			<textarea class="input-event-text">test</textarea>
 		  </div>
 		</section>
 
@@ -74,6 +73,8 @@
 			<li><a href="https://www.w3.org/TR/DOM-Level-3-Events/">UI Events(W3C)</a></li>
 			<li><a href="https://developer.mozilla.org/fr/docs/DOM_Levels">DOM Levels(MDN)</a></li>
 			<li><a href="https://www.tutorialspoint.com/html5/html5_events.htm">HTML5 - Events(Tutorial Point)</a></li>
+			<li><a href="https://developer.mozilla.org/en-US/docs/Web/Events/focus">focus(MDN)</a></li>
+			<li><a href="https://developer.mozilla.org/en-US/docs/Web/Events/input">input(MDN)</a></li>
 		  </ul>
 		</aside>
 	  </article>
@@ -82,7 +83,7 @@
 	<footer>
 	  <span class="contentinfo">Copyright &copy; 2016 moguonyanko All rights reserved.</span>
 	</footer>
-	
+
 	<script src="../../gomakit.js"></script>
 	<script src="main.js"></script>
   </body>
