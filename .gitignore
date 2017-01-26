@@ -3,5 +3,11 @@
 **/build.xml
 **/nbproject
 **/manifest.mf
-**/UserInterfaceState.xcuserstate
+**/*.xcuserstate
+**/*.xcodeproj
+**/*.dSYM
+**/*.xcworkspace
+**/xcuserdata
+**/*.xcplayground
+**/*.xcworkspacedata
 
