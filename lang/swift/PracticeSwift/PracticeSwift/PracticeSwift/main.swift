@@ -2,18 +2,15 @@
 //  main.swift
 //  PracticeSwift
 //
-//  Swift practice samples
+//  Swift practices for my studying
 //
-//  Created by Kouichi Yamada on 2017/01/26.
-//  Copyright © 2017年 Kouichi Yamada. All rights reserved.
+//  Created by moguonyanko on 2017/01/26.
 //
 
 import Foundation
 
-print("Hello, Swift Practice")
-
 func runPracticesBasicOperators() {
-    print("*** Basic Operators samples ***")
+    print("*** Basic Operators practices ***")
     
     assignTwoVariables()
     compareTuples()
@@ -21,10 +18,20 @@ func runPracticesBasicOperators() {
     iterateRanges()
 }
 
+func runPracticesStringsAndCharacters() {
+    print("*** Basic Operators practices ***")
+    
+    charactersToString()
+    catStringByIndex()
+}
+
 //Entry point
 
 func runPractices() {
-    runPracticesBasicOperators()
+    print("Hello, Swift Practice")
+    
+    //runPracticesBasicOperators()
+    runPracticesStringsAndCharacters()
 }
 
 runPractices()

@@ -4,18 +4,19 @@
 //  
 //  Basic operators practices
 //
-//  Created by Kouichi Yamada on 2017/01/26.
-//  Copyright © 2017年 Kouichi Yamada. All rights reserved.
+//  Created by moguonyanko on 2017/01/26.
 //
 
 import Foundation
 
+//Assignment Operator
 func assignTwoVariables() {
     let (x, y) = (100, 200)
     
     print(x, y)
 }
 
+//Comparison Operators
 func compareTuples() {
     let x = (1, "apple") > (2, "banana")
     let y = (100, "taro") < (50, "jiro")
@@ -24,6 +25,7 @@ func compareTuples() {
     print(x, y, z)
 }
 
+//Nil-Coalescing Operator
 func coalesceNil() {
     let defaultFavorite = "orange"
     var requestFavorite: String?
@@ -38,6 +40,7 @@ func coalesceNil() {
     print(favorite)
 }
 
+//Range Operators
 func iterateRanges() {
     for index in 0...3 {
         print("Now index is \(index)")
@@ -50,5 +53,3 @@ func iterateRanges() {
         print("No.\(index) fruit is \(fruits[index])")
     }
 }
-
-
