@@ -188,5 +188,10 @@
 		"name": "F6F-3",
 		"type": "KS",
 		"ack": 8
+	},
+	"late298b": {
+		"name": "Late 298B",
+		"type": "SB",
+		"ack": 1
 	}	
 }
