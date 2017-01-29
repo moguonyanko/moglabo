@@ -1,0 +1,13 @@
+**/build
+**/dist
+**/build.xml
+**/nbproject
+**/manifest.mf
+**/*.xcuserstate
+**/*.xcodeproj
+**/*.dSYM
+**/*.xcworkspace
+**/xcuserdata
+**/*.xcplayground
+**/*.xcworkspacedata
+
