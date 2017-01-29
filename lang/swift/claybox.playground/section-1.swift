@@ -57,13 +57,19 @@ func insertSort(data:Array<Int>){
     /* @todo implement */
 }
 
-// Entry point
+// Test functions
 
-func main(){
+func testAddRational(){
     let r1 = Rational(numer: 1, denom: 2)
     let r2 = Rational(numer: 1, denom: 2)
     
     addRational(r1, r2)
+}
+
+// Entry point
+
+func main(){
+    testAddRational()
 }
 
 main()
