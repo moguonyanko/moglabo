@@ -10,8 +10,6 @@
 import Foundation
 
 func runPracticesBasicOperators() {
-    print("*** Basic Operators practices ***")
-    
     assignTwoVariables()
     compareTuples()
     coalesceNil()
@@ -19,20 +17,22 @@ func runPracticesBasicOperators() {
 }
 
 func runPracticesStringsAndCharacters() {
-    print("*** Basic Operators practices ***")
-    
     charactersToString()
     catStringByIndex()
+    mutateStringValue()
     dumpUnicodeCodes()
+}
+
+func runPracticesCollectionTypes() {
+    createArrayWithDefaultValue()
 }
 
 //Entry point
 
 func runPractices() {
-    print("Hello, Swift Practice")
-    
     //runPracticesBasicOperators()
-    runPracticesStringsAndCharacters()
+    //runPracticesStringsAndCharacters()
+    runPracticesCollectionTypes()
 }
 
 runPractices()

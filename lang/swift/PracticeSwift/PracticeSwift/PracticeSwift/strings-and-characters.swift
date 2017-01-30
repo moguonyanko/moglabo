@@ -30,6 +30,26 @@ func catStringByIndex() {
     print(s1, s2, s3, s4)
 }
 
+//Inserting and Removing
+func mutateStringValue() {
+    //varで宣言すれば文字列でも可変になる。
+    var mutableStr = "Mutable WELCOME"
+    let s = "!!!"
+    
+    mutableStr.insert(contentsOf:s.characters, at: mutableStr.index(before: mutableStr.endIndex))
+    
+    print(mutableStr)
+    
+    let range = mutableStr.index(mutableStr.endIndex, offsetBy: -s.characters.count)..<mutableStr.endIndex
+    mutableStr.removeSubrange(range)
+    
+    print(mutableStr)
+    
+    //不変な値に対し副作用のあるメソッドを呼び出した時点でコンパイルエラーになる。
+    //let immutableStr = "Immutable WELCOME"
+    //immutableStr.remove(at: immutableStr.index(before: immutableStr.endIndex))
+}
+
 //Unicode Representations of Strings
 func dumpUnicodeCodes() {
     let src = "Hello,こんにちは😉";
