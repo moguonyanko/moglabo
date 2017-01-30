@@ -23,6 +23,7 @@ func runPracticesStringsAndCharacters() {
     
     charactersToString()
     catStringByIndex()
+    dumpUnicodeCodes()
 }
 
 //Entry point

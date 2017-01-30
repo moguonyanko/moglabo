@@ -29,3 +29,26 @@ func catStringByIndex() {
     
     print(s1, s2, s3, s4)
 }
+
+//Unicode Representations of Strings
+func dumpUnicodeCodes() {
+    let src = "Hello,こんにちは😉";
+    
+    for codeUnit in src.utf8 {
+        print("\(codeUnit)", terminator: " ")
+    }
+    
+    print("")
+    
+    for codeUnit in src.utf16 {
+        print("\(codeUnit)", terminator: " ")
+    }
+    
+    print("")
+    
+    for scalar in src.unicodeScalars {
+        print("\(scalar)=\(scalar.value)", terminator: " ")
+    }
+    
+    print("")
+}
