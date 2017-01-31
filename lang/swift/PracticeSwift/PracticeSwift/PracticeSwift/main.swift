@@ -25,6 +25,9 @@ func runPracticesStringsAndCharacters() {
 
 func runPracticesCollectionTypes() {
     createArrayWithDefaultValue()
+    combineArrays()
+    modifyArrayElements()
+    iterateArrayElements()
 }
 
 //Entry point
