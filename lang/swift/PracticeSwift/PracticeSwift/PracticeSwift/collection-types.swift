@@ -89,9 +89,6 @@ func removeElementOfSet() {
     //型変換が行われ3.0が削除される。Set.removeは副作用があるが削除した要素かnilを返す。
     s.remove(3)
     
-    //Setの要素の順序は初期化時に与えた順序と一致しない。
-    print(s)
-    
     if let ele = s.remove(x) {
         print("Removed \(ele)")
     } else {
@@ -100,6 +97,9 @@ func removeElementOfSet() {
     
     print("Is contain \(x) in set: \(s.contains(x))")
     
+    //Setの要素の順序は初期化時に与えた順序と一致しないがソートすることはできる。
+    print(s)
+    print(s.sorted())
 }
 
 
