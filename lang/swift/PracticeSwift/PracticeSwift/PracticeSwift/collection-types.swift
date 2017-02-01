@@ -65,6 +65,46 @@ func iterateArrayElements() {
     }
 }
 
+//Creating a Set with an Array Literal
+func createSetWithDefaultArray() {
+    var s1 = Set<String>()
+    //Set.insertは副作用がある。s1がletで宣言されているとコンパイルエラー。
+    s1.insert("banana")
+    
+    let s2: Set = ["orange", "apple", "lemon"]
+    
+    //Set.unionに副作用はない。
+    let s3 = s1.union(s2)
+    
+    print(s3)
+}
+
+//Accessing and Modifying a Set
+func removeElementOfSet() {
+    let x = 4.5
+    //xの型に合わせてSetの各要素に対し暗黙の型変換が行われる。
+    //その結果sの型はSet<Double>になる。
+    var s: Set = [1, 2, 3, x, 5]
+    s.insert(10)
+    //型変換が行われ3.0が削除される。Set.removeは副作用があるが削除した要素かnilを返す。
+    s.remove(3)
+    
+    //Setの要素の順序は初期化時に与えた順序と一致しない。
+    print(s)
+    
+    if let ele = s.remove(x) {
+        print("Removed \(ele)")
+    } else {
+        print("Removed nothing")
+    }
+    
+    print("Is contain \(x) in set: \(s.contains(x))")
+    
+}
+
+
+
+
 
 
 

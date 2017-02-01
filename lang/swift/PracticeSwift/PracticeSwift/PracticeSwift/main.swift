@@ -28,6 +28,8 @@ func runPracticesCollectionTypes() {
     combineArrays()
     modifyArrayElements()
     iterateArrayElements()
+    createSetWithDefaultArray()
+    removeElementOfSet()
 }
 
 //Entry point
