@@ -102,8 +102,58 @@ func removeElementOfSet() {
     print(s.sorted())
 }
 
+//Fundamental Set Operations
+func operateSets() {
+    let s1: Set = [2, 4, 6, 8, 10]
+    let s2: Set = [4, 8, 12, 16, 20]
+    
+    let unionedSet = s1.union(s2).sorted()
+    print(unionedSet)
+    
+    let intersectedSet = s1.intersection(s2).sorted()
+    print(intersectedSet)
+    
+    let subtractedSet = s1.subtracting(s2).sorted()
+    print(subtractedSet)
+    
+    let symmetricDiffSet = s1.symmetricDifference(s2).sorted()
+    print(symmetricDiffSet)
+}
 
-
+//Set Membership and Equality
+func checkMemberOfSets() {
+    let s1: Set = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    let s2: Set = [2, 4, 6, 8, 10]
+    let s3: Set = [3, 6, 9]
+    let s4: Set = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+    
+    let isSuper = s1.isSuperset(of: s2)
+    print(isSuper)
+    
+    let isStrictSuper = s1.isStrictSuperset(of: s2)
+    print(isStrictSuper)
+    
+    let isSub = s2.isSubset(of: s1)
+    print(isSub)
+    
+    let isStrictSub = s2.isStrictSubset(of: s1)
+    print(isStrictSub)
+    
+    let isDisjoint = s2.isDisjoint(with: s3)
+    print(isDisjoint)
+    
+    //isStrictXXでは含んでいる要素が比較元と全く等しいSetを認めない。
+    //つまり==演算子の結果とは逆の結果を返す。
+    
+    let isStrictSuper2 = s1.isStrictSuperset(of: s4)
+    print(isStrictSuper2)
+    
+    let isStrictSub2 = s4.isStrictSubset(of: s1)
+    print(isStrictSub2)
+    
+    //Setの比較で順序は考慮されない。
+    print(s1 == s4)
+}
 
 
 

@@ -30,6 +30,8 @@ func runPracticesCollectionTypes() {
     iterateArrayElements()
     createSetWithDefaultArray()
     removeElementOfSet()
+    operateSets()
+    checkMemberOfSets()
 }
 
 //Entry point
