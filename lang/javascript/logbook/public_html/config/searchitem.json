@@ -24,6 +24,11 @@
 		"type": "WB",
 		"value": 6
 	},
+	"zu12_634": {
+		"name": "瑞雲12型(六三四空)",
+		"type": "WB",
+		"value": 7
+	},
 	"sau": {
 		"name": "彩雲",
 		"type": "SS",
@@ -48,6 +53,11 @@
 		"name": "22号対水上電探改四",
 		"type": "SED",
 		"value": 5
+	},
+	"13k": {
+		"name": "13号対空電探改",
+		"type": "SED",
+		"value": 4
 	},
 	"fumo": {
 		"name": "FuMO25 レーダー",
