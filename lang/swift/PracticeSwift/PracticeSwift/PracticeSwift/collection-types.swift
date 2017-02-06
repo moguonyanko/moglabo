@@ -155,6 +155,56 @@ func checkMemberOfSets() {
     print(s1 == s4)
 }
 
+//Creating a Dictionary with a Dictionary Literal
+func createDictionaryWithDefaultValues() {
+    //キーと値のペアの順序はDictionay宣言時の順序とは関係無い。
+    let dict = [10: "foo", 20: "bar", 30: "baz"]
+    print(dict)
+}
+
+//Accessing and Modifying a Dictionay
+func modifyDictionay() {
+    //letで宣言するとペアを一切変更できなくなる。
+    var dict: [String: Int] = [:]
+    
+    if dict.isEmpty {
+        dict["goma"] = 1
+        dict["mike"] = 100
+    }
+    
+    dict["poko"] = 200
+    
+    dict["mike"] = 300
+    
+    print(dict)
+    
+    if let oldValue = dict.updateValue(1000, forKey: "mike") {
+        print("Replaced old value \(oldValue)")
+    }
+    
+    let key = "poo"
+    if let value = dict[key] {
+        print("value = \(value)")
+    } else {
+        print("No value binded \"\(key)\"")
+    }
+    
+    dict["poko"] = nil
+
+    let rmKey = "mike"
+    if let oldValue = dict.removeValue(forKey: rmKey) {
+        print("Removed value \(oldValue)")
+    } else {
+        print("No value is contained binding \(rmKey) in this dictionary")
+    }
+    
+    print(dict)
+}
+
+//Iterating Over a Dictionary
+
+
+
 
 
 

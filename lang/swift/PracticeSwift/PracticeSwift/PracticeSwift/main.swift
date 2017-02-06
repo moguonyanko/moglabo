@@ -32,6 +32,8 @@ func runPracticesCollectionTypes() {
     removeElementOfSet()
     operateSets()
     checkMemberOfSets()
+    createDictionaryWithDefaultValues()
+    modifyDictionay()
 }
 
 //Entry point
