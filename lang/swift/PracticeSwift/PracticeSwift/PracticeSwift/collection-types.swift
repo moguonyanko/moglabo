@@ -202,8 +202,19 @@ func modifyDictionay() {
 }
 
 //Iterating Over a Dictionary
-
-
+func iterateMapPairs() {
+    let tests = ["foo": 100, "bar": 70, "baz": 85]
+    
+    for (name, score) in tests {
+        print("\(name) score = \(score)")
+    }
+    
+    let names = [String](tests.keys)
+    let scores = [Int](tests.values)
+    
+    print(names.sorted())
+    print(scores.sorted())
+}
 
 
 

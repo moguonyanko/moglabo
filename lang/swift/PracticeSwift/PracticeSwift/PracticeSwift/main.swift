@@ -34,6 +34,7 @@ func runPracticesCollectionTypes() {
     checkMemberOfSets()
     createDictionaryWithDefaultValues()
     modifyDictionay()
+    iterateMapPairs()
 }
 
 //Entry point
