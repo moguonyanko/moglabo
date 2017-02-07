@@ -37,12 +37,17 @@ func runPracticesCollectionTypes() {
     iterateMapPairs()
 }
 
+func runPracticesControlFlow() {
+    ignoreIndex()
+}
+
 //Entry point
 
 func runPractices() {
     //runPracticesBasicOperators()
     //runPracticesStringsAndCharacters()
-    runPracticesCollectionTypes()
+    //runPracticesCollectionTypes()
+    runPracticesControlFlow()
 }
 
 runPractices()
