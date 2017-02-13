@@ -39,6 +39,9 @@ func runPracticesCollectionTypes() {
 
 func runPracticesControlFlow() {
     ignoreIndex()
+    repeatAddNumbers()
+    checkSwitchCasesWithoutFallthrough()
+    matchCaseByRange()
 }
 
 //Entry point
