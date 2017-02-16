@@ -13,11 +13,12 @@
 	const CONTEXT_NAME = "logbook";
 
 	const lB = {};
-	
-	const noop = () => {};
-	
-	const identity = v => v; 
-	
+
+	const noop = () => {
+	};
+
+	const identity = v => v;
+
 	const forEach = (src, func) => {
 		if (Array.isArray(src)) {
 			src.forEach(func);
@@ -25,7 +26,7 @@
 			Array.from(src).forEach(func);
 		}
 	};
-	
+
 	const map = (src, func) => {
 		if (Array.isArray(src)) {
 			return src.map(func);
@@ -37,7 +38,7 @@
 			return Array.from(src).map(func);
 		}
 	};
-		
+
 	const reduce = (src, func) => {
 		if (Array.isArray(src)) {
 			return src.reduce(func);
@@ -45,29 +46,29 @@
 			return Array.from(src).reduce(func);
 		}
 	};
-	
+
 	class InvalidStateError extends Error {
-		constructor ({ result = {}, message = "", status = 500 } = {}) {
+		constructor( { result = {}, message = "", status = 500 } = {}) {
 			super(message);
 			this.result = result;
 			this.status = status;
 		}
 	}
-	
+
 	/**
 	 * 現在はGETリクエストのみの対応となっている。
 	 */
-	const doRequest = (path, { 
-			type = "json", /* 空文字をデフォルト値にするとDOMStringになってしまう。 */
-			onsuccess = () => {}, 
-			onerror = () => {}, 
+	const doRequest = (path, {
+	type = "json", /* 空文字をデフォルト値にするとDOMStringになってしまう。 */
+			onsuccess = () => {},
+			onerror = () => {},
 			timeout = 0 /* 単位はミリ秒。デフォルトはタイムアウト無し。 */
-		} = {}) => {
+	} = {}) => {
 		const xhr = new XMLHttpRequest();
-		
+
 		xhr.responseType = type;
 		xhr.timeout = timeout;
-		
+
 		xhr.onreadystatechange = evt => {
 			if (xhr.status >= 400) {
 				onerror(new InvalidStateError({
@@ -77,7 +78,7 @@
 				xhr.abort();
 				return;
 			}
-			
+
 			if (xhr.readyState === XMLHttpRequest.DONE) {
 				/**
 				 * responseTypeにjsonを指定した時はパース済みのJSONのオブジェクトが
@@ -87,7 +88,7 @@
 				onsuccess(xhr.response);
 			}
 		};
-			
+
 		xhr.ontimeout = err => {
 			onerror(new InvalidStateError({
 				status: xhr.status,
@@ -95,7 +96,7 @@
 			}));
 			xhr.abort();
 		};
-		
+
 		xhr.open("GET", path);
 		xhr.send(null);
 	};
@@ -103,15 +104,15 @@
 	const select = (selector, opt_doc) => {
 		return (opt_doc || doc).querySelector(selector);
 	};
-		
+
 	const selectAll = (selector, opt_doc) => {
 		return (opt_doc || doc).querySelectorAll(selector);
 	};
-	
+
 	const toClassSelector = ele => {
 		return map(ele.classList, cls => "." + cls).join(" ");
 	};
-		
+
 	/**
 	 * @name baseFunctions
 	 * @type Object
@@ -127,9 +128,9 @@
 		map: map,
 		reduce: reduce,
 		InvalidStateError: InvalidStateError,
-		list (size, opt_defaultValue) {
+		list(size, opt_defaultValue) {
 			const siz = size || 0,
-				defValue = opt_defaultValue || null;
+					defValue = opt_defaultValue || null;
 
 			/**
 			 * new Array(number)で生成された配列のlengthプロパティはnumberと
@@ -145,30 +146,30 @@
 
 			return lst;
 		},
-		createBlobURL (blob) {
+		createBlobURL(blob) {
 			return win.URL.createObjectURL(blob);
 		},
-		revokeBlobURL (url) {
+		revokeBlobURL(url) {
 			win.URL.revokeObjectURL(url);
 		},
-		loadConfig (path, { type = "json", 
-			onsuccess = () => {}, onerror = () => {}, timeout } = {}) {
+		loadConfig(path, { type = "json",
+				onsuccess = () => {}, onerror = () => {}, timeout } = {}) {
 			if (!path) {
 				return;
 			}
-			
-			let requestPath = path, 
-				onlyFileName = !path.includes("/");
-			
+
+			let requestPath = path,
+					onlyFileName = !path.includes("/");
+
 			if (onlyFileName) {
 				requestPath = "/" + CONTEXT_NAME + "/config/" + path;
-			} 
-			
+			}
+
 			doRequest(requestPath, {
 				type, onsuccess, onerror, timeout
 			});
 		},
-		replaceElement (base, newEle) {
+		replaceElement(base, newEle) {
 			const selector = toClassSelector(newEle);
 			const oldEle = select(selector, base);
 			if (oldEle) {
@@ -181,8 +182,8 @@
 		 * Promiseの関数が非同期で実行される場合はresolveやrejectの呼び出しが
 		 * コールバック関数内で行われないと期待した結果が得られない。
 		 */
-		funcall (funcs, { oncomplete = arg => arg, 
-			onerror = err => { throw err; } } = {}) {
+		funcall(funcs, { oncomplete = arg => arg,
+				onerror = err => { throw err; } } = {}) {
 			/**
 			 * 各Promiseでresolveを呼び出していても，Promise.all使用時は
 			 * 全てのPromiseの処理が完了した後の1回しかthenの関数は呼び出されない。
@@ -190,20 +191,20 @@
 			 * 後続のthenが引数として受け取りたい値はその前のthenで返す。
 			 */
 			Promise.all(lB.map(funcs, f => new Promise(f)))
-				.then(oncomplete)
-				.catch(onerror);
+					.then(oncomplete)
+					.catch(onerror);
 		},
 		/**
 		 * @deprecated 
 		 * 組み込み関数のfetchを使用すること。
 		 */
 		fetch(url, {
-				method = "GET",
+		method = "GET",
 				responseType = "json",
 				data = null,
 				timeout = 0
-			} = {}) {
-				
+		} = {}) {
+
 			return new Promise(function (resolve, reject) {
 				const xhr = new XMLHttpRequest();
 				xhr.open(method, url);
@@ -225,7 +226,7 @@
 		},
 		objToMap(obj, opt_valueFunc = (k, v) => v) {
 			const param = Object.keys(obj)
-				.map(k => [k, opt_valueFunc(k, obj[k])]);
+					.map(k => [k, opt_valueFunc(k, obj[k])]);
 			return new Map(param);
 		},
 		arrayToMap(array = [], opt_keyFunc = k => k, opt_valueFunc = v => v) {
@@ -236,7 +237,7 @@
 			const url = `/${CONTEXT_NAME}/config/` + name;
 			const json = await this.fetch(url);
 
-			if(!json){
+			if (!json) {
 				throw new Error(`設定ファイル読み込み失敗: ${url}`);
 			}
 

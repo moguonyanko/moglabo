@@ -1,0 +1,27 @@
+{
+	"normal": {
+		"name": "通常",
+		"fuel": 20,
+		"ammo": 20
+	},
+	"sensui(event)": {
+		"name": "潜水(イベント)",
+		"fuel": 20,
+		"ammo": 0
+	},
+	"kouku": {
+		"name": "航空戦",
+		"fuel": 20,
+		"ammo": 20
+	},
+	"kushu": {
+		"name": "空襲戦",
+		"fuel": 8,
+		"ammo": 4
+	},
+	"fancy": {
+		"name": "気のせい",
+		"fuel": 0,
+		"ammo": 0
+	}
+}
