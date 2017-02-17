@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+.point-type-container {
+	max-height: 50vh;
+	border: 1px solid darkgray;
+	border-radius: 5px;
+	overflow-y: scroll;
+}
+
+.point-selector {
+	margin: 0.5em;
+	list-style: decimal-leading-zero;
+}
+
+.point-selector label {
+	margin: 0.5em;
+	background-color: beige;
+}
+

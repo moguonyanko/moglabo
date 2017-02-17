@@ -1,38 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <title>補正調査</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<style>
-	  .point-selector {
-		  margin: 0.5em;
-		  border: solid whitesmoke 1px;
-	  }
-	  
-	  .point-selector label {
-		  background-color: beige;
-	  }
-	</style>
+	<link rel="stylesheet" href="../../styles/common.css" />
+	<link rel="stylesheet" href="../../styles/attackrevision.css" />
   </head>
   <body>
 	<header>
 	  <h1>補正調査</h1>
 	  <p>状況による値の補正結果を調べます。</p>
 	</header>
-	
+
 	<main>
 	  <div>
 		<p>状況選択</p>
-		<div class="point-type-container"></div>
+		<ol class="point-type-container"></ol>
 	  </div>
-	  
+
 	  <div>
-		<button>run</button>
-		<label>result=<span class="result-value">0</span>%</label>
+		<div>
+		  <button>run</button>
+		  <label>result=<span class="result-value">0</span>%</label>
+		</div>
+		<div>
+		  <label>回数=<input class="count" type="number" min="1" max="20" 
+						   value="5" required="required" /></label>
+		  <button class="init-conatiners">init</button>
+		</div>
 	  </div>
 	</main>
-	
+
 	<script src="../../scripts/attackrevision.js"></script>
   </body>
 </html>

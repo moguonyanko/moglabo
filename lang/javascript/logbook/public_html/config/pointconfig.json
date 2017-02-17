@@ -4,7 +4,7 @@
 		"fuel": 20,
 		"ammo": 20
 	},
-	"sensui(event)": {
+	"sensui_event": {
 		"name": "潜水(イベント)",
 		"fuel": 20,
 		"ammo": 0
