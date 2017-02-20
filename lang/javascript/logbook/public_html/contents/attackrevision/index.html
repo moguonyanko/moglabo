@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link rel="stylesheet" href="../../styles/common.css" />
 	<link rel="stylesheet" href="../../styles/attackrevision.css" />
+	<link rel="shortcut icon" href="/logbook/favicon.ico" />
   </head>
   <body>
 	<header>
@@ -21,12 +22,14 @@
 
 	  <div>
 		<div>
-		  <button>run</button>
-		  <label>result=<span class="result-value">0</span>%</label>
+		  <button class="run-calc-fuel">fuel</button>
+		  <label>result=<span class="result-value result-value-fuel">0</span>%</label>
+		  <button class="run-calc-ammo">ammo</button>
+		  <label>result=<span class="result-value result-value-ammo">0</span>%</label>
 		</div>
 		<div>
 		  <label>回数=<input class="count" type="number" min="1" max="20" 
-						   value="5" required="required" /></label>
+						   value="4" required="required" /></label>
 		  <button class="init-conatiners">init</button>
 		</div>
 	  </div>

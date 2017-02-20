@@ -23,5 +23,15 @@
 		"name": "気のせい",
 		"fuel": 0,
 		"ammo": 0
+	},
+	"whirling_fuel": {
+		"name": "うずしお(燃料)",
+		"fuel": 20,
+		"ammo": 0
+	},
+	"whirling_ammo": {
+		"name": "うずしお(弾薬)",
+		"fuel": 0,
+		"ammo": 20
 	}
 }

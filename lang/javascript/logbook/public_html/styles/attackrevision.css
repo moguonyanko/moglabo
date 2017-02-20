@@ -12,8 +12,13 @@
 	list-style: decimal-leading-zero;
 }
 
-.point-selector label {
+.point-selector .type-selector-name {
 	margin: 0.5em;
 	background-color: beige;
 }
 
+.point-selector .check-night-name {
+	position: relative;
+	left: 1em;
+	background-color: lightblue;
+}
