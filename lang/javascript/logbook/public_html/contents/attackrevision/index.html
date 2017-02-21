@@ -4,37 +4,42 @@
     <meta charset="UTF-8" />
     <title>補正調査</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<link rel="stylesheet" href="../../styles/common.css" />
-	<link rel="stylesheet" href="../../styles/attackrevision.css" />
-	<link rel="shortcut icon" href="/logbook/favicon.ico" />
+    <link rel="stylesheet" href="../../styles/common.css" />
+    <link rel="stylesheet" href="../../styles/attackrevision.css" />
+    <link rel="shortcut icon" href="/logbook/favicon.ico" />
   </head>
   <body>
-	<header>
-	  <h1>補正調査</h1>
-	  <p>状況による値の補正結果を調べます。</p>
-	</header>
+    <header>
+      <h1>補正調査</h1>
+      <p>状況による値の補正結果を調べます。</p>
+    </header>
 
-	<main>
-	  <div>
-		<p>状況選択</p>
-		<ol class="point-type-container"></ol>
-	  </div>
+    <main>
+      <section>
+        <h2>状況</h2>
+        <ol class="point-type-container"></ol>
+      </section>
 
-	  <div>
-		<div>
-		  <button class="run-calc-fuel">fuel</button>
-		  <label>result=<span class="result-value result-value-fuel">0</span>%</label>
-		  <button class="run-calc-ammo">ammo</button>
-		  <label>result=<span class="result-value result-value-ammo">0</span>%</label>
-		</div>
-		<div>
-		  <label>回数=<input class="count" type="number" min="1" max="20" 
-						   value="4" required="required" /></label>
-		  <button class="init-conatiners">init</button>
-		</div>
-	  </div>
-	</main>
+      <section>
+        <h2>設定</h2>
+        <div>
+          <label>戦闘回数(道中)=<input class="count" type="number" min="1" max="20" 
+                                 value="4" required="required" /></label>
+          <button class="init-conatiners">リスト初期化</button>
+        </div>
+      </section>
 
-	<script src="../../scripts/attackrevision.js"></script>
+      <section>
+        <h2>補正値</h2>
+        <div>
+          <button class="run-calc-fuel">燃料</button>
+          <label>result=<span class="result-value result-value-fuel">0</span>%</label>
+          <button class="run-calc-ammo">弾薬</button>
+          <label>result=<span class="result-value result-value-ammo">0</span>%</label>
+        </div>
+      </section>
+    </main>
+
+    <script src="../../scripts/attackrevision.js"></script>
   </body>
 </html>

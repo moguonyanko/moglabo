@@ -1,24 +1,26 @@
 @charset "UTF-8";
 
 .point-type-container {
-	max-height: 50vh;
-	border: 1px solid darkgray;
-	border-radius: 5px;
-	overflow-y: scroll;
+    max-height: 50vh;
+    border: 1px solid darkgray;
+    border-radius: 5px;
+    overflow-y: scroll;
 }
 
 .point-selector {
-	margin: 0.5em;
-	list-style: decimal-leading-zero;
+    margin: 0.5em;
+    list-style: decimal-leading-zero;
 }
 
 .point-selector .type-selector-name {
-	margin: 0.5em;
-	background-color: beige;
+    margin: 0.5em;
+    background-color: beige;
 }
 
 .point-selector .check-night-name {
-	position: relative;
-	left: 1em;
-	background-color: lightblue;
+    background-color: lightblue;
+}
+
+.point-selector .radar-size-name {
+    margin-left: 1em;
 }

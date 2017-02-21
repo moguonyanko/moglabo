@@ -1,272 +1,344 @@
 ((win, doc, lB) => {
-	"use strict";
+    "use strict";
 
-	const pointTypes = {
-		normal: "normal",
-		sensui_event: "sensui_event",
-		kouku: "kouku",
-		kushu: "kushu",
-		fancy: "fancy"
-	};
+    const pointTypes = {
+        normal: "normal",
+        sensui_event: "sensui_event",
+        kouku: "kouku",
+        kushu: "kushu",
+        fancy: "fancy",
+        whirling_fuel: "whirling_fuel",
+        whirling_ammo: "whirling_ammo"
+    };
 
-	const resourceTypes = {
-		fuel: "fuel",
-		ammo: "ammo"
-	};
+    const resourceTypes = {
+        fuel: "fuel",
+        ammo: "ammo"
+    };
 
-	class Point {
-		constructor(typeName, {name, fuel, ammo}) {
-			this.typeName = typeName;
-			this.name = name;
-			this.fuel = fuel;
-			this.ammo = ammo;
-		}
+    class Point {
+        constructor(typeName, {name, fuel, ammo}) {
+            this.typeName = typeName;
+            this.name = name;
+            this.fuel = fuel;
+            this.ammo = ammo;
+        }
 
-		isNormal() {
-			return this.typeName === pointTypes.normal;
-		}
-	}
+        isNormal() {
+            return this.typeName === pointTypes.normal;
+        }
 
-	class Condition {
-		constructor(point, night = false) {
-			this.point = point;
-			this.night = night;
-		}
+        isWhirlingFuel() {
+            return this.typeName === pointTypes.whirling_fuel;
+        }
 
-		/**
-		 * プロパティとして定義すると利用する側からすればシンプルになるが，誤った
-		 * プロパティ名で参照してしまった時にundefinedが返されるため間違いを見つけるのに
-		 * 時間がかかることがある。メソッドとして定義してあれば存在しないメソッド名を
-		 * 参照して呼び出した時点でエラーになるので間違いを発見するのが早くなる。
-		 */
+        isWhirlingAmmo() {
+            return this.typeName === pointTypes.whirling_ammo;
+        }
+    }
 
-		get fuel() {
-			return this.point.fuel;
-		}
+    class Radar {
+        constructor(size = 3) {
+            this.size = size;
+        }
 
-		get ammo() {
-			if (this.night) {
-				return this.point.ammo * 1.5;
-			} else {
-				return this.point.ammo;
-			}
-		}
-	}
+        getReduction() {
+            switch (this.size) {
+                case 1:
+                    return 10;
+                case 2:
+                    return 16;
+                case 3:
+                    return 20;
+                default :
+                    return 0;
+            }
+        }
+    }
 
-	const getRevision = residual => {
-		if (residual < 0 || 100 <= residual) {
-			throw new Error("残量は0%以上100%以下の値を指定して下さい。");
-		}
+    class Condition {
+        constructor( {point, night = false, radar}) {
+            this.point = point;
+            this.night = night;
+            this.radar = radar;
+        }
 
-		if (50 <= residual) {
-			return 1.0;
-		} else {
-			return 2 * (residual / 100);
-		}
-	};
+        /**
+         * プロパティとして定義すると利用する側からすればシンプルになるが，誤った
+         * プロパティ名で参照してしまった時にundefinedが返されるため間違いを見つけるのに
+         * 時間がかかることがある。メソッドとして定義してあれば存在しないメソッド名を
+         * 参照して呼び出した時点でエラーになるので間違いを発見するのが早くなる。
+         */
 
-	const loadPointConfig = async () => {
-		const req = new Request("../../config/pointconfig.json");
-		const res = await fetch(req);
-		const datas = await res.json();
+        get fuel() {
+            let f = this.point.fuel;
 
-		const revisionDatas = new Map();
+            if (this.point.isWhirlingFuel()) {
+                f -= this.radar.getReduction();
+            }
 
-		for (let typeName in datas) {
-			const p = new Point(typeName, datas[typeName]);
-			revisionDatas.set(typeName, p);
-		}
+            return f;
+        }
 
-		return revisionDatas;
-	};
+        get ammo() {
+            let a = this.point.ammo;
 
-	class ConditionFactory {
-		constructor(config) {
-			this.config = config;
-		}
+            if (this.night) {
+                a *= 1.5;
+            }
 
-		create(type, night) {
-			const point = this.config.get(type);
+            if (this.point.isWhirlingAmmo()) {
+                a -= this.radar.getReduction();
+            }
 
-			if (!point) {
-				throw new Error(`Unsupported type: ${type}`);
-			}
+            return a;
+        }
+    }
 
-			return new Condition(point, night);
-		}
+    const getRevision = residual => {
+        if (residual < 0) {
+            residual = 0;
+        } else if (100 <= residual) {
+            residual = 100;
+        }
 
-		[Symbol.iterator] () {
-			return this.config.entries();
-		}
-	}
+        if (50 <= residual) {
+            return 1.0;
+        } else {
+            return 2 * (residual / 100);
+        }
+    };
 
-	const getResidual = (conditions, resourceType) => {
-		let prop;
+    const loadPointConfig = async () => {
+        const req = new Request("../../config/pointconfig.json");
+        const res = await fetch(req);
+        const datas = await res.json();
 
-		if (!(resourceType in resourceTypes)) {
-			throw new Error(`Unsupported residual type: ${resourceType}`);
-		}
+        const revisionDatas = new Map();
 
-		const usedAmmo = conditions.map(c => c[resourceType]).reduce((am1, am2) => am1 + am2);
+        for (let typeName in datas) {
+            const p = new Point(typeName, datas[typeName]);
+            revisionDatas.set(typeName, p);
+        }
 
-		return 100 - usedAmmo;
-	};
+        return revisionDatas;
+    };
 
-	const calcRevision = (factory, params, resourceType) => {
-		const conditions = params.map(param => factory.create(...param));
-		const residual = getResidual(conditions, resourceType);
-		const revision = getRevision(residual);
+    class ConditionFactory {
+        constructor(config) {
+            this.config = config;
+        }
 
-		return revision;
-	};
+        create(type, night, radarSize) {
+            const point = this.config.get(type);
 
-	const testCalcRevision = async () => {
-		const params = [
-			[pointTypes.kushu, false],
-			[pointTypes.normal, false],
-			[pointTypes.normal, true],
-			[pointTypes.normal, false],
-			[pointTypes.kushu, false]
-		];
+            if (!point) {
+                throw new Error(`Unsupported type: ${type}`);
+            }
 
-		const conf = await loadPointConfig();
-		const factory = new ConditionFactory(conf);
-		const revision = calcRevision(factory, params, resourceTypes.ammo);
+            if (radarSize < 0) {
+                throw new Error(`Radar size must be positive: ${radarSize}`);
+            }
 
-		console.log("TEST:弾薬量補正=" + revision);
-	};
+            const radar = new Radar(radarSize);
 
-	/**
-	 * 状態選択用ページの構築
-	 * 
-	 * DOMを扱うコードとECMAScriptで完結できるコードは分離する。
-	 */
+            return new Condition({point, night, radar});
+        }
 
-	const getPointConditionParams = () => {
-		const pointEles = doc.querySelectorAll(".point-selector");
+        [Symbol.iterator] () {
+            return this.config.entries();
+        }
+    }
 
-		const params = Array.from(pointEles).map(pointEle => {
-			const typeEles = pointEle.querySelectorAll(".type-selector");
-			const checkedTypes = Array.from(typeEles)
-					.filter(typeEle => typeEle.checked);
-			const type = checkedTypes[0].value;
+    const getResidual = (conditions, resourceType) => {
+        let prop;
 
-			const nightEle = pointEle.querySelector(".check-night");
-			const night = nightEle.checked;
+        if (!(resourceType in resourceTypes)) {
+            throw new Error(`Unsupported residual type: ${resourceType}`);
+        }
 
-			return [type, night];
-		});
+        const used = conditions.map(c => c[resourceType])
+                .reduce((r1, r2) => r1 + r2);
 
-		return params;
-	};
+        return 100 - used;
+    };
 
-	const getPointContainers = (id, factory) => {
-		const containers = Array.from(factory).map(kv => {
-			const [key, point] = kv;
+    const calcRevision = (factory, params, resourceType) => {
+        const conditions = params.map(param => factory.create(...param));
+        const residual = getResidual(conditions, resourceType);
+        const revision = getRevision(residual);
 
-			const label = doc.createElement("label");
-			label.setAttribute("class", "type-selector-name");
-			const input = doc.createElement("input");
-			input.setAttribute("type", "radio");
-			input.setAttribute("name", "point-" + id);
-			input.setAttribute("class", "type-selector");
-			input.setAttribute("value", key);
-			if (point.isNormal()) {
-				input.setAttribute("checked", "checked");
-			}
-			label.appendChild(input);
-			label.appendChild(doc.createTextNode(point.name));
+        return revision;
+    };
 
-			return label;
-		});
+    const testCalcRevision = async () => {
+        const radarSize = 3;
 
-		return containers;
-	};
+        const params = [
+            [pointTypes.kushu, false, radarSize],
+            [pointTypes.normal, false, radarSize],
+            [pointTypes.whirling_ammo, false, radarSize],
+            [pointTypes.normal, false, radarSize],
+            [pointTypes.kushu, false, radarSize]
+        ];
 
-	const getNightChecker = () => {
-		const chkLabel = doc.createElement("label");
-		chkLabel.setAttribute("class", "check-night-name");
-		const chkNight = doc.createElement("input");
-		chkNight.setAttribute("type", "checkbox");
-		chkNight.setAttribute("class", "check-night");
-		chkLabel.appendChild(chkNight);
-		chkLabel.appendChild(doc.createTextNode("夜戦"));
+        const conf = await loadPointConfig();
+        const factory = new ConditionFactory(conf);
+        const revision = calcRevision(factory, params, resourceTypes.ammo);
 
-		return chkLabel;
-	};
+        console.log("TEST:弾薬量補正=" + revision);
+    };
 
-	const initPointSelectors = (factory, selSize) => {
-		const baseContainer = doc.querySelector(".point-type-container");
-		baseContainer.innerHTML = "";
+    /**
+     * 状態選択用ページの構築
+     * 
+     * <strong>DOMを扱うコードとECMAScriptで完結できるコードは分離する。</strong>
+     */
 
-		const frag = doc.createDocumentFragment();
+    const getPointConditionParams = () => {
+        const pointEles = doc.querySelectorAll(".point-selector");
 
-		for (let i = 0; i < selSize; i++) {
-			const containers = getPointContainers(i, factory);
-			const base = doc.createElement("li");
-			base.setAttribute("class", "point-selector");
-			containers.forEach(container => base.appendChild(container));
-			base.appendChild(getNightChecker());
-			frag.appendChild(base);
-		}
+        const params = Array.from(pointEles).map(pointEle => {
+            const typeEles = pointEle.querySelectorAll(".type-selector");
+            const checkedTypes = Array.from(typeEles)
+                    .filter(typeEle => typeEle.checked);
+            const type = checkedTypes[0].value;
 
-		baseContainer.appendChild(frag);
-	};
+            const nightEle = pointEle.querySelector(".check-night");
+            const night = nightEle.checked;
 
-	const getCount = () => {
-		const e = doc.querySelector(".count");
-		return parseInt(e.value);
-	};
+            const radarEle = pointEle.querySelector(".radar-size");
+            const radarSize = parseInt(radarEle.value);
 
-	let viewResultRevision = () => {
-		//Does nothing by default
-	};
+            return [type, night, radarSize];
+        });
 
-	/**
-	 * viewResultRevisionとinitPointSelectorsで参照されるpointconfigは同一でなければ
-	 * ページ初期化時と補正値計算時で矛盾が生じる可能性がある。確実に同一のpointconfigが参照
-	 * されるようにinitPage内でviewResultRevisionを定義している。
-	 */
-	const initPage = async () => {
-		const conf = await loadPointConfig();
-		const factory = new ConditionFactory(conf);
+        return params;
+    };
 
-		viewResultRevision = (target, resourceType) => {
-			const params = getPointConditionParams();
-			const revision = calcRevision(factory, params, resourceType);
-			target.innerHTML = revision * 100;
-		};
+    const getRadarSizeInput = () => {
+        const label = doc.createElement("label");
+        label.setAttribute("class", "radar-size-name");
+        label.appendChild(doc.createTextNode("電探="));
+        const input = doc.createElement("input");
+        input.setAttribute("class", "radar-size");
+        input.setAttribute("type", "number");
+        input.setAttribute("min", "0");
+        input.setAttribute("max", "12");
+        input.setAttribute("value", "3");
+        label.appendChild(input);
 
-		initPointSelectors(factory, getCount());
+        return label;
+    };
 
-		const resultEles = doc.querySelectorAll(".result-value");
-		Array.from(resultEles).forEach(ele => ele.innerHTML = "");
-	};
+    const getPointContainers = (id, factory) => {
+        const containers = Array.from(factory).map(kv => {
+            const [key, point] = kv;
 
-	const addListeners = () => {
-		const initEle = doc.querySelector(".init-conatiners");
-		initEle.addEventListener("click", async () => await initPage());
+            const label = doc.createElement("label");
+            label.setAttribute("class", "type-selector-name");
+            const input = doc.createElement("input");
+            input.setAttribute("type", "radio");
+            input.setAttribute("name", "point-" + id);
+            input.setAttribute("class", "type-selector");
+            input.setAttribute("value", key);
+            if (point.isNormal()) {
+                input.setAttribute("checked", "checked");
+            }
+            label.appendChild(input);
+            label.appendChild(doc.createTextNode(point.name));
 
-		const fuelRunner = doc.querySelector(".run-calc-fuel");
-		fuelRunner.addEventListener("click", () => {
-			const target = doc.querySelector(".result-value-fuel");
-			viewResultRevision(target, resourceTypes.fuel);
-		});
+            return label;
+        });
 
-		const ammoRunner = doc.querySelector(".run-calc-ammo");
-		ammoRunner.addEventListener("click", () => {
-			const target = doc.querySelector(".result-value-ammo");
-			viewResultRevision(target, resourceTypes.ammo);
-		});
-	};
+        return containers;
+    };
 
-	const init = async () => {
-		await initPage();
-		addListeners();
+    const getNightChecker = () => {
+        const chkLabel = doc.createElement("label");
+        chkLabel.setAttribute("class", "check-night-name");
+        const chkNight = doc.createElement("input");
+        chkNight.setAttribute("type", "checkbox");
+        chkNight.setAttribute("class", "check-night");
+        chkLabel.appendChild(chkNight);
+        chkLabel.appendChild(doc.createTextNode("夜戦"));
 
-		await testCalcRevision();
-	};
+        return chkLabel;
+    };
 
-	win.addEventListener("DOMContentLoaded", init);
+    const initPointSelectors = (factory, selSize) => {
+        const baseContainer = doc.querySelector(".point-type-container");
+        baseContainer.innerHTML = "";
+
+        const frag = doc.createDocumentFragment();
+
+        for (let i = 0; i < selSize; i++) {
+            const containers = getPointContainers(i, factory);
+            const base = doc.createElement("li");
+            base.setAttribute("class", "point-selector");
+            containers.forEach(container => base.appendChild(container));
+            base.appendChild(getNightChecker());
+            base.appendChild(getRadarSizeInput());
+            frag.appendChild(base);
+        }
+
+        baseContainer.appendChild(frag);
+    };
+
+    const getCount = () => {
+        const e = doc.querySelector(".count");
+        return parseInt(e.value);
+    };
+
+    let viewResultRevision = () => {
+        //Does nothing by default
+    };
+
+    /**
+     * viewResultRevisionとinitPointSelectorsで参照されるpointconfigは同一でなければ
+     * ページ初期化時と補正値計算時で矛盾が生じる可能性がある。確実に同一のpointconfigが参照
+     * されるようにinitPage内でviewResultRevisionを定義している。
+     */
+    const initPage = async () => {
+        const conf = await loadPointConfig();
+        const factory = new ConditionFactory(conf);
+
+        viewResultRevision = (target, resourceType) => {
+            const params = getPointConditionParams();
+            const revision = calcRevision(factory, params, resourceType);
+            target.innerHTML = revision * 100;
+        };
+
+        initPointSelectors(factory, getCount());
+
+        const resultEles = doc.querySelectorAll(".result-value");
+        Array.from(resultEles).forEach(ele => ele.innerHTML = "");
+    };
+
+    const addListeners = () => {
+        const initEle = doc.querySelector(".init-conatiners");
+        initEle.addEventListener("click", async () => await initPage());
+
+        const fuelRunner = doc.querySelector(".run-calc-fuel");
+        fuelRunner.addEventListener("click", () => {
+            const target = doc.querySelector(".result-value-fuel");
+            viewResultRevision(target, resourceTypes.fuel);
+        });
+
+        const ammoRunner = doc.querySelector(".run-calc-ammo");
+        ammoRunner.addEventListener("click", () => {
+            const target = doc.querySelector(".result-value-ammo");
+            viewResultRevision(target, resourceTypes.ammo);
+        });
+    };
+
+    const init = async () => {
+        await initPage();
+        addListeners();
+
+        await testCalcRevision();
+    };
+
+    win.addEventListener("DOMContentLoaded", init);
 
 })(window, document, window.lB);
