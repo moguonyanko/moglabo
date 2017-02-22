@@ -259,6 +259,12 @@
         },
         noop: noop,
         always: always,
+        alwaysTrue: function () {
+            return true;
+        },
+        alwaysFalse: function () {
+            return false;
+        },
         getSelectedValue: function (eles, opts) {
             opts = opts || {};
 
