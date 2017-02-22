@@ -194,7 +194,7 @@
      * 
      * <strong>DOMを扱うコードとECMAScriptで完結できるコードは分離する。</strong>
      */
-
+    
     const getPointConditionParams = () => {
         const pointEles = doc.querySelectorAll(".point-selector");
 
@@ -329,6 +329,13 @@
         ammoRunner.addEventListener("click", () => {
             const target = doc.querySelector(".result-value-ammo");
             viewResultRevision(target, resourceTypes.ammo);
+        });
+        
+        const radarSetter = doc.querySelector(".all-radar-set");
+        radarSetter.addEventListener("click", () => {
+            const sizeValue = doc.querySelector(".all-radar-size").value;
+            const sizeEles = doc.querySelectorAll(".radar-size");
+            Array.from(sizeEles).forEach(ele => ele.value = sizeValue);
         });
     };
 
