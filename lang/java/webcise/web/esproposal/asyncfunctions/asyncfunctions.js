@@ -1,12 +1,13 @@
-((win, doc, g) => {
+((win, doc) => {
 	"use strict";
 
 	const loadJSON = async url => {
 		/**
 		 * async/awaitを指定しない場合，以下の呼び出しはPromiseを返す。
 		 * awaitはPromiseのthenに近い処理を行っているものと思われる。
+		 * async/awaitにはPromiseを返す関数を指定する。
 		 */
-		const json = await g.fetch(url);
+		const response = await fetch(url);
 
 		/**
 		 * 非同期関数呼び出しでawaitを指定せずPromiseが返された場合，
@@ -14,19 +15,21 @@
 		 * catchのコールバック内で行うことになる。そのため関数の呼び出し元に
 		 * 例外を伝搬するのが難しくなる。
 		 */
-		if (!json) {
+		if (!response.ok) {
 			throw new Error(`Failed load ${url}.`);
 		}
+		
+		const json = await response.json();
 
 		return json;
 	};
 
 	class AsyncBasicExam {
-		constructor(sectionName) {
-			this.base = g.sel(sectionName);
+		constructor(base) {
+			this.base = base;
 		}
 
-		setup() {
+		setup(g) {
 			const resultArea = g.sel(".result-area", this.base),
 				runner = g.sel(".async-runner", this.base),
 				clearer = g.sel(".result-clearer", this.base);
@@ -59,10 +62,10 @@
 		}
 	}
 
-	function main() {
-		const exams = [ new AsyncBasicExam(".async-sample") ];
-		exams.forEach(exam => exam.setup());
-	}
+	const main = g => {
+		const exams = [ new AsyncBasicExam(g.sel(".async-sample")) ];
+		exams.forEach(exam => exam.setup(g));
+	};
 
-	g.loadedHook(main);
-})(window, document, goma);
+	win.goma.init(main);
+})(window, document);
