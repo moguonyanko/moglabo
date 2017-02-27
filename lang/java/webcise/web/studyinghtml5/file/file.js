@@ -13,7 +13,7 @@
 				info.push("ファイル名：" + file.name);
 				info.push("ファイルサイズ：" + file.size + "バイト");
 				info.push("ファイルMIMEタイプ：" + file.type);
-				info.push("最終更新日時：" + file.lastModifiedDate);
+				info.push("最終更新日時：" + file.lastModified);
 				info.push(separator);
 			}
 		}
@@ -187,8 +187,10 @@
 
 	var readAs = {
 		dataURL : function(files) {
+			/**
+			 * 画像以外もData URLとして読み込むことができる。
+			 */
 			readFile(files, "readAsDataURL", {
-				predicate : isImage,
 				onload : function(evt) {
 					displayReadResult(evt.target.result);
 				}

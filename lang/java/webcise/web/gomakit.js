@@ -583,6 +583,14 @@
 			return { runner, clearer, output };
 		},
 		init(funcs) {
+			if (!Array.isArray(funcs)) {
+				if (this.isIterable(funcs)) {
+					funcs = Array.from(funcs);
+				} else {
+					funcs = Array.of(funcs);
+				}
+			}
+			
 			Object.values(funcs).forEach(func => func(this));
 		},
 		isIteratable: isIteratable,
