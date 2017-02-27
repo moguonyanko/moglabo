@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>特殊計算</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../styles/common.css" />
+    <link rel="shortcut icon" href="/logbook/favicon.ico" />
+  </head>
+  <body>
+    <header>
+      <h1>特殊計算</h1>
+    </header>
+
+    <main>
+      <section>
+        <h2>素の値</h2>
+        <label>火力:<input class="karyoku" type="number" min="0" max="300" value="100" /></label>
+        <label>雷装:<input class="raisou" type="number" min="0" max="300" value="100" /></label>
+      </section>
+
+      <section>
+        <h2>装備</h2>
+        <div class="slot slot-1">
+          <select class="item"><option label="none"></option></select>
+          <span><input class="implove" type="range" min="0" max="10" value="0" /></span>
+        </div>
+        <div class="slot slot-2">
+          <select class="item"><option label="none"></option></select>
+          <span><input class="implove" type="range" min="0" max="10" value="0" /></span>
+        </div>
+        <div class="slot slot-3">
+          <select class="item"><option label="none"></option></select>
+          <span><input class="implove" type="range" min="0" max="10" value="0" /></span>
+        </div>
+        <div class="slot slot-4">
+          <select class="item"><option label="none"></option></select>
+          <span><input class="implove" type="range" min="0" max="10" value="0" /></span>
+        </div>
+        <div class="slot slot-reinforce slot-reinforce-1">
+          <select class="item"><option label="none"></option></select>
+          <span><input class="implove" type="range" min="0" max="10" value="0" />(補強)</span>
+        </div>
+        <div>
+          <button class="reset-slots">リセット</button>
+        </div>
+      </section>
+
+      <section>
+        <h2>補正</h2>
+        <div>
+          <label><input class="yatei" type="checkbox" checked="checked" />夜偵</label>
+        </div>
+      </section>
+
+      <section>
+        <h2>計算</h2>
+        <button class="runner">実行</button>
+        <div>結果=<span class="result"></span></div>
+      </section>
+      
+      <script src="../../scripts/core.js"></script>
+      <script src="../../scripts/nightpower.js"></script>
+    </main>
+  </body>
+</html>
