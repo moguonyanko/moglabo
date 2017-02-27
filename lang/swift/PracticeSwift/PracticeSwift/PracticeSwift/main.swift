@@ -42,6 +42,10 @@ func runPracticesControlFlow() {
     repeatAddNumbers()
     checkSwitchCasesWithoutFallthrough()
     matchCaseByRange()
+    matchCaseByTuple(x: 0, y: 5)
+    bindValueInSwitch(x: 5, y: 3)
+    bindValueByWhere(x: 4, y: -4)
+    bindValueInCompoundCases(x: 10, y: 0)
 }
 
 //Entry point
