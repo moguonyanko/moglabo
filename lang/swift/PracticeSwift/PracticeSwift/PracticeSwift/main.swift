@@ -46,6 +46,8 @@ func runPracticesControlFlow() {
     bindValueInSwitch(x: 5, y: 3)
     bindValueByWhere(x: 4, y: -4)
     bindValueInCompoundCases(x: 10, y: 0)
+    fallthroughCases()
+    exitByGuard(keywords: ["order": "Run"])
 }
 
 //Entry point

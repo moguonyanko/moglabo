@@ -141,4 +141,47 @@ func bindValueInCompoundCases (x: Int, y: Int) {
     }
 }
 
+//Fallthrough
+func fallthroughCases () {
+    let greet = "Hello"
+    
+    var result = "Welcome,"
+    
+    //あるcaseでfallthroughが指定されると，後続のcaseの条件式が「評価されることなく」
+    //そのcase内の処理が実行される。しかしその後続のcase内でfallthroughが指定されていなければ，
+    //case内の処理が完了した時点でswitchのブロックから抜ける。default内の処理は実行されない。
+    switch greet {
+    case "Hello", "Hey", "こんにちは":
+        result += " \(greet)♪♪♪ and "
+        fallthrough
+    case "GoodNight", "おやすみ":
+        result += "Zzz..."
+        //breakはあってもなくても同じ
+        break
+    default:
+        result += "good bye"
+    }
+    
+    print(result)
+}
+
+//Early Exit
+func exitByGuard (keywords: [String: String]) {
+    guard let order = keywords["order"] else {
+        return
+    }
+    
+    guard let description = keywords["description"] else {
+        print("The description of '\(order)' is nil")
+        return
+    }
+    
+    print("\(order):\(description)")
+}
+
+
+
+
+
+
 
