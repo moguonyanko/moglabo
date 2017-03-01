@@ -50,13 +50,20 @@ func runPracticesControlFlow() {
     exitByGuard(keywords: ["order": "Run"])
 }
 
+func runPracticesFunctions() {
+    displayReturnValue(adding: false)
+    ignoreReturnValue()
+    printMultipleReturnValues()
+}
+
 //Entry point
 
 func runPractices() {
     //runPracticesBasicOperators()
     //runPracticesStringsAndCharacters()
     //runPracticesCollectionTypes()
-    runPracticesControlFlow()
+    //runPracticesControlFlow()
+    runPracticesFunctions()
 }
 
 runPractices()
