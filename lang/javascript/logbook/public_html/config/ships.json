@@ -203,6 +203,10 @@
 		"name": "Zara改",
 		"slotComposition": [2, 2, 2, 2]
 	},
+	"zaradue": {
+		"name": "Zara due",
+		"slotComposition": [6, 3, 3, 3]
+	},
 	"pola": {
 		"name": "Pola改",
 		"slotComposition": [2, 2, 2, 2]
