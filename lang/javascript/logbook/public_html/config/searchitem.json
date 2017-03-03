@@ -14,6 +14,11 @@
 		"type": "WS",
 		"value": 4
 	},
+	"ar196": {
+		"name": "Ar196改",
+		"type": "WS",
+		"value": 5
+	},
 	"yt": {
 		"name": "九八式水上偵察機(夜偵)",
 		"type": "WS",
@@ -68,5 +73,10 @@
 		"name": "探照灯",
 		"type": "SL",
 		"value": 2
+	},
+	"bsl": {
+		"name": "96式150cm探照灯",
+		"type": "SL",
+		"value": 3
 	}
 }
