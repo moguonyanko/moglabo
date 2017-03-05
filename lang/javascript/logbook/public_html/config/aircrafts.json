@@ -89,6 +89,11 @@
 		"type": "SB",
 		"ack": 0
 	},
+	"nzn": {
+		"name": "試製南山",
+		"type": "KB",
+		"ack": 1
+	},
 	"ns": {
 		"name": "二式水戦改",
 		"type": "SS",
