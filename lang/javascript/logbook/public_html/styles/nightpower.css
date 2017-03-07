@@ -1,0 +1,45 @@
+@charset "UTF-8";
+
+:root {
+    --content-min-width: 300px;
+}
+
+.item-conatiner {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.item-conatiner .slot {
+    border: solid 1px lightgray;
+    border-radius: 5px;
+    /* 不適切なmax-widthはレスポンシブなページ作りを阻害する。 */
+    /*max-width: 20vw;*/
+    min-width: var(--content-min-width);
+}
+
+.item-conatiner .slot .item {
+    width: 100%;
+}
+
+.attacktype-list {
+    list-style: none;
+    margin: 0;
+}
+
+.revisions {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.revisions .revision {
+    margin: 0.5em;
+    min-width: var(--content-min-width);
+}
+
+.revisions .revision .revision-title {
+    text-align: center;
+}
+
+.implove {
+    width: 10em;
+}
