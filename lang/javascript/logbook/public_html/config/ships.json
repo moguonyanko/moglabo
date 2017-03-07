@@ -115,6 +115,14 @@
 		"name": "伊26改",
 		"slotComposition": [1, 1]
 	},
+	"i13": {
+		"name": "伊13改",
+		"slotComposition": [2, 1, 0]
+	},
+	"i14": {
+		"name": "伊14改",
+		"slotComposition": [2, 1, 0]
+	},
 	"hys": {
 		"name": "速吸改",
 		"slotComposition": [6, 3, 1]

@@ -24,7 +24,8 @@
             kansen = "艦上戦闘機",
             kankou = "艦上攻撃機",
             jyukurenseibiin = "熟練艦載機整備員",
-            taichi = "対地兵装";
+            taichi = "対地兵装",
+			sensuisoubi = "潜水艦装備";
 
     /**
      * 補強増設に持つことができる装備群
@@ -67,7 +68,8 @@
         [kansen]: 0,
         [kankou]: 0,
         [jyukurenseibiin]: 0,
-        [taichi]: 0
+        [taichi]: 0,
+		[sensuisoubi]: 0
     };
 
     /**
