@@ -25,14 +25,16 @@
 
         <section>
           <h3>素の値</h3>
-          <label>艦名:<input class="ship-name" type="text" value="那智改二" /></label>
-          <label>火力:<input class="karyoku" type="number" min="0" max="300" value="80" /></label>
-          <label>雷装:<input class="raisou" type="number" min="0" max="300" value="84" /></label>
+          <div class="ship-info flexible">
+            <label>艦名:<input class="ship-name ship-param" type="text" value="那智改二" /></label>
+            <label>火力:<input class="karyoku ship-param" type="number" min="0" max="300" value="80" /></label>
+            <label>雷装:<input class="raisou ship-param" type="number" min="0" max="300" value="84" /></label>
+          </div>
         </section>
 
         <section>
           <h3>装備</h3>
-          <div class="item-conatiner">
+          <div class="item-conatiner flexible">
             <div class="slot slot-1">
               <select size="5" class="item">
                 <option label="装備なし" value="" selected="selected"></option>
@@ -92,7 +94,7 @@
           </div>
         </section>
 
-        <section class="revisions">
+        <section class="revisions flexible">
           <h3>補正</h3>
           <section class="revision">
             <h4 class="revision-title">装備</h4>

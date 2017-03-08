@@ -126,6 +126,22 @@
         return value;
     };
 
+    const toReadableImprovementValue = srcImpVal => {
+        const imp = parseInt(srcImpVal);
+
+        let value = "★";
+
+        if (isNaN(imp) || imp <= 0) {
+            value = "";
+        } else if (0 < imp && imp < 10) {
+            value += imp;
+        } else if (10 <= imp) {
+            value += "max";
+        }
+
+        return value;
+    };
+
     class Item {
         constructor( {name, itemType, karyoku = 0, raisou = 0, improvement = 0}) {
             this.name = name;
@@ -141,6 +157,16 @@
                 improvement: this.improvement
             });
             return this.karyoku + this.raisou + impValue;
+        }
+
+        toString() {
+            const str = [
+                `装備名=${this.name},装備種別=${this.itemType}`,
+                `火力=${this.karyoku},雷装=${this.raisou}`,
+                `改修度=${toReadableImprovementValue(this.improvement)}`
+            ];
+
+            return str.join("\n");
         }
     }
 
@@ -298,8 +324,8 @@
      */
     const selectableItems = new Map();
 
-    const setSelectableItem = (key, itemData, type) => {
-        const param = Object.assign({itemType: type}, itemData);
+    const setSelectableItem = (key, itemData, itemType) => {
+        const param = Object.assign({itemType}, itemData);
         selectableItems.set(key, param);
     };
 
@@ -312,10 +338,10 @@
             let item = null;
             if (param) {
                 const imp = slot.querySelector(".implove");
-                const itemArgs = Object.assign({improvement: 
+                const itemArgs = Object.assign({improvement:
                             parseInt(imp.value)}, param);
                 item = new Item(itemArgs);
-            } 
+            }
             return item;
         }).filter(item => item !== null);
 
@@ -335,23 +361,23 @@
         return new AttackType(selectedTypes[0].value);
     };
 
-    const createItemList = items => {
+    const createItemList = itemDataList => {
         const sels = Array.from(doc.querySelectorAll(".slot .item"));
 
         sels.forEach(sel => {
-            for (let type in items) {
+            for (let itemType in itemDataList) {
                 if (sel.classList.contains("item-reinforce") &&
-                        !(type in canHaveReinforceSlot)) {
+                        !(itemType in canHaveReinforceSlot)) {
                     continue;
                 }
 
-                items[type].forEach(item => {
+                itemDataList[itemType].forEach(itemData => {
                     const opt = doc.createElement("option");
-                    opt.setAttribute("label", item.name);
-                    const key = type + ":" + item.name;
-                    opt.setAttribute("value", key);
+                    opt.setAttribute("label", itemData.name);
+                    const itemKey = itemType + ":" + itemData.name;
+                    opt.setAttribute("value", itemKey);
                     sel.appendChild(opt);
-                    setSelectableItem(key, item, type);
+                    setSelectableItem(itemKey, itemData, itemType);
                 });
             }
         });
@@ -377,39 +403,26 @@
 
         return {ship, attackType, nightPower};
     };
-    
+
     const addListener = () => {
         doc.querySelector(".runner").addEventListener("click", () => {
             const resEle = doc.querySelector(".result");
             resEle.innerHTML = createResultText(calcTargetNightPower());
         });
-        
+
         const forms = Array.from(doc.querySelectorAll(".improve-form"));
-        
+
         forms.forEach(form => {
             form.addEventListener("input", evt => {
-                const imp = parseInt(evt.target.value);
                 const output = form.querySelector(".improveresult");
-                
-                let value = "★";
-                
-                if (imp <= 0) {
-                  value = "";  
-                } else if (0 < imp && imp < 10) {
-                    value += imp;
-                } else if (10 <= imp) {
-                    value += "max";
-                }
-                
-                output.value = value;
+                output.value = toReadableImprovementValue(evt.target.value);
             });
         });
     };
 
     const init = async () => {
         addListener();
-        const items = await loadItemList();
-        createItemList(items);
+        createItemList(await loadItemList());
     };
 
     win.addEventListener("DOMContentLoaded", init);
