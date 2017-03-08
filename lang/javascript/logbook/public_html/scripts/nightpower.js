@@ -25,7 +25,7 @@
             kankou = "艦上攻撃機",
             jyukurenseibiin = "熟練艦載機整備員",
             taichi = "対地兵装",
-			sensuisoubi = "潜水艦装備";
+            sensuisoubi = "潜水艦装備";
 
     /**
      * 補強増設に持つことができる装備群
@@ -69,7 +69,7 @@
         [kankou]: 0,
         [jyukurenseibiin]: 0,
         [taichi]: 0,
-		[sensuisoubi]: 0
+        [sensuisoubi]: 0
     };
 
     /**
@@ -221,7 +221,7 @@
     /**
      * テスト用関数群
      */
-    
+
     const createResultText = ({ship, attackType, nightPower}) => {
         return `${ship.name} の ${attackType.typeName} は ` +
                 `夜戦攻撃力 ${nightPower} の攻撃を ${attackType.times} 回行う。`;
@@ -300,8 +300,7 @@
 
     const setSelectableItem = (key, itemData, type) => {
         const param = Object.assign({itemType: type}, itemData);
-        const item = new Item(param);
-        selectableItems.set(key, item);
+        selectableItems.set(key, param);
     };
 
     const getSelectedItems = () => {
@@ -309,14 +308,15 @@
 
         const items = slots.map(slot => {
             const sel = slot.querySelector(".item");
-            const item = selectableItems.get(sel.value);
-            if (item) {
+            const param = selectableItems.get(sel.value);
+            let item = null;
+            if (param) {
                 const imp = slot.querySelector(".implove");
-                item.improvement = parseInt(imp.value);
-                return item;
-            } else {
-                return null;
-            }
+                const itemArgs = Object.assign({improvement: 
+                            parseInt(imp.value)}, param);
+                item = new Item(itemArgs);
+            } 
+            return item;
         }).filter(item => item !== null);
 
         return items;
@@ -377,11 +377,32 @@
 
         return {ship, attackType, nightPower};
     };
-
+    
     const addListener = () => {
         doc.querySelector(".runner").addEventListener("click", () => {
             const resEle = doc.querySelector(".result");
             resEle.innerHTML = createResultText(calcTargetNightPower());
+        });
+        
+        const forms = Array.from(doc.querySelectorAll(".improve-form"));
+        
+        forms.forEach(form => {
+            form.addEventListener("input", evt => {
+                const imp = parseInt(evt.target.value);
+                const output = form.querySelector(".improveresult");
+                
+                let value = "★";
+                
+                if (imp <= 0) {
+                  value = "";  
+                } else if (0 < imp && imp < 10) {
+                    value += imp;
+                } else if (10 <= imp) {
+                    value += "max";
+                }
+                
+                output.value = value;
+            });
         });
     };
 

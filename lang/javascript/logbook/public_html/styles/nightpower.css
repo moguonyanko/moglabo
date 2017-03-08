@@ -4,6 +4,15 @@
     --content-min-width: 300px;
 }
 
+.result-section {
+    /*position: sticky;*/
+    margin-bottom: 1em;
+}
+
+.config-section {
+    border-top: solid black 1px;
+}
+
 .item-conatiner {
     display: flex;
     flex-wrap: wrap;
