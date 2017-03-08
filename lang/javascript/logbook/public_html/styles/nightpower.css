@@ -12,6 +12,7 @@
 .result-section {
     position: sticky;
     position: -webkit-sticky;
+    /* stickyを効かせるにはtopが必須 */
     top: 0.5em;
     background-color: ivory;
     border-bottom: solid lightgray 1px;
