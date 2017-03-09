@@ -54,6 +54,11 @@ func runPracticesFunctions() {
     displayReturnValue(adding: false)
     ignoreReturnValue()
     printMultipleReturnValues()
+    printOptionalValues()
+    specifyngArgumentFunction(greeting: "Hello", name: "Taro")
+    omitArgumentLabel("Hello", "Jiro")
+    addFunctionWithDefaultParameters(param2: 100)
+    printCenterNumber()
 }
 
 //Entry point

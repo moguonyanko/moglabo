@@ -66,6 +66,75 @@ func printMultipleReturnValues() {
 }
 
 //Optional Tuple Return Types
+private func optionalClassifyEvenAndOdd(values: [Int]) -> (even: [Int], odd: [Int])? {
+    //戻り値がOptionalでなければnilを返そうとした時点でコンパイルエラーになる。
+    if values.isEmpty {
+        return nil
+    }
+    
+    return classifyEvenAndOdd(values: values)
+}
+
+func printOptionalValues() {
+    let values: [Int] = []
+    
+    let results = optionalClassifyEvenAndOdd(values: values)
+    
+    print("Even? = \(results?.even)")
+    print("Odd? = \(results?.odd)")
+}
+
+//Specifyng Argumenty Labels
+func specifyngArgumentFunction(greeting normalArg: String, name: String) {
+    let s1 = "\(normalArg), \(name)."
+    //引数の別名は関数内部で参照するとエラーになる。
+    //let s2 = "\(greeting), \(name)"
+    print(s1)
+}
+
+//Omitting Argument Labels
+//引数名の前に _ を付けた場合，呼び出し側は引数名を「付けずに」関数を呼ばなければならない。
+//引数名を付けてしまうとエラーになる。省略というより「引数名なし」だと考えた方がいいかもしれない。
+func omitArgumentLabel(_ greeting: String, _ name: String) {
+    print("\(greeting), \(name).")
+}
+
+//Default Parameter Values
+func addFunctionWithDefaultParameters(param1: Int = 10, param2: Int = 20) {
+    print(param1 + param2)
+}
+
+//Variadic Parameters
+//Int...型の引数は関数内部では[Int]型の値として扱うことができるが，
+//関数を呼び出す際にInt...型の引数として[Int]型の値を渡すことはできない。
+private func getCenterNumber(_ numbers: Int...) -> Int {
+    let nums = numbers.sorted()
+    
+    //Int型の値を除算して浮動小数点数が得られてもInt型の値になるように小数点以下は切り捨てられる。
+    //「割られる数」の型が自動的に維持される。round関数などで丸める必要は無い。
+    let centerIndex = nums.count / 2
+    
+    return nums[centerIndex];
+}
+
+func printCenterNumber() {
+    let center = getCenterNumber(4, 2, 5, 3, 0, 7, 1, 8, 9, 10)
+    print("Center number = \(center)")
+}
+
+//In-Out Parameters
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
