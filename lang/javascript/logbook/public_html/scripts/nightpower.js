@@ -151,12 +151,13 @@
             this.improvement = improvement;
         }
 
-        get power() {
+        getPower({ground = false}) {
             const impValue = getImprovementValue({
                 itemType: this.itemType,
                 improvement: this.improvement
             });
-            return this.karyoku + this.raisou + impValue;
+            const power =  this.karyoku + (ground ? 0 : this.raisou) + impValue;
+            return power;
         }
 
         toString() {
@@ -178,11 +179,11 @@
             this.items = items;
         }
 
-        get power() {
-            const shipPower = this.karyoku + this.raisou;
+        getPower({ground = false}) {
+            const shipPower = this.karyoku + (ground ? 0 : this.raisou);
 
             const itemPower = this.items
-                    .map(item => item.power)
+                    .map(item => item.getPower({ground}))
                     .reduce((a, b) => a + b, 0);
 
             return shipPower + itemPower;
@@ -191,7 +192,6 @@
 
     /**
      * 夜戦攻撃力の補正に影響与える要素
-     * 現時点では夜偵のみ
      */
     class NightPowerFactor {
         constructor( {yatei = false}){
@@ -211,20 +211,47 @@
             return value;
         }
     }
+    
+    /**
+     * @description 
+     * 対地攻撃力を計算する要素をまとめたクラスです。
+     */
+    class GroundFunction {
+        constructor({basePower = 0}) {
+            this.basePower = basePower;
+        }
+        
+        apply() {
+            /**
+             * @todo
+             * 補正計算の実装
+             */
+            
+            return this.basePower;
+        }
+    }
 
     /**
      * 基本攻撃力を返す。
      */
-    const getBasePower = ({ship, factor}) => {
-        return ship.power + factor.revision;
+    const getBasePower = ({ship, factor, ground = false}) => {
+        return ship.getPower({ground}) + factor.revision;
     };
 
     /**
      * 各種補正を考慮した夜戦攻撃力を返す。
      */
-    const getNightPower = ({ship, attackType, factor, digits}) => {
+    const getNightPower = ({ship, attackType, factor, digits = 2, 
+        ground = false}) => {
         const basePower = getBasePower({ship, factor});
+        
+        if (ground) {
+            const gf = new GroundFunction({basePower});
+            basePower = gf.apply();
+        }
+        
         const nightPower = basePower * attackType.magnification;
+        
         return nightPower.toFixed(digits);
     };
 
