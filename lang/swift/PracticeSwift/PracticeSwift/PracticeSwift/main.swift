@@ -59,6 +59,9 @@ func runPracticesFunctions() {
     omitArgumentLabel("Hello", "Jiro")
     addFunctionWithDefaultParameters(param2: 100)
     printCenterNumber()
+    swapGreeting()
+    runFunctionType()
+    runFunctionTypeInRange()
 }
 
 //Entry point

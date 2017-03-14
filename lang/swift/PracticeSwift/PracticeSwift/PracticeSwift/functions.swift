@@ -123,15 +123,58 @@ func printCenterNumber() {
 }
 
 //In-Out Parameters
+private func swapString(s1: inout String, s2: inout String) {
+    let temp = s1
+    //inoutが無いと引数の値を変更しようとした時点でエラー
+    s1 = s2
+    s2 = temp
+}
 
+func swapGreeting() {
+    var g1 = "Hello"
+    var g2 = "こんにちは"
+    print("before swap: \(g1) - \(g2)")
+    
+    //関数の引数がinoutで宣言されていなければ&を付けることができない。
+    swapString(s1: &g1, s2: &g2)
+    
+    print("after swap: \(g1) - \(g2)")
+}
 
+//Using Function Type
+private func addAllInts(_ values: [Int]) -> Int {
+    var result = 0
+    
+    for v in values {
+        result += v
+    }
+    
+    return result
+}
 
+func runFunctionType() {
+    let f: ([Int]) -> Int = addAllInts
+    
+    let result = f(Array(1...10))
+    
+    print("addAllInts result = \(result)")
+}
 
+//Function Types as Parameter Types
+private func addAllIntsInRange(start: Int, end: Int,
+                              _ addFunc: ([Int]) -> Int) -> Int {
+    let values = Array(start...end)
+    let result = addFunc(values)
+    
+    return result
+}
 
+func runFunctionTypeInRange() {
+    let result = addAllIntsInRange(start: 1, end: 10, addAllInts)
+    print("addAllIntsInRange result = \(result)")
+}
 
-
-
-
+//Function Types as Return Types
 
 
 
