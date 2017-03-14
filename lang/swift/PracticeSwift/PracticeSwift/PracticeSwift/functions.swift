@@ -175,10 +175,41 @@ func runFunctionTypeInRange() {
 }
 
 //Function Types as Return Types
+private func greetHelloEn (_ name: String) -> String {
+    return "Hello, \(name)!"
+}
 
+private func greetHelloJa (_ name: String) -> String {
+    return "こんにちは、\(name)!"
+}
 
+private func chooseGreetFunction(code: String) -> (String) -> String {
+    let dict = [
+        "en": greetHelloEn,
+        "ja": greetHelloJa
+    ]
+    
+    //guard内でもネストされた関数を宣言できる。
+    guard let f = dict[code] else {
+        func defaultFunc(_ name: String) -> String {
+            //ネストされた関数外の変数も参照できる。
+            let result = "Sorry \(name), \(code) is unsupported."
+            return result
+        }
+        return defaultFunc
+    }
+    
+    return f
+}
 
-
-
-
-
+func chooseTargetFunction() {
+    let name = "Taro"
+    
+    let f1 = chooseGreetFunction(code: "en")
+    let f2 = chooseGreetFunction(code: "ja")
+    let f3 = chooseGreetFunction(code: "de")
+    
+    print(f1(name))
+    print(f2(name))
+    print(f3(name))
+}
