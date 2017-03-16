@@ -9,21 +9,21 @@
 
 import Foundation
 
-func runPracticesBasicOperators() {
+private func runPracticesBasicOperators() {
     assignTwoVariables()
     compareTuples()
     coalesceNil()
     iterateRanges()
 }
 
-func runPracticesStringsAndCharacters() {
+private func runPracticesStringsAndCharacters() {
     charactersToString()
     catStringByIndex()
     mutateStringValue()
     dumpUnicodeCodes()
 }
 
-func runPracticesCollectionTypes() {
+private func runPracticesCollectionTypes() {
     createArrayWithDefaultValue()
     combineArrays()
     modifyArrayElements()
@@ -37,7 +37,7 @@ func runPracticesCollectionTypes() {
     iterateMapPairs()
 }
 
-func runPracticesControlFlow() {
+private func runPracticesControlFlow() {
     ignoreIndex()
     repeatAddNumbers()
     checkSwitchCasesWithoutFallthrough()
@@ -50,7 +50,7 @@ func runPracticesControlFlow() {
     exitByGuard(keywords: ["order": "Run"])
 }
 
-func runPracticesFunctions() {
+private func runPracticesFunctions() {
     displayReturnValue(adding: false)
     ignoreReturnValue()
     printMultipleReturnValues()
@@ -62,16 +62,22 @@ func runPracticesFunctions() {
     swapGreeting()
     runFunctionType()
     runFunctionTypeInRange()
+    chooseTargetFunction()
+}
+
+private func runPracticesClosures() {
+    
 }
 
 //Entry point
 
-func runPractices() {
+private func runPractices() {
     //runPracticesBasicOperators()
     //runPracticesStringsAndCharacters()
     //runPracticesCollectionTypes()
     //runPracticesControlFlow()
-    runPracticesFunctions()
+    //runPracticesFunctions()
+    runPracticesClosures()
 }
 
 runPractices()
