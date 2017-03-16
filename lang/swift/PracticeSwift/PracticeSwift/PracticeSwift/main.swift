@@ -66,7 +66,7 @@ private func runPracticesFunctions() {
 }
 
 private func runPracticesClosures() {
-    
+    sortedByClosure()
 }
 
 //Entry point
