@@ -67,6 +67,8 @@ private func runPracticesFunctions() {
 
 private func runPracticesClosures() {
     sortedByClosure()
+    anotherViewSortedNames(names: ["foo", "bar", "baz", "hoge", "fuga"])
+    translateNumbers()
 }
 
 //Entry point
