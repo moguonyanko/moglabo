@@ -69,8 +69,31 @@ func translateNumbers() {
 }
 
 //Capturing Values
+private func makeMultiplyer(forMultiply amount: Int) -> () -> Int {
+    var value = 1
+    
+    //ネストされた関数にprivateを付けられない。
+    func multiply() -> Int {
+        value *= amount
+        return value
+    }
+    
+    return multiply
+}
 
-
+func calcWithCapturingValue() {
+    let multiBy2 = makeMultiplyer(forMultiply: 2)
+    
+    print("\(multiBy2())")
+    print("\(multiBy2())")
+    print("\(multiBy2())")
+    
+    let multiBy3 = makeMultiplyer(forMultiply: 3)
+    
+    print("\(multiBy3())")
+    print("\(multiBy3())")
+    print("\(multiBy3())")
+}
 
 
 
