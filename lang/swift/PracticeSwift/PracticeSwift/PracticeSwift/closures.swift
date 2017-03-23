@@ -4,8 +4,6 @@
 //
 //  Closures practices
 //
-//  Copyright © 2017年 moguonyanko All rights reserved.
-//
 
 import Foundation
 
@@ -94,6 +92,51 @@ func calcWithCapturingValue() {
     print("\(multiBy3())")
     print("\(multiBy3())")
 }
+
+//Escaping Closures
+private var escapingHandlers: [() -> Void] = []
+
+private func appendEscapeClosure(handler: @escaping () -> Void) {
+    //@escapingが無いと以下のコードはコンパイルエラーになる。
+    //関数を引数に取る関数が評価された後に引数の関数を評価したければ@escapingする必要がある。
+    escapingHandlers.append(handler)
+}
+
+private func doSomethingWithNonEscapingHandler(closure: () -> Void) {
+    closure()
+}
+
+private class EscapingSample {
+    var foo = "FOO"
+    
+    func doSomething() {
+        appendEscapeClosure {
+            //@escapingが指定された関数がクラス内のプロパティを参照するときは
+            //明示的にselfを記述する必要がある。
+            self.foo = "ESCAPED!"
+        }
+        
+        doSomethingWithNonEscapingHandler {
+            foo += "BAR"
+        }
+    }
+}
+
+func runEscapingFunction () {
+    let sample = EscapingSample()
+    sample.doSomething()
+    print("foo value before escaping = \(sample.foo)")
+    
+    let escapingFunc = escapingHandlers.first
+    //関数は存在しないかもしれないので?を付ける。何も書かないとコンパイルエラー。
+    escapingFunc?()
+    print("foo value after escaping = \(sample.foo)")
+}
+
+//Autoclosures
+
+
+
 
 
 

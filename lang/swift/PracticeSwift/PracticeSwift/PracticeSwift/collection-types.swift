@@ -4,8 +4,6 @@
 //
 //  Collection types practices
 //
-//  Created by moguonyanko on 2017/01/30.
-//
 
 import Foundation
 

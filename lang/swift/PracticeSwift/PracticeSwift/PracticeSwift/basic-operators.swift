@@ -4,8 +4,6 @@
 //  
 //  Basic operators practices
 //
-//  Created by moguonyanko on 2017/01/26.
-//
 
 import Foundation
 
