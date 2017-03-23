@@ -40,28 +40,39 @@
 		});
 	};
 	
+	const getExamIntArray = size => {
+		const buffer = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * size);
+		const intArray = new Int32Array(buffer);
+		
+		/**
+		 * TypedArrayを使う必要は無いがTypedArrayをWorkerに渡せることを
+		 * 確認するために使っている。
+		 */
+		intArray[0] = parseInt(doc.querySelector(".example2 .initial").value);
+		intArray[1] = parseInt(doc.querySelector(".example2 .limit").value);
+		intArray[2] = parseInt(doc.querySelector(".example2 .step").value);
+			
+		return intArray;
+	};
+	
 	const initExam2 = () => {
 		template("example2", ({size, result}) => {
-			const buffer = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * size);
-			const intArray = new Int32Array(buffer);
-			
-			/* test values */
-			const initial = 100,
-				limit = 200,
-				step = 10;
-				
-			intArray[0] = initial;
-			intArray[1] = limit;
-			intArray[2] = step;
-			
-			const worker = new Worker("examworker2.js");
+			const intArray = getExamIntArray(size);
+			const worker2 = new Worker("examworker2.js");
 			const onmessage = evt => {
 				const data = evt.data;
 				result.innerHTML += `result value = ${data.value}<br />`;
-				worker.terminate();
+				/* worker2_1の処理により値が変更されている「かもしれない」 */
+				result.innerHTML += `modified initial value = ${data.source[0]}<br />`;
+				worker2.terminate();
 			};
-			worker.addEventListener("message", onmessage);
-			worker.postMessage(intArray);
+			worker2.addEventListener("message", onmessage);
+			
+			/* Int32Arrayの要素を変更するWorker */
+			const worker2_1 = new Worker("examworker2_1.js");
+			worker2_1.postMessage(intArray);
+			
+			worker2.postMessage(intArray);
 		});
 	};
 	

@@ -8,21 +8,10 @@
 			this.step = intArray[2];
 		}
 		
-		[Symbol.iterator]() {
-			let value = this.initial,
-				done = false;
-			
-			return {
-				next() {
-					value += this.step;
-					
-					if (value >= this.limit) {
-						done = true;
-					}
-					
-					return { value, done };
-				}
-			};
+		*iterator() {
+			for (let value = this.initial; value < this.limit; value += this.step) {
+				yield value;
+			}
 		}
 	}
 	
@@ -30,17 +19,15 @@
 		const intArray = evt.data;
 		const incrementer = new Incrementer(intArray);
 		
-		let reusltValue = null;
-		
-		for (let { value, done } of incrementer) {
-			if (done) {
-				reusltValue = value;
-				break;
-			}
+		let resultValue = null;
+		let iter = incrementer.iterator();
+		for (let value of iter) {
+			resultValue = value;
 		}
 				
 		self.postMessage({
-			value: reusltValue
+			value: resultValue,
+			source: intArray
 		});
 	};
 })(this));
