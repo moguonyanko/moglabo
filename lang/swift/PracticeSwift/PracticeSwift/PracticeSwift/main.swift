@@ -4,8 +4,6 @@
 //
 //  Swift practices for my studying
 //
-//  Created by moguonyanko on 2017/01/26.
-//
 
 import Foundation
 
@@ -70,6 +68,7 @@ private func runPracticesClosures() {
     anotherViewSortedNames(names: ["foo", "bar", "baz", "hoge", "fuga"])
     translateNumbers()
     calcWithCapturingValue()
+    runEscapingFunction()
 }
 
 //Entry point
