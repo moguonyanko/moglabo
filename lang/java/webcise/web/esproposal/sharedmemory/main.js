@@ -80,16 +80,21 @@
 	const getWorkerPromise = ({ path, array }) => {
 		const promise = new Promise((resolve, reject) => {
 			const worker = new Worker(path);
-			worker.addEventListener("message", evt => {
+			worker.onmessage = evt => {
 				worker.terminate();
 				resolve(evt.data.value);
-			});
+			};
+			worker.onerror = reject;
 			worker.postMessage(array);
 		});
 		
 		return promise;
 	};
 	
+	/**
+	 * @todo
+	 * Atomicsの効果を感じられないサンプルになっている。
+	 */
 	const initExam3 = () => {
 		const baseClass = "example3";
 		
@@ -111,14 +116,55 @@
 				 * Promise.all使用時のthenの引数は全てのPromiseの結果を含む配列に
 				 * なっている。
 				 */
-				const values = resultsOfAllWorkers.reduce((a, b) => a.concat(b), []);
+				const values = [...resultsOfAllWorkers[0], ...resultsOfAllWorkers[1]];
+				/**
+				 * Atomicsのメソッドの引数として渡す配列はSharedArrayBufferから成る
+				 * TypedArrayでなければならない。（Shared typed array）
+				 */
+				const intArray = getExamIntArray(values.length);
+				intArray.set(values);
 				/**
 				 * Atomics.loadを使っても使わなくても結果が変わらない。
-				 * Atomics.loadの引数に渡す配列はTypedArrayでなければならない。
 				 */
-				//result.innerHTML += `${values.map((v, i) => Atomics.load(values, i))}<br />`;
-				result.innerHTML += `${values}<br />`;
+				result.innerHTML += `${intArray.map((v, i) => Atomics.load(intArray, i))}<br />`;
+				//result.innerHTML += `${intArray}<br />`;
 			});
+		});
+	};
+	
+	const initExam4 = () => {
+		const baseClass = "example4";
+		
+		template(baseClass, ({ size, result }) => {
+			const array = getExamIntArray(size);
+			
+			/**
+			 * メインスレッドに当たるスクリプトでAtomics.waitを呼び出すとエラーになる。
+			 */
+			result.innerHTML += `Initial: ${array}<br />`;
+			
+			const worker4_1 = getWorkerPromise({
+				path: "examworker4_1.js", array
+			});
+			
+			const worker4_2 = getWorkerPromise({
+				path: "examworker4_2.js", array
+			});
+			
+			Promise.all([worker4_1, worker4_2]).then(allResultValues => {
+				allResultValues.forEach(resultValues => {
+					result.innerHTML += `${resultValues}<br />`;
+				});
+			});
+			
+			/**
+			 * このAtomics.storeが実行されないと各Workerの結果が返されない。
+			 */
+			Atomics.store(array, 0, 100);
+			/**
+			 * このサンプルではAtomics.wakeを呼んでも呼ばなくても結果は変わらない。
+			 */
+			Atomics.wake(array, 0, 1);
 		});
 	};
 	
@@ -126,6 +172,7 @@
 		initExam1();
 		initExam2();
 		initExam3();
+		initExam4();
 	};
 	
 	win.addEventListener("DOMContentLoaded", initExams);

@@ -5,7 +5,8 @@
 		const array = evt.data;
 		
 		array.forEach((v, i) => {
-			Atomics.store(array, i, v * 10);
+			//array[i] *= 2;
+			Atomics.store(array, i, v * 2);
 		});
 		
 		self.postMessage({
