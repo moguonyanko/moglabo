@@ -69,6 +69,8 @@ private func runPracticesClosures() {
     translateNumbers()
     calcWithCapturingValue()
     runEscapingFunction()
+    updateValueByAutoClosures()
+    updateValueByEscapingAutoClosures()
 }
 
 //Entry point

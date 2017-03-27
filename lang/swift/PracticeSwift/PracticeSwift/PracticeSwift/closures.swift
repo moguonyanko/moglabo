@@ -134,9 +134,39 @@ func runEscapingFunction () {
 }
 
 //Autoclosures
+func updateValueByAutoClosures() {
+    var sample = ["foo", "bar", "baz"]
+    
+    func displaySampleMembers(members updater: @autoclosure () -> [String]) {
+        print("Updated by auto closures = \(updater())")
+    }
+    
+    //@autoclosureが指定されていると関数が自動的に{}で囲まれたものとして扱われる。
+    displaySampleMembers(members: sample.reversed())
+}
 
-
-
+func updateValueByEscapingAutoClosures() {
+    var sample = [4, 3, 6, 7, 1, 2, 9, 8, 5, 0]
+    
+    var updaters: [() -> Int?] = []
+    
+    func appendClosures(_ updater: @autoclosure @escaping () -> Int?) {
+        updaters.append(updater)
+    }
+    
+    //@autoclosureを使うと関数が評価された結果を引数として渡しているのか
+    //関数を引数として渡しているのか分かりづらくなる。
+    //以下の例では呼び出されている関数で@autoclosureが指定されているので
+    //関数を渡すことになる。
+    
+    appendClosures(sample.max())
+    
+    appendClosures(sample.min())
+    
+    for updater in updaters {
+        print("Now operation result = \(updater())")
+    }
+}
 
 
 
