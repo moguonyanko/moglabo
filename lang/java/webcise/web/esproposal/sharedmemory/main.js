@@ -43,21 +43,22 @@
 	const getExamIntArray = size => {
 		const buffer = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * size);
 		const intArray = new Int32Array(buffer);
-		
-		/**
-		 * TypedArrayを使う必要は無いがTypedArrayをWorkerに渡せることを
-		 * 確認するために使っている。
-		 */
-		intArray[0] = parseInt(doc.querySelector(".example2 .initial").value);
-		intArray[1] = parseInt(doc.querySelector(".example2 .limit").value);
-		intArray[2] = parseInt(doc.querySelector(".example2 .step").value);
-			
 		return intArray;
 	};
 	
 	const initExam2 = () => {
-		template("example2", ({size, result}) => {
+		const baseClass = "example2";
+		
+		template(baseClass, ({ size, result }) => {
+			/**
+			 * TypedArrayを使う必要は無いがTypedArrayをWorkerに渡せることを
+			 * 確認するために使っている。
+			 */
 			const intArray = getExamIntArray(size);
+			intArray[0] = parseInt(doc.querySelector(`.${baseClass} .initial`).value);
+			intArray[1] = parseInt(doc.querySelector(`.${baseClass} .limit`).value);
+			intArray[2] = parseInt(doc.querySelector(`.${baseClass} .step`).value);
+			
 			const worker2 = new Worker("examworker2.js");
 			const onmessage = evt => {
 				const data = evt.data;
@@ -76,9 +77,102 @@
 		});
 	};
 	
+	const getWorkerPromise = ({ path, array }) => {
+		const promise = new Promise((resolve, reject) => {
+			const worker = new Worker(path);
+			worker.onmessage = evt => {
+				worker.terminate();
+				resolve(evt.data.value);
+			};
+			worker.onerror = reject;
+			worker.postMessage(array);
+		});
+		
+		return promise;
+	};
+	
+	/**
+	 * @todo
+	 * Atomicsの効果を感じられないサンプルになっている。
+	 */
+	const initExam3 = () => {
+		const baseClass = "example3";
+		
+		template(baseClass, ({ size, result }) => {
+			const array = getExamIntArray(size);
+			
+			/* 1からsize+1の値で配列を初期化 */
+			array.forEach((v, i) => { array[i] = i + 1; });
+			
+			const subOneWorker = getWorkerPromise({
+				path: "examworker3_1.js", array
+			});
+			const multiTenWorker = getWorkerPromise({
+				path: "examworker3_2.js", array
+			});
+			
+			Promise.all([subOneWorker, multiTenWorker]).then(resultsOfAllWorkers => {
+				/**
+				 * Promise.all使用時のthenの引数は全てのPromiseの結果を含む配列に
+				 * なっている。
+				 */
+				const values = [...resultsOfAllWorkers[0], ...resultsOfAllWorkers[1]];
+				/**
+				 * Atomicsのメソッドの引数として渡す配列はSharedArrayBufferから成る
+				 * TypedArrayでなければならない。（Shared typed array）
+				 */
+				const intArray = getExamIntArray(values.length);
+				intArray.set(values);
+				/**
+				 * Atomics.loadを使っても使わなくても結果が変わらない。
+				 */
+				result.innerHTML += `${intArray.map((v, i) => Atomics.load(intArray, i))}<br />`;
+				//result.innerHTML += `${intArray}<br />`;
+			});
+		});
+	};
+	
+	const initExam4 = () => {
+		const baseClass = "example4";
+		
+		template(baseClass, ({ size, result }) => {
+			const array = getExamIntArray(size);
+			
+			/**
+			 * メインスレッドに当たるスクリプトでAtomics.waitを呼び出すとエラーになる。
+			 */
+			result.innerHTML += `Initial: ${array}<br />`;
+			
+			const worker4_1 = getWorkerPromise({
+				path: "examworker4_1.js", array
+			});
+			
+			const worker4_2 = getWorkerPromise({
+				path: "examworker4_2.js", array
+			});
+			
+			Promise.all([worker4_1, worker4_2]).then(allResultValues => {
+				allResultValues.forEach(resultValues => {
+					result.innerHTML += `${resultValues}<br />`;
+				});
+			});
+			
+			/**
+			 * このAtomics.storeが実行されないと各Workerの結果が返されない。
+			 */
+			Atomics.store(array, 0, 100);
+			/**
+			 * このサンプルではAtomics.wakeを呼んでも呼ばなくても結果は変わらない。
+			 */
+			Atomics.wake(array, 0, 1);
+		});
+	};
+	
 	const initExams = () => {
 		initExam1();
 		initExam2();
+		initExam3();
+		initExam4();
 	};
 	
 	win.addEventListener("DOMContentLoaded", initExams);
