@@ -73,6 +73,12 @@ private func runPracticesClosures() {
     updateValueByEscapingAutoClosures()
 }
 
+private func runPracticesEnumerations() {
+    matchEnumMembers()
+    displayAssociatedValues()
+    checkEnumRawValues()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -81,7 +87,8 @@ private func runPractices() {
     //runPracticesCollectionTypes()
     //runPracticesControlFlow()
     //runPracticesFunctions()
-    runPracticesClosures()
+    //runPracticesClosures()
+    runPracticesEnumerations()
 }
 
 runPractices()
