@@ -89,6 +89,11 @@
 		"type": "SB",
 		"ack": 0
 	},
+	"sr631": {
+		"name": "晴嵐(六三一空)",
+		"type": "SB",
+		"ack": 0
+	},
 	"nzn": {
 		"name": "試製南山",
 		"type": "KB",
