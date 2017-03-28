@@ -77,6 +77,8 @@ private func runPracticesEnumerations() {
     matchEnumMembers()
     displayAssociatedValues()
     checkEnumRawValues()
+    displayEnumByRawValue()
+    calcByEnumExpression()
 }
 
 //Entry point

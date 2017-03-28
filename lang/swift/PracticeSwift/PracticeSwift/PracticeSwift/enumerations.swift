@@ -8,8 +8,8 @@
 import Foundation
 
 //Matching Enumeration Value with a Switch Statement
-private enum Week {
-    case sunday, monday, tuesday, wednesday, thursday, friday, saturday
+private enum Week: Int {
+    case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 }
 
 private func printWeekDay(weekday: Week) {
@@ -84,12 +84,61 @@ func checkEnumRawValues() {
 }
 
 //Initializing from a Raw Value
+private func getWeekDay(_ value: Int) -> Week? {
+    return Week(rawValue: value)
+}
 
+func displayEnumByRawValue() {
+    let number = 7
+    
+    if let someWeekDay = getWeekDay(number) {
+        switch someWeekDay {
+        case .saturday, .sunday:
+            print("今日は休み")
+        default:
+            print("平日")
+        }
+    } else {
+        print("\(number)に対応する曜日はありません。")
+    }
+}
 
+//Recursive Enumerations
 
+//enumが入れ子になっているときはindirectの指定が必須である。
+private indirect enum ArithmeticExpression {
+    case literal(Int)
+    case addition(ArithmeticExpression, ArithmeticExpression)
+    case subtract(ArithmeticExpression, ArithmeticExpression)
+    case multiplication(ArithmeticExpression, ArithmeticExpression)
+    case division(ArithmeticExpression, ArithmeticExpression)
+}
 
+private func evalExpression(_ expression: ArithmeticExpression) -> Int {
+    switch expression {
+    case let .literal(value):
+        return value
+    case let .addition(left, right):
+        return evalExpression(left) + evalExpression(right)
+    case let .subtract(left, right):
+        return evalExpression(left) - evalExpression(right)
+    case let .multiplication(left, right):
+        return evalExpression(left) + evalExpression(right)
+    case let .division(left, right):
+        return evalExpression(left) / evalExpression(right)
+    }
+}
 
-
-
+func calcByEnumExpression() {
+    //(10 - 6) / 2
+    let a = ArithmeticExpression.literal(10)
+    let b = ArithmeticExpression.literal(6)
+    let c = ArithmeticExpression.literal(2)
+    
+    let sub = ArithmeticExpression.subtract(a, b)
+    let param = ArithmeticExpression.division(sub, c)
+    
+    print("(10 - 6) / 2 = \(evalExpression(param))")
+}
 
 
