@@ -123,7 +123,7 @@ private func evalExpression(_ expression: ArithmeticExpression) -> Int {
     case let .subtract(left, right):
         return evalExpression(left) - evalExpression(right)
     case let .multiplication(left, right):
-        return evalExpression(left) + evalExpression(right)
+        return evalExpression(left) * evalExpression(right)
     case let .division(left, right):
         return evalExpression(left) / evalExpression(right)
     }

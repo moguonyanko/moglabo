@@ -81,6 +81,10 @@ private func runPracticesEnumerations() {
     calcByEnumExpression()
 }
 
+private func runPracticesClassesAndStructures() {
+    dumpSampleClassProperties()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -90,7 +94,8 @@ private func runPractices() {
     //runPracticesControlFlow()
     //runPracticesFunctions()
     //runPracticesClosures()
-    runPracticesEnumerations()
+    //runPracticesEnumerations()
+    runPracticesClassesAndStructures()
 }
 
 runPractices()
