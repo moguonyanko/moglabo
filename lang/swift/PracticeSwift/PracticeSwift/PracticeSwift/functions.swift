@@ -78,8 +78,10 @@ func printOptionalValues() {
     
     let results = optionalClassifyEvenAndOdd(values: values)
     
-    print("Even? = \(results?.even)")
-    print("Odd? = \(results?.odd)")
+    let defaultValue: [Int] = []
+    
+    print("Even? = \(results?.even ?? defaultValue)")
+    print("Odd? = \(results?.odd ?? defaultValue)")
 }
 
 //Specifyng Argumenty Labels

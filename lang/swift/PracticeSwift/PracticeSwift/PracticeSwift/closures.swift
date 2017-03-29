@@ -146,11 +146,11 @@ func updateValueByAutoClosures() {
 }
 
 func updateValueByEscapingAutoClosures() {
-    var sample = [4, 3, 6, 7, 1, 2, 9, 8, 5, 0]
+    let sample: [Int] = [4, 3, 6, 7, 1, 2, 9, 8, 5, 0]
     
-    var updaters: [() -> Int?] = []
+    var updaters: [() -> Int] = []
     
-    func appendClosures(_ updater: @autoclosure @escaping () -> Int?) {
+    func appendClosures(_ updater: @autoclosure @escaping () -> Int) {
         updaters.append(updater)
     }
     
@@ -159,9 +159,9 @@ func updateValueByEscapingAutoClosures() {
     //以下の例では呼び出されている関数で@autoclosureが指定されているので
     //関数を渡すことになる。
     
-    appendClosures(sample.max())
+    appendClosures(sample.max()!)
     
-    appendClosures(sample.min())
+    appendClosures(sample.min()!)
     
     for updater in updaters {
         print("Now operation result = \(updater())")
