@@ -83,6 +83,10 @@ private func runPracticesEnumerations() {
 
 private func runPracticesClassesAndStructures() {
     dumpSampleClassProperties()
+    changeStructureProperties()
+    changeEnumerationValue()
+    changeClassProperties()
+    identicalToInstances()
 }
 
 //Entry point
