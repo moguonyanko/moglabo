@@ -89,6 +89,11 @@ private func runPracticesClassesAndStructures() {
     identicalToInstances()
 }
 
+private func runPracticesProperties() {
+    displayLazyProperties()
+    accessStructProperties()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -99,7 +104,8 @@ private func runPractices() {
     //runPracticesFunctions()
     //runPracticesClosures()
     //runPracticesEnumerations()
-    runPracticesClassesAndStructures()
+    //runPracticesClassesAndStructures()
+    runPracticesProperties()
 }
 
 runPractices()
