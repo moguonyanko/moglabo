@@ -59,6 +59,11 @@
 		"type": "KB",
 		"ack": 4
 	},
+	"z63": {
+		"name": "零式艦戦63型(爆戦)",
+		"type": "KB",
+		"ack": 5
+	},
 	"sd2": {
 		"name": "紫電改二",
 		"type": "KS",
@@ -104,10 +109,25 @@
 		"type": "SS",
 		"ack": 3
 	},
+	"nsj": {
+		"name": "二式水戦改(熟練)",
+		"type": "SS",
+		"ack": 5
+	},
+	"kyohuk": {
+		"name": "強風改",
+		"type": "SS",
+		"ack": 5
+	},
 	"rs": {
 		"name": "Ro.44水上戦闘機",
 		"type": "SS",
 		"ack": 2
+	},
+	"rsb": {
+		"name": "Ro.44水上戦闘機bis",
+		"type": "SS",
+		"ack": 3
 	},
 	"sse": {
 		"name": "彗星(江草隊)",

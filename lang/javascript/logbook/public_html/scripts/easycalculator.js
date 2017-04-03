@@ -13,7 +13,7 @@
 		KB: "kanbaku", 
 		SB: "suibaku", 
 		SS: "suisen",
-		HB: "hunbaku",
+		HB: "hunbaku"
 	};
 	
 	class AircraftType {
@@ -47,7 +47,8 @@
 	 */
 	const CORRECTION_VALUES = {
 		[AIRCRAFT_TYPE_NAMES.KS]: 0.2,
-		[AIRCRAFT_TYPE_NAMES.KB]: 0.25
+		[AIRCRAFT_TYPE_NAMES.KB]: 0.25,
+		[AIRCRAFT_TYPE_NAMES.SS]: 0.2
 	};
 	
 	const getCorrectionValue = aircraft => {
