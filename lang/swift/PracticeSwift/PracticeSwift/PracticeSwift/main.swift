@@ -93,6 +93,7 @@ private func runPracticesProperties() {
     displayLazyProperties()
     accessStructProperties()
     checkActionOfObservers()
+    changeTypeProperties()
 }
 
 //Entry point

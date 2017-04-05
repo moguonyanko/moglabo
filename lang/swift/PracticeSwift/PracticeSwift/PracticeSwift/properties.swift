@@ -85,6 +85,37 @@ func accessStructProperties() {
 
 //Property Observers
 private class NumberQuiz {
+    static let name = "Observer Quiz"
+    
+    //読み取り専用でもcomputed propertyをletでは宣言できない。
+    static var version: Double {
+        return 1.0
+    }
+    
+    static var history = [String]()
+    
+    //classを指定するとオーバーライドできるtype propertyになる。
+    //オーバーライド可能なtype propertyにはwillSetとdidSetを定義することができない。
+    class var memo: String {
+        get {
+            return history.joined(separator: ",")
+        }
+        set {
+            //historyにstaticが無い，つまりインスタンスなメンバだったらコンパイルエラー
+            history.append(newValue)
+        }
+    }
+    
+    static var info: String = "" {
+        willSet {
+            print("Change info to \(newValue)")
+        }
+        didSet {
+            NumberQuiz.memo = oldValue
+            print("Changed info from \(oldValue)")
+        }
+    }
+    
     var rightAnswer = 0
     
     //プロパティに初期値が設定されていない場合，Initializerがないとコンパイルエラーになる。
@@ -105,14 +136,57 @@ private class NumberQuiz {
 func checkActionOfObservers() {
     let quiz = NumberQuiz()
     
+    NumberQuiz.memo = "foo"
+    NumberQuiz.memo = "bar"
+    NumberQuiz.memo = "baz"
+    
+    print("Quiz name: \(NumberQuiz.name)")
+    print("Quiz version: \(NumberQuiz.version)")
+    print("Quiz memo: \(NumberQuiz.memo)")
+    
     quiz.rightAnswer = 50
     
     quiz.answer = 10
     quiz.answer = 55
     quiz.answer = 50
+    
+    NumberQuiz.info = "Hello"
+    NumberQuiz.info = "Good morning"
+    NumberQuiz.info = "さようなら"
+    print("One more quiz memo: \(NumberQuiz.memo)")
 }
 
+//Querying and Setting Type Properties
+private struct Player {
+    //このような設定値をこの手のクラスに持たせることは普通しない。あくまでもサンプル。
+    static let limitScore = 100
+    static var currentMaxScoreOfAllPlayers = 0
+    var score: Int = 0 {
+        didSet {
+            if Player.limitScore < score {
+                score = Player.limitScore
+            }
+            if Player.currentMaxScoreOfAllPlayers < score {
+               Player.currentMaxScoreOfAllPlayers = score
+            }
+        }
+    }
+}
 
+func changeTypeProperties() {
+    var p1 = Player()
+    var p2 = Player()
+    
+    p1.score = 10
+    p2.score = 30
+    
+    print("Current max score: \(Player.currentMaxScoreOfAllPlayers)")
+    
+    p1.score = 120
+    p2.score = 90
+    
+    print("Current max score: \(Player.currentMaxScoreOfAllPlayers)")
+}
 
 
 
