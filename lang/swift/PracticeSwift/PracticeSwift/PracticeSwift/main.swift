@@ -92,6 +92,7 @@ private func runPracticesClassesAndStructures() {
 private func runPracticesProperties() {
     displayLazyProperties()
     accessStructProperties()
+    checkActionOfObservers()
 }
 
 //Entry point

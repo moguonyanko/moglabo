@@ -84,6 +84,44 @@ func accessStructProperties() {
 }
 
 //Property Observers
+private class NumberQuiz {
+    var rightAnswer = 0
+    
+    //プロパティに初期値が設定されていない場合，Initializerがないとコンパイルエラーになる。
+    var answer: Int = 0 {
+        willSet(newAnswer) {
+            print("New answer = \(newAnswer)")
+        }
+        didSet {
+            //oldValueはsetterで更新される前の値になっている。
+            let oldDelta = abs(rightAnswer - oldValue)
+            let nowDelta = abs(rightAnswer - answer)
+            print("Old \(oldDelta) to right answer")
+            print("Now \(nowDelta) to right answer")
+        }
+    }
+}
+
+func checkActionOfObservers() {
+    let quiz = NumberQuiz()
+    
+    quiz.rightAnswer = 50
+    
+    quiz.answer = 10
+    quiz.answer = 55
+    quiz.answer = 50
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
