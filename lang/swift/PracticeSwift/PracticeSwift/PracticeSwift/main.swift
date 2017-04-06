@@ -96,6 +96,12 @@ private func runPracticesProperties() {
     changeTypeProperties()
 }
 
+func runPracticesMethods() {
+    modifyValueTypeInstance()
+    mutateEnumCases()
+    checkActionOfTypeMethods()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -107,7 +113,8 @@ private func runPractices() {
     //runPracticesClosures()
     //runPracticesEnumerations()
     //runPracticesClassesAndStructures()
-    runPracticesProperties()
+    //runPracticesProperties()
+    runPracticesMethods()
 }
 
 runPractices()
