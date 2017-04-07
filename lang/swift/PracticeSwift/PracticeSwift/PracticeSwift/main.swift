@@ -102,6 +102,11 @@ func runPracticesMethods() {
     checkActionOfTypeMethods()
 }
 
+func runPracticesSubscripts() {
+    displaySubscriptValue()
+    accessMultiIndexBySubscript()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -114,7 +119,8 @@ private func runPractices() {
     //runPracticesEnumerations()
     //runPracticesClassesAndStructures()
     //runPracticesProperties()
-    runPracticesMethods()
+    //runPracticesMethods()
+    runPracticesSubscripts()
 }
 
 runPractices()
