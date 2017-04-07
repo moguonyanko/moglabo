@@ -107,6 +107,10 @@ func runPracticesSubscripts() {
     accessMultiIndexBySubscript()
 }
 
+func runPracticesInheritance() {
+    displayInheritanceInstances()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -120,7 +124,8 @@ private func runPractices() {
     //runPracticesClassesAndStructures()
     //runPracticesProperties()
     //runPracticesMethods()
-    runPracticesSubscripts()
+    //runPracticesSubscripts()
+    runPracticesInheritance()
 }
 
 runPractices()

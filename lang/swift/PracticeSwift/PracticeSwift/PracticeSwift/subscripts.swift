@@ -35,7 +35,7 @@ private struct Matrix {
         grid = Array(repeating: 0, count: rows * columns)
     }
     
-    func isIndexValid(row: Int, column: Int) -> Bool {
+    private func isIndexValid(row: Int, column: Int) -> Bool {
         return 0 <= row && row < rows &&
             0 <= column && column < columns
     }
