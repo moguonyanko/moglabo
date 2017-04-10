@@ -113,6 +113,8 @@ func runPracticesInheritance() {
 
 func runPracticesInitialization() {
     displayInstancesByOverloadInit()
+    checkInitlabels()
+    printDefaultInitInstance()
 }
 
 //Entry point
