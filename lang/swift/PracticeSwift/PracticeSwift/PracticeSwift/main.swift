@@ -111,6 +111,10 @@ func runPracticesInheritance() {
     displayInheritanceInstances()
 }
 
+func runPracticesInitialization() {
+    displayInstancesByOverloadInit()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -125,7 +129,8 @@ private func runPractices() {
     //runPracticesProperties()
     //runPracticesMethods()
     //runPracticesSubscripts()
-    runPracticesInheritance()
+    //runPracticesInheritance()
+    runPracticesInitialization()
 }
 
 runPractices()
