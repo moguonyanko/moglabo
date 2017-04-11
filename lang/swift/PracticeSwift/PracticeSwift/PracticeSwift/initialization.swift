@@ -182,8 +182,140 @@ func displayInstancesByValueTypeInitializers() {
     print(c4.description)
 }
 
+//Initializer Inheritance and Overriding
+private class Animal {
+    var cry = "..."
+    var description: String {
+        return "\(cry)! \(cry)!"
+    }
+}
 
+private class Dog: Animal {
+    //スーパークラスに同じシグネチャのinitが定義されている場合，
+    //override無しではコンパイルできない。自動的に継承されたりはしない。
+    //init() {}
+    
+    override init() {
+        super.init()
+        //super classのプロパティにアクセスしているため
+        //super.initより上に記述することができない。
+        cry = "wan wan"
+    }
+}
 
+func displayInheritanceInits() {
+    let animal = Animal()
+    let dog = Dog()
+    
+    print(animal.description);
+    print(dog.description);
+}
+
+//Automatic Initializer Inheritance
+private class Car {
+    var name = "none"
+    var speed = 0
+    
+    convenience init(_ name: String, _ speed: Int) {
+        self.init()
+        self.name = name
+        self.speed = speed
+    }
+    
+    var description: String {
+        return "This car name is \(name), the speed is \(speed) km/h."
+    }
+}
+
+private class Taxi: Car {
+    convenience init(_ name: String) {
+        //convenience initではsuper classのinitを呼び出すことはできない。
+        //同じクラス内のinitに処理を委譲することしか許されない。
+        //super.init()
+        
+        //引数無しのinitが自動的に継承されているので呼び出せる。
+        //initの先頭で呼び出さないとエラーになる。
+        //super.initではないことに注意。
+        self.init()
+        //selfの継承されたプロパティにはself.initより後でなければアクセスできない。
+        self.name = name
+    }
+}
+
+func dumpInstancesByCreatingAutomaticInitializers() {
+    let car = Car("FOO", 100)
+    let taxi = Taxi("New Taxi")
+    //super classのconvenience init(String, Int)が自動的に継承されているので呼び出せる。
+    let taxi2 = Taxi("Hi speed taxi", 1000)
+    
+    print(car.description);
+    print(taxi.description);
+    print(taxi2.description);
+}
+
+//Designated and Convenience Initializers in Action
+private class Building {
+    var name: String
+    convenience init() {
+        self.init(name: "no name")
+    }
+    init(name: String) {
+        self.name = name
+    }
+}
+
+private class Hotel:Building {
+    var charges: Int
+    private static let industryStandardCharges = 10000
+    //init()を定義していないのでsuper classの暗黙のinit()が自動的に継承されている。
+    //引数を取るinitが定義されていても引数無しのinitが自動的に継承されている。
+    init(name: String, charges: Int) {
+        //chargesはsuper classではなくこのsub classで定義されたプロパティである。
+        //そのためsuper.initより先にアクセスしてもエラーにはならない。
+        self.charges = charges
+        //chargesは継承されたプロパティではないため，後続のsuper.initを削除して
+        //initializerを複数回呼ばないようにすればself.init()はコンパイルに成功する。
+        //従ってself.initより前でself.chargesにアクセスしても問題無い。
+        //chargesがsuper classで定義されていたらコンパイルエラーになる。
+        //要するに「継承されたプロパティ」には呼び出し元がselfだろうがsuperだろうが
+        //initより「後」でしかアクセスできないということである。
+        //self.init()
+        super.init(name: name)
+    }
+    //たとえconvenienceが指定されていても，super classのinit(name: String)を
+    //上書きするinitだと見なされるためoverrideの指定が必須である。
+    override convenience init(name: String) {
+        self.init(name: name, charges: Hotel.industryStandardCharges)
+    }
+}
+
+private class CapsuleHotel: Hotel {
+    var staying = false
+    //super classのinitは全て自動的に継承されている。
+    var description: String {
+        var desc = "'\(name)', stay one night ¥\(charges) "
+        desc += "vacancy=" + (staying ? "x" : "o")
+        return desc
+    }
+}
+
+func displayActionInitializers() {
+    let hotel1 = CapsuleHotel()
+    let hotel2 = CapsuleHotel(name: "SeaSideHotel")
+    let hotel3 = CapsuleHotel(name: "SuburbHotel", charges: 5000)
+    
+    //classのインスタンスなのでletで定義されていてもプロパティ変更可能。
+    hotel1.name = "RoadHotel"
+    hotel1.staying = true
+    
+    let hotels = [ hotel1, hotel2, hotel3 ]
+    
+    for hotel in hotels {
+        print(hotel.description)
+    }
+}
+
+//Failable Initializers
 
 
 

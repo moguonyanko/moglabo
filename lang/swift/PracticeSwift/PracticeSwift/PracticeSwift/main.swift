@@ -116,6 +116,9 @@ func runPracticesInitialization() {
     checkInitlabels()
     printDefaultInitInstance()
     displayInstancesByValueTypeInitializers()
+    displayInheritanceInits()
+    dumpInstancesByCreatingAutomaticInitializers()
+    displayActionInitializers()
 }
 
 //Entry point
