@@ -123,9 +123,64 @@ func printDefaultInitInstance() {
 }
 
 //Initializer Delegation for Value Types
+private struct Point2D {
+    //初期値が与えられていないとPoint2d()の呼び出しはエラーになる。
+    var x = 0.0
+    var y = 0.0
+    var description: String {
+        get {
+            return "(\(x),\(y))"
+        }
+    }
+}
 
+private struct Circle {
+    var center = Point2D()
+    var radius = 0.0
+    
+    init() {}
+    
+    init(center: Point2D, radius: Double) {
+        self.center = center
+        self.radius = radius
+    }
+    
+    init(bottomLeft: Point2D, topRight: Point2D, radius: Double) {
+        let centerX = (topRight.x - bottomLeft.x) / 2
+        let centerY = (topRight.y - bottomLeft.y) / 2
+        let p = Point2D(x: centerX, y: centerY)
+        //他のinit呼び出しがinitの先頭でなくてもよい。
+        self.init(center: p, radius: radius)
+    }
+    
+    init(topLeft: Point2D, bottomRight: Point2D, radius: Double) {
+        let centerX = (bottomRight.x - topLeft.x) / 2
+        let centerY = (bottomRight.y - topLeft.y) / 2
+        let p = Point2D(x: centerX, y: centerY)
+        self.init(center: p, radius: radius)
+    }
+    
+    var description: String {
+        get {
+            return "center = \(center.description), radius = \(radius)"
+        }
+    }
+}
 
-
+func displayInstancesByValueTypeInitializers() {
+    let c1 = Circle()
+    let c2 = Circle(center: Point2D(x: 1.0, y:2.0), radius: 5.5)
+    let c3 = Circle(bottomLeft: Point2D(x: 3.0, y: 3.0),
+                    topRight: Point2D(x: 7.0, y: 7.0), radius: 10.0)
+    //より引数名が合致する方のinitが呼び出される。
+    let c4 = Circle(topLeft: Point2D(x: 6.0, y: 14.0),
+                    bottomRight: Point2D(x: 10.0, y: 8.0), radius: 4.0)
+    
+    print(c1.description)
+    print(c2.description)
+    print(c3.description)
+    print(c4.description)
+}
 
 
 
