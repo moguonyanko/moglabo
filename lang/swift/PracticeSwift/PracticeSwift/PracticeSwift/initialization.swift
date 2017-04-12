@@ -100,15 +100,23 @@ private class AuthenticationInfo {
 }
 
 private struct MyRectangle {
-    //privateで宣言するとこのstructure外で初期化できずエラーになる。
-    let width: Double, height: Double
+    //各プロパティをprivateで宣言するとこのstructure外で初期化できずエラーになる。
+    //privateで宣言したければinitを明示的に定義する必要がある。
+    let width: Double
+    let height: Double
     //String?型だがこのstructureの初期化時にmemoの初期値の指定は必須である。
     var memo: String?
     
+    //以下のinitがコメントアウトされていなければプロパティをprivateにしても
+    //structureのインスタンス生成はコンパイルに成功する。
+//    init(width: Double, height: Double, memo: String) {
+//        self.width = width
+//        self.height = height
+//        self.memo = memo
+//    }
+    
     var description: String {
-        get {
-            return "This rectangle width = \(width), height = \(height), \(memo ?? "none")"
-        }
+        return "This rectangle width = \(width), height = \(height), \(memo ?? "none")"
     }
 }
 
@@ -116,8 +124,10 @@ func printDefaultInitInstance() {
     let auth = AuthenticationInfo()
     print("\(auth.description)")
     
-    //structureは自動的にプロパティに対応した引数を受ける初期化子が定義される。
+    //structureは自動的にプロパティに対応した引数を受け取る暗黙のinitが定義される。
     //ただし各プロパティはstructure外からアクセスできる必要がある。
+    //initが明示的に定義されていればstructure外からアクセスできなくてもインスタンス生成できる。
+    //カプセル化を促したければ暗黙のinitを利用するべきでない。
     let rect = MyRectangle(width: 10.0, height: 12.5, memo: "hogehoge")
     print(rect.description)
 }
@@ -316,6 +326,43 @@ func displayActionInitializers() {
 }
 
 //Failable Initializers
+private struct Password {
+    private let value: String
+    init?(value: String) {
+        if value.isEmpty {
+           return nil
+        }
+        self.value = value
+    }
+    var description: String {
+        return "******"
+    }
+}
+
+func displayInstanceByFailableInitializer() {
+    let pw1 = Password(value: "secret")
+    
+    print("Password: \(pw1?.description ?? "none")")
+    
+    let pw2 = Password(value: "")
+    
+    if pw2 == nil {
+        print("Fail to initialize Password instance.")
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

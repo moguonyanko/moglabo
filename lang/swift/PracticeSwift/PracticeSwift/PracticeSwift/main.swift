@@ -119,6 +119,7 @@ func runPracticesInitialization() {
     displayInheritanceInits()
     dumpInstancesByCreatingAutomaticInitializers()
     displayActionInitializers()
+    displayInstanceByFailableInitializer()
 }
 
 //Entry point
