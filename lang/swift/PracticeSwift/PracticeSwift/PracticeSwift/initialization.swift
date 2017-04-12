@@ -351,10 +351,50 @@ func displayInstanceByFailableInitializer() {
     }
 }
 
+//Failable Initializers for Enumerations
+private enum Direction: String {
+    case up = "u", down = "d", right = "r", left = "l"
+    
+    //init?でnilを返さなくてもエラーにはならない。
+    init?(key: Character) {
+        switch key {
+        case "U":
+            self = .up
+        case "D":
+            self = .down
+        case "R":
+            self = .right
+        case "L":
+            self = .left
+        default:
+            return nil
+        }
+    }
+    
+    var description: String {
+        return self.rawValue
+    }
+}
 
+func displayFailableEnumeration() {
+    let d1 = Direction(key: "U")
+    print("Selected direction 1 = \(d1?.description ?? "unknown")")
+    
+    let d2 = Direction(key: "W")
+    if d2 == nil {
+        print("Unknown direction 2")
+    }
+    
+    let d3 = Direction(rawValue: "r")
+    print("Selected direction 3 = \(d3?.description ?? "unknown")")
+    
+    let d4 = Direction(rawValue: "o")
+    if d4 == nil {
+        print("Unknown direction 4")
+    }
+}
 
-
-
+//Propagation of Initialization Failure
 
 
 

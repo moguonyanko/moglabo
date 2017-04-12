@@ -120,6 +120,7 @@ func runPracticesInitialization() {
     dumpInstancesByCreatingAutomaticInitializers()
     displayActionInitializers()
     displayInstanceByFailableInitializer()
+    displayFailableEnumeration()
 }
 
 //Entry point
