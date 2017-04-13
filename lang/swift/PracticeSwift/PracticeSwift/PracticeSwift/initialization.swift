@@ -395,17 +395,184 @@ func displayFailableEnumeration() {
 }
 
 //Propagation of Initialization Failure
+private class School {
+    private let name: String
+    init?(name: String) {
+        if name.isEmpty {
+            return nil
+        }
+        self.name = name
+    }
+    func getName() -> String {
+        return name
+    }
+}
 
+private class HiSchool: School {
+    private let grades: Int
+    init?(name: String, grades: Int) {
+        if grades < 3 {
+            return nil
+        }
+        self.grades = grades
+        super.init(name: name)
+    }
+    var description: String {
+        return "\(getName()) school has \(grades) grades."
+    }
+}
 
+func checkPropagationFailableInitializers() {
+    if let school = HiSchool(name: "Anyware", grades: 3) {
+        print("\(school.description)")
+    } else {
+        print("Invalid school initialized")
+    }
+    
+    if let school = HiSchool(name: "Someware", grades: 1) {
+        print("\(school.description)")
+    } else {
+        print("Invalid school initialized")
+    }
+    
+    if let school = HiSchool(name: "", grades: 6) {
+        print("\(school.description)")
+    } else {
+        print("Invalid school initialized")
+    }
+}
 
+//Overriding a Failable Initializer
+private class Fluit {
+    var name: String?
+    init() {}
+    init?(name: String) {
+        if name.isEmpty {
+            return nil
+        }
+        self.name = name
+    }
+}
 
+private class Orange: Fluit {
+    private static let defaultName = "ORANGE"
+    override init() {
+        super.init()
+        //super classのプロパティを参照しているためsuper.initより後に記述しなければならない。
+        self.name = Orange.defaultName
+    }
+    //convenienceと同様，failableを示す?もシグネチャに含まれない。
+    //つまりinit(name: String)はsuper classのinit?(name: String)と衝突するので
+    //overrideの指定が必須である。
+    override init(name: String) {
+        super.init()
+        self.name = !name.isEmpty ? name : Orange.defaultName
+    }
+}
 
+private class UnknownFluit: Fluit {
+    //failable initializerでnon-failable initializerをoverrideすることはできない。
+    //以下のinitをinit?とするとコンパイルエラーになる。
+    override init() {
+        //non-failable initializerからfailable initializerを呼び出すには末尾に!が必要。
+        super.init(name: "Unknown")!
+    }
+}
 
+func checkOverridringFailableInitializers() {
+    let orange = Orange(name: "New Orange")
+    let unknown = UnknownFluit()
+    print("Orange name = \(orange.name ?? "none")")
+    print("Unknown name = \(unknown.name ?? "none")")
+}
 
+//The init! Failable Initializer
+private class Writer {
+    let name: String
+    init!(name: String) {
+        self.name = name
+    }
+    func run(id: Int, memo: String) {
+        print("\(name) write '\(memo)' to No.\(id) memo.")
+    }
+    //引数の順序が異なるメソッドは引数名や型が同一でも別のメソッドとして見なされる。
+    //衝突してエラーになったりはしない。
+    func run(memo: String, id: Int) {
+        print("\(name) write to No.\(id) memo, '\(memo)'.")
+    }
+}
 
+private class SubWriter: Writer {
+    //init!をinit?でoverrideできる。
+    override init?(name: String) {
+        if name.isEmpty {
+            return nil
+        }
+        super.init(name: name)
+    }
+}
 
+func displayOverridedFailableInitialiers() {
+    let w = Writer(name: "foo")
+    w!.run(id: 1, memo: "Hello, world!")
+    
+    let sw = SubWriter(name: "")
+    //sw?がnilの時，次のrunメソッド呼び出しは無視される。
+    sw?.run(memo: "Good night.", id: 2)
+}
 
+//Required Initializers
+private class Foo {
+    let name: String
+    required init(name: String) {
+        self.name = name
+    }
+}
 
+private class Bar: Foo {
+    let id: Int
+    //super classでrequiredが指定されたinitはsub classで実装を強制される。
+    //この時暗黙でoverrideになるのでoverrideを指定する必要は無い。
+    //initが何も定義されていなければsuper classのrequired initが自動的に
+    //定義されるのでエラーにならない。
+    required init(name: String) {
+        self.id = -1
+        super.init(name: name)
+    }
+    init(name: String, id: Int) {
+        self.id = id
+        super.init(name: name)
+    }
+}
 
+//Setting a Default Property Value with a Closure or Function
+private struct NumberQuiz {
+    //最後の()が無ければ関数が呼び出されない。
+    //結果，型が整合せずコンパイルエラーになる。
+    let numbers: [Int] = {
+        var tmp = [Int]()
+        let size: Int = 5
+        let limit: UInt32 = 10
+        for _ in 0..<size {
+            tmp.append(Int(arc4random_uniform(limit)))
+        }
+        return tmp
+    }()
+    //letで宣言され初期化されたプロパティをinitで再度初期化することはできない。
+//    init() {
+//        self.numbers = [Int]()
+//    }
+    func query(value: Int) -> Bool {
+        return numbers.contains(value)
+    }
+}
 
-
+func createInstanceWithDefaultPropertyWithFunction() {
+    let quiz = NumberQuiz()
+    
+    print("Try by 1 = \(quiz.query(value: 1))")
+    print("Try by 3 = \(quiz.query(value: 3))")
+    print("Try by 5 = \(quiz.query(value: 5))")
+    
+    print("Open numbers = \(quiz.numbers.description)")
+}

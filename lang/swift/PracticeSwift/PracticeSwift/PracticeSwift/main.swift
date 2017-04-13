@@ -121,6 +121,10 @@ func runPracticesInitialization() {
     displayActionInitializers()
     displayInstanceByFailableInitializer()
     displayFailableEnumeration()
+    checkPropagationFailableInitializers()
+    checkOverridringFailableInitializers()
+    displayOverridedFailableInitialiers()
+    createInstanceWithDefaultPropertyWithFunction()
 }
 
 //Entry point
