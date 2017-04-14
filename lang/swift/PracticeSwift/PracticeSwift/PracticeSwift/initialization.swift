@@ -138,9 +138,7 @@ private struct Point2D {
     var x = 0.0
     var y = 0.0
     var description: String {
-        get {
-            return "(\(x),\(y))"
-        }
+        return "(\(x),\(y))"
     }
 }
 
@@ -171,9 +169,7 @@ private struct Circle {
     }
     
     var description: String {
-        get {
-            return "center = \(center.description), radius = \(radius)"
-        }
+        return "center = \(center.description), radius = \(radius)"
     }
 }
 

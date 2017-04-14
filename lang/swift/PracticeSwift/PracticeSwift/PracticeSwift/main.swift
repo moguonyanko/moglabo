@@ -96,22 +96,22 @@ private func runPracticesProperties() {
     changeTypeProperties()
 }
 
-func runPracticesMethods() {
+private func runPracticesMethods() {
     modifyValueTypeInstance()
     mutateEnumCases()
     checkActionOfTypeMethods()
 }
 
-func runPracticesSubscripts() {
+private func runPracticesSubscripts() {
     displaySubscriptValue()
     accessMultiIndexBySubscript()
 }
 
-func runPracticesInheritance() {
+private func runPracticesInheritance() {
     displayInheritanceInstances()
 }
 
-func runPracticesInitialization() {
+private func runPracticesInitialization() {
     displayInstancesByOverloadInit()
     checkInitlabels()
     printDefaultInitInstance()
@@ -125,6 +125,10 @@ func runPracticesInitialization() {
     checkOverridringFailableInitializers()
     displayOverridedFailableInitialiers()
     createInstanceWithDefaultPropertyWithFunction()
+}
+
+private func runPracticesDeinitialization() {
+    displayDeinitializationInstanceAction()
 }
 
 //Entry point
@@ -142,7 +146,8 @@ private func runPractices() {
     //runPracticesMethods()
     //runPracticesSubscripts()
     //runPracticesInheritance()
-    runPracticesInitialization()
+    //runPracticesInitialization()
+    runPracticesDeinitialization()
 }
 
 runPractices()
