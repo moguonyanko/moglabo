@@ -8,6 +8,14 @@
             :root {
                 --common-bg-color: #ABC;
             }
+			
+			.result-area {
+				width: 70vw;
+				height: 30vh;
+				background-color: lightgrey;
+				border-radius: 5px;
+				overflow-y: scroll;
+			}
 
             #sample-infomation-container {
                 width: 50%;
@@ -102,6 +110,24 @@
                     <button class="clear-output">出力結果クリア</button>
                 </div>
             </section>
+			<section class="tagged-template-sample">
+				<h2>Tagged template literals</h2>
+				<p>
+					タグとして定義した関数内で文字列を組み立てることができます。
+				</p>
+				<div>
+					<div>
+						<label><input class="tag-lang" type="radio" name="lang" value="ja" checked="checked" />ja</label>
+						<label><input class="tag-lang" type="radio" name="lang" value="en" />en</label>
+					</div>
+					<label>name=<input class="username" type="text" value="hogehoge" /></label>
+				</div>
+                <div>
+                    <button class="runner">run</button>
+                    <button class="clearer">clear</button>
+                </div>
+				<div class="result-area"></div>
+			</section>
         </div>
 
         <aside role="complementary">
@@ -109,6 +135,7 @@
             <ul>
                 <li><a href="http://es6-features.org/">ECMAScript 6 — New Features: Overview & Comparison</a></li>
                 <li><a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Functions/Arrow_functions">MDN Arrow functions</a></li>
+				<li><a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Template_literals">Template literals</a></li>
             </ul>
         </aside>
 

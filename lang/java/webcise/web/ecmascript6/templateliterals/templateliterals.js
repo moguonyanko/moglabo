@@ -91,7 +91,58 @@
             m.clickListener(m.select(base + ".clear-output"), () => {
                 m.clear(outputArea);
             });
-        }
+        },
+		() => {
+			const base = ".tagged-template-sample",
+				resultArea = m.select(base + " .result-area");
+			
+			const getSelectedLang = () => {
+				const langs = m.selectAll(base + " .tag-lang");
+				const selectedLang = Array.from(langs).filter(lang => lang.checked);
+				return selectedLang[0].value;
+			};
+			
+			const greetingParts = {
+				ja: {
+					prefix: "こんにちは",
+					suffix: "さようなら"
+				},
+				en: {
+					prefix: "Hello",
+					suffix: "Goodbye"
+				}
+			};
+			
+			/**
+			 * 第1引数は「${}を使わずに渡された文字列」の配列になる。
+			 * 例えば sampleFunc`${a}and${b}` だった場合，第1引数は
+			 * ["", "and", ""]
+			 * になる。最初と最後の空文字も渡されてくることに注意。
+			 * 
+			 * 第2引数以降は「${}を使って渡された文字列」になる。
+			 * sampleFunc`${a}and${b}` ならば${a}の評価結果が第2引数，
+			 * ${b}の評価結果が第3引数になる。
+			 */
+			const greeting = (strings, prefix, name, suffix) => {
+				let sep1 = strings[0],
+					sep2 = strings[1],
+					sep3 = strings[2],
+					sep4 = strings[3];
+					
+				return sep1 + prefix + sep2 + name + sep3 + suffix + sep4;	
+			};
+			
+            m.clickListener(m.select(base + " .runner"), () => {
+				const selectedLang = getSelectedLang();
+				const templates = greetingParts[selectedLang];
+				const name = m.select(base + " .username").value || "anonymous";
+				const result = greeting`★${templates.prefix}!${name},${templates.suffix}♪`;
+				m.println(resultArea, result);
+            });
+            
+            m.clickListener(m.select(base + " .clearer"), 
+				() => m.clear(resultArea));
+		}
     ];
     
     m.loadedHook(() => initTargets.forEach(f => f()));
