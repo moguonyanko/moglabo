@@ -131,6 +131,11 @@ private func runPracticesDeinitialization() {
     displayDeinitializationInstanceAction()
 }
 
+private func runPracticesAutomaticReferenceCounting() {
+    //createStrongReferenceCycle()
+    createWeakReferenceCycle()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -147,7 +152,8 @@ private func runPractices() {
     //runPracticesSubscripts()
     //runPracticesInheritance()
     //runPracticesInitialization()
-    runPracticesDeinitialization()
+    //runPracticesDeinitialization()
+    runPracticesAutomaticReferenceCounting()
 }
 
 runPractices()
