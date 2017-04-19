@@ -41,6 +41,8 @@ private class SchoolClass {
 }
 
 func createStrongReferenceCycle() {
+    print("*** Strong reference cycle ***")
+    
     var student: Student? = Student(name: "hoge")
     var schoolClass: SchoolClass? = SchoolClass(className: "3-B")
     
@@ -50,8 +52,6 @@ func createStrongReferenceCycle() {
     //強い参照で循環しているためnilを代入してもdeinitが実行されない。
     student = nil
     schoolClass = nil
-    
-    print("*** Strong reference cycle: Finished setting nil. ***")
 }
 
 //Resolving Strong Reference Cycles Between Class Instances
@@ -73,6 +73,8 @@ private class WeakSchoolClass: SchoolClass {
 }
 
 func createWeakReferenceCycle() {
+    print("*** Weak reference cycle ***")
+    
     var student: Student? = Student(name: "fuga")
     var schoolClass: WeakSchoolClass? = WeakSchoolClass(className: "2-A")
     
@@ -89,22 +91,101 @@ func createWeakReferenceCycle() {
     //WeakSchoolClassとSchoolClassそしてStudentListのdeinitが実行される。
     schoolClass = nil
     
-    print("*** Weak reference cycle: Finished setting nil. ***")
-    
     //schoolClassにnilを代入しない場合，この関数の実行完了後に
     //WeakSchoolClass，SchoolClass，StudentListのdeinitが実行される。
 }
 
 //Unowned References
+private class Employee {
+    private let name: String
+    private var idCard: EmployeeIdCard?
+    init(name: String) {
+        self.name = name
+    }
+    func receiveIdCard(idCard: EmployeeIdCard) {
+        self.idCard = idCard
+    }
+    deinit {
+        print("Employee '\(name)' is being deinitialized.")
+    }
+}
 
+private class EmployeeIdCard {
+    private let number: UInt64
+    private unowned let employee: Employee
+    init(number: UInt64, employee: Employee) {
+        self.number = number
+        self.employee = employee
+    }
+    deinit {
+        print("Employee ID card '\(number)' is being deinitialized.")
+    }
+}
 
+func createUnownedReferenceCycle() {
+    print("*** Unowned reference cycle ***")
+    
+    var employee: Employee? = Employee(name: "foo")
+    let idCard = EmployeeIdCard(number: 1111_2222_3333_4444, employee: employee!)
+    
+    employee!.receiveIdCard(idCard: idCard)
+    
+    employee = nil
+    
+    //idCardにnilを代入しなくてもEmployeeIdCardのdeinitが呼び出される。
+}
 
+//Unowned References and Implicitly Unwrapped Optional Properties
+private class Area {
+    let name: String
+    init(name: String) {
+        self.name = name
+    }
+    deinit {
+        print("Area '\(name)' is being deinitialized.")
+    }
+}
 
+private class Prefecture: Area {
+    //最後の!はnilをデフォルト値として持つことを示す。
+    //?を付けた場合と異なり参照する側で!を付ける必要が無い。
+    private var prefectureCode: AddressCode!
+    init(name: String, code: UInt64) {
+        super.init(name: name)
+        self.prefectureCode = AddressCode(code: code, area: self)
+    }
+    var code: AddressCode {
+        return prefectureCode
+    }
+    deinit {
+        print("Prefecture('\(prefectureCode.description)') is being deinitialized.")
+    }
+}
 
+private class AddressCode {
+    let code: UInt64
+    unowned let area: Area
+    init(code: UInt64, area: Area) {
+        self.code = code
+        self.area = area
+    }
+    var description: String {
+        return "address code = '\(code)'"
+    }
+    deinit {
+        print("Address code '\(code)' is being deinitialized.")
+    }
+}
 
+func printImplicitlyProperty() {
+    let pref = Prefecture(name: "Tokyo", code: 13)
+    print("\(pref.name) has \(pref.code.description)")
+    
+    //関数の処理が完了するとPrefecture，Area，AddressCodeの順でdeinitが呼び出される。
+    //AddressCodeのareaプロパティにunownedが指定されていなかったらどのdeinitも呼び出されない。
+}
 
-
-
+//Strong Reference Cycles for Closures
 
 
 

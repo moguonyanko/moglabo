@@ -134,6 +134,8 @@ private func runPracticesDeinitialization() {
 private func runPracticesAutomaticReferenceCounting() {
     //createStrongReferenceCycle()
     createWeakReferenceCycle()
+    createUnownedReferenceCycle()
+    printImplicitlyProperty()
 }
 
 //Entry point
