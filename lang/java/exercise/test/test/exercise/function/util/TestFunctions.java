@@ -79,6 +79,8 @@ import exercise.function.CollectionFactory;
 import exercise.function.util.CheckedExceptionWrapper;
 import exercise.function.util.CheckedStream;
 import exercise.function.util.CheckedFunction;
+import exercise.function.HTMLElement;
+import java.lang.ref.WeakReference;
 
 /**
  * 参考：
@@ -4105,5 +4107,48 @@ public class TestFunctions {
 		
 		System.out.println(Arrays.toString(a));
     }
+	
+	/**
+	 * HTMLElementのオブジェクト生成時に確保したメモリが解放されない。
+	 * staticなラムダ式の評価だけを行った場合でもメモリが解放されない。
+	 * HTMLElementのオブジェクトにnullを代入してもメモリは解放されない。
+	 */
+	private String getHTML(String name, String text) {
+		HTMLElement element = new HTMLElement(name, text);
+		String result = element.asHTML.get();
+		return result;
+		//return HTMLElement.asStaticHTML.apply(name, text);
+	}
+	
+	@Test
+	public void クロージャにおける循環参照でメモリリークが発生する() {
+		Runtime runtime = Runtime.getRuntime();
+		long beforeUsedMemory = runtime.totalMemory() - runtime.freeMemory();
+		System.out.println("Before:Used memory = " + beforeUsedMemory);
+		
+		String name = "p";
+		String text = "sample";
+		int limit = 10;
+		//メモリ使用量を分かりやすく増やすためにメソッドを何回も呼び出している。
+		//メソッドを呼び出した後に余計なメモリを確保しないように戻り値は全て破棄している。
+		for (int i = 0; i < limit; i++) {
+			getHTML(name, text);
+		}
+		
+		//String expected = "<p>sample</p>";
+		//String actual = getHTML(name, text);
+		//assertThat(actual, is(expected));
+		
+		//Runtime.gc()を呼び出せばメモリが解放される。
+		//runtime.gc();
+		long afterUsedMemory = runtime.totalMemory() - runtime.freeMemory();
+		System.out.println("After:Used memory = " + afterUsedMemory);
+		
+		/**
+		 * 多少メモリ使用量が増えているのは不思議ではないが
+		 * HTMLElementで確保したメモリが全く解放されていない。
+		 */
+		assertTrue(afterUsedMemory > beforeUsedMemory);
+	}
 	
 }
