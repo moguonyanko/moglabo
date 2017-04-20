@@ -80,7 +80,6 @@ import exercise.function.util.CheckedExceptionWrapper;
 import exercise.function.util.CheckedStream;
 import exercise.function.util.CheckedFunction;
 import exercise.function.HTMLElement;
-import java.lang.ref.WeakReference;
 
 /**
  * 参考：
