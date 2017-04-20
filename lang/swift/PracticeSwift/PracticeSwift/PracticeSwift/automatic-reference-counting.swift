@@ -185,15 +185,51 @@ func printImplicitlyProperty() {
     //AddressCodeのareaプロパティにunownedが指定されていなかったらどのdeinitも呼び出されない。
 }
 
-//Strong Reference Cycles for Closures
+//Resolving Strong Reference Cycles for Closures
+private class Addition {
+    let x: Int
+    //!でOptionalを得た場合は参照する側で?や!を付ける必要が無くなるが
+    //オブジェクトがnilだった場合エラーになる。
+    //?でOptionalを得た場合は変数の末尾に?や!を付けて参照することを強制される。
+    //?を付けてnilを参照した場合，String型の値を得る操作を行ったのならばnilという文字列が得られる。
+    //!を付けてnilを参照した場合はエラーになる。つまり!でOptionalを得た場合と同じ動作になる。
+    let y: Int!
+    
+    init(_ x: Int, _ y: Int!) {
+        self.x = x
+        self.y = y
+    }
+    
+    lazy var calc: () -> Int = {
+        //selfをunowned referenceにすることでAdditionのオブジェクトの参照が
+        //nilになった時にdeinitが呼び出される。
+        //closure内のselfは常にunowned referenceにする訳にはいかなかったのだろうか。
+        [unowned self] in
+        if let y = self.y {
+            return self.x + y
+        } else {
+            return self.x
+        }
+    }
+    
+    deinit {
+        //Int型の値から文字列を得るにはdescriptionを使う。そうしなければ
+        //Optionalだった場合にOptional(10)のような結果になってしまう。
+        print("'\(x.description) plus \(y.description)' is being deinitialized.")
+    }
+}
 
-
-
-
-
-
-
-
-
-
-
+func resolveReferenceCycleByClosure() {
+    let x = 10, y = 20
+    var addition: Addition? = Addition(x, y)
+    let result = addition?.calc().description
+    
+    //calc()の戻り値はInt型なのでdescriptionを経由しない場合
+    //??の後のデフォルト値にString型を指定することができない。
+    print("Calculation result = \(result ?? "No Data")")
+    
+    addition = nil
+    
+    //calc内のselfがunowned referenceでなかった場合はAdditionのオブジェクトが
+    //deinitializeされない。
+}

@@ -136,6 +136,7 @@ private func runPracticesAutomaticReferenceCounting() {
     createWeakReferenceCycle()
     createUnownedReferenceCycle()
     printImplicitlyProperty()
+    resolveReferenceCycleByClosure()
 }
 
 //Entry point
