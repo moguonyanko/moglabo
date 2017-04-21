@@ -132,11 +132,21 @@ private func runPracticesDeinitialization() {
 }
 
 private func runPracticesAutomaticReferenceCounting() {
-    //createStrongReferenceCycle()
+    createStrongReferenceCycle()
     createWeakReferenceCycle()
     createUnownedReferenceCycle()
     printImplicitlyProperty()
     resolveReferenceCycleByClosure()
+}
+
+private func runPracticesOptionalChaining() {
+    checkOptionalChainingByAccessingProperties()
+    failSetProperty()
+    printVoidResult()
+    checkOptionalChainingByAccessingSubscripts()
+    printOptionalTypeOfDictionary()
+    printOptionalTypeByMultipleChaining()
+    printResultWithMultipleOptionReturnValues()
 }
 
 //Entry point
@@ -156,7 +166,8 @@ private func runPractices() {
     //runPracticesInheritance()
     //runPracticesInitialization()
     //runPracticesDeinitialization()
-    runPracticesAutomaticReferenceCounting()
+    //runPracticesAutomaticReferenceCounting()
+    runPracticesOptionalChaining()
 }
 
 runPractices()
