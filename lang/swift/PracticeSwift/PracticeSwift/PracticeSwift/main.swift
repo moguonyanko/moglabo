@@ -151,6 +151,8 @@ private func runPracticesOptionalChaining() {
 
 private func runPracticesErrorhandling() {
     checkMyError()
+    convertErrorToOptionalalue()
+    notPropagateError()
 }
 
 //Entry point

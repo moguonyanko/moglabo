@@ -12,7 +12,8 @@ private enum MyError: Error {
     case invalidAccess
 }
 
-//throwsを指定するとエラーハンドリングを強制することができる。
+//throwsを指定するとエラーハンドリングを強制される。
+//throwsを指定していない関数でエラーをスローすることはできない。
 private func canMyError(occurError: Bool) throws -> String {
     if occurError {
         throw MyError.invalidAccess
@@ -30,11 +31,34 @@ func checkMyError() {
         let result = try canMyError(occurError: occurError)
         print("Returned \(result).")
     } catch MyError.invalidAccess {
+        //catchでエラーのパターンマッチングが行われる。
+        //エラーをenumで定義するのはそのためではないだろうか。
         print("Catched my error invalid access.")
     } catch {
         //特定のcaseを指定しないcatchブロックが無いとコンパイルエラー。
         print("Catched unknown error.")
     }
 }
+
+//エラーは基本的に「チェック例外」のようなものである。
+//ただしどう「チェック」するのかはプログラマに委ねられる。
+//try，try?，try!のどれを使うかによってエラーハンドリングは変わってくる。
+
+//Converting Errors to Optional Values
+func convertErrorToOptionalalue() {
+    let result = try? canMyError(occurError: true)
+    print("Convert error to optional value: \(result?.description ?? "converted")")
+}
+
+//Disabling Error Propagation
+func notPropagateError() {
+    //occurErrorをtrueにした場合，resultに値が設定されないので実行時エラーになる。
+    let result = try! canMyError(occurError: false)
+    print("Disabled error propagation: \(result.description)")
+}
+
+
+
+
 
 
