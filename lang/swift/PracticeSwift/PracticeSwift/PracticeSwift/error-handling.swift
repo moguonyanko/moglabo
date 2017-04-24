@@ -12,7 +12,7 @@ private enum MyError: Error {
     case invalidAccess
 }
 
-//throwsを指定するとエラーハンドリングを強制される。
+//throwsを指定すると関数を呼び出した側はエラーハンドリングを強制される。
 //throwsを指定していない関数でエラーをスローすることはできない。
 private func canMyError(occurError: Bool) throws -> String {
     if occurError {
@@ -41,7 +41,8 @@ func checkMyError() {
 }
 
 //エラーは基本的に「チェック例外」のようなものである。
-//ただしどう「チェック」するのかはプログラマに委ねられる。
+//throwsを指定された関数を呼び出した場合，エラーハンドリングを強制される。
+//ただしどのようなコードでハンドリングするのかはプログラマに委ねられる。
 //try，try?，try!のどれを使うかによってエラーハンドリングは変わってくる。
 
 //Converting Errors to Optional Values
