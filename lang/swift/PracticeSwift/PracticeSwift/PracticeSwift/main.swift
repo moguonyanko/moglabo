@@ -149,6 +149,10 @@ private func runPracticesOptionalChaining() {
     printResultWithMultipleOptionReturnValues()
 }
 
+private func runPracticesErrorhandling() {
+    checkMyError()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -167,7 +171,8 @@ private func runPractices() {
     //runPracticesInitialization()
     //runPracticesDeinitialization()
     //runPracticesAutomaticReferenceCounting()
-    runPracticesOptionalChaining()
+    //runPracticesOptionalChaining()
+    runPracticesErrorhandling()
 }
 
 runPractices()
