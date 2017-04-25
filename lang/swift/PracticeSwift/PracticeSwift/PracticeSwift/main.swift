@@ -153,6 +153,10 @@ private func runPracticesErrorhandling() {
     checkMyError()
     convertErrorToOptionalalue()
     notPropagateError()
+    handleErrorByDoCatch()
+    handleErrorByOptionalValue()
+    handleErrorWithoutPropagation()
+    finishWorkByDefer()
 }
 
 //Entry point
