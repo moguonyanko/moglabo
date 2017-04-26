@@ -159,6 +159,10 @@ private func runPracticesErrorhandling() {
     finishWorkByDefer()
 }
 
+private func runPracticesTypeCasting() {
+    checkingTypeWithDuducing()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -178,7 +182,8 @@ private func runPractices() {
     //runPracticesDeinitialization()
     //runPracticesAutomaticReferenceCounting()
     //runPracticesOptionalChaining()
-    runPracticesErrorhandling()
+    //runPracticesErrorhandling()
+    runPracticesTypeCasting()
 }
 
 runPractices()
