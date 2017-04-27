@@ -161,6 +161,7 @@ private func runPracticesErrorhandling() {
 
 private func runPracticesTypeCasting() {
     checkingTypeWithDuducing()
+    donwcastObjects()
 }
 
 //Entry point
