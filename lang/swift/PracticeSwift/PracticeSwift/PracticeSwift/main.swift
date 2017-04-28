@@ -166,6 +166,10 @@ private func runPracticesTypeCasting() {
     displayAnyObjectList()
 }
 
+private func runPracticesNestedTypes() {
+    displayNestedTypeValues()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -186,7 +190,8 @@ private func runPractices() {
     //runPracticesAutomaticReferenceCounting()
     //runPracticesOptionalChaining()
     //runPracticesErrorhandling()
-    runPracticesTypeCasting()
+    //runPracticesTypeCasting()
+    runPracticesNestedTypes()
 }
 
 runPractices()
