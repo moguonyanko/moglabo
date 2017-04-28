@@ -163,6 +163,7 @@ private func runPracticesTypeCasting() {
     checkingTypeWithDuducing()
     donwcastObjects()
     displayAnyListElementsByMatching()
+    displayAnyObjectList()
 }
 
 //Entry point

@@ -13,6 +13,9 @@ private class Vehicle {
     init(name: String) {
         self.name = name
     }
+    var description: String {
+        return name
+    }
 }
 
 private class Truck: Vehicle {
@@ -115,7 +118,8 @@ func displayAnyListElementsByMatching() {
             print("\(thing)(zero) as a Double")
         case let someInt as Int:
             print("\(someInt) as an Int")
-        //Anyからoptional typeへのキャストはできない。　
+        //Anyからoptional typeへのキャストはできない。
+        //case内でなければas?やas!を使うことでキャストすることができる。
         //case let someOptionalInt as Int?:
         //    print("\(someOptionalInt) as an optional Int")
         case let someDouble as Double where someDouble < 0:
@@ -131,12 +135,42 @@ func displayAnyListElementsByMatching() {
         case let square as (Int) -> Int:
             print("a square of 2 is \(square(2))")
         default:
-            print("something else")
+            print("something else: \(thing)")
         }
     }
 }
 
+private struct Fruit {
+    let name: String
+}
 
+func displayAnyObjectList() {
+    var things = [AnyObject]()
+    
+    //AnyObjectとして扱えるのはclassを介して生成されたオブジェクトのみ。
+    //他はstructureも含め全てコンパイルエラーになる。
+    //things.append("Good night")
+    //things.append(Fruit(name: "lemon"))
+    //things.append(123)
+    //things.append({ (name: String) -> String in name + "!" })
+    things.append(Truck(name: "My truck", capacity: 6))
+    things.append(Boat(name: "Your motor boat", hasMotor: true))
+    
+    let truck: Truck? = Truck(name: "Any truck", capacity: 2)
+    //optional typeは!を付けてunwrapするかasでAnyObjectにキャストしないと追加できない。
+    //optional typeはAnyでもAnyObjectでもないということか。
+    //asでキャストした時にunwrapされるのかもしれない。
+    things.append(truck!)
+    things.append(truck as AnyObject)
+    
+    //as?やas!でAnyObjectから他の型にキャストできる。
+    let vehicles = things.map({ (t: AnyObject) -> Vehicle in t as! Vehicle } )
+    
+    let desc = vehicles.map({ (v: Vehicle) -> String in v.description })
+                        .joined(separator: ",")
+    
+    print("AnyObject list: \(desc)")
+}
 
 
 
