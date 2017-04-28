@@ -76,6 +76,66 @@ func donwcastObjects() {
     }
 }
 
+//Type Casting for Any and AnyObject
+private func getAnyList() -> [Any] {
+    var anys = [Any]()
+    
+    anys.append(1)
+
+    let n: Int? = nil
+    //optional typeはAnyにキャストしないと警告が出る。
+    //anys.append(n)
+    anys.append(n as Any)
+    
+    anys.append(0)
+    anys.append(0.0)
+    anys.append(1.23)
+    anys.append(-5.5)
+    anys.append("Hello, world.")
+    anys.append(("My score", 100))
+    anys.append(Boat(name: "My canoe", hasMotor: false))
+    //{ (引数名: 引数の型) -> 戻り値の型 in 関数本体 }
+    anys.append({ (value: Int) -> Int in value + value })
+    
+    return anys
+}
+
+func displayAnyListElementsByMatching() {
+    let things = getAnyList()
+    
+    for thing in things {
+        switch thing {
+        case 0 as Int:
+            print("\(thing)(zero) as an Int")
+        //以下のcaseではDouble型でthingをマッチしようとする。
+        //しかしながらthingはAny型なのでコンパイルエラーとなる。
+        //case 0.0:
+        //    print("\(thing) as a Double")
+        case 0 as Double:
+            print("\(thing)(zero) as a Double")
+        case let someInt as Int:
+            print("\(someInt) as an Int")
+        //Anyからoptional typeへのキャストはできない。　
+        //case let someOptionalInt as Int?:
+        //    print("\(someOptionalInt) as an optional Int")
+        case let someDouble as Double where someDouble < 0:
+            print("\(someDouble) is negative double value")
+        case is Double:
+            print("\(thing) is some double value")
+        case let someString as String:
+            print("a string value of \"\(someString)\"")
+        case let (name, value) as (String, Int):
+            print("\(name) gets \(value) point")
+        case let boat as Boat:
+            print("\(boat.name) has \(boat.hasMotor ? "" : "not") motor")
+        case let square as (Int) -> Int:
+            print("a square of 2 is \(square(2))")
+        default:
+            print("something else")
+        }
+    }
+}
+
 
 
 

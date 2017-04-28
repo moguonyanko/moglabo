@@ -162,6 +162,7 @@ private func runPracticesErrorhandling() {
 private func runPracticesTypeCasting() {
     checkingTypeWithDuducing()
     donwcastObjects()
+    displayAnyListElementsByMatching()
 }
 
 //Entry point
