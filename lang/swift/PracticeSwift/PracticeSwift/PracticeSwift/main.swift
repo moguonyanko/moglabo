@@ -170,6 +170,10 @@ private func runPracticesNestedTypes() {
     displayNestedTypeValues()
 }
 
+private func runPracticesExtensions() {
+    calcByCustomExtension()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -191,7 +195,8 @@ private func runPractices() {
     //runPracticesOptionalChaining()
     //runPracticesErrorhandling()
     //runPracticesTypeCasting()
-    runPracticesNestedTypes()
+    //runPracticesNestedTypes()
+    runPracticesExtensions()
 }
 
 runPractices()
