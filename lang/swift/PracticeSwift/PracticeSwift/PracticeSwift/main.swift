@@ -172,6 +172,11 @@ private func runPracticesNestedTypes() {
 
 private func runPracticesExtensions() {
     calcByCustomExtension()
+    adaptExtensionsWithInitializers()
+    printCustomMapResults()
+    displayMutatingMethod()
+    updateStringsByExtensionSubscript()
+    classifyNumbersByExtension()
 }
 
 //Entry point
