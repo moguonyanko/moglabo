@@ -179,6 +179,10 @@ private func runPracticesExtensions() {
     classifyNumbersByExtension()
 }
 
+private func runPracticesProtocols() {
+    
+}
+
 //Entry point
 
 private func runPractices() {
@@ -201,7 +205,8 @@ private func runPractices() {
     //runPracticesErrorhandling()
     //runPracticesTypeCasting()
     //runPracticesNestedTypes()
-    runPracticesExtensions()
+    //runPracticesExtensions()
+    runPracticesProtocols()
 }
 
 runPractices()
