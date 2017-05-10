@@ -223,5 +223,100 @@
 		"name": "Late 298B",
 		"type": "SB",
 		"ack": 1
-	}	
+	},
+    "hayabusa64": {
+		"name": "一式戦 隼Ⅱ型(64戦隊)",
+		"type": "RS",
+		"ack": 11,
+        "intercept": 5,
+        "antibomb": 1
+    },
+    "hayabusa54": {
+		"name": "一式戦 隼Ⅲ型甲(54戦隊)",
+		"type": "RS",
+		"ack": 8,
+        "intercept": 3,
+        "antibomb": 1
+    },
+    "hayabusa_2": {
+		"name": "一式戦 隼Ⅱ型",
+		"type": "RS",
+		"ack": 6,
+        "intercept": 2
+    },
+    "hayabusa_2": {
+		"name": "一式戦 隼Ⅲ型甲",
+		"type": "RS",
+		"ack": 7,
+        "intercept": 3,
+        "antibomb": 1
+    },
+    "hien244": {
+		"name": "三式戦 飛燕(飛行244戦隊)",
+		"type": "RS",
+		"ack": 9,
+        "intercept": 4,
+        "antibomb": 3
+    },
+    "hien1t": {
+		"name": "三式戦 飛燕一型丁",
+		"type": "RS",
+		"ack": 9,
+        "intercept": 3,
+        "antibomb": 2
+    },
+    "raiden": {
+		"name": "雷電",
+		"type": "KYS",
+		"ack": 6,
+        "intercept": 2,
+        "antibomb": 5
+    },
+    "rikko96": {
+		"name": "九六式陸攻",
+		"type": "RK",
+		"ack": 1
+    },
+    "rikko1": {
+		"name": "一式陸攻",
+		"type": "RK",
+		"ack": 2
+    },
+    "rikko1_22k": {
+		"name": "一式陸攻二二型甲",
+		"type": "RK",
+		"ack": 3
+    },
+    "rikko1_34": {
+		"name": "一式陸攻三四型",
+		"type": "RK",
+		"ack": 4
+    },
+    "rikko1_nonaka": {
+		"name": "一式陸攻(野中隊)",
+		"type": "RK",
+		"ack": 3
+    },
+    "ginga": {
+		"name": "銀河",
+		"type": "RK",
+		"ack": 3
+    },
+    "hayabusa55": {
+		"name": "爆装一式戦 隼Ⅲ型改(55戦隊)",
+		"type": "RK",
+		"ack": 6
+    },
+    "taiteichan": {
+		"name": "二式大艇",
+		"type": "ST"
+    },
+    "catarina": {
+		"name": "PBY-5A Catalina",
+		"type": "ST"
+    },
+    "saiun": {
+		"name": "彩雲",
+		"type": "KT"
+    }
 }

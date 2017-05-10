@@ -234,5 +234,13 @@
 	"sara": {
 		"name": "Saratoga改",
 		"slotComposition": [36, 18, 18, 18]
-	}
+	},
+    "ab_case1": {
+		"name": "基地航空隊(戦闘機・攻撃機)",
+		"slotComposition": [18, 18, 18, 18]
+    },
+    "ab_case2": {
+		"name": "基地航空隊(偵察機・戦闘機・攻撃機)",
+		"slotComposition": [4, 18, 18, 18]
+    }
 }
