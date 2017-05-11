@@ -180,7 +180,9 @@ private func runPracticesExtensions() {
 }
 
 private func runPracticesProtocols() {
-    
+    checkProtocolAccessor()
+    checkProtocolMethods()
+    checkProtocolMutating()
 }
 
 //Entry point
