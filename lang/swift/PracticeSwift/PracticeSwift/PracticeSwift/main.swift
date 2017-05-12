@@ -183,6 +183,8 @@ private func runPracticesProtocols() {
     checkProtocolAccessor()
     checkProtocolMethods()
     checkProtocolMutating()
+    checkProtocolInitializer()
+    checkProtocolFailableInitializer()
 }
 
 //Entry point

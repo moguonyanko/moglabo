@@ -156,6 +156,86 @@ func checkProtocolMutating() {
     print(robot.description)
 }
 
+//Initializer Requirements
+//Class Implementations of Protocol Initializer Requirements
+private protocol Agable {
+    init(age: Int)
+}
+
+//classとprotocolを両方指定した場合の振る舞いを確認するために
+//AnimalにはAgableを実装しない。
+private class Animal {
+    let age: Int
+    //継承された際に他のprotocolのinitとシグネチャが衝突しても
+    //サブクラスでoverrideが指定されれば問題無い。
+    init(age: Int) {
+        self.age = age
+    }
+}
+
+private class Human: Animal, Agable {
+    private var name: String
+    //protocolで宣言されたものと同じシグネチャのinitが定義されなければコンパイルエラーになる。
+    //変数名も一致していなければならない。finalクラスでなければrequiredの指定も必須である。
+    //requiredが指定されることによりprotocolの要求するinitの定義をサブクラスでも強制できる。
+    required override init(age: Int) {
+        //このname初期化はsuper.initより上に書かないとコンパイルエラーになる。
+        //スーパークラスではなく自身のプロパティ初期化だからかもしれない。
+        self.name = "anonymous"
+        super.init(age: age)
+    }
+    convenience init(name: String, age: Int) {
+        self.init(age: age)
+        //namerは継承されたプロパティではないが以下の文はself.initよりも上に書くことはできない。
+        self.name = name
+    }
+    var description: String {
+        return "\(name) is \(super.age) years old."
+    }
+}
+
+func checkProtocolInitializer() {
+    let foo = Human(name: "Foo", age: 45)
+    print(foo.description)
+}
+
+//Failable Initializer Requirements
+private protocol Failable {
+    init?(name: String)
+}
+
+private class SampleUser: Failable {
+    private var name: String!
+    //init?ではなくinitにしてもコンパイルできる。
+    //つまりfailableをnon-failableにして実装するのは問題無い。
+    //逆にnon-failableなinitをfailableにして実装しようとするとコンパイルエラーになる。
+    required init?(name: String) {
+        if name.isEmpty {
+            return nil
+        }
+        self.name = name
+    }
+    var description: String {
+        return "User name is \"\(name)\""
+    }
+}
+
+func checkProtocolFailableInitializer() {
+    if let u = SampleUser(name: "") {
+        print(u.description)
+    } else {
+        print("Failed creating user.")
+    }
+}
+
+//Protocols as Types
+
+
+
+
+
+
+
 
 
 
