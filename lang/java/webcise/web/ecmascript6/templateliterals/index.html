@@ -128,6 +128,37 @@
                 </div>
 				<div class="result-area"></div>
 			</section>
+            <section class="tag-function-sample">
+                <style scoped="scoped">
+                    .user-container-output {
+                        width: 50vw;
+                        height: 5em;
+                        background-color: lightgray;
+                    }
+                </style>
+                <h2>Tag Function</h2>
+                <p>
+                    Tag Functionの引数を元にテンプレートを生成することができます。<br />
+                    Tag Functionの戻り値は文字列だけでなく関数を指定することもできます。
+                </p>
+                <div class="user-container-output"></div>
+                <div>
+                    <div>
+                        <p>Template Type</p>
+                        <div class="template-type-container">
+                            <label><input name="template-type" type="radio" value="html" checked="checked" />HTML</label>
+                            <label><input name="template-type" type="radio" value="json" />JSON</label>
+                            <label><input name="template-type" type="radio" value="properties" />PROPERTIES</label>
+                        </div>
+                    </div>
+                    <label>title<input class="user-container-title" type="text" value="My container" /></label>
+                    <label>contents<input class="user-container-contents" type="text" value="HELLO" /></label>
+                </div>
+                <div>
+                    <button class="runner">run</button>
+                    <button class="clearer">clear</button>
+                </div>
+            </section>
         </div>
 
         <aside role="complementary">

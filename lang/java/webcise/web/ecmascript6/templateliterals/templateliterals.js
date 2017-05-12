@@ -114,6 +114,8 @@
 			};
 			
 			/**
+             * Tag Function
+             * 
 			 * 第1引数は「${}を使わずに渡された文字列」の配列になる。
 			 * 例えば sampleFunc`${a}and${b}` だった場合，第1引数は
 			 * ["", "and", ""]
@@ -142,7 +144,104 @@
             
             m.clickListener(m.select(base + " .clearer"), 
 				() => m.clear(resultArea));
-		}
+		},
+        () => {
+            /**
+             * Tag Functionは文字列だけでなく関数を返すこともできる。
+             * 
+             * 参考：
+             * https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Template_literals
+             * 「Tagged template literals」
+             */
+            const createTemplate = (strings, ...keys) => (...values) => {
+                //console.log(strings, keys, values);
+                const dict = values[values.length - 1] || {};
+                const result = [strings[0]];
+                keys.forEach((key, i) => {
+                    const value = Number.isInteger(key) ? values[key] : dict[key];
+                    result.push(value, strings[i + 1]);
+                });
+                return result.join("");
+            };
+            
+            const testTagFunction = () => {
+                const template1 = createTemplate`${0}${0}${1}!!!`;
+                const result1 = template1("A", "H");
+                console.log(result1);
+                
+                const template2 = createTemplate`${0} ... ${"templateDictKey"}!`;
+                const result2 = template2("My name is", { templateDictKey: "hogehoge" });
+                console.log(result2);
+                
+                const tagFunc = strings => {
+                    return {
+                        /**
+                         * 引数がエスケープ文字を含んでいる場合，rawプロパティを
+                         * 経由しないと引数の文字列の内容をそのまま扱うことができない。
+                         * ブラウザのECMAScriptサポート状況によってはシンタックスエラーになる。
+                         */
+                        value: `*** ${strings[0]} ***`,
+                        raw: `*** ${strings.raw[0]} ***`
+                    };
+                };
+                const result3 = tagFunc`\table`;
+                console.log(result3.value, result3.raw);
+            };
+            
+            /**
+             * 実運用ではこのようなテンプレートは別のJSONかデータベースに
+             * 保存しておくと思われる。
+             */
+            const definedTemplates = {
+                html: createTemplate`
+<div class="user-container"><p>${0}</p><div class="user-contents">${"content"}</div></div>`,
+                properties: createTemplate`${0}=${"content"}`,
+                json: createTemplate`{ "${0}": "${"content"}" }`
+            };
+            
+            const createContainer = ({
+                type = "html",
+                title = "none", 
+                contents = { content: "something else" }
+            } = {}) => {
+                return definedTemplates[type](title, contents);
+            };
+            
+            /**
+             * 以下からWebページの構築に関わるコードになる。
+             * DOMにアクセスするコードは分離するのが好ましい。
+             */
+            
+            const base = ".tag-function-sample ",
+                containerParent = doc.querySelector(base + ".user-container-output");                
+                
+            const getTempalteType = () => {
+                const cont = doc.querySelector(base + ".template-type-container");
+                const typeEles = cont.querySelectorAll("input[name=\"template-type\"]");
+                const selectedTypeEles = Array.from(typeEles).filter(ele => ele.checked);
+                return (selectedTypeEles[0] || {}).value;
+            }; 
+                
+            const listener = () => {
+                testTagFunction();
+                
+                const titleEle = doc.querySelector(base + ".user-container-title"),
+                    contentsEle = doc.querySelector(base + ".user-container-contents");
+                
+                const title = titleEle.value, 
+                    contents = {
+                        content: contentsEle.value
+                    };
+                
+                const type = getTempalteType();
+                const result = createContainer({ type, title, contents });
+                containerParent.innerHTML = result;
+            };
+            
+            doc.querySelector(base + ".runner").addEventListener("click", listener);
+            doc.querySelector(base + ".clearer").addEventListener("click", 
+                () => containerParent.innerHTML = "");
+        }
     ];
     
     m.loadedHook(() => initTargets.forEach(f => f()));
