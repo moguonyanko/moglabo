@@ -229,6 +229,38 @@ func checkProtocolFailableInitializer() {
 }
 
 //Protocols as Types
+private protocol BiCalculator {
+    func calc(right: Int, left: Int) -> Int
+}
+
+private class CalcMachine {
+    private let args: [(Int, Int)]
+    private let calculator: BiCalculator
+    init(args: [(Int, Int)], calculator: BiCalculator) {
+        self.args = args
+        self.calculator = calculator
+    }
+    func printAllResult() {
+        for (x, y) in args {
+            print("\(x) and \(y) are calculated to \(calculator.calc(right: x, left: y))")
+        }
+    }
+}
+
+private class Multiplyer: BiCalculator {
+    func calc(right: Int, left: Int) -> Int {
+        return right * left
+    }
+}
+
+func executeCalclationsByProtocolType() {
+    let args = [
+        (2, 2), (10, 13), (973, 47)
+    ]
+    let calculator = Multiplyer()
+    let machine = CalcMachine(args: args, calculator: calculator)
+    machine.printAllResult()
+}
 
 
 
