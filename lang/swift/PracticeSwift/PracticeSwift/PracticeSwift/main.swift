@@ -186,6 +186,7 @@ private func runPracticesProtocols() {
     checkProtocolInitializer()
     checkProtocolFailableInitializer()
     executeCalclationsByProtocolType()
+    displayDelegationObjects()
 }
 
 //Entry point

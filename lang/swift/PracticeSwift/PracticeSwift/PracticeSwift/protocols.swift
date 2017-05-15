@@ -240,7 +240,7 @@ private class CalcMachine {
         self.args = args
         self.calculator = calculator
     }
-    func printAllResult() {
+    func printAllResults() {
         for (x, y) in args {
             print("\(x) and \(y) are calculated to \(calculator.calc(right: x, left: y))")
         }
@@ -259,17 +259,133 @@ func executeCalclationsByProtocolType() {
     ]
     let calculator = Multiplyer()
     let machine = CalcMachine(args: args, calculator: calculator)
-    machine.printAllResult()
+    machine.printAllResults()
 }
 
+//Delegation
+//参考:「オブジェクト指向のこころ」P.163
+private protocol Drawable {
+    func draw()
+}
 
+private protocol Drawing {
+    //引数の型はDrawableでもいいような気もする。
+    //ただしこのシグネチャの方がDrawableとDrawingは疎結合になる。
+    func drawLine(x1: Double, y1: Double, x2: Double, y2: Double)
+    func drawCircle(x: Double, y: Double, r: Double)
+}
 
+//Javaの抽象クラスにあたるものが無いため，BaseShapeにDrawableを実装させようとすると
+//空のdrawを実装する必要が出てきてしまう。
+private class BaseShape: Drawable {
+    //描画処理を委譲するためのDrawingオブジェクト
+    //このクラスもサブクラスも描画処理の詳細を知る必要が無い。
+    private let drawing: Drawing
+    init(drawing: Drawing) {
+        self.drawing = drawing
+    }
+    //コンパイルを通すためだけに書かれたメソッド
+    //init以外にrequiredを指定することはできない。
+    //overrideを付けるとコンパイルエラーになる。
+    func draw() {}
+    func drawLine(x1: Double, y1: Double, x2: Double, y2: Double) {
+        drawing.drawLine(x1: x1, y1: y1, x2: x2, y2: y2)
+    }
+    func drawCircle(x: Double, y: Double, r: Double) {
+        drawing.drawCircle(x: x, y: y, r: r)
+    }
+}
 
+private class Rectangle: BaseShape {
+    private let x1: Double
+    private let y1: Double
+    private let x2: Double
+    private let y2: Double
+    init(drawing: Drawing, x1: Double, y1: Double, x2: Double, y2: Double) {
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+        //super.initは最後に書かないとコンパイルエラーにされることが多い？
+        super.init(drawing: drawing)
+    }
+    override func draw() {
+        drawLine(x1: x1, y1: y1, x2: x2, y2: y1)
+        drawLine(x1: x2, y1: y1, x2: x2, y2: y2)
+        drawLine(x1: x2, y1: y2, x2: x1, y2: y2)
+        drawLine(x1: x1, y1: y2, x2: x1, y2: y1)
+    }
+}
 
+private class Circle: BaseShape {
+    private let x: Double
+    private let y: Double
+    private let r: Double
+    init(drawing: Drawing, x: Double, y: Double, r: Double) {
+        self.x = x
+        self.y = y
+        self.r = r
+        super.init(drawing: drawing)
+    }
+    override func draw() {
+        drawCircle(x: x, y: y, r: r)
+    }
+}
 
+private class FastDrawing: Drawing {
+    //protocolのメソッドを実装する際にoverrideを指定するとコンパイルエラーになる。
+    func drawLine(x1: Double, y1: Double, x2: Double, y2: Double) {
+        print("Drawing line fast!:x1=\(x1),y1=\(y1),x2=\(x2),y2=\(y2)")
+    }
+    func drawCircle(x: Double, y: Double, r: Double) {
+        print("Drawing circle fast!:x=\(x),y=\(y),r=\(r)")
+    }
+}
 
+private class QualityDrawing: Drawing {
+    func drawLine(x1: Double, y1: Double, x2: Double, y2: Double) {
+        print("Drawing line high quality!:x1=\(x1),y1=\(y1),x2=\(x2),y2=\(y2)")
+    }
+    func drawCircle(x: Double, y: Double, r: Double) {
+        print("Drawing circle high quality!:x=\(x),y=\(y),r=\(r)")
+    }
+}
 
+private enum DrawingError: Error {
+    case unsupported(type: String)
+}
 
+private func createDrawing(type: String) throws -> Drawing {
+    if type.lowercased() == "fast" {
+        return FastDrawing()
+    } else if type.lowercased() == "quality" {
+        return QualityDrawing()
+    } else {
+        throw DrawingError.unsupported(type: type)
+    }
+}
+
+func displayDelegationObjects() {
+    do {
+        let fastDrawing = try createDrawing(type: "fast")
+        let qualityDrawing = try createDrawing(type: "quality")
+        
+        let rect = Rectangle(drawing: fastDrawing, x1: 1.0, y1: 1.0, x2: 2.0, y2: 2.0)
+        rect.draw()
+        let circle = Circle(drawing: qualityDrawing, x: 3.5, y: 4.5, r: 10.5)
+        circle.draw()
+        let circle2 = Circle(drawing: fastDrawing, x: 7.2, y: 3.9, r: 12.3)
+        circle2.draw()
+        
+        let _ = try createDrawing(type: "real")
+    } catch DrawingError.unsupported(let type) {
+        print("\"\(type)\" is unsupported!")
+    } catch {
+        print("Drawing is failed.")
+    }
+}
+
+//Adding Protocol Conformance with an Extension
 
 
 
