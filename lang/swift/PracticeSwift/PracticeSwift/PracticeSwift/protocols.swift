@@ -266,6 +266,7 @@ func executeCalclationsByProtocolType() {
 //参考:「オブジェクト指向のこころ」P.163
 private protocol Drawable {
     func draw()
+    var coords: [(Double, Double)] { get }
 }
 
 private protocol Drawing {
@@ -277,17 +278,18 @@ private protocol Drawing {
 
 //Javaの抽象クラスにあたるものが無いため，BaseShapeにDrawableを実装させようとすると
 //空のdrawを実装する必要が出てきてしまう。
-private class BaseShape: Drawable {
+//しかしSwiftではサブクラスが各々protocolを実装する方が良いのかもしれない。
+//そうする利点としては以下の点が挙げられる。
+//・そのclassがprotocolを実装していることが明白になる。
+//・そのclassがそのprotocolの型で参照できることが明確になる。
+//・実装を強制したい抽象的なコードと実装された具象的なコードがprotocolとclassで明確に分かれる。
+private class BaseShape {
     //描画処理を委譲するためのDrawingオブジェクト
     //このクラスもサブクラスも描画処理の詳細を知る必要が無い。
     private let drawing: Drawing
     init(drawing: Drawing) {
         self.drawing = drawing
     }
-    //コンパイルを通すためだけに書かれたメソッド
-    //init以外にrequiredを指定することはできない。
-    //overrideを付けるとコンパイルエラーになる。
-    func draw() {}
     func drawLine(x1: Double, y1: Double, x2: Double, y2: Double) {
         drawing.drawLine(x1: x1, y1: y1, x2: x2, y2: y2)
     }
@@ -296,7 +298,7 @@ private class BaseShape: Drawable {
     }
 }
 
-private class Rectangle: BaseShape {
+private class Rectangle: BaseShape, Drawable {
     private let x1: Double
     private let y1: Double
     private let x2: Double
@@ -309,15 +311,18 @@ private class Rectangle: BaseShape {
         //super.initは最後に書かないとコンパイルエラーにされることが多い？
         super.init(drawing: drawing)
     }
-    override func draw() {
+    func draw() {
         drawLine(x1: x1, y1: y1, x2: x2, y2: y1)
         drawLine(x1: x2, y1: y1, x2: x2, y2: y2)
         drawLine(x1: x2, y1: y2, x2: x1, y2: y2)
         drawLine(x1: x1, y1: y2, x2: x1, y2: y1)
     }
+    var coords: [(Double, Double)] {
+        return [(x1, y1), (x2, y2)]
+    }
 }
 
-private class Circle: BaseShape {
+private class Circle: BaseShape, Drawable {
     private let x: Double
     private let y: Double
     private let r: Double
@@ -327,8 +332,14 @@ private class Circle: BaseShape {
         self.r = r
         super.init(drawing: drawing)
     }
-    override func draw() {
+    func draw() {
         drawCircle(x: x, y: y, r: r)
+    }
+    var coords: [(Double, Double)] {
+        return [(x, y)]
+    }
+    var radius: Double {
+        return r
     }
 }
 
@@ -386,6 +397,93 @@ func displayDelegationObjects() {
 }
 
 //Adding Protocol Conformance with an Extension
+private protocol CoordsInspecter {
+    var inspectCoords: String { get }
+}
+
+//次のようにprotocolに対してextensionを定義することはできない。
+//extension Drawable: CoordsInspecter {}
+//
+//またprotocolを実装するextensionにはprivateを指定できない。
+//以下はコンパイルエラーである。
+//private extension Rectangle: CoordsInspecter {}
+extension Rectangle: CoordsInspecter {
+    var inspectCoords: String {
+        return "Coords=\(coords)"
+    }
+}
+
+extension Circle: CoordsInspecter {
+    var inspectCoords: String {
+        return "Coords=\(coords) and radius=\(radius)"
+    }
+}
+
+func dumpResultsByExtensionProtocol() {
+    if let fastDrawing = try? createDrawing(type: "fast") {
+        let rect = Rectangle(drawing: fastDrawing, x1: 4.0, y1: 3.5, x2: 2.0, y2: 5.5)
+        let circle = Circle(drawing: fastDrawing, x: 6.0, y: 1.0, r: 13.5)
+        print(rect.inspectCoords)
+        print(circle.inspectCoords)
+    } else {
+        print("Drawing shapes is failed.")
+    }
+}
+
+//Declaring Protocol Adoption with an Extension
+private struct Triangle {
+    var coords: [(Double, Double)]
+    var inspectCoords: String {
+        return "This triangle coords=\(coords)"
+    }
+}
+
+//CoordsInspecterで定義したメソッドが既にTriangleには実装されているので
+//extensionの中身は空でよい。というよりメソッドを実装しようとすると再定義しよう
+//としているとしてコンパイルエラーになってしまう。
+extension Triangle: CoordsInspecter {
+//    var inspectCoords: String {
+//        return ""
+//    }
+}
+
+func checkProtocolAdoptionObject() {
+    let coords = [(0, 0), (3.0, 3.0), (7.5, 10.5)]
+    let triangle = Triangle(coords: coords)
+    //Triangleに実装されている，CoordsInspecterのメソッドと同じ定義のメソッドを，
+    //CoordsInspecter型の変数にTriangleオブジェクトを代入することで取り入れる。
+    //CoordsInspecter型であることを明記しなければ型推論でTriangle型になる。
+    let inspection: CoordsInspecter = triangle
+    //実体はTriangleだがCoordsInspecter型でオブジェクトが保持されているため
+    //inspectCoordsプロパティしか参照できない。
+    print(inspection.inspectCoords)
+}
+
+//Collections of Protocol Types
+func displayCollectionPropertiesByProtocolTypes() {
+    let rectangle = Rectangle(drawing: FastDrawing(), x1: 1.0, y1: 5.0,
+                              x2: 5.0, y2: -1.0)
+    let circle = Circle(drawing: QualityDrawing(), x: 5.5, y: 7.0, r: 12.5)
+    let triangle = Triangle(coords: [(3.0, 2.0), (1.0, 5.0), (4.5, -3.5)])
+    let coords: [CoordsInspecter] = [rectangle, circle, triangle]
+    for coord in coords {
+        print(coord.inspectCoords)
+    }
+}
+
+//Protocol Inheritance
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

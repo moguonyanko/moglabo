@@ -187,6 +187,9 @@ private func runPracticesProtocols() {
     checkProtocolFailableInitializer()
     executeCalclationsByProtocolType()
     displayDelegationObjects()
+    dumpResultsByExtensionProtocol()
+    checkProtocolAdoptionObject()
+    displayCollectionPropertiesByProtocolTypes()
 }
 
 //Entry point
