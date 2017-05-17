@@ -472,12 +472,163 @@ func displayCollectionPropertiesByProtocolTypes() {
 }
 
 //Protocol Inheritance
+private protocol PrettyCoordsInspecter: CoordsInspecter {
+    var coordsDescription: String { get }
+}
 
+extension Rectangle: PrettyCoordsInspecter {
+    var coordsDescription: String {
+        return "This rectangle is consisted by \(inspectCoords)"
+    }
+}
 
+func checkInheritedProtocol() {
+    if let drawing = try? createDrawing(type: "fast") {
+        //1.1や2.3は近似値になってしまう。descriptionを参照すると最初に渡した値が文字列として得られる。
+        let rect = Rectangle(drawing: drawing, x1: 1.1, y1: 5.5, x2: 3.0, y2: 2.3)
+        print(rect.coordsDescription)
+    }
+}
 
+//Class-Only Protocols
+private protocol ClassCoordsInspacter: class, CoordsInspecter {
+    var classCoords: [(Double, Double)] { get }
+}
 
+//ClassCoordsInspacterはclass限定で実装可能なprotocolなので
+//Pointをstructureにするとコンパイルエラーになる。
+private class Point: ClassCoordsInspacter {
+    var point: [(Double, Double)]
+    init(point: [(Double, Double)]) {
+        self.point = point
+    }
+    var inspectCoords: String {
+        return "Coords=\(point)"
+    }
+    var classCoords: [(Double, Double)] {
+        return point
+    }
+}
 
+func checkClassOnlyProtocol() {
+    let p = Point(point: [(3.7, 2.1)])
+    //tupleの各要素にアクセスするにはtuple.0やtuple.1といった方法を用いる。
+    print("\(p.classCoords[0].0.description), \(p.classCoords[0].1.description)")
+}
 
+//Protocol Composition
+private protocol Fired {
+    //var power: Int { get }
+    var fireForce: Int { get }
+}
+
+private protocol Torpedoed {
+    //var power: Int { get }
+    var torpedoPower: Int { get }
+}
+
+private struct Ship: Fired, Torpedoed {
+    //実装するprotocolが2つあってもそれらに定義されているプロパティの名前や型が
+    //全く等しい場合，実装するプロパティは1つだけになってしまう。
+    //var power: Int
+    var fireForce: Int
+    var torpedoPower: Int
+}
+
+private func calcNightPower(_ ship: Fired & Torpedoed) -> Int {
+    return ship.fireForce + ship.torpedoPower
+}
+
+func checkMultiProtocolObjects() {
+    let ship = Ship(fireForce: 70, torpedoPower: 150)
+    let nightPower = calcNightPower(ship)
+    print("The ship has night power \(nightPower)")
+}
+
+//Checking for Protocol Conformance
+private class Person {
+    let name: String
+    let age: Int
+    init(name: String, age: Int) {
+        self.name = name
+        self.age = age
+    }
+    var description: String {
+        return "\(name) is \(age) years old."
+    }
+}
+
+func checkProtocolTypes() {
+    let rectangle = Rectangle(drawing: QualityDrawing(),
+                              x1: 1.2, y1: 3.4, x2: 5.6, y2: 7.8)
+    let circle = Circle(drawing: FastDrawing(), x: 10.5, y: 12.0, r: 3.0)
+    let person = Person(name: "Fuga", age: 31)
+    let objects: [AnyObject] = [
+        rectangle, circle, person
+    ]
+    for object in objects {
+        //可能ならobjectは右辺に指定したprotocolの型にキャストされる。
+        if let drawableObject = object as? Drawable {
+            drawableObject.draw()
+        } else if let person = object as? Person {
+            print("\(person.description)")
+        } else {
+            print("Unknown object!")
+        }
+    }
+}
+
+private let sampleDatas = [
+    "en": "Hello",
+    "ja": "こんにちは",
+    "de": "Guten Tag"
+]
+
+//Optional Protocol Requirements
+@objc private protocol DataManager {
+    @objc optional func find(hint: String) -> String
+    @objc optional var defaultValue: String { get }
+}
+
+private class DataClient {
+    private let manager: DataManager?
+    init(manager: DataManager) {
+        self.manager = manager
+    }
+    func printData(hint: String) {
+        if let result = manager?.find?(hint: hint) {
+            print("\"\(hint)\" associated \"\(result)\"")
+        } else if let result = manager?.defaultValue {
+            print("Found default value \"\(result)\"")
+        }
+    }
+}
+
+@objc private class IncompetentDataManager: NSObject, DataManager {
+    var defaultValue = "…?…!…!?"
+}
+
+//optional protocolを実装するclassに@objcやNSObjectを書かなくてもエラーにならない。
+//ただし@objcだけ指定して:の後にNSObjectを書かないとコンパイルエラーになる。
+private class CompetentDataManager: DataManager {
+    func find(hint: String) -> String {
+        if let result = sampleDatas[hint] {
+            return result
+        } else {
+            return "None by '\(hint)'"
+        }
+    }
+}
+
+func displayResultByOptionalProtocols() {
+    let client1 = DataClient(manager: IncompetentDataManager())
+    client1.printData(hint: "ja")
+    let client2 = DataClient(manager: CompetentDataManager())
+    client2.printData(hint: "ja")
+    client2.printData(hint: "hoge")
+}
+
+//Protocol Extensions
 
 
 

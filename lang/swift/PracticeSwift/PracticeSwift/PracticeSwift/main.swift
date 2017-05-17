@@ -190,6 +190,11 @@ private func runPracticesProtocols() {
     dumpResultsByExtensionProtocol()
     checkProtocolAdoptionObject()
     displayCollectionPropertiesByProtocolTypes()
+    checkInheritedProtocol()
+    checkClassOnlyProtocol()
+    checkMultiProtocolObjects()
+    checkProtocolTypes()
+    displayResultByOptionalProtocols()
 }
 
 //Entry point
