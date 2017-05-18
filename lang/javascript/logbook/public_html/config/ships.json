@@ -87,6 +87,10 @@
 		"name": "グラーフ・ツェッペリン改",
 		"slotComposition": [30, 13, 10, 3]
 	},
+	"ty2": {
+		"name": "大鷹改二",
+		"slotComposition": [14, 14, 8, 3]
+	},
 	"aks": {
 		"name": "秋津洲改",
 		"slotComposition": [1, 1, 1]
