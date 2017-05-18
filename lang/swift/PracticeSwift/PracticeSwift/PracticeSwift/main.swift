@@ -195,6 +195,8 @@ private func runPracticesProtocols() {
     checkMultiProtocolObjects()
     checkProtocolTypes()
     displayResultByOptionalProtocols()
+    displayExtentedProtocolResults()
+    displayResultByConstrainedProtocol()
 }
 
 //Entry point
