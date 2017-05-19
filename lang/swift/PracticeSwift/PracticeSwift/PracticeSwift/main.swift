@@ -199,6 +199,13 @@ private func runPracticesProtocols() {
     displayResultByConstrainedProtocol()
 }
 
+private func runPracticesGenerics() {
+    operateByGenericFunction()
+    operateGenericCollection()
+    operateWithExtendedGenericsType()
+    runConstrainedGenericsFunction()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -222,7 +229,8 @@ private func runPractices() {
     //runPracticesTypeCasting()
     //runPracticesNestedTypes()
     //runPracticesExtensions()
-    runPracticesProtocols()
+    //runPracticesProtocols()
+    runPracticesGenerics()
 }
 
 runPractices()
