@@ -207,6 +207,10 @@
 		"name": "長門改",
 		"slotComposition": [3, 3, 3, 3]
 	},
+	"ngt2": {
+		"name": "長門改二",
+		"slotComposition": [3, 3, 6, 3]
+	},
 	"mtu": {
 		"name": "陸奥改",
 		"slotComposition": [3, 3, 3, 3]
