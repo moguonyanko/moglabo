@@ -117,11 +117,104 @@ func runConstrainedGenericsFunction() {
 }
 
 //Associated Types
+//Associated Types in Action
+private protocol Fleet {
+    //associatedtypeに指定される型が実際に定義されているかどうかは考慮されない。
+    associatedtype Ship
+    mutating func assign(_ ship: Ship)
+    var count: Int { get }
+    subscript(i: Int) -> Ship { get }
+}
 
+private struct NamedFleet: Fleet {
+    var ships = [String]()
+    mutating func addShip(shipName: String) {
+        ships.append(shipName)
+    }
+    //mutatingは関数にしか指定できない。
+    mutating func removeLatestShip() -> String {
+        return ships.removeLast()
+    }
+    var description: String {
+        return ships.joined(separator: ",")
+    }
+    //protocolが要求する"Ship"型にここではStringを割り当てる。
+    //typealiasは書かなくても型推論される。
+    typealias Ship = String
+    mutating func assign(_ ship: String) {
+        self.addShip(shipName: ship)
+    }
+    var count: Int {
+        return ships.count
+    }
+    subscript(i: Int) -> String {
+        return ships[i]
+    }
+}
 
+func displayTypeAliasResult() {
+    var fleet = NamedFleet(ships: ["samidare", "yubari", "yura"])
+    fleet.addShip(shipName: "murasame")
+    fleet.addShip(shipName: "shigure")
+    print("\(fleet.description), the sum is \(fleet.count) ships.")
+    print("The second ship is \(fleet[1]).")
+    print("Removed the latest ship: \(fleet.removeLatestShip()).")
+}
 
+private protocol Describable {
+    var description: String { get }
+}
 
+//protocolのassociatedtypeで指定されている型と同じ名前のstructureを定義しても問題無い。
+private struct Ship: Describable {
+    var name: String
+    var description: String {
+        return name
+    }
+}
 
+private struct GenericFleet<Element: Describable>: Fleet {
+    var ships = [Element]()
+    mutating func addShip(_ ship: Element) {
+        ships.append(ship)
+    }
+    mutating func removeLatestShip() -> Element {
+        return ships.removeLast()
+    }
+    //protocolのassociatedtypeで要求している型にElementを割り当てていることが明白なので
+    //typealiasは書かなくてもコンパイルでき問題無く実行できる。
+    mutating func assign(_ ship: Element) {
+        self.addShip(ship)
+    }
+    var count: Int {
+        return ships.count
+    }
+    subscript(i: Int) -> Element {
+        return ships[i]
+    }
+    var description: String {
+        let texts: [String] = ships.map { ship -> String in
+            return ship.description
+        }
+        return texts.joined(separator: ",")
+    }
+}
+
+func checkGenericTypedCollection() {
+    let samidare = Ship(name: "samidare"),
+        yubari = Ship(name: "yubari"),
+        yura = Ship(name: "yura"),
+        murasame = Ship(name: "murasame"),
+        shigure = Ship(name: "shigure")
+    //インスタンス生成時にパラメータを与えないと型推論できずコンパイルエラーになる。
+    var fleet = GenericFleet(ships: [shigure, murasame, yura, yubari, samidare])
+    fleet.addShip(Ship(name: "harusame"))
+    print("\(fleet.description), the sum is \(fleet.count) ships.")
+    print("The forth ship is \(fleet[3].description).")
+    print("Removed the latest ship: \(fleet.removeLatestShip().description).")
+}
+
+//Extending an Existing Type to Specify an Associated Type
 
 
 

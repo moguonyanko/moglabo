@@ -204,6 +204,8 @@ private func runPracticesGenerics() {
     operateGenericCollection()
     operateWithExtendedGenericsType()
     runConstrainedGenericsFunction()
+    displayTypeAliasResult()
+    checkGenericTypedCollection()
 }
 
 //Entry point
