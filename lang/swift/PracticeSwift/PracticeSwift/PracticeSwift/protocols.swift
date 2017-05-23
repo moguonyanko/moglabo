@@ -629,12 +629,104 @@ func displayResultByOptionalProtocols() {
 }
 
 //Protocol Extensions
+private struct Location {
+    var name: String
+    var point: (Double, Double)
+}
 
+private protocol Travel {
+    //computed propertyになるのでletを指定することはできない。
+    //privateにすることもできない。
+    var from: Location { get }
+    var to: Location { get }
+}
 
+private extension Travel {
+    var distance: Double {
+        let deltaX = abs(to.point.0 - from.point.0)
+        let deltaY = abs(to.point.1 - from.point.1)
+        return sqrt(pow(deltaX, 2.0) + pow(deltaY, 2.0))
+    }
+}
 
+private class ForeignTravel: Travel {
+    var from: Location
+    var to: Location
+    init(from: Location, to: Location) {
+        self.from = from
+        self.to = to
+    }
+    var description: String {
+        return "This travel planed from \(from.name) to \(to.name)"
+    }
+}
 
+func displayExtentedProtocolResults() {
+    let to = Location(name: "hogeCity", point: (1.0, 5.0))
+    let from = Location(name: "fooTown", point: (210.5, -350.0))
+    let travel = ForeignTravel(from: from, to: to)
+    print(travel.description)
+    print(travel.distance)
+}
 
+//Providing Default Implementations
+private protocol Named {
+    var name: String { get }
+}
 
+//protocolを実行する全てのclassやstructureに対して新しい振る舞いを提供する場合は
+//protocolに対してextensionを定義する。例えばprotocolにデフォルトの振る舞いを定義する場合等。
+private extension Named {
+    var defaultName: String {
+        return name
+    }
+}
 
+private struct SampleName { }
 
+//個々の型に対して振る舞いを追加したいのであれば，その型に対してextensionを定義する。
+extension SampleName: Named {
+    var name: String {
+        return "no name"
+    }
+    var defaultName: String {
+        return name
+    }
+}
 
+//Adding Constraints to Protocol Extensions
+//whereでextensionの対象に制限を設ける場合はextensionをprivateにすることができる。
+//以下の例で示すextensionは「Collectionに対するextensionを定義する。
+//ただしNamedに従っているIterator.ElementのCollectionに限定する。」と解釈できる。
+private extension Collection where Iterator.Element: Named {
+    func dumpAllNames(separator: String) -> String {
+        let names = self.map { $0.name }
+        return names.joined(separator: separator)
+    }
+}
+
+private struct SampleClient: Named {
+    var name: String
+}
+
+private struct Student {
+    var name: String
+}
+
+func displayResultByConstrainedProtocol() {
+    let clients = [
+        SampleClient(name: "fuga"),
+        SampleClient(name: "hoge"),
+        SampleClient(name: "poko")
+    ]
+    print(clients.dumpAllNames(separator: "-"))
+    
+    let students = [
+        Student(name: "foo"), Student(name: "bar"), Student(name: "baz")
+    ]
+    
+    //studentsはNamedに従っていないstructureのCollectionなので
+    //dumpAllNamesメソッドを参照することができない。
+    //print(students.dumpAllNames(separator: ","))
+    print(students.map { $0.name }.joined(separator: ","))
+}

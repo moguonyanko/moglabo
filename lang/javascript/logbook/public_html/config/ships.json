@@ -87,6 +87,10 @@
 		"name": "グラーフ・ツェッペリン改",
 		"slotComposition": [30, 13, 10, 3]
 	},
+	"ty2": {
+		"name": "大鷹改二",
+		"slotComposition": [14, 14, 8, 3]
+	},
 	"aks": {
 		"name": "秋津洲改",
 		"slotComposition": [1, 1, 1]
@@ -202,6 +206,10 @@
 	"ngt": {
 		"name": "長門改",
 		"slotComposition": [3, 3, 3, 3]
+	},
+	"ngt2": {
+		"name": "長門改二",
+		"slotComposition": [3, 3, 6, 3]
 	},
 	"mtu": {
 		"name": "陸奥改",
