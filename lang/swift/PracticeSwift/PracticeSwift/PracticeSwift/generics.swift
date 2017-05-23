@@ -166,10 +166,14 @@ private protocol Describable {
 }
 
 //protocolのassociatedtypeで指定されている型と同じ名前のstructureを定義しても問題無い。
-private struct Ship: Describable {
+private struct Ship: Describable, Equatable {
     var name: String
     var description: String {
         return name
+    }
+    //==をオーバーライドした内容は!=を使って比較した時も使われる。
+    static func ==(lhs: Ship, rhs: Ship) -> Bool {
+        return lhs.name == rhs.name
     }
 }
 
@@ -206,7 +210,8 @@ func checkGenericTypedCollection() {
         yura = Ship(name: "yura"),
         murasame = Ship(name: "murasame"),
         shigure = Ship(name: "shigure")
-    //インスタンス生成時にパラメータを与えないと型推論できずコンパイルエラーになる。
+    //インスタンス生成時にパラメータを与えない場合は<>を使って型を明示する必要がある。
+    //var fleet = GenericFleet<Ship>()
     var fleet = GenericFleet(ships: [shigure, murasame, yura, yubari, samidare])
     fleet.addShip(Ship(name: "harusame"))
     print("\(fleet.description), the sum is \(fleet.count) ships.")
@@ -215,6 +220,70 @@ func checkGenericTypedCollection() {
 }
 
 //Extending an Existing Type to Specify an Associated Type
+private struct PrototypeFleet {
+    var ships = [Int]()
+    mutating func assign(_ ship: Int) {
+        ships.append(ship)
+    }
+    var count: Int {
+        return ships.count
+    }
+    subscript(i: Int) -> Int {
+        return ships[i]
+    }
+}
+
+//PrototypeFleetの実装に基づきFleetのassociatedtypeはIntであると推論される。
+extension PrototypeFleet: Fleet {}
+
+func checkAssosiationExistingType() {
+    var fleet = PrototypeFleet()
+    fleet.assign(100)
+    fleet.assign(500)
+    fleet.assign(1000)
+    print("The third ship number is \(fleet[2]).")
+}
+
+//Generic Where Clauses
+private func equalFleets<F1: Fleet, F2: Fleet>
+    (_ someFleet: F1, _ anotherFleet: F2) -> Bool
+    where F1.Ship == F2.Ship, F1.Ship: Equatable {
+        //もしguard文で変数や定数を宣言するならそれはoptional typeでなければならない。
+        guard someFleet.count == anotherFleet.count else {
+            return false
+        }
+        //上のguard文は以下のコードと同じ働きをする。
+        //if someFleet.count != anotherFleet.count {
+        //    return false
+        //}
+        
+        for i in 0..<someFleet.count {
+            guard someFleet[i] == anotherFleet[i] else {
+                return false
+            }
+            //上のguard文は以下のコードと同じ働きをする。
+            //if someFleet[i] != anotherFleet[i] {
+            //    return false
+            //}
+        }
+        
+        return true
+}
+
+func adoptWhereClauseToGenericCollection() {
+    var f1 = GenericFleet<Ship>()
+    f1.addShip(Ship(name: "suzuya"))
+    f1.addShip(Ship(name: "kumano"))
+    
+    let f2 = GenericFleet(ships: [ Ship(name: "suzuya"), Ship(name: "kumano") ])
+    
+    print("Is two fleets equal?: \(equalFleets(f1, f2))")
+}
+
+//Extensions with a Generic Where Clause
+
+
+
 
 
 

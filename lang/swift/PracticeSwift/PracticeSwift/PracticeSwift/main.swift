@@ -206,6 +206,8 @@ private func runPracticesGenerics() {
     runConstrainedGenericsFunction()
     displayTypeAliasResult()
     checkGenericTypedCollection()
+    checkAssosiationExistingType()
+    adoptWhereClauseToGenericCollection()
 }
 
 //Entry point
