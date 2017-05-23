@@ -13,6 +13,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+import exercise.lang.MyContainer;
+import exercise.lang.GenericMyContainer;
+
 /**
  * 参考：
  * 「Java Tutorial」(オラクル)
@@ -205,4 +208,19 @@ public class TestGenericsPractice {
 		ArrayBuilder.faultyMethod(errList1, errList2);
 	}
 
+	@Test
+	public void 自作のジェネリッククラスに値を追加したり取得したりできる() {
+		//ここで<String>を書かないとGenericMyContainerの型引数EはObjectにされてしまう。
+		MyContainer<String> container = new GenericMyContainer<>();
+		
+		container.append("foo");
+		container.append("bar");
+		container.append("baz");
+		
+		String expected = "baz";
+		String actual = container.get(2);
+		
+		assertThat(actual, is(expected));
+	}
+	
 }
