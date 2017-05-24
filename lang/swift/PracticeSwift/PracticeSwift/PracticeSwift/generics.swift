@@ -281,9 +281,65 @@ func adoptWhereClauseToGenericCollection() {
 }
 
 //Extensions with a Generic Where Clause
+private struct TemplateFleet<Element>: Fleet {
+    var ships = [Element]()
+    mutating func assign(_ ship: Element) {
+        ships.append(ship)
+    }
+    var count: Int {
+        return ships.count
+    }
+    subscript(i: Int) -> Element {
+        return ships[i]
+    }
+}
 
+//Equatableに従うShipを持つTemplateFleetに対してのみextensionを定義する。
+private extension TemplateFleet where Ship: Equatable {
+    func isFlagship(_ ship: Element) -> Bool {
+        //selfは省略可。
+        if self.ships.isEmpty {
+            return false
+        }
+        //where Ship: Equatable が無い場合以下のコードはコンパイルエラーになる。
+        //Equatableでなければ==を使って比較を行うことができない。
+        return self.ships.first == ship
+    }
+}
 
+private struct NotEquatableShip {
+    var name: String
+}
 
+//FleetのShipにString型が割り当てられていた時だけ有効なextensionを定義している。
+private extension Fleet where Ship == String {
+    //extensionでmutatingな関数を定義することは可能。
+    func uppercasedShipNames() -> [String] {
+        var names = [String]()
+        for i in 0..<self.count {
+            //Fleetが定義するsubscriptではgetの実装しか許していない。
+            //このため各要素は読み取り専用となっており値を変更することができない。
+            //self[i] = self[i].uppercased()
+            names.append(self[i].uppercased())
+        }
+        return names
+    }
+}
 
+func callFunctionWithGenericExtension() {
+    let ships = [
+        Ship(name: "sendai"),
+        Ship(name: "fubuki"),
+        Ship(name: "shirayuki"),
+    ]
+    let fleet = TemplateFleet(ships: ships)
+    let target = Ship(name: "sendai")
+    print("Is \(target.name) flagship?: \(fleet.isFlagship(target))")
 
-
+    //Equatableに従わない要素を持つインスタンスではextensionに定義したメソッドを呼び出せない。
+    //let fleet2 = TemplateFleet(ships: [ NotEquatableShip(name: "foo") ])
+    //let result = fleet2.isFlagship(target)
+    
+    let namedFleet = NamedFleet(ships: ["shokaku", "zuikaku", "taiho"])
+    print("Uppercased ship names: \(namedFleet.uppercasedShipNames().description)")
+}

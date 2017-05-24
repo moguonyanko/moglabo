@@ -208,6 +208,7 @@ private func runPracticesGenerics() {
     checkGenericTypedCollection()
     checkAssosiationExistingType()
     adoptWhereClauseToGenericCollection()
+    callFunctionWithGenericExtension()
 }
 
 //Entry point
