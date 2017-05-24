@@ -211,6 +211,10 @@ private func runPracticesGenerics() {
     callFunctionWithGenericExtension()
 }
 
+private func runPracticesAccessControl() {
+    displayInternalAccessControlResult()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -235,7 +239,8 @@ private func runPractices() {
     //runPracticesNestedTypes()
     //runPracticesExtensions()
     //runPracticesProtocols()
-    runPracticesGenerics()
+    //runPracticesGenerics()
+    runPracticesAccessControl()
 }
 
 runPractices()

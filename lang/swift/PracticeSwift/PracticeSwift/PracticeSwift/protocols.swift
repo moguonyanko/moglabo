@@ -39,8 +39,7 @@ private protocol Priced {
 
 private struct SmartPhone: Priced {
     //protocolで宣言されたプロパティを定義していないとコンパイルエラーになる。
-    //アクセス修飾子はprotocolで宣言された内容に合わせなければならない。
-    //アクセス修飾子未指定はfileprivateを指定したのと同じになる。
+    //ここで指定するアクセスレベル修飾子はprotocolで指定された修飾子と一致していなくてもよい。
     fileprivate var price: Int
 }
 
