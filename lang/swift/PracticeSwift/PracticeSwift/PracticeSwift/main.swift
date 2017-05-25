@@ -213,6 +213,12 @@ private func runPracticesGenerics() {
 
 private func runPracticesAccessControl() {
     displayInternalAccessControlResult()
+    displayAccessLevelSamples()
+    checkTupleAccessLevel()
+    callGetterAccessLeveledTuple()
+    checkEnumAccessLevel()
+    accessPrivateNestedClass()
+    checkSubclassingAccessLevelResults()
 }
 
 //Entry point
