@@ -219,6 +219,9 @@ private func runPracticesAccessControl() {
     checkEnumAccessLevel()
     accessPrivateNestedClass()
     checkSubclassingAccessLevelResults()
+    checkPrivateAccesserProperties()
+    checkInitializerAccessLevel()
+    checkExtensionAccessLevelDiff()
 }
 
 //Entry point

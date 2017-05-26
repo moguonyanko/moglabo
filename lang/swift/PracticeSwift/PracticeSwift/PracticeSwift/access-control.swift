@@ -160,16 +160,142 @@ func checkSubclassingAccessLevelResults() {
 //public var privateObject = PrivateSubClass()
 
 //Getters and Setters
+private class NumberRecorder {
+    //書き込みだけprivateにして読み取りはデフォルトすなわちinternalにする。
+    private(set) var oldValues = [Int]()
+    //setter以外に適用されるアクセスレベルを明示することもできる。
+    //以下の例ではfileprivateを指定しているのでこのファイル外から値を読み取ることができなくなる。
+    //fileprivate private(set) var oldValues = [Int]()
+    var current: Int = 0 {
+        didSet {
+            oldValues.append(oldValue)
+        }
+    }
+    func pop() -> Int? {
+        return oldValues.popLast()
+    }
+}
 
+func checkPrivateAccesserProperties() {
+    let rec = NumberRecorder()
+    rec.current = 10
+    rec.current = 20
+    rec.current = 30
+    if let n = rec.pop() {
+        rec.current = n
+    }
+    print("Now number is \(rec.current)")
+    //oldValuesのsetterはprivateなのでclass内でしか値を変更することができない。
+    //rec.oldValues.append(-1000)
+    //getterはinternalなのでこのソースファイルの外側からでも値を得ることができる。
+    print("Old values: \(rec.oldValues.description)")
+}
 
+//Initializers
+private class AccessSample {
+    private init() {
+        //privateなのでclass外からは呼び出せない。
+    }
+    public init(id: Int) {
+        //publicだがclassがprivateなのでソースファイル外からは呼び出せない。
+    }
+}
 
+private struct AccessSample2 {
+    fileprivate init(name: String) {
+        //structure自体とは異なるアクセスレベルを指定しても良い。
+    }
+}
 
+func checkInitializerAccessLevel() {
+    //let _ = AccessSample()
+    let _ = AccessSample(id: 1)
+    let _ = AccessSample2(name: "anonymous")
+}
 
+//Protocols
+fileprivate protocol SampleProtocol {}
 
+//継承元のprotocolよりもアクセスレベルを上げるのは問題無い、
+private protocol SubSampleProtocol: SampleProtocol {}
 
+//継承元のprocotolよりアクセスレベルを下げるのはコンパイルエラーとなる。
+//protocol SubSampleProtocol2: SampleProtocol {}
 
+fileprivate protocol SampleProtocol2 {
+    //protocolのアクセスレベルに関係無くprotocolのrequirementにアクセスレベル修飾子は指定できない。
+    //public var names: [String] { get }
+    //internal var name: String { get }
+    //internal func calc(a: Int, b: Int) -> Int
+    var location: (Double, Double) { get }
+}
 
+//Extensions
+class MyExtensionClass {
+    let name: String
+    init(_ name: String) {
+        self.name = name
+    }
+}
 
+extension MyExtensionClass {
+    //privateを指定するとclass外からはアクセスできなくなる。
+    var uppercased: String {
+        return self.name.uppercased()
+    }
+}
 
+//extensionを直接参照する状況はないがextensionのアクセスレベルを上書きすることはできる。
+private extension MyExtensionClass {
+    var lowercased: String {
+        return self.name.lowercased()
+    }
+}
 
+func checkExtensionAccessLevelDiff() {
+    let mx = MyExtensionClass("Taro")
+    print("\(mx.uppercased) or \(mx.lowercased)")
+}
 
+internal protocol SampleProtocol3 {
+    var name: String { get }
+}
+
+private extension SampleProtocol3 {
+    var defaultName: String {
+        return "anonymous"
+    }
+}
+
+public class SampleExtensionClass {}
+
+//protocolに従うextensionにはinternalすら指定することができない。
+extension SampleExtensionClass: SampleProtocol3 {
+    var name: String {
+        return self.defaultName
+    }
+}
+
+//Generics
+private protocol SampleProtocol4 {}
+
+private struct GenericSample<Element: SampleProtocol4> {
+    private(set) var values = [Element]()
+    //protocolのアクセスレベルより低いレベルをジェネリック型のプロパティや
+    //ジェネリック型を返すメソッドに指定できる。
+    internal var element: Element
+    public func always<T: SampleProtocol4>(arg: T) -> T {
+        return arg
+    }
+}
+
+//Type Aliases
+private protocol SampleProtocol5 {
+    //このassociatedtypeのアクセスレベルはfileprivateになっている。
+    //protocolに従うclass等でtypealiasにpublicやprivateを指定することはできない。
+    associatedtype Sample
+}
+
+private class SampleTypeAliasClass: SampleProtocol5 {
+    fileprivate typealias Sample = String
+}
