@@ -297,6 +297,12 @@ private class BaseShape {
     }
 }
 
+//extensionで定義したメソッドをサブクラスでオーバーライドすることはできない。
+//つまりextensionをJavaの抽象クラスのように使うことはできない。
+//extension BaseShape: Drawable {
+//    func draw() {}
+//}
+
 private class Rectangle: BaseShape, Drawable {
     private let x1: Double
     private let y1: Double

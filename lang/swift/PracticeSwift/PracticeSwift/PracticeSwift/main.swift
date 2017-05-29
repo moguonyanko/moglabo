@@ -224,6 +224,15 @@ private func runPracticesAccessControl() {
     checkExtensionAccessLevelDiff()
 }
 
+private func runPracticesAdvancedOperators() {
+    calcFormulaWithOperatorMethod()
+    convertValueByUnaryOperator()
+    calcBycompoundAssignmentOperator()
+    checkEquivalenceWithOverloadedOperators()
+    convertValueByCustomOperator()
+    calcByCustomInfixOperator()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -249,7 +258,8 @@ private func runPractices() {
     //runPracticesExtensions()
     //runPracticesProtocols()
     //runPracticesGenerics()
-    runPracticesAccessControl()
+    //runPracticesAccessControl()
+    runPracticesAdvancedOperators()
 }
 
 runPractices()
