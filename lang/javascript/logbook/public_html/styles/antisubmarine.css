@@ -5,5 +5,10 @@
     min-height: 2em;
     max-height: 50vh;
     overflow-y: scroll;
-    background-color: lightgray;
+    background-color: beige;
+}
+
+.effective-pattern {
+    font-weight: bold;
+    color: blue;
 }
