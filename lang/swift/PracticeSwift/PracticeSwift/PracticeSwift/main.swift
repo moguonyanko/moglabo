@@ -233,6 +233,13 @@ private func runPracticesAdvancedOperators() {
     calcByCustomInfixOperator()
 }
 
+private func runPracticesLanguageReference() {
+    applyTypeAliases()
+    matchTupleTypes()
+    matchFunctionType()
+    checkComposedProtocolTypes()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -259,7 +266,8 @@ private func runPractices() {
     //runPracticesProtocols()
     //runPracticesGenerics()
     //runPracticesAccessControl()
-    runPracticesAdvancedOperators()
+    //runPracticesAdvancedOperators()
+    runPracticesLanguageReference()
 }
 
 runPractices()

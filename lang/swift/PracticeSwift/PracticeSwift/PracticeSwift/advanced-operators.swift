@@ -22,7 +22,7 @@ private extension Coords {
     static func + (lhs: Coords, rhs: Coords) -> Coords {
         return Coords(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
     }
-    //=は演算子オーバーロド不可
+    //=は演算子オーバーロード不可
     //static func = (lhs: Coords, rhs: Coords) -> Coords {}
 }
 
