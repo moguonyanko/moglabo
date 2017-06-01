@@ -238,6 +238,12 @@ private func runPracticesLanguageReference() {
     matchTupleTypes()
     matchFunctionType()
     checkComposedProtocolTypes()
+    displayResultWithInheritance()
+    calcVariousClosure()
+    runCapturedClosure()
+    checkTypeVariableProperties()
+    declareTypeAliasWithTypeChecking()
+    checkThrowableClassBehavior()
 }
 
 //Entry point

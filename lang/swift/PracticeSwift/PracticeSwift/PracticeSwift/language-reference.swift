@@ -86,5 +86,234 @@ func checkComposedProtocolTypes() {
 }
 
 //Metatype Type
+private class SampleBaseClass {
+    class func greet() -> String {
+        return "Hello base class"
+    }
+}
 
+private class SampleSubClass: SampleBaseClass {
+    override class func greet() -> String {
+        return "こんにちはサブクラス"
+    }
+}
+
+private final class SampleAnotherSubClass: SampleBaseClass {
+    private let name: String
+    //staticなメンバ変数は以下のように定義する。class methodから参照できるが
+    //init内で初期化することができない。
+    //static var name: String = "no name"
+    init(name: String) {
+        self.name = name
+    }
+    override class func greet() -> String {
+        //instance memberをclass methodから参照することはできない。
+        //return "Hey \(name)"
+        return "Another sub class"
+    }
+}
+
+func displayResultWithInheritance() {
+    let instance: SampleBaseClass = SampleSubClass()
+    print("\(SampleBaseClass.greet())")
+    //instance経由でclassメソッドのようなstatic memberを参照することはできない。
+    //print("\(instance.greet())")
+    //type関数を使い実行時の型を取得してclassメソッドを呼び出す。
+    print("\(type(of: instance).greet())")
+    //classのselfを参照するとTypeのオブジェクトが得られる。
+    let metatype: SampleAnotherSubClass.Type = SampleAnotherSubClass.self
+    //AnyObject等ではなくSampleAnotherSubClass型のインスタンスが得られる。
+    //呼び出すinitにrequiredが指定されているか，initを定義したclassがfinalでないと
+    //コンパイルエラーになる。init呼び出しが失敗しないことを保証せよということかもしれない。
+    let instanceByMetatype = metatype.init(name: "foobar")
+    print("\(type(of: instanceByMetatype).greet())")
+}
+
+//Closure Expression
+private func executeCalculation<T>(_ f: (T, T) -> T, _ args: (T, T)) -> T {
+    return f(args.0, args.1)
+}
+
+private class SampleCaluclator<T> {
+    let args: (T, T)
+    init(args: (T, T)) {
+        self.args = args
+    }
+    func calc(_ f: (T, T) -> T) -> T {
+        return f(args.0, args.1)
+    }
+    //@autoclosureを付けるだけでもシグネチャが異なると判定される。
+    //すなわちオーバーロードされる。
+    func calc(_ f: @autoclosure (T, T) -> T) -> T {
+        return f(args.0, args.1)
+    }
+    //オーバーロードの濫用は好ましくないが仕様確認のため。
+    func calc(_ f: () -> T) -> T {
+        return f()
+    }
+    func accept(_ f: () -> Void) {
+        f()
+    }
+}
+
+func calcVariousClosure() {
+    let args = (1, 2)
+    let f = { (x: Int, y: Int) -> Int in x + y }
+    print("The sum of \(args) is \(executeCalculation(f, args))")
+    
+    let calculator = SampleCaluclator(args: (10.5, 2.0))
+    var result = calculator.calc { (x: Double, y: Double) -> Double in
+        return x * y
+    }
+    result = calculator.calc { x, y in return x * y }
+    result = calculator.calc { return $0 * $1 }
+    result = calculator.calc { $0 * $1 }
+    print("\(result)")
+    
+    let calculator2 = SampleCaluclator(args: (50, 1.0))
+    print("\(calculator2.calc { $0 + $1 })")
+}
+
+//Capture Lists
+func runCapturedClosure() {
+    var a = 1, b = 4
+    let c = SampleCaluclator(args: (a, b))
+    let innerFunc = { [a] in a + b }
+    let f = { c.calc(innerFunc) }
+    //以下のようにcaptureが別のclosure内で行われていると変更の影響を受ける。
+    //let f = { c.calc { [a] in a + b } }
+    //変数aはinnerFunc内でcaptureされているので変更の影響を受けずに計算が行われる。
+    a = 10
+    b = 40
+    let x = f()
+    print("\(x)")
+    
+    var args = (1, 4)
+    let calculator = SampleCaluclator(args: args)
+    let delayFunc = { calculator.calc { [args] in args.0 + args.1 } }
+    //captureした変数が参照型のオブジェクトを指していた場合は変更の影響を受けてしまう。
+    args = (10, 40)
+    let z = delayFunc()
+    print("\(z)")
+    
+    //selfを参照するとコンパイルエラーになってしまう。
+    calculator.accept {
+        print(calculator.args)
+    }
+    calculator.accept { [weak calculator] in
+        print(calculator!.args)
+    }
+    calculator.accept { [unowned calculator] in
+        print(calculator.args)
+    }
+    calculator.accept { [weak calc = calculator] in
+        print(calc!.args)
+    }
+}
+
+//Type Variable Properties
+private class SomeTypeClass {
+    class final func bye() {
+        print("bye")
+    }
+    static func hey() {
+        print("hey")
+    }
+    //staticはfinalの効果を包含するのでfinalを共に指定するとコンパイルエラーになる。
+    //「static = class + final」と考えてよい。
+    //static final func go() {}
+}
+
+private class SomeSubTypeClass: SomeTypeClass {
+    //class finalやstaticなメソッドはオーバーライドできない。
+    //override func bye() {}
+    //override func hey() {}
+}
+
+func checkTypeVariableProperties() {
+    let someType = SomeSubTypeClass.self
+    someType.bye()
+    someType.hey()
+}
+
+//Type Alias Declaration
+func declareTypeAliasWithTypeChecking() {
+    typealias OnlyStringDict<Key: Hashable> = Dictionary<Key, String>
+    var dict: OnlyStringDict = [
+        1: "Hello",
+        10: "Bye",
+        100: "GoodNight"
+    ]
+    dict[500] = "How are you?"
+    //typealiasでString型以外の値を追加できないように宣言しているので以下はエラーとなる。
+    //dict[1000] = 5.5
+    print(dict.description)
+}
+
+//Rethrowing Functions and Methods
+private enum MyError: Error {
+    case someError
+    case anyError
+    case subError
+    case replacedError
+}
+
+private protocol MyThrowable {
+    func doThrow(fn: () throws -> Void) throws
+}
+
+private func anywayThrowError() throws {
+    throw MyError.anyError
+}
+
+private class SampleThrowableClass {
+    //rethrowsを指定した関数はthrowsな関数を引数に取らなければならない。
+    //rethrowsを使えばコールバック関数を使っている時でも例外の伝搬が行えるということである。
+    func challenge(callback: () throws -> Void) rethrows {
+        do {
+            try callback()
+            //rethrowsな関数内では引数のthrowsな関数以外によるtryは許されない。
+            //try anywayThrowError()
+        } catch {
+            throw MyError.replacedError
+        }
+    }
+    func throwError(_ f: () throws -> Void) throws {
+        throw MyError.someError
+    }
+}
+
+private class SampleSubThrowableClass: SampleThrowableClass, MyThrowable {
+    //super classにおいてrethrowsとして宣言されていたメソッドを
+    //throwsに書き換えてオーバーライドしようとしてもエラーとなる。
+    //override func challenge(callback: () throws -> Void) throws {
+    //    try! callback()
+    //    throw MyError.subError
+    //}
+    
+    //throwsと宣言されたsuper classやprotocolのメソッドを
+    //rethrowsに変えて実装するのは問題無い。
+    override func throwError(_ f: () throws -> Void) rethrows {
+        try f()
+    }
+    func doThrow(fn: () throws -> Void) rethrows {
+        try fn()
+    }
+}
+
+func checkThrowableClassBehavior() {
+    let sub = SampleSubThrowableClass()
+    
+    do {
+        try sub.challenge {
+            throw MyError.someError
+        }
+        try sub.doThrow {
+            throw MyError.subError
+        }
+        print("not occured error")
+    } catch {
+        print("catched error")
+    }
+}
 
