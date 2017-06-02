@@ -244,6 +244,9 @@ private func runPracticesLanguageReference() {
     checkTypeVariableProperties()
     declareTypeAliasWithTypeChecking()
     checkThrowableClassBehavior()
+    collectValuesByEnum()
+    checkCustomPrecedenceGroup()
+    pickupOnlyNonNilValues()
 }
 
 //Entry point

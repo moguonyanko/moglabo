@@ -262,18 +262,19 @@ private protocol MyThrowable {
     func doThrow(fn: () throws -> Void) throws
 }
 
-private func anywayThrowError() throws {
+private func throwUnrelatedError() throws {
     throw MyError.anyError
 }
 
 private class SampleThrowableClass {
     //rethrowsを指定した関数はthrowsな関数を引数に取らなければならない。
-    //rethrowsを使えばコールバック関数を使っている時でも例外の伝搬が行えるということである。
+    //rethrowsを使えばコールバック関数に起因する例外のみを伝搬できるようになる。
     func challenge(callback: () throws -> Void) rethrows {
         do {
             try callback()
             //rethrowsな関数内では引数のthrowsな関数以外によるtryは許されない。
-            //try anywayThrowError()
+            //関数宣言のrethrowsをthrowsにすると以下のコードは有効になる。
+            //try throwUnrelatedError()
         } catch {
             throw MyError.replacedError
         }
@@ -317,3 +318,86 @@ func checkThrowableClassBehavior() {
     }
 }
 
+//Enumerations with Cases of Any Type
+private enum EnumClassifer {
+    //rawValueを指定する場合は各enumに引数の型を指定することができない。
+    //case string(String) = "string"
+    case string(String), integer(Int), double(Double)
+}
+
+func collectValuesByEnum() {
+    let strf = EnumClassifer.string,
+        intf = EnumClassifer.integer,
+        dblf = EnumClassifer.double
+    var results = [EnumClassifer]()
+    let samples: [Any] = ["hoge", 1, 3.5]
+    samples.forEach {
+        switch $0 {
+        case let value as String:
+            results.append(strf(value))
+        case let value as Int:
+            results.append(intf(value))
+        case let value as Double:
+            results.append(dblf(value))
+        default:
+            print("unknown value")
+        }
+    }
+    print("\(samples.description) -> \(results.description)")
+}
+
+//Precedence Group Declaration
+precedencegroup MyOperationPrecedence {
+    //*よりも優先度が低く+よりも優先度が高い演算子を定義する。
+    higherThan: AdditionPrecedence
+    lowerThan: MultiplicationPrecedence
+    //x - y - z のように演算子が連なった時どちら側から計算するかを指定する。
+    associativity: right
+    //assignmentはoptional chainingで演算子が使われた時の振る舞いに影響する。
+    assignment: true
+}
+
+//(, ), #, @ など演算子以外の用途で言語に予約されている文字を
+//カスタム演算子宣言で用いることはできない。+, -, *, / は使用できるが
+//文字の並びによってはコンパイルエラーとなる。
+//アルファベットは使用できない。
+infix operator /-|^+~|-*: MyOperationPrecedence
+
+private extension Int {
+    static func /-|^+~|-*(lhs: Int, rhs: Int) -> Int {
+        let value = abs(lhs - rhs) * 10
+        return value
+    }
+}
+
+func checkCustomPrecedenceGroup() {
+    let x = 1 + 2 /-|^+~|-* 3 * 10
+    print(x)
+    
+    //associativityがrightと指定されているのでカスタム演算子 /-|^+~|-* は右から評価される。
+    //つまり以下の式は 20 /-|^+~|-* (10 /-|^+~|-* 5) と指定されたものと同じ。
+    let y = 20 /-|^+~|-* 10 /-|^+~|-* 5
+    print(y)
+    
+    let a: Int? = 10
+    let b: Int? = 20
+    let c: Int? = 30
+    let z = a! /-|^+~|-* b! /-|^+~|-* c!
+    print(z)
+}
+
+//Optional Pattern
+func pickupOnlyNonNilValues() {
+    let values: [Any?] = [nil, "foo", 123, 1.5, nil]
+    //nilはループ内で評価されない。
+    for case let value? in values {
+        print(value)
+    }
+    //上のコードは下のコードと同じ振る舞いをする。しかし上のコードではループ内に来た時点で
+    //valueがnilでないことが保証されているため，??を使ってデフォルト値を指定する必要が無い。
+    for value in values {
+        if value != nil {
+            print(value ?? "none")
+        }
+    }
+}
