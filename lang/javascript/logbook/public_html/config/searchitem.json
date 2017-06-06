@@ -1,82 +1,292 @@
 {
 	"zk": {
 		"name": "零式水上観測機",
-		"type": "WS",
+		"type": "水上偵察機",
+		"value": 6
+	},
+	"os2u": {
+		"name": "OS2U",
+		"type": "水上偵察機",
 		"value": 6
 	},
 	"siu": {
 		"name": "紫雲",
-		"type": "WS",
+		"type": "水上偵察機",
 		"value": 8
 	},
 	"ro43": {
 		"name": "Ro.43",
-		"type": "WS",
+		"type": "水上偵察機",
 		"value": 4
+	},
+	"zt": {
+		"name": "零式水上偵察機",
+		"type": "水上偵察機",
+		"value": 5
 	},
 	"ar196": {
 		"name": "Ar196改",
-		"type": "WS",
+		"type": "水上偵察機",
 		"value": 5
 	},
 	"yt": {
 		"name": "九八式水上偵察機(夜偵)",
-		"type": "WS",
+		"type": "水上偵察機",
 		"value": 3
 	},
 	"zu": {
 		"name": "瑞雲",
-		"type": "WB",
+		"type": "水上爆撃機",
+		"value": 6
+	},
+	"zu634": {
+		"name": "瑞雲(六三四空)",
+		"type": "水上爆撃機",
+		"value": 6
+	},
+	"zu12": {
+		"name": "瑞雲12型",
+		"type": "水上爆撃機",
 		"value": 6
 	},
 	"zu12_634": {
 		"name": "瑞雲12型(六三四空)",
-		"type": "WB",
+		"type": "水上爆撃機",
 		"value": 7
+	},
+	"sr": {
+		"name": "試製晴嵐",
+		"type": "水上爆撃機",
+		"value": 6
+	},
+	"zu631": {
+		"name": "瑞雲(六三一空)",
+		"type": "水上爆撃機",
+		"value": 4
+	},
+	"sr631": {
+		"name": "晴嵐(六三一空)",
+		"type": "水上爆撃機",
+		"value": 6
+	},
+	"2ss": {
+		"name": "二式水戦改(熟練)",
+		"type": "水上戦闘機",
+		"value": 1
+	},
+	"kyohu": {
+		"name": "強風改",
+		"type": "水上戦闘機",
+		"value": 1
+	},
+	"ro44": {
+		"name": "Ro.44水上戦闘機",
+		"type": "水上戦闘機",
+		"value": 2
+	},
+	"ro44bis": {
+		"name": "Ro.44水上戦闘機bis",
+		"type": "水上戦闘機",
+		"value": 3
 	},
 	"sau": {
 		"name": "彩雲",
-		"type": "SS",
+		"type": "艦上偵察機",
 		"value": 9
+	},
+	"karorin": {
+		"name": "彩雲(東カロリン空)",
+		"type": "艦上偵察機",
+		"value": 10
+	},
+	"keiun": {
+		"name": "試製景雲(艦偵型)",
+		"type": "艦上偵察機",
+		"value": 11
+	},
+	"z21": {
+		"name": "零式艦戦21型(熟練)",
+		"type": "艦上戦闘機",
+		"value": 1
+	},
+	"z52": {
+		"name": "零式艦戦52型(熟練)",
+		"type": "艦上戦闘機",
+		"value": 1
+	},
+	"z53iwm": {
+		"name": "零式艦戦53型(岩本隊)",
+		"type": "艦上戦闘機",
+		"value": 3
+	},
+	"tztmn": {
+		"name": "天山一二型(友永隊)",
+		"type": "艦上攻撃機",
+		"value": 5
+	},
+	"tztmn": {
+		"name": "天山一二型(村田隊)",
+		"type": "艦上攻撃機",
+		"value": 4
+	},
+	"rs601": {
+		"name": "流星(六○一空)",
+		"type": "艦上攻撃機",
+		"value": 3
+	},
+	"rsk": {
+		"name": "流星改",
+		"type": "艦上攻撃機",
+		"value": 2
+	},
+	"ssexa": {
+		"name": "彗星(江草隊)",
+		"type": "艦上爆撃機",
+		"value": 4
+	},
+	"ss601": {
+		"name": "彗星(六○一空)",
+		"type": "艦上爆撃機",
+		"value": 1
+	},
+	"ss12": {
+		"name": "彗星一二型甲",
+		"type": "艦上爆撃機",
+		"value": 1
+	},
+	"sn": {
+		"name": "試製南山",
+		"type": "艦上爆撃機",
+		"value": 2
+	},
+	"z62iwi": {
+		"name": "零戦62型(爆戦/岩井隊)",
+		"type": "艦上爆撃機",
+		"value": 1
+	},
+	"kikka": {
+		"name": "橘花改",
+		"type": "噴式戦闘爆撃機",
+		"value": 0
+	},
+	"keiunk": {
+		"name": "噴式景雲改",
+		"type": "噴式戦闘爆撃機",
+		"value": 3
+	},
+	"2tt": {
+		"name": "二式大艇",
+		"type": "大型飛行艇",
+		"value": 12
+	},
+	"catalina": {
+		"name": "PBY-5A Catalina",
+		"type": "大型飛行艇",
+		"value": 9
+	},
+	"3sr": {
+		"name": "三式指揮連絡機",
+		"type": "対潜哨戒機",
+		"value": 1
+	},
+	"kagou": {
+		"name": "カ号観測機",
+		"type": "対潜哨戒機",
+		"value": 0
 	},
 	"32": {
 		"name": "32号対水上電探",
-		"type": "BED",
+		"type": "大型電探",
 		"value": 10
 	},
 	"32k": {
 		"name": "32号対水上電探改",
-		"type": "BED",
+		"type": "大型電探",
 		"value": 11
+	},
+	"fumo": {
+		"name": "FuMO25 レーダー",
+		"type": "大型電探",
+		"value": 9
+	},
+	"sokyo": {
+		"name": "15m二重測距儀＋21号電探改二",
+		"type": "大型電探",
+		"value": 7
+	},
+	"21k": {
+		"name": "21号対空電探改",
+		"type": "大型電探",
+		"value": 6
+	},
+	"14": {
+		"name": "14号対空電探",
+		"type": "大型電探",
+		"value": 5
 	},
 	"33": {
 		"name": "33号対水上電探",
-		"type": "SED",
+		"type": "小型電探",
 		"value": 7
 	},
 	"22k4": {
 		"name": "22号対水上電探改四",
-		"type": "SED",
+		"type": "小型電探",
 		"value": 5
 	},
 	"13k": {
 		"name": "13号対空電探改",
-		"type": "SED",
+		"type": "小型電探",
 		"value": 4
-	},
-	"fumo": {
-		"name": "FuMO25 レーダー",
-		"type": "BED",
-		"value": 9
 	},
 	"sl": {
 		"name": "探照灯",
-		"type": "SL",
+		"type": "探照灯",
 		"value": 2
 	},
 	"bsl": {
 		"name": "96式150cm探照灯",
-		"type": "SL",
+		"type": "探照灯",
 		"value": 3
+	},
+	"3st": {
+		"name": "三式水中探信儀",
+		"type": "ソナー",
+		"value": 0
+	},
+	"4sc": {
+		"name": "四式水中聴音機",
+		"type": "ソナー",
+		"value": 0
+	},
+	"zsc": {
+		"name": "零式水中聴音機",
+		"type": "ソナー",
+		"value": 1
+	},
+	"bouen": {
+		"name": "潜水艦搭載電探＆水防式望遠鏡",
+		"type": "潜水艦装備",
+		"value": 4
+	},
+	"e27": {
+		"name": "潜水艦搭載電探＆逆探(E27)",
+		"type": "潜水艦装備",
+		"value": 5
+	},
+	"mihari": {
+		"name": "熟練見張員",
+		"type": "水上艦要員",
+		"value": 2
+	},
+	"seibi": {
+		"name": "熟練艦載機整備員",
+		"type": "水上艦要員",
+		"value": 1
+	},
+	"sireibu": {
+		"name": "艦隊司令部施設",
+		"type": "艦隊司令部施設",
+		"value": 1
 	}
 }

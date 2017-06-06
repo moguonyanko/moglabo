@@ -1,25 +1,69 @@
 {
-	"WS": {
+	"艦上戦闘機": {
+		"scalefactor": 0.6,
+		"reinforcement": 0
+	},
+	"艦上爆撃機": {
+		"scalefactor": 0.6,
+		"reinforcement": 0
+	},
+	"艦上攻撃機": {
+		"scalefactor": 0.8,
+		"reinforcement": 0
+	},
+	"艦上偵察機": {
+		"scalefactor": 1.0,
+		"reinforcement": 1.2
+	},
+	"水上偵察機": {
 		"scalefactor": 1.2,
 		"reinforcement": 1.2
 	},
-	"SS": {
-		"scalefactor": 1.0,
-		"reinforcement": 0
-	},
-	"WB": {
+	"水上爆撃機": {
 		"scalefactor": 1.1,
 		"reinforcement": 0
 	},
-	"SED": {
+	"水上戦闘機": {
+		"scalefactor": 0.6,
+		"reinforcement": 0
+	},
+	"小型電探": {
 		"scalefactor": 0.6,
 		"reinforcement": 1.25
 	},
-	"BED": {
+	"大型電探": {
 		"scalefactor": 0.6,
 		"reinforcement": 1.4
 	},
-	"SL": {
+	"探照灯": {
+		"scalefactor": 0.6,
+		"reinforcement": 0
+	},
+	"潜水艦装備": {
+		"scalefactor": 0.6,
+		"reinforcement": 0
+	},
+	"大型飛行艇": {
+		"scalefactor": 0.6,
+		"reinforcement": 0
+	},
+	"ソナー": {
+		"scalefactor": 0.6,
+		"reinforcement": 0
+	},
+	"水上艦要員": {
+		"scalefactor": 0.6,
+		"reinforcement": 0
+	},
+	"対潜哨戒機": {
+		"scalefactor": 0.6,
+		"reinforcement": 0
+	},
+	"艦隊司令部施設": {
+		"scalefactor": 0.6,
+		"reinforcement": 0
+	},
+	"噴式戦闘爆撃機": {
 		"scalefactor": 0.6,
 		"reinforcement": 0
 	}

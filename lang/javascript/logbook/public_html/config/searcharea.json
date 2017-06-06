@@ -34,5 +34,12 @@
 			"junction": 3,
 			"border": 40
 		}
+	],
+	"6-3": [
+		{
+			"name": "H",
+			"junction": 3,
+			"border": 38
+		}
 	]
 }

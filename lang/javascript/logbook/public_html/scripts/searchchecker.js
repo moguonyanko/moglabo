@@ -172,56 +172,56 @@
 		
 		const ro43Plus6 = new SearchItem({
 			name : "ro.43",
-			type : "WS",
+			type : "水上偵察機",
 			value : 4,
 			improvement: 6
 		});
 		
 		const yatei = new SearchItem({
 			name : "yatei",
-			type : "WS",
+			type : "水上偵察機",
 			value : 3,
 			improvement: 0
 		});
 		
 		const zerokan = new SearchItem({
 			name : "zerokan",
-			type : "WS",
+			type : "水上偵察機",
 			value : 6,
 			improvement: 0
 		});
 		
 		const zerokanPlus3 = new SearchItem({
 			name : "zerokan",
-			type : "WS",
+			type : "水上偵察機",
 			value : 6,
 			improvement: 3
 		});
 		
 		const dt33 = new SearchItem({
 			name : "33gou",
-			type : "SED",
+			type : "小型電探",
 			value : 7,
 			improvement: 0
 		});
 		
 		const dt22k4 = new SearchItem({
 			name : "22goukai4",
-			type : "SED",
+			type : "小型電探",
 			value : 5,
 			improvement: 0
 		});
 		
 		const dt32k = new SearchItem({
 			name : "32goukai",
-			type : "BED",
+			type : "大型電探",
 			value : 11,
 			improvement: 0
 		});
 		
 		const dt32 = new SearchItem({
 			name : "32gou",
-			type : "BED",
+			type : "大型電探",
 			value : 10,
 			improvement: 0
 		});
@@ -234,7 +234,7 @@
 		
 		const sl = new SearchItem({
 			name : "searchlight",
-			type : "SL",
+			type : "探照灯",
 			value : 2,
 			improvement: 0
 		});
@@ -250,7 +250,7 @@
 			new Ship(68)
 		];
 		
-		const level = 119;
+		const level = 120;
 		
 		const testArgs = {
 			junction: point.junction,
@@ -279,7 +279,7 @@
 			const emptyOpt = doc.createElement("option");
 			emptyOpt.selected = "selected";
 			sel.appendChild(emptyOpt);
-			Array.from(searchItems.keys()).sort().forEach(key => {
+			Array.from(searchItems.keys()).forEach(key => {
 				const opt = doc.createElement("option");
 				opt.value = key;
 				opt.appendChild(doc.createTextNode(searchItems.get(key).name));
@@ -429,6 +429,8 @@
 		appendSearchAreas(searchAreas);
 		
 		lb.select(".calc-runner").addEventListener("click", printCheckResult);
+        
+        console.log(`test value=${testCalc()}`);
 	};
 	
 	win.addEventListener("DOMContentLoaded", main);
