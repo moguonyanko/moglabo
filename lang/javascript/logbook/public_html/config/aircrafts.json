@@ -100,9 +100,19 @@
 		"ack": 0
 	},
 	"sr631": {
+		"name": "瑞雲(六三一空)",
+		"type": "SB",
+		"ack": 1
+	},
+	"sr631": {
 		"name": "晴嵐(六三一空)",
 		"type": "SB",
 		"ack": 0
+	},
+	"late298b": {
+		"name": "Late 298B",
+		"type": "SB",
+		"ack": 1
 	},
 	"nzn": {
 		"name": "試製南山",
@@ -228,11 +238,6 @@
 		"name": "F6F-3",
 		"type": "KS",
 		"ack": 8
-	},
-	"late298b": {
-		"name": "Late 298B",
-		"type": "SB",
-		"ack": 1
 	},
     "hayabusa64": {
 		"name": "一式戦 隼Ⅱ型(64戦隊)",

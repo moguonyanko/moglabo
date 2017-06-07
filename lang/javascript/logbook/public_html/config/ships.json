@@ -159,6 +159,14 @@
 		"name": "熊野改",
 		"slotComposition": [5, 6, 5, 6]
 	},
+	"kmn2": {
+		"name": "熊野改二",
+		"slotComposition": [3, 3, 7, 11]
+	},
+	"kmnk2": {
+		"name": "熊野航改二",
+		"slotComposition": [15, 12, 12, 8]
+	},
 	"tone": {
 		"name": "利根改二",
 		"slotComposition": [2, 2, 9, 5]
