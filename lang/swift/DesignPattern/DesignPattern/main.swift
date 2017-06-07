@@ -7,5 +7,9 @@
 
 import Foundation
 
-//Entry point
-testStrategy()
+//Run design pattern samples
+/*
+Strategy.main()
+State.main()
+*/
+Builder.main()
