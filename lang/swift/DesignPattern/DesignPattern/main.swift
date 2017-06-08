@@ -9,7 +9,8 @@ import Foundation
 
 //Run design pattern samples
 /*
-Strategy.main()
-State.main()
+ Strategy.main()
+ State.main()
+ Builder.main()
 */
-Builder.main()
+Bridge.main()
