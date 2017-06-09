@@ -84,14 +84,70 @@ private final class SimpleCharger<E: Executor>: Charger {
 //    }
 //}
 
+private protocol Teacher {
+    func teach(quiestion: String)
+}
+
+private protocol Supporter {
+    var teacher: Teacher { get }
+    init(teacher: Teacher)
+    func supprt()
+}
+
+private class MathTeacher: Teacher {
+    func teach(quiestion: String) {
+        print("\(quiestion) ... anyway 1 + 1 = 2")
+    }
+}
+
+private class ChemistryTeacher: Teacher {
+    func teach(quiestion: String) {
+        print("\(quiestion) ... That is H2O")
+    }
+}
+
+private class SupporterA: Supporter {
+    var teacher: Teacher
+    required init(teacher: Teacher) {
+        self.teacher = teacher
+    }
+    func supprt() {
+        teacher.teach(quiestion: "Who are you?")
+    }
+}
+
+private class SupporterB: Supporter {
+    var teacher: Teacher
+    required init(teacher: Teacher) {
+        self.teacher = teacher
+    }
+    func supprt() {
+        teacher.teach(quiestion: "このパターンは無駄が多くないですか？")
+    }
+}
+
+private enum TeacherType {
+    case math, chemistry
+}
+
+private func getTeacher(type: TeacherType) -> Teacher {
+    switch type {
+    case .math:
+        return MathTeacher()
+    case .chemistry:
+        return ChemistryTeacher()
+    }
+}
+
 private func runAllCases() {
-    let output = { print($0) }
-    //var executor = getExecutor(typeName: "adder")
-    let manager = SimpleCharger(executor: Adder(), args: [1, 2, 3, 4, 5])
-    manager.work(output)
-    //executor = getExecutor(typeName: "joiner")
-    let manager2 = SimpleCharger(executor: Joiner(), args: ["I", "am", "Moguo"])
-    manager2.work(output)
+    var teacher: Teacher = getTeacher(type: .math)
+    var supprter: Supporter = SupporterA(teacher: teacher)
+    supprter.supprt()
+    teacher = getTeacher(type: .chemistry)
+    supprter = SupporterA(teacher: teacher)
+    supprter.supprt()
+    supprter = SupporterB(teacher: teacher)
+    supprter.supprt()
 }
 
 struct Bridge {

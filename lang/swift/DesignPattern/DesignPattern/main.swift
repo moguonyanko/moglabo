@@ -12,5 +12,8 @@ import Foundation
  Strategy.main()
  State.main()
  Builder.main()
+ Bridge.main()
+ Bridge.main()
+ TemplateMethod.main()
 */
-Bridge.main()
+Observer.main()
