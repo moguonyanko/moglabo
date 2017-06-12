@@ -15,5 +15,7 @@ import Foundation
  Bridge.main()
  Bridge.main()
  TemplateMethod.main()
+ Observer.main()
+ Decorator.main()
 */
-Observer.main()
+Visitor.main()
