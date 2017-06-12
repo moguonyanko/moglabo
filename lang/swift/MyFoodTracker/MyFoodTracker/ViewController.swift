@@ -9,15 +9,36 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextFieldDelegate {
 
     //MARK: Properties
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var mealNameLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        //コールバックを通してユーザーからの入力値を扱う。
+        nameTextField.delegate = self
     }
-
+    
+    //MARK: UITextFieldDelegate
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        //キーボードを隠す。
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        mealNameLabel.text = textField.text
+    }
+    
+    //MARK: Actions
+    @IBOutlet weak var setDefaultLabelText: UIButton!
+    @IBAction func setDefaultLabelText(_ sender: UIButton) {
+        mealNameLabel.text = "オムライス"
+    }
+    
 }
+
+//NEXT: Work with View Controllers
 
