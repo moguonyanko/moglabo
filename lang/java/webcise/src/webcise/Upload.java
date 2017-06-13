@@ -15,9 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+/**
+ * <em>location="."</em>と指定することによりアップロードされたファイルが
+ * Tomcatのworkディレクトリ以下に保存される。
+ */
 @WebServlet(name = "Upload", urlPatterns = {"/Upload"})
 @MultipartConfig(fileSizeThreshold = 5000000, maxFileSize = 10000000, 
-	location = "E:/tmp")
+	location = ".")
 public class Upload extends HttpServlet {
 
 	private static final Pattern SEMICOLON_PATTERN = Pattern.compile(";");
