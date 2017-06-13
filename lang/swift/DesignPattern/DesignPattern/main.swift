@@ -17,5 +17,7 @@ import Foundation
  TemplateMethod.main()
  Observer.main()
  Decorator.main()
+ Visitor.main()
+ Facade.main()
 */
-Visitor.main()
+AbstractFactory.main()
