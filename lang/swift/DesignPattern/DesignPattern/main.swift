@@ -19,5 +19,6 @@ import Foundation
  Decorator.main()
  Visitor.main()
  Facade.main()
+ AbstractFactory.main()
 */
-AbstractFactory.main()
+Command.main()
