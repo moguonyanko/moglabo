@@ -11,4 +11,5 @@
 **/*.xcplayground
 **/*.xcworkspacedata
 **/*.wasm
+**/wasmoutput
 
