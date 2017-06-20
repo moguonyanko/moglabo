@@ -1,3 +1,7 @@
+#!/bin/sh
+
+# Reference: http://webassembly.org/
+
 mkdir hello
 cd hello
 echo '#include <stdio.h>' > hello.c
