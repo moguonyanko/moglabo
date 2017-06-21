@@ -249,6 +249,10 @@ private func runPracticesLanguageReference() {
     pickupOnlyNonNilValues()
 }
 
+private func runAllCasesOfReconsiderationGenerics() {
+    ReconsiderationGenerics.main()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -276,7 +280,8 @@ private func runPractices() {
     //runPracticesGenerics()
     //runPracticesAccessControl()
     //runPracticesAdvancedOperators()
-    runPracticesLanguageReference()
+    //runPracticesLanguageReference()
+    runAllCasesOfReconsiderationGenerics()
 }
 
 runPractices()
