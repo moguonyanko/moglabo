@@ -171,6 +171,57 @@ private func testTermManager() {
     print("\(mn.sum().description)")
 }
 
+private protocol User {
+    var name: String { get set }
+    var age: Int { get set }
+}
+
+private struct MyUser: User {
+    private var userName: String
+    private var userAge: Int
+    init(name: String, age: Int) {
+        userName = name
+        userAge = age
+        //全てのstored propertyが初期化される前にselfを参照することはできない。
+        //self.name = name
+        //self.age = age
+    }
+    var name: String {
+        get {
+            return userName
+        }
+        set {
+            userName = newValue
+        }
+    }
+    var age: Int {
+        get {
+            return userAge
+        }
+        set {
+            userAge = newValue
+        }
+    }
+    var description: String {
+        return "My name is \(name), I am \(age) years old."
+    }
+}
+
+private func swapUserName<T: User, U: User>(first: inout T, second: inout U) {
+    let tmpName = first.name
+    //引数型宣言のT及びUの前にinoutが無いとコンパイルエラーとなる。
+    first.name = second.name
+    second.name = tmpName
+}
+
+private func testGenericsUsers() {
+    var u1 = MyUser(name: "foo", age: 20)
+    var u2 = MyUser(name: "bar", age: 40)
+    swapUserName(first: &u1, second: &u2)
+    print("\(u1.description)")
+    print("\(u2.description)")
+}
+
 //Test functions array
 private let sampleFuncs = [
     {
@@ -184,7 +235,8 @@ private let sampleFuncs = [
     testAllValuesCalculator,
     testMyTerms,
     testMyMapper,
-    testTermManager
+    testTermManager,
+    testGenericsUsers
 ]
 
 struct ReconsiderationGenerics {
