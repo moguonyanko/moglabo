@@ -174,6 +174,7 @@ private func testTermManager() {
 private protocol User {
     var name: String { get set }
     var age: Int { get set }
+    var description: String { get }
 }
 
 private struct MyUser: User {
@@ -222,6 +223,134 @@ private func testGenericsUsers() {
     print("\(u2.description)")
 }
 
+private enum TeamType {
+    case baseball, soccer
+}
+
+private enum TeamError: Error {
+    case missingTeam
+}
+
+private protocol Team {
+    associatedtype Member
+    //associatedtype Member: User
+    //propertyの場合はsetが指定されていないとoverrideできない。
+    var count: Int { get set }
+    //func getMemberCount() -> Int
+    //subscript(index: Int) -> Member { get }
+    func getMember(index: Int) -> Member
+}
+
+private class BaseTeam: Team {
+    //overrideされる前提のproperty
+    var count = 0
+    //overrideされる前提のsubscript
+    //subscript(index: Int) -> MyUser {
+    //    return MyUser(name: "no name", age: -1)
+    //}
+    //Teamのassociatedtypeが
+    //associatedtype Member: User
+    //になっているとUserを戻り値に指定できない。
+    func getMember(index: Int) -> User {
+        return MyUser(name: "no name", age: -1)
+    }
+}
+
+//Teamのassociatedtypeが以下のようになっている場合，
+//associatedtype Member: User
+//class BaseballTeam<U: User>の型変数Uを使わず全てUserと記述すると
+//protocolに従っていないと見なされてエラーになってしまう。MyUserと記述するぶんには問題無い。
+//generic functionの仕様と一貫性が無いように思える。(下記のaddTwoNSNumbers参照)
+private class BaseballTeam: BaseTeam {
+    private let members: [User]
+    init(members: [User]) {
+        self.members = members
+    }
+    override var count: Int {
+        get {
+            return members.count
+        }
+        set {
+            //This count is effective read-only
+        }
+    }
+    //subscriptはoverrideされない！インスタンスの実体の型ではなくインスタンスを指す変数の型の
+    //classで定義されたsubscriptが常に利用されてしまう。subscriptはstaticメソッドのようなものである。
+    //subscriptはprotocolに宣言しない方が安全かもしれない。
+    //subscript(index: Int) -> U {
+    //    return members[index]
+    //}
+    override func getMember(index: Int) -> User {
+        return members[index]
+    }
+}
+
+private extension Team {
+    //subscript形式でインスタンスが参照されたら，
+    //実行時のインスタンスの型で定義されたgetMemberメソッドを呼び出す。
+    subscript(index: Int) -> Member {
+        return getMember(index: index)
+    }
+}
+
+//戻り値がTeamを継承したassociatedtypeを宣言していないprotocolの型でもエラーとなる。
+//ここで返しているBaseTeamはJavaでいうところの抽象クラスみたいなものである。
+private func createTeam<U: User>(type: TeamType, members: [U]) throws -> BaseTeam {
+    switch type {
+    case .baseball:
+        return BaseballTeam(members: members)
+    default:
+        throw TeamError.missingTeam
+    }
+}
+
+private func testTeamMembers() {
+    let members = [
+        MyUser(name: "foo", age: 18),
+        MyUser(name: "bar", age: 24),
+        MyUser(name: "baz", age: 48)
+    ]
+    guard let team = try? createTeam(type: .baseball, members: members) else {
+        print("Missing team")
+        return
+    }
+    print("\(team.count)")
+    print("\(team[team.count - 1].description)")
+}
+
+//戻り値の型をDとするとコンパイルエラーとなる。
+//常に型変数の境界を指定せよということだろうか。
+private func addTwoNSNumbers<D: NSNumber>(_ x: D, _ y: D) -> NSNumber {
+    return NSNumber(integerLiteral: x.intValue + y.intValue)
+}
+
+/**
+ * <h2>protocolまとめ</h2>
+ * <p>以下の要素はprotocolに定義するとコードが扱いにくくなる恐れがある。<br />
+ * 「扱いにくい」とはその後の変更が困難になる・要らないはずのコードを書くことを強要される・
+ * 可読性が低下するといったことを指す。</p>
+ * 
+ * <h3>associatedtype</h3>
+ * protocolの型を引数・戻り値・変数・定数の型として指定することができなくなる。
+ * associatedtypeの型に境界を指定した場合，さらに難解な挙動を示すようになる。
+ *
+ * <h3>convenienceではないinit</h3>
+ * protocolを実装するclassで別のinitを定義した際，そのinit内部からprotocolに従って
+ * 定義された方のinitを呼び出すことができない。
+ *
+ * <h3>computedではないproperty</h3>
+ * 実装する側でprivateやletを指定できるような状況でも指定することができない。
+ * またsetを指定していなければoverrideできない。もっともpropertyをoverrideすること自体
+ * 良い考えではない。(getterやsetterをoverrideするようなもの)
+ * 
+ * <h3>subscript</h3>
+ * 実行時のインスタンスの型ではなく変数が指す型のclassで定義されたsubscriptが使われる。
+ * func getObj() -> Super { return Sub() }
+ * let obj = getObj()
+ * let element = obj[0] //Superのsubscriptが参照される。
+ * subscriptはextensionに定義する方が安全で柔軟性もあるかもしれない。
+ */
+
 //Test functions array
 private let sampleFuncs = [
     {
@@ -236,7 +365,13 @@ private let sampleFuncs = [
     testMyTerms,
     testMyMapper,
     testTermManager,
-    testGenericsUsers
+    testGenericsUsers,
+    testTeamMembers,
+    {
+        let n1 = NSNumber(integerLiteral: 10)
+        let n2 = NSNumber(integerLiteral: 90)
+        print("\(addTwoNSNumbers(n1, n2).description)")
+    }
 ]
 
 struct ReconsiderationGenerics {
