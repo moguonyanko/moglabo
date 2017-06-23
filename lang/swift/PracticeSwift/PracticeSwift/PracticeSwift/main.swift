@@ -209,6 +209,7 @@ private func runPracticesGenerics() {
     checkAssosiationExistingType()
     adoptWhereClauseToGenericCollection()
     callFunctionWithGenericExtension()
+    displayGenericSubscriptResult()
 }
 
 private func runPracticesAccessControl() {
@@ -277,11 +278,13 @@ private func runPractices() {
     //runPracticesNestedTypes()
     //runPracticesExtensions()
     //runPracticesProtocols()
-    //runPracticesGenerics()
+    runPracticesGenerics()
     //runPracticesAccessControl()
     //runPracticesAdvancedOperators()
     //runPracticesLanguageReference()
-    runAllCasesOfReconsiderationGenerics()
+    
+    // Extended Reconsideration Sample
+    //runAllCasesOfReconsiderationGenerics()
 }
 
 runPractices()

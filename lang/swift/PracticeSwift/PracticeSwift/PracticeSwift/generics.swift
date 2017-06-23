@@ -343,3 +343,33 @@ func callFunctionWithGenericExtension() {
     let namedFleet = NamedFleet(ships: ["shokaku", "zuikaku", "taiho"])
     print("Uppercased ship names: \(namedFleet.uppercasedShipNames().description)")
 }
+
+//Generic Subscript
+private class MyShop<K: Hashable, V> {
+    //letで宣言するとmakeIteratorできない。
+    private var items: [K:V]
+    init(items: [K:V]) {
+        self.items = items
+    }
+    subscript<Index: Numeric>(index: Index) -> V? {
+        var i = index
+        var iterator = items.makeIterator()
+        while let entry = iterator.next() {
+            if i == 0 {
+                return entry.value
+            }
+            i -= 1
+        }
+        return nil
+    }
+}
+
+func displayGenericSubscriptResult() {
+    let shop = MyShop(items: [
+        100: "lemon",
+        500: "orange",
+        1000: "melon",
+    ])
+    let item = shop[2]
+    print("\(item ?? "no item")")
+}
