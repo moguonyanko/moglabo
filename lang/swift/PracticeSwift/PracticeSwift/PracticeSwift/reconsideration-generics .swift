@@ -21,7 +21,7 @@ private struct BasicCalculator: Calculator {
     }
 }
 
-private struct BiCalculator<Element: Integer>: Calculator {
+private struct BiCalculator<Element: Numeric>: Calculator {
     private let values: (Element, Element)
     init(_ values: (Element, Element)) {
         self.values = values
@@ -43,7 +43,7 @@ private protocol CalculatorIncludedValues {
     var values: [Value] { get }
 }
 
-private struct AllValuesCalculator<Element: Integer>: CalculatorIncludedValues {
+private struct AllValuesCalculator<Element: Numeric>: CalculatorIncludedValues {
     var values = [Element]()
     func sum() -> Element {
         return values.reduce(0, { $0 + $1 })

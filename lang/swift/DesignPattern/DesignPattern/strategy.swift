@@ -7,28 +7,28 @@
 import Foundation
 
 private protocol Calculator {
-    func calc<T: Integer>(_ lhs: T, _ rhs: T) -> T
+    func calc<T: Numeric>(_ lhs: T, _ rhs: T) -> T
 }
 
 private class Addition: Calculator {
-    func calc<T: Integer>(_ lhs: T, _ rhs: T) -> T {
+    func calc<T: Numeric>(_ lhs: T, _ rhs: T) -> T {
         return lhs + rhs
     }
 }
 
 private class Subtraction: Calculator {
-    func calc<T: Integer>(_ lhs: T, _ rhs: T) -> T {
+    func calc<T: Numeric>(_ lhs: T, _ rhs: T) -> T {
         return lhs - rhs
     }
 }
 
-private typealias Calc<T: Integer> = (T, T) -> T
+private typealias Calc<T: Numeric> = (T, T) -> T
 
 private let Add: Calc<Int> = { $0 + $1 }
 
 private let Sub: Calc<Int> = { $0 - $1 }
 
-private class CalcManager<T> {
+private class CalcManager<T: Numeric> {
     private let method: Calc<T>
     init(method: @escaping Calc<T>) {
         self.method = method
