@@ -223,6 +223,10 @@
 		"name": "陸奥改",
 		"slotComposition": [3, 3, 3, 3]
 	},
+	"yura2": {
+		"name": "由良改二",
+		"slotComposition": [1, 2, 1]
+	},
 	"itla": {
 		"name": "Italia",
 		"slotComposition": [3, 3, 3, 3]
