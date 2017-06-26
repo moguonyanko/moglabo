@@ -177,6 +177,7 @@ private func runPracticesExtensions() {
     displayMutatingMethod()
     updateStringsByExtensionSubscript()
     classifyNumbersByExtension()
+    doSampleWithExtensionOfFinalElements()
 }
 
 private func runPracticesProtocols() {
@@ -277,9 +278,9 @@ private func runPractices() {
     //runPracticesErrorhandling()
     //runPracticesTypeCasting()
     //runPracticesNestedTypes()
-    //runPracticesExtensions()
+    runPracticesExtensions()
     //runPracticesProtocols()
-    runPracticesGenerics()
+    //runPracticesGenerics()
     //runPracticesAccessControl()
     //runPracticesAdvancedOperators()
     //runPracticesLanguageReference()
