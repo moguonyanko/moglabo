@@ -210,6 +210,7 @@ private func runPracticesGenerics() {
     adoptWhereClauseToGenericCollection()
     callFunctionWithGenericExtension()
     displayGenericSubscriptResult()
+    runCaseGenericsWhereClause()
 }
 
 private func runPracticesAccessControl() {
