@@ -256,6 +256,10 @@ private func runAllCasesOfReconsiderationGenerics() {
     ReconsiderationGenerics.main()
 }
 
+private func runPracticesTheBasics() {
+    TheBasics.main()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -278,12 +282,13 @@ private func runPractices() {
     //runPracticesErrorhandling()
     //runPracticesTypeCasting()
     //runPracticesNestedTypes()
-    runPracticesExtensions()
+    //runPracticesExtensions()
     //runPracticesProtocols()
     //runPracticesGenerics()
     //runPracticesAccessControl()
     //runPracticesAdvancedOperators()
     //runPracticesLanguageReference()
+    runPracticesTheBasics()
     
     // Extended Reconsideration Sample
     //runAllCasesOfReconsiderationGenerics()
