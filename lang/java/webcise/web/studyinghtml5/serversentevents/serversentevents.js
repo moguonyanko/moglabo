@@ -1,17 +1,17 @@
 ((win, doc, g) => {
     "use strict";
     
-    const noop = () => {};
     const base = "basic-sample";
     const q = selector => doc.querySelector("." + base + " " + selector);
     
     const resultArea = q(".result-area"),
         runner = q(".runner"),
+        sender = q(".sender"),
         closer = q(".closer"),
-        clearer = q(".clearer");
+        clearer = q(".clearer"),
+        messager = q(".messager");
     
-    const getText = txt => doc.createTextNode(txt);
-    const display = txt => resultArea.innerHTML += txt;
+    const display = txt => resultArea.innerHTML += txt + "<br />";
     const clear = () => resultArea.innerHTML = "";
     const log = txt => console.log(txt);
     
@@ -24,6 +24,8 @@
     const getSenderUrl = (name = "ServerSender") => {
         return "/" + getContextName() + "/" + name;
     };
+    
+    const getMessage = () => messager.value;
     
     const onopen = evt =>  {
         log(evt);
@@ -39,19 +41,63 @@
         log(evt);
     };
     
+    class FetchError extends Error {
+        constructor(message = "Fetch error", status) {
+            this.message = message;
+            this.status = status;
+        }
+        toJSON() {
+            return {
+                result: {
+                    message: this.message,
+                    status: this.status
+                }
+            };
+        }
+        toString() {
+            return `${this.message}, status = ${this.status}`;
+        }
+    }
+    
+    const sendRequest = async (url, message = "") => {
+        const method = "POST";
+        const body = new FormData();
+        body.append("message", message);
+        const response = await fetch(url, { method, body });
+        if (response.ok) {
+            const result = await response.json();
+            return result;
+        } else {
+            throw new FetchError("Request has failed", response.status);
+        }
+    };
+    
     const addListener = () => {
-        let eventSource = null;
+        let sources = [];
     
         runner.addEventListener("click", () => {
             const url = getSenderUrl();
-            eventSource = new EventSource(url);
+            const eventSource = new EventSource(url);
             Object.assign(eventSource, { onopen, onmessage, onclose });
+            sources.push(eventSource);
+        });
+        
+        sender.addEventListener("click", async () => {
+            try {
+                const url = getSenderUrl();
+                const message = getMessage();
+                const result = await sendRequest(url, message);
+                display(JSON.stringify(result));
+            } catch (err) {
+                display(JSON.stringify(err));
+            } 
         });
 
         closer.addEventListener("click", () => {
-            if (eventSource) {
+            sources.forEach(eventSource => {
                 eventSource.close();
-            }
+            });
+            sources = [];
         });
         
         clearer.addEventListener("click", clear);
