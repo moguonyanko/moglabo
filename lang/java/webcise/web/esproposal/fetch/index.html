@@ -4,15 +4,32 @@
 		<meta charset="UTF-8" />
 		<title>Fetch</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="stylesheet" href="/webcise/esproposal/fetch/fetch.css" />
+		<link rel="stylesheet" href="fetch.css" />
 	</head>
 	<body>
 		<header>
 			<h1>Fetch</h1>
-			<p><a href="/webcise/esproposal/">home</a></p>
+			<p><a href="../../">home</a></p>
 		</header>
 		
 		<main>
+            <em>注意</em>
+            <p>
+                セキュリティに関するHTTPレスポンスヘッダがWebサーバで正しく
+                設定されていないとクロスオリジンでなくても画像を正常に表示できない。
+            </p>
+            <div>
+                <h3>Apache設定例</h3>
+                <pre class="sample-code">
+&lt;Location /webcise/&gt;
+	Header always set X-XSS-Protection "1; mode=block"
+	Header always set Strict-Transport-Security "max-age=2678400; includeSubdomains;
+	Header always set X-Frame-Options "deny"
+	Header always set X-Content-Type-Options nosniff
+	Header always set Referrer-Policy "no-referrer"
+	Header always set Content-Security-Policy  "default-src 'self' https://localhost blob:;"
+&lt;/Location&gt;</pre>
+            </div>
 			<section class="fetch-request-sample">
 				<h2>fetch関数で非同期リクエストを行う</h2>
 				<div class="result-area"></div>
@@ -85,14 +102,15 @@
 			<p>参考</p>
 			<ul>
 				<li><a href="https://developer.mozilla.org/en/docs/Web/API/Fetch_API">MDN Fetch API</a></li>
+                <li><a href="https://content-security-policy.com/">Content Security Policy Reference</a></li>
 			</ul>
 		</aside>
 		
 		<footer role="contentinfo">
-			<small>Copyright &copy; 2016 moguonyanko All rights reserved.</small>
+			<small>Copyright &copy; 2017 moguonyanko All rights reserved.</small>
 		</footer>
 		
-		<script src="/webcise/gomakit.js"></script>
-		<script src="/webcise/esproposal/fetch/fetch.js"></script>
+		<script src="../../gomakit.js"></script>
+		<script src="fetch.js"></script>
 	</body>
 </html>

@@ -1,17 +1,28 @@
 @charset "UTF-8";
 
 :root {
-	--common-width: 50vw;
+	--common-width: 90%;
+}
+
+em {
+    font-size: 1.2em;
+}
+
+em::before {
+    content: "!";
+    color: red;
 }
 
 .result-area {
-	width: var(--common-width);
+	width: 100%;
 	height: 20em;
 	background-color: beige;
 }
 
 .sample-code {
 	width: var(--common-width);
+    margin-right: auto;
+    margin-left: auto;
 	font-size: 90%;
-	background-color: lightgrey;
+	background-color: linen;
 }
