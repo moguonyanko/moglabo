@@ -168,3 +168,41 @@ func classifyNumbersByExtension() {
         }
     }
 }
+
+//Extension Declaration
+private struct Rect {
+    var width: Double
+    var height: Double
+}
+
+private extension Rect {
+    var area: Double {
+        return width * height
+    }
+}
+
+private final class Password {
+    private let code: String
+    init(code: String) {
+        self.code = code
+    }
+}
+
+//extensionにfinalを指定することはできないがfinalなclassに対しextensionを
+//定義することはできる。
+private extension Password {
+    func encrypt() -> String {
+        var tmp = [String]()
+        for _ in code {
+            tmp.append("*")
+        }
+        return tmp.joined()
+    }
+}
+
+func doSampleWithExtensionOfFinalElements() {
+    let rect = Rect(width: 10.5, height: 5.5)
+    let password = Password(code: "SECRET")
+    print("Rectangle area is \(rect.area)")
+    print("PAssword is \(password.encrypt())")
+}

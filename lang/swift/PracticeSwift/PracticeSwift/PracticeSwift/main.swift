@@ -177,6 +177,7 @@ private func runPracticesExtensions() {
     displayMutatingMethod()
     updateStringsByExtensionSubscript()
     classifyNumbersByExtension()
+    doSampleWithExtensionOfFinalElements()
 }
 
 private func runPracticesProtocols() {
@@ -210,6 +211,7 @@ private func runPracticesGenerics() {
     adoptWhereClauseToGenericCollection()
     callFunctionWithGenericExtension()
     displayGenericSubscriptResult()
+    runCaseGenericsWhereClause()
 }
 
 private func runPracticesAccessControl() {
@@ -254,6 +256,10 @@ private func runAllCasesOfReconsiderationGenerics() {
     ReconsiderationGenerics.main()
 }
 
+private func runPracticesTheBasics() {
+    TheBasics.main()
+}
+
 //Entry point
 
 private func runPractices() {
@@ -278,10 +284,11 @@ private func runPractices() {
     //runPracticesNestedTypes()
     //runPracticesExtensions()
     //runPracticesProtocols()
-    runPracticesGenerics()
+    //runPracticesGenerics()
     //runPracticesAccessControl()
     //runPracticesAdvancedOperators()
     //runPracticesLanguageReference()
+    runPracticesTheBasics()
     
     // Extended Reconsideration Sample
     //runAllCasesOfReconsiderationGenerics()

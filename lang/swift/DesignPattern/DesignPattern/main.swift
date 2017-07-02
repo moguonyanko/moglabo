@@ -21,5 +21,6 @@ import Foundation
  Facade.main()
  AbstractFactory.main()
  Command.main()
+ Singleton.main()
 */
-Singleton.main()
+Composite.main()

@@ -373,3 +373,49 @@ func displayGenericSubscriptResult() {
     let item = shop[2]
     print("\(item ?? "no item")")
 }
+
+//Associated Types with a Generic Where Clause
+
+//extension String: Describable {
+//    var description: String {
+//        return self
+//    }
+//}
+
+private protocol Group {
+    associatedtype Member
+    associatedtype MemberIterator: IteratorProtocol where MemberIterator.Element == Member
+    var members: [Member] { get }
+    var iterator: MemberIterator { get }
+}
+
+private protocol DescGroup: Group where Member: Describable {}
+
+private struct MyMember: Describable {
+    var name: String
+    var age: Int
+    var description: String {
+        return "My name is \"\(name)\". I am \(age) years old."
+    }
+}
+
+private class MyGroup: DescGroup  {
+    fileprivate var members: [MyMember]
+    init(_ members: [MyMember]) {
+        self.members = members
+    }
+    var iterator: IndexingIterator<[MyMember]> {
+        return members.makeIterator()
+    }
+}
+
+func runCaseGenericsWhereClause() {
+    let group = MyGroup([
+        MyMember(name: "foo", age: 19),
+        MyMember(name: "bar", age: 55),
+        MyMember(name: "baz", age: 27)
+    ])
+    group.iterator.forEach {
+        print($0.description)
+    }
+}
