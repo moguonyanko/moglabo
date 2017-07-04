@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+:root {
+    --common-bg-color: linen;
+}
+
+main {
+    width: 100%;
+}
+
+.result {
+    width: 95%;
+    height: 15vh;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--common-bg-color);
+    overflow-y: scroll;
+}
