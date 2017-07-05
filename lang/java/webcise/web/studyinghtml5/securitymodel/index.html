@@ -46,7 +46,23 @@
         <p>特定の状況においてブラウザは安全な通信が行えるかどうかをOPTIONSメソッドを使い確認します。</p>
         <div class="result"></div>
         <div>
-          <label><input class="use-custom-header" type="checkbox" checked="checked" />custom header</label>
+          <div>
+            <p>Http Request Header</p>
+            <label><input class="use-custom-header" type="checkbox" checked="checked" />custom</label>
+          </div>
+          <div>
+            <p>Resource</p>
+            <label><input class="content-type" type="radio" name="content-type" value="" checked="checked" />Calculator</label>
+            <label><input class="content-type" type="radio" name="content-type" value="application/xml" />SaveXML</label>
+          </div>
+          <section>
+            <h3>Select If Only Calculator</h3>
+            <div>
+              <p>Request Method</p>
+              <label><input class="method" name="method" type="radio" checked="checked" value="POST" />POST</label>
+              <label><input class="method" name="method" type="radio" value="DELETE" />DELETE</label>
+            </div>
+          </section>
           <button class="run">run</button>
           <button class="clear">clear</button>
         </div>

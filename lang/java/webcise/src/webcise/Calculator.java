@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Objects;
 import java.util.stream.Stream;
+
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -53,7 +53,7 @@ public class Calculator extends HttpServlet {
         abstract int calc(int a, int b);
     }
 
-    private <T extends Integer> void sendResult(PrintWriter out, T result) {
+    private void sendResult(PrintWriter out, Integer result) {
         int status = Objects.nonNull(result)
                 ? HttpServletResponse.SC_OK
                 : HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
@@ -61,7 +61,7 @@ public class Calculator extends HttpServlet {
         sendResult(out, result, status);
     }
 
-    private <T extends Integer> void sendResult(PrintWriter out, T result, int status) {
+    private void sendResult(PrintWriter out, Integer result, int status) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         builder.add("result", result);
         builder.add("status", status);
@@ -113,6 +113,18 @@ public class Calculator extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try (PrintWriter out = response.getWriter()) {
+            JsonObjectBuilder builder = Json.createObjectBuilder();
+            builder.add("result", "Not implemented");
+            builder.add("status", 501);
+            JsonObject json = builder.build();
+            out.println(json.toString());
+        }
     }
 
 }
