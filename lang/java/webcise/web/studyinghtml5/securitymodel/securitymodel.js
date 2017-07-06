@@ -25,7 +25,7 @@
         return eles[0] ? eles[0].value : null;
     };
 
-    const accessControlAllowOriginSample = () => {
+    const accessControlAllowOrigin = () => {
         const base = doc.getElementById("access-control-allow-origin-sample");
         const result = base.querySelector(".result");
 
@@ -139,10 +139,10 @@
             const url = "/webcise/SaveXML";
             const body = `<?xml version="1.0"><sample>test</sample>`;
             const method = "POST";
-            
+
             // Fetchを使ってもXMLHttpRequestを使ってもプリフライトリクエストが
             // 行われない。ローカルのリクエストに対しては決して行われないのだろうか。
-            
+
             /*
              const headers = new Headers();
              headers.append("Content-Type", "application/xml");
@@ -156,7 +156,7 @@
              }
              return await response.json();
              */
-            
+
             // Fetchを用いた上のコードとXMLHttpRequestを用いた下のコードはほぼ同じ。
 
             return new Promise((resolve, reject) => {
@@ -207,9 +207,186 @@
         });
     };
 
+    const mixedPassiveContent = () => {
+        const loadImage = async ({url, type = "blob"}) => {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Image loading failed:${response.statusText}`);
+            }
+            return await response[type]();
+        };
+
+        const makeUrl = ({imageName, protocol}) => {
+            const url = `${protocol}://${loc.host}/webcise/images/${imageName}`;
+            return url;
+        };
+
+        // DOM construction
+
+        const base = doc.getElementById("mixed-passive-content-sample");
+        const output = base.querySelector(".result");
+
+        const display = txt => output.innerHTML += txt;
+        const displayln = txt => display(txt + "<br />");
+
+        const getSelectedProtocol = () => {
+            const protocols = base.querySelectorAll(".protocol");
+            const eles = Array.from(protocols).filter(p => p.checked);
+            if (eles.length > 0) {
+                return eles[0].value;
+            } else {
+                return "https";
+            }
+        };
+
+        const image2Uint8 = async ({url, size}) => {
+            const buffer = await loadImage({url, type: "arrayBuffer"});
+            const dataView = new DataView(buffer);
+            // Uint8ClampedArrayなどのTypedArrayはバイナリデータの入れ物にすぎない。
+            // ArrayBufferのサイズに従って初期化したのち，DataViewを使って適切な型で
+            // バイナリデータを取得して保存する。
+            const array = new Uint8ClampedArray(buffer.byteLength);
+            const datas = [];
+            size = parseInt(size);
+            if (size > 0 && !isNaN(size)) {
+                const limit = size <= array.length ? size : array.length;
+                for (let i = 0; i < limit; i++) {
+                    const data = dataView.getUint8(i);
+                    datas.push(data);
+                }
+            }
+            return datas;
+        };
+
+        // async function* doSomething(){} のように書くとシンタックスエラーになる。
+        // async generator function に対応しているブラウザは今のところ存在しない。
+        function* binaryGenerator( {buffer, size}) {
+            const dataView = new DataView(buffer);
+            const array = new Uint8ClampedArray(buffer.byteLength);
+            size = parseInt(size);
+            if (size <= 0 || isNaN(size)) {
+                throw new Error(`Size must be positive integer:${size}`);
+            }
+            const limit = size <= array.length ? size : array.length;
+            for (let i = 0; i < limit; i++) {
+                yield dataView.getUint8(i);
+        }
+        }
+
+        let generator = null;
+        let loadedBinaries = [];
+
+        base.querySelector(".generate").addEventListener("click", async () => {
+            const imageName = "star.png";
+            const protocol = getSelectedProtocol();
+            const url = makeUrl({imageName, protocol});
+            const size = base.querySelector(".image-size").value;
+            try {
+                const buffer = await loadImage({url, type: "arrayBuffer"});
+                generator = binaryGenerator({buffer, size});
+            } catch (err) {
+                display(`Cannot load image:${err.message}`);
+            }
+        });
+
+        const appendLoadedImage = arrayBuffer => {
+            const blob = new Blob(arrayBuffer, {type: "image/png"});
+            const url = URL.createObjectURL(blob);
+            const imgEle = new Image();
+            imgEle.onload = () => {
+                output.appendChild(imgEle);
+                URL.revokeObjectURL(url);
+            };
+            imgEle.src = url;
+        };
+
+        base.querySelector(".run").addEventListener("click", async () => {
+            /*
+             const imageName = "star.png";
+             const protocol = getSelectedProtocol();
+             const url = makeUrl({imageName, protocol});
+             const size = base.querySelector(".image-size").value;
+             try {
+             const datas = await image2Uint8({url, size});
+             display(datas);
+             } catch (err) {
+             display(`Cannot load image:${err.message}`);
+             }
+             */
+            if (generator) {
+                const gen = generator.next();
+                if (!gen.done) {
+                    const binaryData = gen.value;
+                    display(`${binaryData}&nbsp;`);
+                    loadedBinaries.push(binaryData);
+                } else {
+                    display("Finished!");
+                    // ArrayをArrayBufferに変換する。
+                    const buffer = new Uint8ClampedArray(loadedBinaries).buffer;
+                    try {
+                        appendLoadedImage(buffer);
+                    } catch (err) {
+                        displayln(`Fail drawing image:${err.message}`);
+                    } finally {
+                        generator = null;
+                        loadedBinaries = [];
+                    }
+                }
+            }
+        });
+
+        base.querySelector(".clear").addEventListener("click", () => {
+            output.innerHTML = "";
+        });
+    };
+
+    const mixedActiveContent = () => {
+        const base = doc.getElementById("mixed-active-content-sample");
+        const output = base.querySelector(".result");
+
+        const getProtocol = () => {
+            return Array.from(base.querySelectorAll(".protocol"))
+                    .filter(e => e.checked)[0].value;
+        };
+
+        const appendStylesheet = () => {
+            try {
+                const link = doc.createElement("link");
+                link.setAttribute("rel", "stylesheet");
+                link.setAttribute("href", `${getProtocol()}://${loc.host}${loc.pathname}main.css`);
+                output.appendChild(link);
+                output.innerHTML += `Stylesheet is loaded:${link.href}<br />`;
+            } catch (err) {
+                output.innerHTML += err.message;
+            }
+        };
+        
+        const appendAnchor = () => {
+            try {
+                const anchor = doc.createElement("a");
+                anchor.setAttribute("href", `${getProtocol()}://${loc.host}${loc.pathname}`);
+                output.appendChild(anchor);
+                output.innerHTML += `Anchor is appended:${anchor.href}<br />`;
+            } catch (err) {
+                output.innerHTML += err.message;
+            }
+        };
+        
+        base.querySelector(".run").addEventListener("click", () => {
+            appendStylesheet();
+            appendAnchor();
+        });
+
+        base.querySelector(".clear").addEventListener("click", () => {
+            output.innerHTML = "";
+        });
+    };
+
     const samples = [
-        accessControlAllowOriginSample,
-        preflightRequest
+        accessControlAllowOrigin,
+        preflightRequest,
+        mixedPassiveContent,
+        mixedActiveContent
     ];
 
     win.addEventListener("DOMContentLoaded", () => samples.forEach(s => s()));
