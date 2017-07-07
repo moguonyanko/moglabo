@@ -270,7 +270,7 @@
             const limit = size <= array.length ? size : array.length;
             for (let i = 0; i < limit; i++) {
                 yield dataView.getUint8(i);
-        }
+            }
         }
 
         let generator = null;
@@ -381,12 +381,45 @@
             output.innerHTML = "";
         });
     };
+    
+    const secureContexts = () => {
+        const base = doc.getElementById("secure-contexts-sample");
+        
+        const makeCheckingUrl = ({secure = true, host = loc.host } = {}) => {
+            const protocol = secure ? "https" : "http";
+            return `${protocol}://${host}/${loc.pathname}/securitychecking.html`;
+        };
+        
+        const isUseSSL = () => {
+            return base.querySelector(".use-secure-protocol").checked;
+        };
+        
+        const isSelectedHost = () => {
+            return base.querySelector(".select-host").value;
+        };
+        
+        const isNoOpener = () => {
+            return base.querySelector(".use-noopener").checked;
+        };
+        
+        base.querySelector(".open-window").addEventListener("click", () => {
+            const url = makeCheckingUrl({ 
+                secure: isUseSSL(), 
+                host: isSelectedHost()
+            });
+            const rel = isNoOpener() ? "noopener" : "";
+            const subWindow = win.open(url, "", rel);
+            //Window.openの第3引数にnoopenerが指定されると戻り値のWindowはnullになる。
+            console.log(subWindow);
+        });
+    };
 
     const samples = [
         accessControlAllowOrigin,
         preflightRequest,
         mixedPassiveContent,
-        mixedActiveContent
+        mixedActiveContent,
+        secureContexts
     ];
 
     win.addEventListener("DOMContentLoaded", () => samples.forEach(s => s()));

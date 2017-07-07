@@ -18,6 +18,7 @@
         <li><a href="#preflight-request-sample">Preflight Request</a></li>
         <li><a href="#mixed-passive-content-sample">Mixed Passive Content</a></li>
         <li><a href="#mixed-active-content-sample">Mixed Active Content</a></li>
+        <li><a href="#secure-contexts-sample">Secure Contexts</a></li>
       </ul>
     </header>
     <main>
@@ -125,6 +126,48 @@
           <button class="run">run</button>
           <button class="clear">clear</button>
         </div>
+      </section>
+      <section id="secure-contexts-sample">
+        <h2>Secure Contexts</h2>
+        <pre class="outline">
+          基本的にトップレベルのウインドウがHTTPSなどセキュアなプロトコルでなければ
+          Secure Contextではないとみなされる。
+          localhostはHTTPSでなくてもSecure Contextと見なされる。
+        </pre>
+        <section>
+          <h3>HTTPSからのHTTPはnon-secure</h3>
+          <pre class="outline">
+            ただしlocalhostはsecure。
+            今のところlocalhost以外でHTTPSでない場合常にnon-secureになっている。
+          </pre>
+          <a href="http://localhost/webcise/studyinghtml5/securitymodel/securitychecking.html">localhost</a>
+          <a href="http://myhost/webcise/studyinghtml5/securitymodel/securitychecking.html">myhost</a>
+        </section>
+        <section>
+          <h3>別ウインドウをスクリプトで開く</h3>
+          <pre class="outline">
+            トップレベルのウインドウがHTTPであってもnoopenerが指定されたaやwindow.openで
+            生成されたウインドウはSecure Contextと見なされる・・・はずだが，現時点では
+            noopenerを指定していなくても参照されたURLがHTTPSであればSecure Contextになってしまう。
+          </pre>
+          <div>
+            <div>
+              <label><input class="use-secure-protocol" type="checkbox" checked="checked" />secure</label>
+              <select class="select-host">
+                <option value="localhost">localhost</option>
+                <option value="myhost">myhost</option>
+                <option value="selfhost">selfhost</option>
+              </select>
+              <label><input class="use-noopener" type="checkbox" />noopener</label>
+            </div>
+            <button class="open-window">open</button>
+          </div>
+        </section>
+        <section>
+          <h3>noopener(version a element)</h3>
+          <a href="https://selfhost/webcise/studyinghtml5/securitymodel/securitychecking.html" target="_blank">selfhost</a>
+          <a href="https://selfhost/webcise/studyinghtml5/securitymodel/securitychecking.html" target="_blank" rel="noopener">selfhost(noopener)</a>
+        </section>
       </section>
     </main>
     <aside role="complementary">
