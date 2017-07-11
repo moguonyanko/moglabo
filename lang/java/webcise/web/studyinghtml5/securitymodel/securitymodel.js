@@ -1,4 +1,4 @@
-((win, doc, loc, math) => {
+((win, doc, loc, math, nav) => {
     "use strict";
 
     // ECMAScriptで完結しているコードとそうでないコードは分離する。
@@ -412,8 +412,44 @@
             //Window.openの第3引数にnoopenerが指定されると戻り値のWindowはnullになる。
             console.log(subWindow);
         });
+        
+        const getCurrentPosition = () => {
+            return new Promise((resolve, reject) => {
+                const options = {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                };
+                nav.geolocation.getCurrentPosition(resolve, reject, options);
+            });
+        };
+        
+        const restrictApiBase = base.querySelector(".restricted-api-sample");
+        
+        const printlnCoords = ({latitude, longitude, accuracy}) => {
+            const output = restrictApiBase.querySelector(".result");
+            output.innerHTML += `経度:${longitude},緯度:${latitude},精度:${accuracy}<br />`;
+        };
+        
+        const clearOutput = () => {
+            restrictApiBase.querySelector(".result").innerHTML = "";
+        };
+        
+        restrictApiBase.querySelector(".geolocation").addEventListener("click", 
+            async () => {
+                    try {
+                        const positionResult = await getCurrentPosition();
+                        const coords = positionResult.coords;
+                        //const {latitude, longitude, accuracy} = coords;
+                        printlnCoords(coords);
+                    } catch(err) {
+                        alert(err.message);
+                    }
+            });
+            
+         restrictApiBase.querySelector(".clear").addEventListener("click", clearOutput);
     };
-
+    
     const samples = [
         accessControlAllowOrigin,
         preflightRequest,
@@ -423,4 +459,4 @@
     ];
 
     win.addEventListener("DOMContentLoaded", () => samples.forEach(s => s()));
-})(window, document, location, Math);
+})(window, document, location, Math, navigator);
