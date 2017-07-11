@@ -168,6 +168,22 @@
           <a href="https://selfhost/webcise/studyinghtml5/securitymodel/securitychecking.html" target="_blank">selfhost</a>
           <a href="https://selfhost/webcise/studyinghtml5/securitymodel/securitychecking.html" target="_blank" rel="noopener">selfhost(noopener)</a>
         </section>
+        <section>
+          <h3>Framed Document</h2>
+            <p>HTTPのURLを参照するiframeはブロックされ何も表示できない。</p>
+            <div class="iframe-container">
+              <div class="iframe-content">
+                <p>HTTP</p>
+                <iframe src="http://localhost/webcise/studyinghtml5/securitymodel/securitychecking.html">
+                </iframe>
+              </div>
+              <div class="iframe-content">
+                <p>HTTPS</p>
+                <iframe src="https://localhost/webcise/studyinghtml5/securitymodel/securitychecking.html">
+                </iframe>
+              </div>
+            </div>
+        </section>
       </section>
     </main>
     <aside role="complementary">

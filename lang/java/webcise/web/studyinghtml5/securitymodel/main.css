@@ -8,6 +8,10 @@ main {
     width: 100%;
 }
 
+aside {
+    border-top: solid 1px lightgrey;
+}
+
 .result {
     display: block;
     width: 95%;
@@ -21,4 +25,9 @@ main {
 .outline {
     font-family: sans-serif;
     font-size: 100%;
+}
+
+.iframe-container {
+    display: flex;
+    justify-content: space-around;
 }
