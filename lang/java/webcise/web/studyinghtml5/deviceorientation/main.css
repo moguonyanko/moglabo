@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+:root {
+    --common-bg-color: linen;
+}
+
+main {
+    margin: 0.5em;
+}
+
+pre {
+    font-family: serif;
+}
+
+button {
+    font-size: 120%;
+}
+
+aside {
+    border-top: 1px solid lightgrey;
+}
+
+.output {
+    width: 100%;
+    height: 100px;
+    background-color: var(--common-bg-color);
+    overflow-y: scroll;
+}
+
+.detecting::after {
+    content: ' off';
+}
