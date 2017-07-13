@@ -594,7 +594,16 @@
 			Object.values(funcs).forEach(func => func(this));
 		},
 		isIteratable: isIteratable,
-		Array: GomakitArray
+		Array: GomakitArray,
+        fib(n, memo = {}) {
+            if (n === 1 || n === 2) {
+                return 1;
+            }
+            if (!(n in memo)) {
+                memo[n] = this.fib(n - 1, memo) + this.fib(n - 2, memo);
+            }
+            return memo[n];
+        }
     };
 
     win.Gomakit = Gomakit;
