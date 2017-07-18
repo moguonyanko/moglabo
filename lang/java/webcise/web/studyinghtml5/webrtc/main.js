@@ -62,7 +62,7 @@
             }
         }
         pause() {
-            // ブラウザのUIで指定すpauseとな異なる動作をする。
+            // ブラウザのUIで指定するpauseとは異なる動作をする。
             this.video.pause();
         }
     }

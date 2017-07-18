@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+aside {
+    border-top: 1px solid lightgray;
+}
+
+.video-container {
+    display: flex;
+    justify-content: center;
+}
+
+.video-part {
+    flex: 1;
+    background-color: lightyellow;
+}
+
+.infomation {
+    margin: 0.5em;
+    background-color: linen;
+    min-height: 5em;
+    overflow-y: scroll;
+}
