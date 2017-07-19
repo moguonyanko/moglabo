@@ -75,6 +75,23 @@
             base.querySelector(".looper").addEventListener("click", () => {
                 video.loop = !video.loop;
             });
+        },
+        examMediaElementMethod() {
+            const base = doc.getElementById("media-element-method");
+            const video = base.querySelector(".sample-video");
+            const customCtrls = base.querySelector(".custom-controls");
+            
+            customCtrls.querySelector(".play").addEventListener("click", () => {
+                video.play();
+            });
+            
+            customCtrls.querySelector(".pause").addEventListener("click", () => {
+                video.pause();
+            });
+            
+            customCtrls.querySelector(".load").addEventListener("click", () => {
+                video.load();
+            });
         }
     };
     
