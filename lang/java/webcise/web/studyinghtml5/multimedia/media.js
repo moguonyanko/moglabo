@@ -1,9 +1,9 @@
 ((win, doc) => {
     "use strict";
-    
+
     const display = ({target, content}) => target.innerHTML += `${content}<br />`;
     const clear = ({target}) => target.innerHTML = "";
-    
+
     const exams = {
         examineMediaElementProperty() {
             const base = doc.getElementById("media-element-property");
@@ -16,7 +16,7 @@
             //    `${property}=${video[property]}`));
             //Object.keys(video).forEach(property => display(info, 
             //    `${property}=${video[property]}`));
-            
+
             const networkStates = {
                 [HTMLMediaElement.NETWORK_EMPTY]: "初期化未完了",
                 [HTMLMediaElement.NETWORK_IDLE]: "通信なし",
@@ -24,13 +24,13 @@
                 // ページがブラウザキャッシュから読み込まれるとNETWORK_NO_SOURCEになる。
                 [HTMLMediaElement.NETWORK_NO_SOURCE]: "リソースなし",
             };
-            
+
             const preloadStates = {
                 "none": "プリロードされない",
                 "metadata": "メタデータのみプリロードする",
                 "auto": "全てのデータをプリロードする"
             };
-            
+
             const readyStates = {
                 [HTMLMediaElement.HAVE_NOTHING]: "利用可能なデータなし",
                 [HTMLMediaElement.HAVE_METADATA]: "メタデータはある",
@@ -38,7 +38,7 @@
                 [HTMLMediaElement.HAVE_FUTURE_DATA]: "ちょっと先まで再生できる",
                 [HTMLMediaElement.HAVE_ENOUGH_DATA]: "最後まで再生できる"
             };
-            
+
             const checkVideoProperties = () => {
                 const propertyInfomations = [
                     `自動再生=${video.autoplay ? "有効" : "無効"}`,
@@ -64,14 +64,14 @@
                 ];
                 display({target: info, content: propertyInfomations.join("<br/>")});
             };
-            
+
             checkVideoProperties();
-            
+
             base.querySelector(".checker").addEventListener("click", () => {
                 clear({target: info});
                 checkVideoProperties();
             });
-            
+
             base.querySelector(".looper").addEventListener("click", () => {
                 video.loop = !video.loop;
             });
@@ -80,24 +80,57 @@
             const base = doc.getElementById("media-element-method");
             const video = base.querySelector(".sample-video");
             const customCtrls = base.querySelector(".custom-controls");
-            
+
             customCtrls.querySelector(".play").addEventListener("click", () => {
                 video.play();
             });
-            
+
             customCtrls.querySelector(".pause").addEventListener("click", () => {
                 video.pause();
             });
-            
+
             customCtrls.querySelector(".load").addEventListener("click", () => {
                 video.load();
             });
+        },
+        examMediaElementEvent() {
+            const base = doc.getElementById("media-element-event");
+            const video = base.querySelector(".sample-video");
+            const output = base.querySelector(".output");
+            const bq = selector => base.querySelector(selector);
+
+            const eventTypeNames = [
+                "play",
+                "playing",
+                // timeupdateは再生やシークで再生位置が変更された時に発生する。
+                // ended発生後も発生させることができる。
+                "timeupdate",
+                "pause",
+                // waiting, stalledはデータの遅延が発生した時のイベント。
+                "waiting",
+                "stalled",
+                "ended",
+                "error",
+                // playが発生する前でもload()を呼ぶとabortが発生する。
+                // endedが発生した後にload()を呼び出した場合でもabortが発生する。
+                "abort"
+            ];
+
+            eventTypeNames.forEach(eventType => {
+                video.addEventListener(eventType, evt => {
+                    display({target: output, content: evt.type});
+                });
+            });
+
+            bq(".clear").addEventListener("click", () => clear({target: output}));
+
+            bq(".load").addEventListener("click", () => video.load());
         }
     };
-    
+
     const init = () => {
         Object.keys(exams).forEach(key => exams[key]());
     };
-    
+
     win.addEventListener("DOMContentLoaded", init);
 })(window, document);

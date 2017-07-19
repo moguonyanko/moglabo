@@ -4,6 +4,10 @@ aside {
     border-top: 1px solid lightgray;
 }
 
+main > section {
+    border-top: 1px solid lightgray;
+}
+
 .video-container {
     display: flex;
     justify-content: center;
@@ -17,6 +21,17 @@ aside {
 .infomation {
     margin: 0.5em;
     background-color: linen;
-    min-height: 5em;
+    height: 50vh;
+    overflow-y: scroll;
+}
+
+.media-event-container {
+    display: flex;
+    height: 300px;
+}
+
+.media-event-container .output {
+    width: 50vw;
+    background-color: seashell;
     overflow-y: scroll;
 }

@@ -14,6 +14,7 @@
       <ul>
         <li><a href="#media-element-property">HTMLMediaElementのプロパティ</a></li>
         <li><a href="#media-element-method">HTMLMediaElementのメソッド</a></li>
+        <li><a href="#media-element-event">HTMLMediaElementのイベント</a></li>
       </ul>
     </header>
     <main>
@@ -21,7 +22,7 @@
         <h2>HTMLMediaElementのプロパティ</h2>
         <div class="video-container">
           <div class="video-part">
-            <video width="400" height="300" controls>
+            <video width="400" height="300" controls="controls">
               <source src="../../movies/samplenote.m4v" type="video/mp4">
             </video>
           </div>
@@ -47,6 +48,21 @@
           <button class="load">load():動画データをダウンロードし直す</button>
         </div>
       </section>
+      <section id="media-element-event">
+        <h2>HTMLMediaElementのイベント</h2>
+        <div class="media-event-container">
+          <div class="flex-content">
+            <video class="sample-video" width="424" height="300" controls="controls">
+              <source src="../../movies/samplenote.m4v" type="video/mp4">
+            </video>
+          </div>
+          <div class="output flex-content"></div>
+        </div>
+        <div>
+          <button class="clear">clear</button>
+          <button class="load">load</button>
+        </div>
+      </section>
     </main>
     <aside>
       <h2>参考</h2>
@@ -56,6 +72,7 @@
           <li><a href="https://developer.mozilla.org/en/docs/Web/API/HTMLMediaElement">HTMLMediaElement</a></li>
           <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/TimeRanges">TimeRanges</a></li>
           <li><a href="https://developer.mozilla.org/en/docs/Web/HTML/Element/video">&lt;video&gt;</a></li>
+          <li><a href="https://developer.mozilla.org/en/docs/Web/Guide/Events/Media_events">Media events</a></li>
         </ul>
       </section>
       <section>
