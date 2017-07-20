@@ -125,6 +125,67 @@
             bq(".clear").addEventListener("click", () => clear({target: output}));
 
             bq(".load").addEventListener("click", () => video.load());
+        },
+        examCanvasAndVideoCooperation() {
+            /**
+             * 参考:
+             * https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Manipulating_video_using_canvas
+             */
+            class VideoPocessor {
+                constructor({video, normalCanvas, customCanvas}) {
+                    this.video = video;
+                    this.normalContext = normalCanvas.getContext("2d");
+                    this.customContext = customCanvas.getContext("2d");
+                    this.drawFunc = () => this.draw();
+                    this.video.addEventListener("timeupdate", this.drawFunc);
+                }
+                draw() {
+                    if (!this.video.paused && !this.video.ended) {
+                        this.computeFrame();
+                    }
+                }
+                stopDrawing() {
+                    this.video.removeEventListener("timeupdate", this.drawFunc);
+                }
+                // 引数の色に対し「chroma-keying effect」を適用するかどうかを
+                // 判定するためのメソッド。
+                // 閾値はハードコーディングされているが，これをパラメータ化すれば
+                // 透過したい色を外部から指定できる。
+                isTransparentPixel({r, g, b}) {
+                    return r > 100 && g > 100 && b < 43;
+                }
+                computeFrame() {
+                    const width = parseInt(this.video.width);
+                    const height = parseInt(this.video.height);
+                    this.normalContext.drawImage(this.video, 0, 0, width, height);
+                    const frame = this.normalContext.getImageData(0, 0, width, height);
+                    const dataLength = frame.data.length;
+                    for (let index = 0; index < dataLength; index++) {
+                        const r = frame.data[index * 4];
+                        const g = frame.data[index * 4 + 1];
+                        const b = frame.data[index * 4 + 2];
+                        if (this.isTransparentPixel({r, g, b})) {
+                            frame.data[index * 4 + 3] = 0;
+                        }
+                    }
+                    this.customContext.putImageData(frame, 0, 0);
+                }
+            }
+            
+            const base = doc.getElementById("canvas-video-cooperation"),
+                    bq = s => base.querySelector(s);
+            
+            const initVideoProcessor = () => {
+                const video = bq(".sample-video"),
+                    normalCanvas = bq(".normal-canvas"),
+                    customCanvas = bq(".custom-canvas");
+                const vp = new VideoPocessor({
+                    video, normalCanvas, customCanvas
+                });
+                video.addEventListener("error", () => vp.stopDrawing());
+            };
+
+            initVideoProcessor();
         }
     };
 

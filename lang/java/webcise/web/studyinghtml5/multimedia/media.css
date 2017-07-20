@@ -4,6 +4,10 @@ aside {
     border-top: 1px solid lightgray;
 }
 
+canvas {
+    border: solid 1px black;
+}
+
 main > section {
     border-top: 1px solid lightgray;
 }
@@ -34,4 +38,10 @@ main > section {
     width: 50vw;
     background-color: seashell;
     overflow-y: scroll;
+}
+
+.custom-canvas {
+    background-image: url("../../images/starbg.png");
+    background-repeat: no-repeat;    
+    background-size: 100% 100%;
 }
