@@ -40,7 +40,7 @@
             const txt = `
                 absolute:${absolute},X軸=${beta},Y軸=${gamma},Z軸=${alpha}
             `;
-            println(this.output, txt);
+            this.output.innerHTML = txt;
         }
         turnDetection() {
             if (!this.detecting) {
@@ -57,7 +57,15 @@
         constructor() {
             const base = doc.querySelector(".device-motion-sample");
             this.output = base.querySelector(".output");
-            win.addEventListener("devicemotion", event => this.detectMotion(event));
+            const motionChecker = event => this.detectMotion(event);
+            const enableMotionCheck = base.querySelector(".enable-motion-check");
+            enableMotionCheck.addEventListener("click", () => {
+                if (enableMotionCheck.checked) {
+                    win.addEventListener("devicemotion", motionChecker);
+                } else {
+                    win.removeEventListener("devicemotion", motionChecker);
+                }
+            });
         }
         detectMotion(event) {
             const p = event.acceleration;
@@ -66,9 +74,9 @@
             const interval = event.interval;
 
             this.output.innerHTML = `
-                    加速度(x,y,z)=(${p.x},${p.y},${p.z}),
-                    加速度:重力考慮(x,y,z)=(${g.x},${g.y},${g.z}),
-                    回転角度(x,y,z)=(${beta},${gamma},${alpha}),
+                    加速度(x,y,z)=(${p.x},${p.y},${p.z}),<br />
+                    加速度:重力考慮(x,y,z)=(${g.x},${g.y},${g.z}),<br />
+                    回転角度(x,y,z)=(${beta},${gamma},${alpha}),<br />
                     モーション間隔(ms)=${interval}
                 `;
         }

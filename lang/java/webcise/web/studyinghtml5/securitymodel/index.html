@@ -74,12 +74,12 @@
         <h2>Mixed Content</h2>
         <section>
           <h2>Passive/Display Content</h2>
-          <pre class="outline">
+          <p class="outline">
             imgやaudio，video及びobjectなどが該当する。
             例えばHTTPSで表示されたページにおいてHTTPを使いimg要素を読み込むと
             そのコンテンツはMixed passive contentとなる。
             Mixed passive contentはブラウザによってブロックされる。
-          </pre>
+          </p>
           <section>
             <!-- output要素はインライン要素なのでdisplay: blockを指定しないとheightが反映されない。 -->
             <!--<output></output>-->
@@ -107,7 +107,7 @@
       </section>
       <section id="mixed-active-content-sample">
         <h3>Mixed active content</h3>
-        <pre class="outline">
+        <p class="outline">
           scriptやiframe，linkなどページ内のDOMにアクセスできる要素が対象となる。というか
           Passive content以外でURLを介してコンテンツを取得するものは大体Active contentである。
           XMLHttpRequestやCSSのbackground-imageプロパティなども該当する。
@@ -115,7 +115,7 @@
           これらの要素を使いHTTPSで表示されたページにおいてHTTPでコンテンツ取得を試みると
           ブラウザによりブロックされる。linkは読み込む対象がCSSであってもブロックの対象となる。
           しかしブロックされてもエラーにはならないこともある。
-        </pre>
+        </p>
         <div class="result"></div>
         <div>
           <p>Protocol</p>
@@ -129,27 +129,27 @@
       </section>
       <section id="secure-contexts-sample">
         <h2>Secure Contexts</h2>
-        <pre class="outline">
+        <p class="outline">
           基本的にトップレベルのウインドウがHTTPSなどセキュアなプロトコルでなければ
           Secure Contextではないとみなされる。
           localhostはHTTPSでなくてもSecure Contextと見なされる。
-        </pre>
+        </p>
         <section>
           <h3>HTTPSからのHTTPはnon-secure</h3>
-          <pre class="outline">
+          <p class="outline">
             ただしlocalhostはsecure。
             今のところlocalhost以外でHTTPSでない場合常にnon-secureになっている。
-          </pre>
+          </p>
           <a href="http://localhost/webcise/studyinghtml5/securitymodel/securitychecking.html">localhost</a>
           <a href="http://myhost/webcise/studyinghtml5/securitymodel/securitychecking.html">myhost</a>
         </section>
         <section>
           <h3>別ウインドウをスクリプトで開く</h3>
-          <pre class="outline">
+          <p class="outline">
             トップレベルのウインドウがHTTPであってもnoopenerが指定されたaやwindow.openで
             生成されたウインドウはSecure Contextと見なされる・・・はずだが，現時点では
             noopenerを指定していなくても参照されたURLがHTTPSであればSecure Contextになってしまう。
-          </pre>
+          </p>
           <div>
             <div>
               <label><input class="use-secure-protocol" type="checkbox" checked="checked" />secure</label>
