@@ -10,7 +10,8 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 /**
- * 参考サイト: http://www.baeldung.com/java-completablefuture
+ * 参考サイト:
+ * http://www.baeldung.com/java-completablefuture
  * http://www.deadcoderising.com/java8-writing-asynchronous-code-with-completablefuture/
  */
 public class TestCompletableFuture {
@@ -162,6 +163,83 @@ public class TestCompletableFuture {
         try {
             future.get();
         } catch (InterruptedException ex) {
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void Future実行中に例外を処理する() {
+        int score = -100;
+
+        CompletableFuture<Integer> future = CompletableFuture.supplyAsync(() -> {
+            if (score < 0) {
+                throw new IllegalArgumentException("This is illegal score");
+            }
+            return score;
+        }).handle((sc, t) -> sc != null ? sc : 0);
+
+        try {
+            int actual = future.get();
+            int expected = 0;
+            assertThat(actual, is(expected));
+        } catch (InterruptedException | ExecutionException ex) {
+            fail(ex.getMessage());
+        }
+    }
+
+    private static class User {
+
+        private final String name;
+        private final int age;
+
+        public User(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        @Override
+        public String toString() {
+            return "My name is " + name + ", I am " + age + " years old.";
+        }
+    }
+
+    @Test
+    public void Future実行中の例外を回復する() {
+        User user = new User("", 45);
+
+        CompletableFuture<User> f = CompletableFuture.supplyAsync(() -> {
+            if (user.name.isEmpty()) {
+                throw new IllegalStateException("name cannot empty");
+            }
+            return user;
+        }).exceptionally(ex -> new User("nanasi", user.age));
+
+        CompletableFuture<Void> resultFuture
+                = f.thenAcceptAsync(u -> System.out.println(u));
+
+        try {
+            resultFuture.get();
+        } catch (InterruptedException | ExecutionException ex) {
+            fail(ex.getMessage());
+        }
+    }
+
+    @Test
+    public void Futureの完了前に処理を追加する() {
+        CompletableFuture<String> f1 = CompletableFuture.supplyAsync(() -> "Hello");
+        CompletableFuture<String> f2 = CompletableFuture.supplyAsync(() -> {
+            System.out.println("Future 2");
+            return "World";
+        });
+        /**
+         * applyToEitherの第1引数に渡したFutureが先に実行される。しかしそのFutureが
+         * 返した値を後続のFuture(ここではf1)で参照する術が無い。
+         */
+        CompletableFuture<String> resultFuture = f1.applyToEither(f2, s -> s);
+        try {
+            String result = resultFuture.get();
+            System.out.println(result);
+        } catch (InterruptedException | ExecutionException ex) {
             fail(ex.getMessage());
         }
     }
