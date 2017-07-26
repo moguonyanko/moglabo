@@ -23,5 +23,6 @@ import Foundation
  Command.main()
  Singleton.main()
  Composite.main()
+ Flyweight.main()
 */
-Flyweight.main()
+NullObject.main()
