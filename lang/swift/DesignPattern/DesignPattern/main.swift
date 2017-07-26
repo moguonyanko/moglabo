@@ -22,5 +22,6 @@ import Foundation
  AbstractFactory.main()
  Command.main()
  Singleton.main()
+ Composite.main()
 */
-Composite.main()
+Flyweight.main()
