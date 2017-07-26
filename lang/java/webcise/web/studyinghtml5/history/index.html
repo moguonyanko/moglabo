@@ -1,104 +1,36 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="UTF-8" />
-		<title>History</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="shortcut icon" href="../../favicon.ico" />
-		<style>
-			.HistoryTest0 {
-				background-color: greenyellow;
-				font-size: 150%;
-			}
-
-			.HistoryTest1 {
-				background-color: gold;
-				font-style: italic;
-				border-radius: 5px;
-			}
-
-			#HistorySampleElement {
-				width: 25%;
-				text-align: center;
-			}
-		</style>
-	</head>
-	<body>
-		<header role="banner">
-			<h1>History</h1>
-			<p>HistoryAPIの練習サイトです。</p>
-		</header>
-
-		<main>
-			<section>
-				<h2>履歴の追加と置換</h2>
-				<div>
-					<div id="HistorySampleElement" class="HistoryTest0">テストです</div>
-					<button id="HisotryPushButton" class="HistoryButton">履歴追加</button>
-					<button id="HisotryReplaceButton" class="HistoryButton">履歴置換</button>
-					<p>現在のLocationのhref</p>
-					<div id="HrefView"></div>
-				</div>
-			</section>
-			<script>
-				(function (win, doc) {
-
-					var history = win.history,
-						count = 0;
-
-					function updateHrefView() {
-						var view = doc.getElementById("HrefView");
-						view.innerHTML = '<span>' + location.href + '</span>';
-					}
-
-					function addEventListener() {
-						var pushBtn = doc.getElementById("HisotryPushButton");
-						pushBtn.addEventListener("click", function (evt) {
-							history.pushState({
-								styleId: "HistoryTest" + (++count % 2)
-							}, "Push History Test",
-								"?stylechange" + count);
-						}, false);
-
-						var replaceBtn = doc.getElementById("HisotryReplaceButton");
-						replaceBtn.addEventListener("click", function (evt) {
-							/** 
-							 * replaceStateであれば履歴を汚染しないので
-							 * 戻るボタンですぐ前のページに戻したりできる。 
-							 */
-							history.replaceState({
-								styleId: "HistoryTest" + (++count % 2)
-							}, "Replce History Test",
-								"?stylechange" + count);
-						}, false);
-
-						win.addEventListener("popstate", function (evt) {
-							var el = doc.getElementById("HistorySampleElement");
-							var nowClass = el.getAttribute("class");
-							if (nowClass) {
-								el.classList.remove(nowClass);
-							}
-							var stateData = evt.state;
-							/* 履歴を辿り切るとstateプロパティはnullになる。 */
-							if (stateData) {
-								el.classList.add(stateData.styleId);
-							}
-						}, false);
-
-						var btns = doc.querySelectorAll(".HistoryButton");
-						for (var i = 0, len = btns.length; i < len; i++) {
-							btns[i].addEventListener("click", updateHrefView, false);
-						}
-					}
-
-					function init() {
-						addEventListener();
-					}
-
-					init();
-
-				}(window, document));
-			</script>
-		</main>
-	</body>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>History</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="../../favicon.ico" />
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <header role="banner">
+      <h1>History</h1>
+      <p>HistoryAPIの練習サイトです。</p>
+      <p><a href="../../">home</a></p>
+    </header>
+    <main>
+      <section>
+        <h2>履歴の追加と置換</h2>
+        <div>
+          <div id="HistorySampleElement" class="HistoryTest0">テストです</div>
+          <button id="HisotryPushButton" class="HistoryButton">履歴追加</button>
+          <button id="HisotryReplaceButton" class="HistoryButton">履歴置換</button>
+          <p>現在のLocationのhref</p>
+          <div id="HrefView"></div>
+        </div>
+      </section>
+      <script src="history.js"></script>
+    </main>
+    <aside>
+      <p>参考サイト</p>
+      <ul>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API?redirectlocale=en-US&redirectslug=DOM%2FManipulating_the_browser_history">Manipulating the browser history</a></li>
+      </ul>
+    </aside>
+  </body>
 </html>
