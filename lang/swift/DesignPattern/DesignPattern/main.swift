@@ -26,5 +26,6 @@ import Foundation
  Flyweight.main()
  NullObject.main()
  MVC.main()
+ Factory.main()
 */
-Factory.main()
+Mediator.main()
