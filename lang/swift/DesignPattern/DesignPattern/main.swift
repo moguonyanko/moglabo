@@ -25,5 +25,6 @@ import Foundation
  Composite.main()
  Flyweight.main()
  NullObject.main()
+ MVC.main()
 */
-MVC.main()
+Factory.main()
