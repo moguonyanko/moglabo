@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
   <head>
     <meta charset="UTF-8" />
     <title>Drag and Drop API</title>
@@ -12,8 +12,7 @@
       <h1>Drag and Drop API</h1>
       <p>ドラッグアンドドロップのAPI練習ページです。</p>
     </header>
-
-    <div id="main-container" role="main">
+    <main id="main-container" role="main">
       <section>
         <h2>様々な要素のドラッグアンドドロップ</h2>
         <p class="section-title">Elementのドラッグ</p>
@@ -22,23 +21,33 @@
           <label><input type="radio" name="drag-image-type" value="image" checked="checked" />Image</label>
           <label><input type="radio" name="drag-image-type" value="canvas" />Canvas</label>
         </div>
+        <div>
+          <p>ドラッグデータタイプ</p>
+          <label><input class="drop-type" type="radio" name="drop-type" value="text/plain" checked="checked" />text/plain</label>
+          <label><input class="drop-type" type="radio" name="drop-type" value="text/html" />text/html</label>
+        </div>
         <div class="drag-targets">
           <div id="draggable-container" draggable="true">
             <p>ドラッグできます</p>
           </div>
         </div>
-
         <div id="drop-target-container" dropzone="move">
           <p>ここにドロップ</p>
           <p>dropzoneは指定しなくてもドロップできます。</p>
         </div>
       </section>
-    </div>
-
-    <footer role="contentinfo">
-      <small>Copyright &copy; 2015 moguonyanko All rights reserved.</small>
-    </footer>		
-
+    </main>
+    <aside>
+      <section>
+        <h2>参考サイト</h2>
+        <section>
+          <h3>Apple</h3>
+          <ul>
+            <li><a href="https://developer.apple.com/library/content/documentation/AppleApplications/Conceptual/SafariJSProgTopics/DragAndDrop.html">Dragging and Dropping</a></li>
+          </ul>
+        </section>
+      </section>
+    </aside>
     <script src="../../gomakit.js"></script>
     <script src="draganddrop.js"></script>
   </body>

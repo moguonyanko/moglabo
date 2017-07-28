@@ -57,6 +57,9 @@
 		return dragImages[dragImageType];
 	}
 
+    /**
+     * ドラッグ操作位置にアイコンとして表示する画像を設定する。
+     */
 	function setDragWithCustomImage(dataTransfer) {
 		var dragImage = getDragImage(),
 			xOffset = 25,
@@ -76,29 +79,20 @@
 
 	function dragStart(evt) {
 		var dt = evt.dataTransfer;
-
-		var draggableElementId = evt.target.id,
+        
+        const target = evt.target,
+            draggableElementId = target.id,
 			/**
 			 * URLとして不適切な値をsetDataした場合，
 			 * Chrome41では「text/uri-list」がDtataTransfer.typesに
 			 * 含まれなくなる。Firefox37では含まれる。
+             * プロトコルを省いたURLは不適切と見なされる。
 			 */
-			sampleUrl = "//localhost/webcise/";
+			sampleUrl = win.location.href;
 
-		/**
-		 * Chrome41ではDataTransfer.typesは空の配列になっている。
-		 */
-		try {
-			dt.setData("text/plain", draggableElementId);
-			dt.setData("text/uri-list", sampleUrl);
-		} catch (err) {
-			/** 
-			 * 以下はIE11用 
-			 * IE11はMIMEタイプによる指定に未対応でありエラーとなる。
-			 */
-			dt.setData("text", draggableElementId);
-			dt.setData("url", sampleUrl);
-		}
+		dt.setData("text/plain", draggableElementId);
+		dt.setData("text/uri-list", sampleUrl);
+		dt.setData("text/html", target.outerHTML);
 
 		setDragWithCustomImage(dt);
 
@@ -140,7 +134,7 @@
 		if (Array.isArray(dt.types)) {
 			return dt.types.join(separator);
 		} else {
-			return Array.prototype.reduce.call(dt.types, function(t1, t2) {
+			return Array.from(dt.types).reduce(function(t1, t2) {
 				if (t1 && t2) {
 					return t1 + separator + t2;
 				} else {
@@ -157,29 +151,57 @@
 			return dt.types.indexOf(type) >= 0;
 		}
 	}
+    
+    const getSelectedDropType = () => {
+        const typeEles = doc.querySelectorAll(".drop-type");
+        const selectedTypeEles = Array.from(typeEles).filter(ele => ele.checked);
+        return (selectedTypeEles[0] || {}).value;
+    };
+    
+    const dropAction = {
+        /**
+         * ドロップされる要素がtext/plainの場合，DataTransfer.effectAllowedが
+         * copyMoveであっても元の要素から自動的に削除される。
+         */
+        "text/plain": ({dataTransfer, dropTarget}) => {
+            const id = dataTransfer.getData("text/plain");
+            const ele = doc.getElementById(id);
+    		if (ele) {
+                dropTarget.appendChild(ele);
+            } else {
+                throw new Error(`ID="${id}"の要素は存在しません。`);
+            }
+        },
+        /**
+         * ドロップされる要素がtext/htmlの場合，ドラッグ開始位置にある元の要素は
+         * 自動的には削除されない。
+         */
+        "text/html": ({dataTransfer, dropTarget}) => {
+            const ele = dataTransfer.getData("text/html");
+    		dropTarget.innerHTML += ele;
+        }
+    };
 
 	function drop(evt) {
 		preventDefault(evt);
-
-		var dt = evt.dataTransfer;
-
-		var draggableDataType = getDataTypeString(dt);
-		m.log("dropイベント内で取得可能なドラッグ型 ... " + draggableDataType);
-
-		var targetId = containType(dt, "text/plain") ?
-			dt.getData("text/plain") : dt.getData("text");
-
-		if (targetId) {
-			var draggedEle = m.ref(targetId);
-			/**
-			 * ドラッグされた要素はDataTransfer.effectAllowedが
-			 * copyであっても元の要素から自動的に削除される。
-			 */
-			evt.target.appendChild(draggedEle);
-		}
+		const dt = evt.dataTransfer;
+		const dragTypeNames = getDataTypeString(dt);
+        const dropType = getSelectedDropType();
+        if (dropType in dropAction) {
+            try {
+                dropAction[dropType]({dataTransfer: dt, dropTarget: evt.target});
+                const info = `ドロップ成功:
+                        ${evt.type}イベント内で取得可能なドラッグ型は<strong>${dragTypeNames}</strong>です。`;
+                evt.target.innerHTML += info;
+            } catch(err) {
+                evt.target.innerHTML += `ドロップ失敗:${err.message}`;
+            }
+        } else {
+            console.warn(`${dropType}には未対応です。`);
+        }
 	}
 
-	(function() {
+	const addListener = () => {
 		m.addListener(dragContainer, "dragstart", dragStart, false);
 		m.addListener(dragContainer, "dragover", preventDefault, false);
 		m.addListener(dragContainer, "drop", preventDefault, false);
@@ -187,6 +209,11 @@
 		m.addListener(dropContainer, "drop", drop, false);
 		m.addListener(dropContainer, "dragover", preventDefault, false);
 		m.addListener(dropContainer, "dragenter", preventDefault, false);
-	}());
-
-}(window, document, my));
+	};
+    
+    const init = () => {
+        addListener();
+    };
+    
+    win.addEventListener("DOMContentLoaded", init);
+}(window, document, window.goma));

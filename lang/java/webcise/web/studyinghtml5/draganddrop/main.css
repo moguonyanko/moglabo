@@ -40,4 +40,12 @@ div[draggable="true"] {
     height: 200px;
     z-index: 1;
     background-color: rgba(0, 255, 0, 0.3);
+    /* -webkit-user-drag: element; */
 }
+
+/*
+#draggable-container:-webkit-drag {
+    width: 400px;
+    height: 400px;
+}
+*/
