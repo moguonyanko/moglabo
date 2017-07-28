@@ -27,5 +27,6 @@ import Foundation
  NullObject.main()
  MVC.main()
  Factory.main()
+ Mediator.main()
 */
-Mediator.main()
+Memento.main()
