@@ -27,6 +27,8 @@ import Foundation
  Factory.main()
  Mediator.main()
  Memento.main()
+ Prototype.main()
  MVC.main()
 */
-Prototype.main()
+Proxy.main()
+
