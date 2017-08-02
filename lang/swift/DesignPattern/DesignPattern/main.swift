@@ -28,7 +28,8 @@ import Foundation
  Mediator.main()
  Memento.main()
  Prototype.main()
+ Proxy.main()
  MVC.main()
 */
-Proxy.main()
+ChainOfResponsibility.main()
 
