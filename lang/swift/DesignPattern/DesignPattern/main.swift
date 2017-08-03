@@ -29,7 +29,8 @@ import Foundation
  Memento.main()
  Prototype.main()
  Proxy.main()
+ ChainOfResponsibility.main()
  MVC.main()
 */
-ChainOfResponsibility.main()
+Iterator.main()
 
