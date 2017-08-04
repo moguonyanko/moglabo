@@ -6,10 +6,14 @@
 
 import Foundation
 
+private enum IterationError: Error {
+    case stopIteration
+}
+
 private protocol Iteratable {
     associatedtype Element
-    var done: Bool { get }
-    var next: Element { get }
+    func hasNext() -> Bool
+    func next() throws -> Element
 }
 
 private protocol ICollection {
@@ -18,9 +22,9 @@ private protocol ICollection {
 }
 
 private class MyCollection<E>: ICollection {
-    private let numbers: [E]
-    init(numbers: [E]) {
-        self.numbers = numbers
+    private let elements: [E]
+    init(_ elements: [E]) {
+        self.elements = elements
     }
     // Iteratableはassociatedtypeを利用しているのでmakeIteratorの戻り値の型に
     // Iteratableと書くことはできない。ただし型推論が効くためメソッドを呼び出した側で
@@ -39,32 +43,51 @@ private class MyCollection<E>: ICollection {
         init(collection: MyCollection) {
             self.collection = collection
         }
-        var done: Bool {
-            return index >= self.collection.numbers.count
+        func hasNext() -> Bool {
+            return index < self.collection.elements.count
         }
         // typealiasを書いても書かなくても結果は変わらない。
         //typealias Element = E?
-        var next: E? {
-            if !self.done {
-                let value = self.collection.numbers[index]
-                index += 1
-                return value
-            } else {
-                return nil
+        // エンクロージングクラスの型パラメータはネストクラス内部からでも参照可能。
+        // propertyは例外をスローできない。
+        func next() throws -> E {
+            guard self.hasNext() else {
+                throw IterationError.stopIteration
             }
+            let value = self.collection.elements[index]
+            index += 1
+            return value
         }
     }
 }
 
+private func dumpIteratorElements<T: Iteratable>(_ iterator: T) {
+    repeat {
+        let element = try? iterator.next()
+        print("\(element!)")
+    } while iterator.hasNext()
+}
+
+// TODO: 負の数を含む乱数を生成できない。
+private func makeRandomNumbers(max: UInt32, count: Int) -> [Int] {
+    let mapper = {(element: UInt32) -> Int in
+        let n = arc4random_uniform(element)
+        return Int(n)
+    }
+    // 配列のサイズが負ということはありえず実際負の数を渡すと例外になるのだから
+    // repeatingではなくcountこそUInt32であるべきではないだろうか。
+    return Array(repeating: max, count: count).map(mapper)
+}
+
 struct Iterator {
     static func main() {
-        let numbers = Array(repeating: 100, count: 10).map {
-            arc4random_uniform($0)
-        }
-        let collection = MyCollection(numbers: numbers)
-        let iterator = collection.makeIterator()
-        repeat {
-            print("\(iterator.next!)")
-        } while !iterator.done
+        let numbers = makeRandomNumbers(max: 100, count: 5)
+        let numberCollection = MyCollection(numbers)
+        let iterator = numberCollection.makeIterator()
+        dumpIteratorElements(iterator)
+        
+        let collection2 = MyCollection(["H", "e", "l", "l", "o"])
+        let iterator2 = collection2.makeIterator()
+        dumpIteratorElements(iterator2)
     }
 }
