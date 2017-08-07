@@ -30,7 +30,7 @@ import Foundation
  Prototype.main()
  Proxy.main()
  ChainOfResponsibility.main()
+ Iterator.main()
  MVC.main()
 */
-Iterator.main()
-
+Interpreter.main()
