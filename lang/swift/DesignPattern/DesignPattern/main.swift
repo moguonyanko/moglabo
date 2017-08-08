@@ -31,6 +31,7 @@ import Foundation
  Proxy.main()
  ChainOfResponsibility.main()
  Iterator.main()
+ Interpreter.main()
  MVC.main()
 */
-Interpreter.main()
+Dao.main()

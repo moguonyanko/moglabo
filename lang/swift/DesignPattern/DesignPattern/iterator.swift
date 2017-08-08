@@ -28,7 +28,10 @@ private class MyCollection<E>: ICollection {
     }
     // Iteratableはassociatedtypeを利用しているのでmakeIteratorの戻り値の型に
     // Iteratableと書くことはできない。ただし型推論が効くためメソッドを呼び出した側で
-    // 具象的な型(ここではMyIterator)を書くことを強制されたりはしない。
+    // 具象的な型(ここではMyIterator)を書くことを強制されたりはしない。とはいえ
+    // 抽象的な型を介してプログラムを記述することができていないことに変わりはない。
+    // クライアントにはIteratableな部分だけを公開したいにも関わらず，実装の詳細を示す型を
+    // 返さなければならなくなっている。
     func makeIterator() -> MyIterator {
         return MyIterator(collection: self)
     }
