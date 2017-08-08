@@ -13,8 +13,10 @@ private protocol Operand {
     func eval(context: [String: Value]) -> Value
 }
 
+// generic methodは非常に使い辛い。
+// 呼び出した側で型を解決できない。
 private protocol OOperand {
-    func eval<V>(context: [String: V]) -> V.Type
+    func eval<V>(context: [String: V]) -> V
 }
 
 private protocol Term: Operand {
@@ -59,13 +61,12 @@ private enum Operator: String {
     case plus = "+", minus = "-", multi = "*", div = "/"
 }
 
-private class Expression: DoubleOperand {
+// Expressionがclassとして宣言されていた場合，そのオブジェクトが定数で宣言されていても
+// プロパティに値を代入することができる。structで宣言されていた場合はコンパイルエラーになる。
+private struct Expression: DoubleOperand {
     let opr: Operator
-    var left: DoubleOperand!
-    var right: DoubleOperand!
-    init(opr: Operator) {
-        self.opr = opr
-    }
+    var left: DoubleOperand
+    var right: DoubleOperand
     func eval(context: [String: Double]) -> Double {
         // leftやrightがOperand型だった場合はevalメソッドを呼べない。
         // generic typeを含む引数に具象的な型情報を持つcontext変数を渡しても
@@ -85,43 +86,58 @@ private class Expression: DoubleOperand {
     }
 }
 
-private func makeSyntaxTree(src: String) -> [DoubleOperand] {
-    let tokens = src.split(separator: " ")
-    var tree = [DoubleOperand]()
-    var expression: Expression?
-    for token in tokens {
-        let t = token.description
-        if let op = Operator(rawValue: t) {
-            if let l = tree.popLast(), let r = tree.popLast(), let e = expression {
-                e.left = l
-                e.right = r
-                tree.append(e)
-            }
-            expression = Expression(opr: op)
-        } else {
-            var x: DoubleOperand
-            if let v = Double(t) {
-                x = Literal(value: v)
-            } else {
-                x = Variable(name: t)
-            }
-            tree.append(x)
-        }
+private struct NullExpression: DoubleOperand {
+    func eval(context: [String : Double]) -> Double {
+        return 0
     }
-    return tree
 }
 
-// TODO: 計算結果が誤っている。
+private enum OperandError: Error {
+    case notFoundExpression(message: String)
+}
+
+// 引数srcは逆ポーランド記法で記述されている必要がある。
+private func makeOperand(src: String) throws -> DoubleOperand {
+    var stack = [DoubleOperand]()
+    let tokens = src.split(separator: " ").map { $0.description }
+    for token in tokens {
+        if let op = Operator(rawValue: token) {
+            if let left = stack.popLast(), let right = stack.popLast() {
+                let expression = Expression(opr: op, left: left, right: right)
+                stack.append(expression)
+            }
+        } else {
+            var x: DoubleOperand
+            if let v = Double(token) {
+                x = Literal(value: v)
+            } else {
+                x = Variable(name: token)
+            }
+            stack.append(x)
+        }
+    }
+    guard let operand = stack.popLast() else {
+        throw OperandError.notFoundExpression(message: "Not found expression")
+    }
+    return operand
+}
+
 struct Interpreter {
     static func main() {
-        let src = "x + y - 0.5"
-        let tree = makeSyntaxTree(src: src)
-        // DoubleとIntの値を混ぜた場合Doubleに統一される。
-        let context = [
-            "x": 5.5,
-            "y": 10.5
-        ]
-        let result = tree.first!.eval(context: context)
-        print("\(src) = \(result)")
+        let src = "x y + 10 -"
+        do {
+            let operand = try makeOperand(src: src)
+            // DoubleとIntの値を混ぜた場合Doubleに統一される。
+            let context = [
+                "x": 2.5,
+                "y": 7.5
+            ]
+            let result = operand.eval(context: context)
+            print("\(src) = \(result)")
+        } catch OperandError.notFoundExpression(let msg) {
+            print("\(msg)")
+        } catch {
+            print("Failed making syntax tree")
+        }
     }
 }
