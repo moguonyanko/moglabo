@@ -374,8 +374,89 @@ private let sampleFuncs = [
     }
 ]
 
+// Generics method and function practice
+
+private enum EaterType {
+    case human, dog, cat
+}
+
+private protocol Food {
+    var description: String { get }
+}
+
+// associatedtypeを有効にする場合，Eaterを実装するclass及びstructでeatの引数の型に
+// どんな型でも指定できる。associatedtype関連の制約はそのあたりが自由になりすぎないように
+// するためのものだろうか？
+private protocol Eater {
+    //associatedtype Food
+    func eat(_ food: Food) -> String
+}
+
+private struct Rice: Food {
+    var description: String {
+        return "gohan"
+    }
+}
+
+private struct DogFood: Food {
+    var description: String {
+        return "dog food"
+    }
+}
+
+private struct Nekokan: Food {
+    var description: String {
+        return "nekodaisuki"
+    }
+}
+
+private struct Human: Eater {
+    func eat(_ food: Food) -> String {
+        return "kuchakucha \(food.description)"
+    }
+}
+
+private struct Dog: Eater {
+    func eat(_ food: Food) -> String {
+        return "bakubaku \(food.description)"
+    }
+}
+
+private struct Cat: Eater {
+    func eat(_ food: Food) -> String {
+        return "mogmog \(food.description)"
+    }
+}
+
+// 次の宣言ではコンパイルエラーになる。
+// private func makeEater<T: Eater>(type: EaterType) -> T
+// 一方次の宣言ではコンパイルエラーにはならない。
+// private func makeEater(type: EaterType) -> Eater
+// ここでEaterがassociatetypeを含む場合，型パラメータを使わなければならない。
+// しかし上記の通り，型パラメータを使った戻り値を返す関数の宣言はコンパイルエラーとなる。
+private func makeEater(type: EaterType) -> Eater {
+    switch type {
+    case .human:
+        return Human()
+    case .dog:
+        return Dog()
+    case .cat:
+        return Cat()
+    }
+}
+
+private func testGenericsFunction() {
+    let human = makeEater(type: EaterType.human)
+    let dog = makeEater(type: EaterType.dog)
+    let cat = makeEater(type: EaterType.cat)
+    print("\(human.eat(Rice()))!")
+    print("\(dog.eat(DogFood()))!")
+    print("\(cat.eat(Nekokan()))!")
+}
+
 struct ReconsiderationGenerics {
     static func main() {
-        sampleFuncs.forEach { $0() }
+        //sampleFuncs.forEach { $0() }
+        testGenericsFunction();
     }
 }

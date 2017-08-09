@@ -288,10 +288,10 @@ private func runPractices() {
     //runPracticesAccessControl()
     //runPracticesAdvancedOperators()
     //runPracticesLanguageReference()
-    runPracticesTheBasics()
+    //runPracticesTheBasics()
     
     // Extended Reconsideration Sample
-    //runAllCasesOfReconsiderationGenerics()
+    runAllCasesOfReconsiderationGenerics()
 }
 
 runPractices()
