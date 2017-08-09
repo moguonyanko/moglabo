@@ -12,4 +12,5 @@
 **/*.xcworkspacedata
 **/*.wasm
 **/wasmoutput
-
+**/.idea
+**/*.iml
