@@ -1,71 +1,124 @@
 ((win, doc, math) => {
     "use strict";
     
-    const cutinTypeNames = {
-        "gyorai": "魚雷カットイン",
-        "hourai": "砲雷カットイン",
-        "shuhou": "主砲カットイン"
-    };
+    let cutinTypes, revisions;
     
-    const luckCaps = {
-        [cutinTypeNames.gyorai]: 60,
-        [cutinTypeNames.hourai]: 70,
-        [cutinTypeNames.shuhou]: 55
-    };
-    
-    const luckBases = {
-        [cutinTypeNames.gyorai]: 70,
-        [cutinTypeNames.hourai]: 70,
-        [cutinTypeNames.shuhou]: 50
-    };
-    
-    const probabilityCapsOfFlagship = {
-        [cutinTypeNames.gyorai]: 77,
-        [cutinTypeNames.hourai]: 83,
-        [cutinTypeNames.shuhou]: 65
-    };
-    
-    const probabilityCaps = {
-        [cutinTypeNames.gyorai]: 65,
-        [cutinTypeNames.hourai]: 65,
-        [cutinTypeNames.shuhou]: 50
-    };
+    const MAX_PROPABILITY = 99;
     
     class Revision {
-        constructor({exceedableLuck = false, value = 0}) {
-            this.exceedableLuck = exceedableLuck;
+        constructor({name = "", value = 0}) {
+            this.name = name;
             this.value = value;
+        }
+        toString() {
+            const msgs = [
+                `補正種別名:${this.name}`,
+                `補正値=${this.value}`
+            ];
+            return msgs.join(",");
         }
     }
     
-    const getRevisionValue = ({luck, luckCap, revision}) => {
-        if (revision.exceedableLuck || luck <= (luck + luckCap)) {
-            return revision.value;
+    class CutinType {
+        constructor({name = "", luckCap = 0, luckBase = 0}) {
+            this.name = name;
+            this.luckCap = luckCap;
+            this.luckBase = luckBase;
+        }
+        toString() {
+            return `${this.name}:運キャップ=${this.luckCap}:基底値=${this.luckBase}`;
+        }
+    }
+    
+    const getProbability = ({luck = 0, cutinType, revisions = []}) => {
+        const luckBase = cutinType.luckBase;
+        const luckCap = cutinType.luckCap; 
+        const sumOfRevisionValues = revisions
+                .map(revision => revision.value)
+                .reduce((r1, r2) => r1 + r2, 0);
+        const adjustedLuck = luck < luckCap ? luck : luckCap;
+        const probability = math.sqrt(luckBase * adjustedLuck) + sumOfRevisionValues;
+        return probability < MAX_PROPABILITY ? probability : MAX_PROPABILITY;
+    };
+    
+    const loadConfigObjects = async ({path, entryName, initializer}) => {
+        const response = await fetch(path);
+        if (!response.ok) {
+            throw new Error(`Failed loading config:${path}`);
+        }
+        const config = await response.json();
+        const objs = Object.entries(config[entryName]).map(entry => {
+            return {
+                [entry[0]]: new initializer(entry[1])
+            };
+        }).reduce((o1, o2) => Object.assign(o1, o2), {});
+        return objs;
+    };
+    
+    const loadRevisions = async () => {
+        const revisions = await loadConfigObjects({
+            path: "../../config/nightrevision.json",
+            entryName: "revisions",
+            initializer: Revision
+        });
+        return revisions;
+    };
+    
+    const loadCutinTypes = async () => {
+        const cutinTypes = await loadConfigObjects({
+            path: "../../config/cutintype.json",
+            entryName: "cutinTypes",
+            initializer: CutinType
+        });
+        return cutinTypes;
+    };
+    
+    // DOM
+    
+    const getLuck = () => {
+        const ele = doc.querySelector(".luck");
+        return parseInt(ele.value);
+    };
+    
+    const getSelectedRevisions = () => {
+        const eles = doc.querySelectorAll(".revision");
+        const selectedRevisions = Array.from(eles)
+                .filter(ele => ele.checked)
+                .map(ele => revisions[ele.value]);
+        return selectedRevisions;
+    };
+    
+    const getSelectedCutinType = () => {
+        const eles = doc.querySelectorAll(".cutin");
+        const selectedEles = Array.from(eles).filter(ele => ele.checked);
+        if (selectedEles.length > 0  && selectedEles[0].value in cutinTypes) {
+            return cutinTypes[selectedEles[0].value];
         } else {
-            if (luck >= luckCap) {
-                return 0;
-            } else {
-                return luckCap - luck;
-            }
+            throw new Error("Not selected or invalid cutin type");
         }
     };
     
-    const getProbability = ({luck = 0, cutinType, revisions = []}) => {
-        if (!(cutinType in luckBases)) {
-            throw new Error(`${cutinType} is unsupported`);
-        } 
-        const luckBase = luckBases[cutinType];
-        const luckCap = luckCaps[cutinType]; 
-        const revisionValue = revisions.map(revision => getRevisionValue({
-            luck, luckCap, revision
-        })).reduce((r1, r2) => r1 + r2, 0);
-        const probability = math.sqrt(luckBase * luck) + revisionValue;
-        return probability;
+    const getSpecialProbability = () => {
+        const result = getProbability({ 
+            luck: getLuck(), 
+            cutinType: getSelectedCutinType(), 
+            revisions: getSelectedRevisions(revisions) 
+        });
+        return result;
+    };
+    
+    const addListeners = () => {
+        const runner = doc.querySelector(".runner"),
+            output = doc.querySelector(".output");
+        runner.addEventListener("click", () => {
+            const probability = getSpecialProbability(revisions);
+            output.innerHTML = math.round(probability);
+        });    
     };
     
     const testCalc = () => {
-        const luck = 23;
-        const cutinType = cutinTypeNames.gyorai;
+        const luck = 75;
+        const cutinType = cutinTypes.gyorai;
         const tanshoutou = new Revision({
             exceedableLuck: true,
             value: 5
@@ -74,7 +127,6 @@
             exceedableLuck: true,
             value: 5
         });
-        const flagship = true;
         const kikan = new Revision({
             exceedableLuck: false,
             value: 12.5
@@ -83,14 +135,16 @@
             tanshoutou, shoumeidan, kikan
         ];
         const result = getProbability({ luck, cutinType, revisions });
-        const probCap = flagship ? probabilityCapsOfFlagship[cutinType] : 
-                probabilityCaps[cutinType];
-        return result < probCap ? result : probCap;
+        console.log(`カットイン発動率は ${result} ％`);
     };
     
-    const init = () => {
-        const result = testCalc();
-        console.log(`カットイン発動率は ${result} ％`);
+    const init = async () => {
+        cutinTypes = await loadCutinTypes();
+        revisions = await loadRevisions();
+        addListeners();
+        //console.log(cutinTypes);
+        //console.log(revisions);
+        //testCalc();
     };
     
     win.addEventListener("DOMContentLoaded", init);

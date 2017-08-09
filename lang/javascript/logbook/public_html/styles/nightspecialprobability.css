@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+.result-area {
+    background-color: oldlace;
+}
+
+@media (max-width: 480px) {
+    .input-container {
+        display: flex;
+        flex-direction: column;
+    }
+}

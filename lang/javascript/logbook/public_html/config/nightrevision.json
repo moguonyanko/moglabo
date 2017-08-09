@@ -1,0 +1,24 @@
+{
+    "revisions": {
+        "tanshoutou": {
+            "name": "探照灯",
+            "value": 5
+        },
+        "shoumeidan": {
+            "name": "照明弾",
+            "value": 5
+        },
+        "mihariin": {
+            "name": "熟練見張員",
+            "value": 4
+        },
+        "kikan": {
+            "name": "旗艦",
+            "value": 12.5
+        },
+        "chuha": {
+            "name": "中破",
+            "value": 20
+        }
+    }
+}

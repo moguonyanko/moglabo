@@ -1,0 +1,19 @@
+{
+    "cutinTypes": {
+        "gyorai": {
+            "name": "魚雷カットイン",
+            "luckCap": 60,
+            "luckBase": 70
+        },
+        "hourai": {
+            "name": "砲雷カットイン",
+            "luckCap": 70,
+            "luckBase": 70
+        },
+        "shuhou": {
+            "name": "主砲カットイン",
+            "luckCap": 55,
+            "luckBase": 50
+        }
+    }
+}

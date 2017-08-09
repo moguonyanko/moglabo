@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <title>発動率計算</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../styles/nightspecialprobability.css" />
+    <link rel="shortcut icon" href="../../favicon.ico" />
   </head>
   <body>
     <header>
@@ -11,7 +13,40 @@
       <a href="../../">home</a>
     </header>
     <main>
-      
+      <section>
+        <h2>パラメータ設定</h2>
+        <section>
+          <h3>ステータス</h3>
+          <label>運<input class="luck" type="number" min="0" max="200" value="60" /></label>
+        </section>
+        <section>
+          <h3>補正種別</h3>
+          <div class="input-container">
+            <label><input type="checkbox" class="revision" value="tanshoutou" checked="checked" />探照灯</label>
+            <label><input type="checkbox" class="revision" value="shoumeidan" checked="checked" />照明弾</label>
+            <label><input type="checkbox" class="revision" value="mihariin" />熟練見張員</label>
+            <label><input type="checkbox" class="revision flagship" value="kikan" />旗艦</label>
+            <label><input type="checkbox" class="revision" value="chuha" />中破</label>
+          </div>
+        </section>
+        <section>
+          <h3>カットイン種別</h3>
+          <div class="input-container">
+            <label><input type="radio" class="cutin" name="cutin" value="gyorai" checked="checked" />魚雷</label>
+            <label><input type="radio" class="cutin" name="cutin" value="hourai" />砲雷</label>
+            <label><input type="radio" class="cutin" name="cutin" value="shuhou" />主砲</label>
+          </div>
+        </section>
+      </section>
+      <section>
+        <h2>結果</h2>
+        <div>
+          <button class="runner">計算</button>
+          <div class="result-area">
+            <span class="output">0</span><span>%</span>
+          </div>
+        </div>
+      </section>
     </main>
     <script src="../../scripts/nightspecialprobability.js"></script>
   </body>
