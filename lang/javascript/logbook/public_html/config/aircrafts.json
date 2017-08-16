@@ -244,6 +244,11 @@
 		"type": "KS",
 		"ack": 8
 	},
+	"seafire3k": {
+		"name": "Seafire Mk.III改",
+		"type": "KS",
+		"ack": 9
+	},
     "hayabusa64": {
 		"name": "一式戦 隼Ⅱ型(64戦隊)",
 		"type": "RS",
@@ -291,6 +296,27 @@
 		"ack": 6,
         "intercept": 2,
         "antibomb": 5
+    },
+    "spitfire1": {
+		"name": "Spitfire Mk.I",
+		"type": "RS",
+		"ack": 9,
+        "intercept": 1,
+        "antibomb": 2
+    },
+    "spitfire5": {
+		"name": "Spitfire Mk.V",
+		"type": "RS",
+		"ack": 9,
+        "intercept": 2,
+        "antibomb": 3
+    },
+    "spitfire9j": {
+		"name": "Spitfire Mk.IX(熟練)",
+		"type": "RS",
+		"ack": 10,
+        "intercept": 4,
+        "antibomb": 2
     },
     "rikko96": {
 		"name": "九六式陸攻",
