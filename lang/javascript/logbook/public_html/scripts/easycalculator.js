@@ -45,22 +45,14 @@
 		[AIRCRAFT_TYPE_NAMES.HB]: new AircraftType(AIRCRAFT_TYPE_NAMES.HB, 3),
 		[AIRCRAFT_TYPE_NAMES.RS]: new AircraftType(AIRCRAFT_TYPE_NAMES.RS, 25),
 		[AIRCRAFT_TYPE_NAMES.KYS]: new AircraftType(AIRCRAFT_TYPE_NAMES.KYS, 25),
-        /**
-         * 陸上攻撃機の最大ボーナス値は3だが熟練度が失われていることが多いため
-         * ボーナス値を0とする。 
-         **/
-		[AIRCRAFT_TYPE_NAMES.RK]: new AircraftType(AIRCRAFT_TYPE_NAMES.RK, 0),
+		[AIRCRAFT_TYPE_NAMES.RK]: new AircraftType(AIRCRAFT_TYPE_NAMES.RK, 3),
 		[AIRCRAFT_TYPE_NAMES.KT]: new AircraftType(AIRCRAFT_TYPE_NAMES.KT, 3),
-        /**
-         * 二式大艇などの偵察機の熟練度も出撃時は損耗することが多いためボーナス値を0とする。
-         * 本来の最大ボーナス値は3である。
-         */
-		[AIRCRAFT_TYPE_NAMES.ST]: new AircraftType(AIRCRAFT_TYPE_NAMES.ST, 0)
+		[AIRCRAFT_TYPE_NAMES.ST]: new AircraftType(AIRCRAFT_TYPE_NAMES.ST, 3)
 	};
 	
 	/**
 	 * AircraftTypeの名前ではなくAircraftTypeオブジェクトをキーにしたい。
-	 * Mapを使って表現すれば可能だが，現状のMapは値取得時に渡されたキーを
+	 * Mapを使って表現すれば可能だが，現在のMapは値取得時に渡されたキーを
 	 * 同値演算子(===)でしか既存のキーと比較できない。
      * 
      * 改修できない機種の場合，改修による補正値は0として扱う。
@@ -174,13 +166,19 @@
 	};
 	
 	class Slot {
-		constructor (size) {
+		constructor (size, noSkillBonus = false) {
 			this.size = size || 0;
 			this.aircraft = null;
+            this.noSkillBonus = noSkillBonus;
 		}
 		
 		toString () {
-			return `size=${this.size}, {${this.aircraft || ""}}`;
+            const msg = [
+                `size=${this.size}`,
+                `{${this.aircraft || "未装備"}}`,
+                `熟練度ボーナス=${this.noSkillBonus ? "なし" : "あり"}`
+            ];
+			return msg.join(",");
 		}
 	}
 	
@@ -198,11 +196,11 @@
      * 制空値の計算を行う。
      * 防空時には未対応。
      */
-	const calculateMastery = (ac, slot) => {
+	const calculateMastery = (ac, slot, noSkillBonus = false) => {
         const ack = ac.ack + getValueByImprovement(ac);
+        const skillBonus = noSkillBonus ? 0 : getSkillBonus(ac);
 		const mastery = (ack + (ac.intercept * 1.5)) * 
-			Math.sqrt(slot.size) + getSkillBonus(ac);
-		
+			Math.sqrt(slot.size) + skillBonus;
 		return parseInt(mastery);
 	};
 	
@@ -245,16 +243,28 @@
 			this.setSlot(slotNo, slot);
 		}
 		
+		getNoSkillBonus (slotNo) {
+			const slot = this.getSlot(slotNo);
+			return slot.noSkillBonus;
+		}
+		
+		setNoSkillBonus (slotNo, noSkillBonus = false) {
+			const slot = this.getSlot(slotNo);
+			slot.noSkillBonus = noSkillBonus;
+			this.setSlot(slotNo, slot);
+		}
+        
 		removeAircraft (slotNo) {
 			this.setAircraft(slotNo, null);
 		}
 		
 		getMasteryOneSlot (slotNo) {
 			if (this.slots.has(slotNo)) {
-				const slot = this.getSlot(slotNo);
 				const ac = this.getAircraft(slotNo);
 				if (ac) {
-					return calculateMastery(ac, slot);
+                    const slot = this.getSlot(slotNo);
+                    const noSkillBonus = this.getNoSkillBonus(slotNo);
+					return calculateMastery(ac, slot, noSkillBonus);
 				} else {
 					return 0;
 				}
@@ -288,9 +298,7 @@
 		}
 		
 		setSlot () {
-			/**
-			 * NoNameShipのスロットはからの状態から変更させない。
-			 */
+            // NoNameShipのスロットは空の状態から変更させない。
 		}
 		
 		get mastery () {
@@ -333,6 +341,7 @@
 		ship1.setAircraft(2, makeAircraft("rp601", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 11));
 		ship1.setAircraft(3, makeAircraft("rpk", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 12));
 		ship1.setAircraft(4, makeAircraft("z62i", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 7));
+        ship1.setNoSkillBonus(4, true);
 		
 		console.log(ship1.toString());
 		console.log(ship1.mastery);
@@ -347,6 +356,7 @@
 		const z62i = makeAircraft("z62i", getAircraftType(AIRCRAFT_TYPE_NAMES.KB), 7);
 		z62i.improve(5);
 		ship2.setAircraft(4, z62i);
+        ship2.setNoSkillBonus(4, true);
 		
 		console.log(ship2.toString());
 		console.log(ship2.mastery);
@@ -396,6 +406,9 @@
 		} 
 		impEle.setAttribute("value", impValue);
 		
+		const impValEle = doc.createElement("span");
+		impValEle.setAttribute("class", "aircraft-improve-value");
+		impValEle.innerText = getImprovementText(impValue);
 		const improveAircraft = evt => {
 			const aircraft = ship.getAircraft(slotNo);
 			if (aircraft) {
@@ -407,12 +420,9 @@
 		};
 		impEle.addEventListener("change", improveAircraft, false);
 		
-		const acImpContainer = doc.createElement("span");
+		const acImpContainer = doc.createElement("div");
 		acImpContainer.setAttribute("class", "aircraft-improve-range-container");
 		acImpContainer.appendChild(impEle);
-		const impValEle = doc.createElement("span");
-		impValEle.setAttribute("class", "aircraft-improve-value");
-		impValEle.innerText = getImprovementText(impValue);
 		acImpContainer.appendChild(impValEle);
 		
 		return acImpContainer;
@@ -441,7 +451,7 @@
 			}
 			
 			/**
-			 * 要素の親子や兄弟の関係はサードパーディのライブラリ利用時に
+			 * 要素の親子や兄弟の関係はサードパーティのライブラリ利用時に
 			 * 変更されることがあるので，parentNodeやchildNodes等は極力
 			 * 使うべきでない。
 			 */
@@ -449,6 +459,29 @@
 		};
 	};
 	
+    const createNoSkillBonusChecker = (ship, slotNo) => {
+        /**
+         * 要素を横に並べるためにspanのようなinline要素を選択するべきではない。
+         * 表示方法はCSSに任せる。
+         */
+        const container = doc.createElement("div");
+        container.setAttribute("class", "aircraft-nobonus-checker-container");
+        
+        const checker = doc.createElement("input");
+        checker.setAttribute("class", "aircraft-nobonus-checker");
+        checker.setAttribute("type", "checkbox");
+        checker.addEventListener("click", 
+            () => ship.setNoSkillBonus(slotNo, checker.checked));
+        
+        const label = doc.createElement("label");
+        label.appendChild(checker);
+        label.appendChild(doc.createTextNode("熟練度なし"));
+        
+        container.appendChild(label);
+        
+        return container;
+    };
+    
 	const createAircraftSelector = (ship, slotNo) => {
 		const aircraftSubBase = doc.createElement("div");
 		aircraftSubBase.setAttribute("class", "aircraft-selector-container");
@@ -470,6 +503,9 @@
 		const improvementRange = createImprovementRange(ship, slotNo);
 		aircraftSubBase.appendChild(improvementRange);
 		
+        const noSkillBonusChecker = createNoSkillBonusChecker(ship, slotNo);
+		aircraftSubBase.appendChild(noSkillBonusChecker);
+        
 		return aircraftSubBase;
 	};
 	
