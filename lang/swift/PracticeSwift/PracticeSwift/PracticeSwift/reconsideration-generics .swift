@@ -454,6 +454,58 @@ private func testGenericsFunction() {
     print("\(cat.eat(Nekokan()))!")
 }
 
+// associated typeとファクトリメソッド
+
+private protocol Stack {
+    associatedtype Item
+    func push(_ item: Item)
+    func pop() -> Item?
+}
+
+private class AnyStack<Element>: Stack {
+    private var stack = [Element]()
+    func push(_ item: Element) {
+        stack.append(item)
+    }
+    func pop() -> Element? {
+        return stack.popLast()
+    }
+}
+
+private class NumberStack<N: Numeric>: Stack {
+    private var stack = [N]()
+    func push(_ item: N) {
+        stack.append(item)
+    }
+    func pop() -> N? {
+        return stack.popLast()
+    }
+}
+
+private enum StackType {
+    case any, number
+}
+
+private class StackFactory<S: Stack> {
+    static func makeStack(type: StackType) -> S {
+        if type == .number {
+            return NumberStack<Int>() as! S
+        } else {
+            return AnyStack<Any>() as! S
+        }
+    }
+}
+
+
+// TODO: 以下のコードはどうしてもコンパイルエラーになる。
+//private func makeStack<T: Stack>(type: StackType) -> T {
+//    if type == .number {
+//        return NumberStack()
+//    } else {
+//        return AnyStack()
+//    }
+//}
+
 struct ReconsiderationGenerics {
     static func main() {
         //sampleFuncs.forEach { $0() }
