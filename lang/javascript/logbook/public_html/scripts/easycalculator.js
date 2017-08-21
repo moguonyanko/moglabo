@@ -22,9 +22,10 @@
 	};
 	
 	class AircraftType {
-		constructor (name, bonus) {
+		constructor (name, bonus, defaultNoSkillBonus = false) {
 			this.name = name;
 			this.bonus = bonus;
+            this.defaultNoSkillBonus = defaultNoSkillBonus;
 		} 
 		
 		toString () {
@@ -38,16 +39,16 @@
 	 */
 	const AIRCRAFT_TYPES = {
 		[AIRCRAFT_TYPE_NAMES.KS]: new AircraftType(AIRCRAFT_TYPE_NAMES.KS, 25),
-		[AIRCRAFT_TYPE_NAMES.KK]: new AircraftType(AIRCRAFT_TYPE_NAMES.KK, 3),
-		[AIRCRAFT_TYPE_NAMES.KB]: new AircraftType(AIRCRAFT_TYPE_NAMES.KB, 3),
-		[AIRCRAFT_TYPE_NAMES.SB]: new AircraftType(AIRCRAFT_TYPE_NAMES.SB, 9),
+		[AIRCRAFT_TYPE_NAMES.KK]: new AircraftType(AIRCRAFT_TYPE_NAMES.KK, 3, true),
+		[AIRCRAFT_TYPE_NAMES.KB]: new AircraftType(AIRCRAFT_TYPE_NAMES.KB, 3, true),
+		[AIRCRAFT_TYPE_NAMES.SB]: new AircraftType(AIRCRAFT_TYPE_NAMES.SB, 9, true),
 		[AIRCRAFT_TYPE_NAMES.SS]: new AircraftType(AIRCRAFT_TYPE_NAMES.SS, 25),
-		[AIRCRAFT_TYPE_NAMES.HB]: new AircraftType(AIRCRAFT_TYPE_NAMES.HB, 3),
+		[AIRCRAFT_TYPE_NAMES.HB]: new AircraftType(AIRCRAFT_TYPE_NAMES.HB, 3, true),
 		[AIRCRAFT_TYPE_NAMES.RS]: new AircraftType(AIRCRAFT_TYPE_NAMES.RS, 25),
 		[AIRCRAFT_TYPE_NAMES.KYS]: new AircraftType(AIRCRAFT_TYPE_NAMES.KYS, 25),
-		[AIRCRAFT_TYPE_NAMES.RK]: new AircraftType(AIRCRAFT_TYPE_NAMES.RK, 3),
-		[AIRCRAFT_TYPE_NAMES.KT]: new AircraftType(AIRCRAFT_TYPE_NAMES.KT, 3),
-		[AIRCRAFT_TYPE_NAMES.ST]: new AircraftType(AIRCRAFT_TYPE_NAMES.ST, 3)
+		[AIRCRAFT_TYPE_NAMES.RK]: new AircraftType(AIRCRAFT_TYPE_NAMES.RK, 3, true),
+		[AIRCRAFT_TYPE_NAMES.KT]: new AircraftType(AIRCRAFT_TYPE_NAMES.KT, 3, true),
+		[AIRCRAFT_TYPE_NAMES.ST]: new AircraftType(AIRCRAFT_TYPE_NAMES.ST, 3, true)
 	};
 	
 	/**
@@ -439,17 +440,54 @@
 			impValEle.innerText = getImprovementText(IMPROVEMENT_VALUES.DEFAULT);
 		}
 	};
+    
+    class NoSkillBonusChecker {
+        constructor(ship, slotNo) {
+            this.checkerClassName = "aircraft-nobonus-checker";
+            const container = doc.createElement("div");
+            container.setAttribute("class", "aircraft-nobonus-checker-container");
+
+            const checker = doc.createElement("input");
+            checker.setAttribute("class", this.checkerClassName);
+            checker.setAttribute("type", "checkbox");
+            checker.addEventListener("click", 
+                () => ship.setNoSkillBonus(slotNo, checker.checked));
+
+            const label = doc.createElement("label");
+            label.appendChild(checker);
+            label.appendChild(doc.createTextNode("熟練度なし"));
+
+            container.appendChild(label);
+            
+            this.container = container;
+        }
+        
+        get checkElement() {
+            return this.container.querySelector(`.${this.checkerClassName}`);
+        }
+    }
 	
-	const changeShipSlot = (ship, slotNo) => {
+    /**
+     * 航空機が選択された時のイベントハンドラを返します。
+     */
+	const changeShipSlot = (ship, slotNo, checker) => {
 		return evt => {
 			const acName = evt.target.value;
 			if (acName in AIRCRAFTS_FACTORY) {
 				const aircraft = AIRCRAFTS_FACTORY[acName]();
 				ship.setAircraft(slotNo, aircraft);
+                const defaultNoSkillBonus = aircraft.type.defaultNoSkillBonus;
+                ship.setNoSkillBonus(slotNo, defaultNoSkillBonus);
+                if (defaultNoSkillBonus) {
+                    checker.checkElement.checked = "checked";
+                } else {
+                    checker.checkElement.checked = null;
+                }
 			} else {
 				ship.removeAircraft(slotNo);
+                ship.setNoSkillBonus(slotNo, false);
+                checker.checkElement.checked = null;
 			}
-			
 			/**
 			 * 要素の親子や兄弟の関係はサードパーティのライブラリ利用時に
 			 * 変更されることがあるので，parentNodeやchildNodes等は極力
@@ -486,12 +524,15 @@
 		const aircraftSubBase = doc.createElement("div");
 		aircraftSubBase.setAttribute("class", "aircraft-selector-container");
 		
+        const noSkillBonusChecker = new NoSkillBonusChecker(ship, slotNo);
+        const changeSlotListener = changeShipSlot(ship, slotNo, noSkillBonusChecker);
+        
 		const aircraftSelector = doc.createElement("select");
 		aircraftSelector.setAttribute("class", "aircraft-selector");
 		const empOpt = new Option("", "", true, true);
 		aircraftSelector.appendChild(empOpt);
 		appendAllAircrafts(aircraftSelector);
-		aircraftSelector.addEventListener("change", changeShipSlot(ship, slotNo), false);
+		aircraftSelector.addEventListener("change", changeSlotListener, false);
 		aircraftSubBase.appendChild(aircraftSelector);
 		
 		const slotLoadingSize = ship.getSlot(slotNo).size;
@@ -503,8 +544,7 @@
 		const improvementRange = createImprovementRange(ship, slotNo);
 		aircraftSubBase.appendChild(improvementRange);
 		
-        const noSkillBonusChecker = createNoSkillBonusChecker(ship, slotNo);
-		aircraftSubBase.appendChild(noSkillBonusChecker);
+		aircraftSubBase.appendChild(noSkillBonusChecker.container);
         
 		return aircraftSubBase;
 	};
