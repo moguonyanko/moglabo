@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+.equipment-config {
+    max-height: 40vh;
+    overflow-y: scroll;
+}
+
+.section-header {
+    background-color: beige;
+    border: 1px solid khaki;
+}
+
+.equipment-config .section-header {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0px;
+}

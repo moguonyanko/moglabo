@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>昼間計算</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="/logbook/favicon.ico" />
+    <link rel="stylesheet" href="../../styles/bombardment.css" >
+  </head>
+  <body>
+    <header>
+      <h1>昼間計算</h1>
+    </header>
+    <main>
+      <section class="ship-config">
+        <h2 class="section-header">艦艇設定</h2>
+        <form class="ship-container">
+          <fieldset>
+            <legend>素のステータス</legend>
+            <div>
+              <label>艦名<input class="ship-name" type="text" value="no data" /></label>
+              <div>
+                <label><input type="checkbox" class="check-aircraft-carrier" />空母系</label>
+              </div>
+            </div>
+            <div>
+              <label>火力<input class="force" type="number" value="0" min="0" max="300" /></label>
+              <label>雷装<input class="raisou" type="number" value="0" min="0" max="300" /></label>
+            </div>
+            <button type="reset">リセット</button>
+          </fieldset>
+        </form>
+      </section>
+      <section class="equipment-config">
+        <h2 class="section-header">装備設定</h2>
+        <form class="equipment-container">
+          <fieldset>
+            <legend>スロット</legend>
+            <select class="select-equipment-type">
+              <option selected="selected">未選択</option>
+            </select>
+            <div>
+              <label>火力<input class="force" type="number" value="0" min="0" max="100" /></label>
+              <label>雷装<input class="raisou" type="number" value="0" min="0" max="100" /></label>
+              <label>爆装<input class="bakusou" type="number" value="0" min="0" max="100" /></label>
+            </div>
+            <div>
+              <label>改修度<input class="improvement" type="number" value="0" min="0" max="10" /></label>
+            </div>
+            <button type="reset">リセット</button>
+          </fieldset>
+        </form>
+      </section>
+      <section class="result-section">
+        <h2 class="section-header">計算</h2>
+        <div class="control">
+          <button class="execute">実行</button>
+          <p>基本攻撃力＝<span class="output"></span></p>
+        </div>
+      </section>
+    </main>
+    <script src="../../scripts/bombardment.js"></script>
+  </body>
+</html>
