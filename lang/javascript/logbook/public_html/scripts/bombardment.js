@@ -168,10 +168,11 @@
             base.options.add(option);
         });
         
+        // 通常スロット4つ+補強増設
         const slotSize = 5;
         const configBase = document.querySelector(".equipment-config");
         const configContainer = document.querySelector(".equipment-container");
-        for (let i = 0; i < slotSize; i++) {
+        for (let i = 1; i < slotSize; i++) {
             const clonedNode = configContainer.cloneNode(true);
             configBase.appendChild(clonedNode);
         }
