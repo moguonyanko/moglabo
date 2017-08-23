@@ -1,12 +1,19 @@
 ((window, document) => {
     "use strict";
     
+    const toNumber = (value, defaultValue = 0) => {
+        if (isNaN(Number(value))) {
+            return defaultValue;
+        }
+        return Number(value);
+    };
+    
     const NORMAL_KANTAI_TEISU = 5;
 
     class EquipmentType {
-        constructor({ name, revisionValue = 0 }) {
+        constructor({ name, revisionValue = 0 } = {}) {
             this.name = name;
-            this.revisionValue = revisionValue;
+            this.revisionValue = toNumber(revisionValue);
         }
         toString() {
             return this.name;
@@ -14,12 +21,16 @@
     }
     
     class Equipment {
-        constructor({ type, force = 0, raisou = 0, bakusou = 0, improvement = 0 }) {
+        // 引数に空文字が渡された時はデフォルト引数は使われない。
+        // デフォルト引数が使われるのはundefinedが渡された時である。
+        constructor({ 
+            type, force = 0, raisou = 0, bakusou = 0, improvement = 0 
+        } = {}) {
             this.type = type;
-            this.force = force;
-            this.raisou = raisou;
-            this.bakusou = bakusou;
-            this.improvement = improvement;
+            this.force = toNumber(force);
+            this.raisou = toNumber(raisou);
+            this.bakusou = toNumber(bakusou);
+            this.improvement = toNumber(improvement);
         }
         get improvedForce() {
             return this.type.revisionValue * Math.sqrt(this.improvement);
@@ -37,10 +48,12 @@
     } 
     
     class Ship {
-        constructor({ name, force = 0, raisou = 0, equipments = [] }) {
+        constructor({
+            name, force = 0, raisou = 0, equipments = [] 
+        } = {}) {
             this.name = name;
-            this.force = force; // 素の火力
-            this.raisou = raisou; // 素の雷装
+            this.force = toNumber(force); // 素の火力
+            this.raisou = toNumber(raisou); // 素の雷装
             this.equipments = equipments;
         }
         get equipmentsForce() {
@@ -69,7 +82,9 @@
     
     // 空母系以外
     class UnAircraftCarrier extends Ship {
-        constructor({ name, force = 0, raisou = 0, equipments = [] }) {
+        constructor({
+            name, force = 0, raisou = 0, equipments = [] 
+        } = {}) {
             super({ name, force, raisou, equipments });
         }
         get power() {
@@ -79,7 +94,9 @@
     
     // 空母系
     class AircraftCarrier extends Ship {
-        constructor({ name, force = 0, raisou = 0, equipments = [] }) {
+        constructor({ 
+            name, force = 0, raisou = 0, equipments = [] 
+        } = {}) {
             super({ name, force, raisou, equipments });
         }
         get power() {
@@ -195,9 +212,9 @@
         }
         const type = equipmentTypes[typeName];
         const {force, raisou, bakusou} = {
-            force: parseInt(slot.querySelector(".force").value),
-            raisou: parseInt(slot.querySelector(".raisou").value),
-            bakusou: parseInt(slot.querySelector(".bakusou").value)
+            force: slot.querySelector(".force").value,
+            raisou: slot.querySelector(".raisou").value,
+            bakusou: slot.querySelector(".bakusou").value
         };
         const improvement = parseInt(slot.querySelector(".improvement").value);
         const equipment = new Equipment({
@@ -213,8 +230,8 @@
     const createShip = ({ shipContainer, equipments }) => {
         const name = shipContainer.querySelector(".ship-name").value;
         const { force, raisou } = {
-            force: parseInt(shipContainer.querySelector(".force").value),
-            raisou: parseInt(shipContainer.querySelector(".raisou").value)
+            force: shipContainer.querySelector(".force").value,
+            raisou: shipContainer.querySelector(".raisou").value
         };
         if (isAircraftCarrier(shipContainer)) {
             return new AircraftCarrier({
