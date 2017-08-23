@@ -49,17 +49,17 @@
                     .reduce((a, b) => a + b, 0);
             return eqpForce;
         }
-        get equipmentsRaisou() {
-            const eqpRaisou = this.equipments
-                    .map(eqp => eqp.raisou)
+        sumOf(equipmentParamName) {
+            const sum = this.equipments
+                    .map(eqp => eqp[equipmentParamName])
                     .reduce((a, b) => a + b, 0);
-            return eqpRaisou;
+            return sum;
+        }
+        get equipmentsRaisou() {
+            return this.sumOf("raisou");
         }
         get equipmentsBakusou() {
-            const eqpRaisou = this.equipments
-                    .map(eqp => eqp.bakusou)
-                    .reduce((a, b) => a + b, 0);
-            return eqpRaisou;
+            return this.sumOf("bakusou");
         }
         toString() {
             return `${this.name} -> ${this.equipments
