@@ -70,3 +70,43 @@ func dumpUnicodeCodes() {
     
     print("")
 }
+
+private func makeMultilineStringLiteral1() -> String {
+    let s = """
+Hello world.
+Java
+JavaScript
+Swift
+"""
+    return s
+}
+
+private func makeMultilineStringLiteral2() -> String {
+    let s = """
+    Hello world.
+        Java
+    JavaScript
+    Swift
+"""
+    return s
+}
+
+// multiline内の改行もスペースも全て反映される。
+private func makeMultilineStringLiteral3() -> String {
+    let s = """
+
+Hello world."abcdefg
+    hijklmn"
+Java
+JavaScript
+Swift
+
+"""
+    return s
+}
+
+func displayMultilineStringLiterals() {
+    print("\(makeMultilineStringLiteral1())")
+    print("\(makeMultilineStringLiteral2())")
+    print("\(makeMultilineStringLiteral3())")
+}
