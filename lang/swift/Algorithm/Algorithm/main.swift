@@ -7,4 +7,5 @@
 import Foundation
 
 // Sort.main()
-Recursion.main()
+// Recursion.main()
+Graph.main()
