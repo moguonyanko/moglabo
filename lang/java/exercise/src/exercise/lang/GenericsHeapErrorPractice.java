@@ -58,7 +58,8 @@ class ArrayBuilder {
 
 	public static void faultyMethod(List<String>... lists) {
 		Object[] objects = lists; /* Valid but unnormally */
-		objects[0] = Arrays.asList(new Integer(42));
+        Integer value = 42;
+		objects[0] = Arrays.asList(42);
 		String s = lists[0].get(0); /* ClassCastExceptions */
 	}
 }

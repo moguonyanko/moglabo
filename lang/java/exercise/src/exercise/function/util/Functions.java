@@ -297,7 +297,7 @@ public class Functions {
 	}
 	
 	public static <T extends Integer> int ranegClosedSum(T start, T end) {
-		if (start > end) {
+		if (start.intValue() > end.intValue()) {
 			throw new IllegalArgumentException("start must be less than end");
 		}
 
@@ -372,7 +372,7 @@ public class Functions {
 		return Stream.of(predicates).allMatch(p -> p.test(null));
 	}
 
-	public static <T, C extends Collection> Collection<T> collectValues(
+	public static <T, C extends Collection<T>> Collection<T> collectValues(
 		T seed, UnaryOperator<T> nextValueOperator, int limitSize, Supplier<C> supplier) {
 		Collection<T> result = Stream.iterate(seed, nextValueOperator)
 			.limit(limitSize)
