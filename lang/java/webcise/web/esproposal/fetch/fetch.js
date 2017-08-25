@@ -330,6 +330,8 @@
             const display = content => {
                 resultArea.innerHTML += `${content}<br />`;
             };    
+            
+            const resetArea = () => resultArea.innerHTML = "";
                 
             /**
              * 画像をnew Image()ではなくfetchで取得するメリットとしては
@@ -337,11 +339,11 @@
              */
             const getImageBlob = async imageUrl => {
                 const request = new Request(imageUrl, {
-                    method: "GET"
+                    method: "GET",
+                    keepalive: true
                 });
-                display(`Before fetch:keepalive = ${request.keepalive}`);
+                display(`keepalive = ${request.keepalive}`);
                 const response = await fetch(request);
-                display(`After fetch:keepalive = ${request.keepalive}`);
                 if (!response.ok) {
                     throw new Error(`Failed loading image:${response.statusText}(${response.status})`);
                 }
@@ -356,6 +358,7 @@
                         const url = URL.createObjectURL(blob);
                         img.onload = () => {
                             URL.revokeObjectURL(url);
+                            console.log(`revoked ${url}`);
                             resolve(img);
                         };
                         img.onerror = reject;
@@ -368,6 +371,13 @@
             
             runner.addEventListener("click", async () => {
                 try {
+                    /**
+                     * 同じリソースのBlobから生成したBlobURLを参照する既存のimgが
+                     * ページから削除されていないと，BlobURLを毎度revokeしたとしても
+                     * img追加時にエラーになってしまう。
+                     * imgがページに残っているとrevokeできないのか？
+                     */
+                    resetArea();
                     const img = await getImage("samplestar.png");
                     resultArea.appendChild(img);
                 } catch(err) {
@@ -375,9 +385,7 @@
                 }
             });
             
-            clearer.addEventListener("click", () => {
-                resultArea.innerHTML = "";
-            });
+            clearer.addEventListener("click", resetArea);
         }
 	};
 
