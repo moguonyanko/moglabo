@@ -320,7 +320,65 @@
 					
 				area.innerHTML = JSON.stringify(await response.json());
 			});
-		}
+		},
+        keepaliveCheck() {
+            const base = doc.querySelector(".keepalive-check-sample"),
+                runner = base.querySelector(".runner"),
+                clearer = base.querySelector(".clearer"),
+                resultArea = base.querySelector(".result-area");
+                
+            const display = content => {
+                resultArea.innerHTML += `${content}<br />`;
+            };    
+                
+            /**
+             * 画像をnew Image()ではなくfetchで取得するメリットとしては
+             * GET以外が使えることやエラー処理がしやすいことが挙げられる。
+             */
+            const getImageBlob = async imageUrl => {
+                const request = new Request(imageUrl, {
+                    method: "GET"
+                });
+                display(`Before fetch:keepalive = ${request.keepalive}`);
+                const response = await fetch(request);
+                display(`After fetch:keepalive = ${request.keepalive}`);
+                if (!response.ok) {
+                    throw new Error(`Failed loading image:${response.statusText}(${response.status})`);
+                }
+                return response.blob();
+            };
+            
+            const getImage = imageUrl => {
+                return new Promise(async (resolve, reject) => {
+                    const img = new Image();
+                    try {
+                        const blob = await getImageBlob(imageUrl);
+                        const url = URL.createObjectURL(blob);
+                        img.onload = () => {
+                            URL.revokeObjectURL(url);
+                            resolve(img);
+                        };
+                        img.onerror = reject;
+                        img.src = url;
+                    } catch(err) {
+                       reject(err); 
+                    }
+                });
+            };
+            
+            runner.addEventListener("click", async () => {
+                try {
+                    const img = await getImage("samplestar.png");
+                    resultArea.appendChild(img);
+                } catch(err) {
+                    display(err.message);
+                }
+            });
+            
+            clearer.addEventListener("click", () => {
+                resultArea.innerHTML = "";
+            });
+        }
 	};
 
 	const init = () => {
@@ -328,5 +386,4 @@
 	};
 
 	win.addEventListener("DOMContentLoaded", init);
-
 })(window, document, goma);
