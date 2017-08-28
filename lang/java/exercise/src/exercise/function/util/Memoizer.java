@@ -2,6 +2,7 @@ package exercise.function.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -13,11 +14,14 @@ public class Memoizer {
 	public static <T, R> R callMemoized(BiFunction<Function<T, R>, T, R> func,
 		T input) {
 		/**
-		 * memoized変数を宣言している行の右辺の<T, R>は省略すると
-		 * コンパイルエラーになる。
-		 * 匿名内部クラスではダイヤモンド演算子を使用できない。
+		 * Java8ではmemoized変数を宣言している行の右辺の<T, R>を<>とすると
+		 * コンパイルエラーになっていたがJava9からはエラーにならない。
 		 */
-		Function<T, R> memoized = new Function<T, R>() {
+		Function<T, R> memoized = new Function<>() {
+            /**
+             * 右辺のMapをConcurrentHashMapではなくHashMapにすると
+             * Java9以降ではConcurrentModificationExceptionがスローされる。
+             */
 			private final Map<T, R> store = new HashMap<>();
 
 			@Override

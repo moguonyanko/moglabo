@@ -952,6 +952,10 @@ public class TestFunctions {
 
 		RodCutterBasic rodCutter = new RodCutterBasic(prices);
 
+		int actual1 = rodCutter.maxProfitByMemoize(1);
+		int expected1 = 2;
+		assertThat(actual1, is(expected1));
+
 		int actual5 = rodCutter.maxProfitByMemoize(5);
 		int expected5 = 10;
 		assertThat(actual5, is(expected5));
