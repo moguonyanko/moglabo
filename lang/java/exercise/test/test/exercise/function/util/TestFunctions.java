@@ -53,11 +53,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.sql.SQLException;
 import static java.util.stream.Collectors.*;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
@@ -4002,27 +3998,32 @@ public class TestFunctions {
 	}
 
 	@Test
-	public void 並列ストリームで原子的な計算を試みる() {
-		AtomicInteger actual = new AtomicInteger(2);
+    public void 並列ストリームで原子的な計算を試みる() {
+        AtomicInteger actual = new AtomicInteger(2);
 
-		IntStream divs = IntStream.of(2, 2, 2);
+        IntStream divs = IntStream.of(2, 2, 2);
 
-		divs.parallel()
-			.peek(div -> {
-				actual.getAndSet(actual.get() / div);
-			})
-			/**
-			 * 中間操作peekを実行させるためだけに終端操作count実行
-			 */
-			.count();
+        divs.parallel()
+                .peek(div -> {
+                    actual.getAndSet(actual.get() / div);
+                })
+                .peek(div -> {
+                    System.out.println(div + " is calculated");
+                })
+                .sum();
+                /**
+                 * 中間操作peekを実行させるためだけに終端操作count実行
+                 * Java(build 9+181)ではcountが終端操作ではなくなっている。
+                 */
+                //.count();
 
-		AtomicInteger expected = new AtomicInteger(0);
+        AtomicInteger expected = new AtomicInteger(0);
 
-		/**
-		 * AtomicIntegerにequalsやhashCodeは実装されていない。
-		 */
-		assertThat(actual.get(), is(expected.get()));
-	}
+        /**
+         * AtomicIntegerにequalsやhashCodeは実装されていない。
+         */
+        assertThat(actual.get(), is(expected.get()));
+    }
 
 	@Test
 	public void 並列ストリームでリダクションを行う() {
