@@ -4004,18 +4004,18 @@ public class TestFunctions {
         IntStream divs = IntStream.of(2, 2, 2);
 
         divs.parallel()
-                .peek(div -> {
-                    actual.getAndSet(actual.get() / div);
-                })
-                .peek(div -> {
-                    System.out.println(div + " is calculated");
-                })
-                .sum();
-                /**
-                 * 中間操作peekを実行させるためだけに終端操作count実行
-                 * Java(build 9+181)ではcountが終端操作ではなくなっている。
-                 */
-                //.count();
+            .peek(div -> {
+                actual.getAndUpdate(i -> i / div);
+            })
+            .peek(div -> {
+                System.out.println(div + " is calculated");
+            })
+            .sum();
+            /**
+             * 中間操作peekを実行させるためだけに終端操作count実行
+             * Java(build 9+181)ではcountが終端操作ではなくなっている。
+             */
+            //.count();
 
         AtomicInteger expected = new AtomicInteger(0);
 
