@@ -437,7 +437,17 @@ public class Functions {
 		};
 
 		other.getResult().keySet().stream()
-			.forEach(wd -> baseResult.compute(wd, mergeFn));
+            // Java(build 9+181)ではcompute実行時にConcurrentModificationExceptionとなる。
+			//.forEach(wd -> baseResult.compute(wd, mergeFn));
+			.forEach(wd -> {
+            if (baseResult.containsKey(wd)) {
+                int oldCount = baseResult.get(wd);
+                int newCount = oldCount + other.getResult().get(wd);
+                baseResult.put(wd, newCount);
+            } else {
+                baseResult.put(wd, 1);
+            }
+        });
 
 		return new WordCounter(baseResult);
 	}
@@ -456,7 +466,7 @@ public class Functions {
 	 */
 	public static String countWord(Collection<Path> sources, Charset cs,
 		Predicate<String> condition, Supplier<String> defaultWordSupplier) {
-		Map<String, Integer> allResult = sources.parallelStream()
+		Map<String, Integer> allResult = sources.stream()
 			.map(src -> new WordCounter().countWord(src, cs))
 			.reduce(new WordCounter(), Functions::mergeCounter)
 			.getResult();
