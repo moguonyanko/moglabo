@@ -3,6 +3,8 @@ package test.exercise.concurrent;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import org.junit.Test;
@@ -242,6 +244,19 @@ public class TestCompletableFuture {
         } catch (InterruptedException | ExecutionException ex) {
             fail(ex.getMessage());
         }
+    }
+
+    @Test
+    public void getResultByDelayedCompletableFuture() throws
+            ExecutionException, InterruptedException {
+        Executor executor = CompletableFuture.delayedExecutor(1L, TimeUnit.SECONDS);
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(
+                () -> "Hello, World", executor
+        );
+
+        String expected = "Hello, World";
+        String actual = future.get();
+        assertThat(actual, is(expected));
     }
 
 }
