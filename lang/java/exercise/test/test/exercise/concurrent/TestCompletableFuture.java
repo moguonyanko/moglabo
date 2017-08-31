@@ -15,6 +15,7 @@ import static org.hamcrest.CoreMatchers.*;
  * 参考サイト:
  * http://www.baeldung.com/java-completablefuture
  * http://www.deadcoderising.com/java8-writing-asynchronous-code-with-completablefuture/
+ * http://www.journaldev.com/13121/java-9-features-with-examples
  */
 public class TestCompletableFuture {
 
