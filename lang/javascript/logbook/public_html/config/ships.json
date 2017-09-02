@@ -259,6 +259,14 @@
 		"name": "Saratoga改",
 		"slotComposition": [36, 18, 18, 18]
 	},
+	"ark": {
+		"name": "Ark Royal",
+		"slotComposition": [18, 30, 12, 12]
+	},
+	"arkk": {
+		"name": "Ark Royal改",
+		"slotComposition": [24, 30, 12, 12]
+	},
     "ab_case1": {
 		"name": "基地航空隊(戦闘機・攻撃機)",
 		"slotComposition": [18, 18, 18, 18]
