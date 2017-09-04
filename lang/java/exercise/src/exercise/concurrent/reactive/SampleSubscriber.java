@@ -15,34 +15,26 @@ public class SampleSubscriber<T> implements Subscriber<T> {
     private final Consumer<T> nextHandler;
     private final Consumer<Subscription> completeHandler;
     private final Consumer<Throwable> errorHandler;
-    private final long maxRequestSize;
-    private long nowRequestCount = 0;
 
     public SampleSubscriber(Consumer<T> nextHandler,
                             Consumer<Subscription> completeHandler,
-                            Consumer<Throwable> errorHandler,
-                            long maxRequestSize) {
+                            Consumer<Throwable> errorHandler) {
         this.nextHandler = nextHandler;
         this.completeHandler = completeHandler;
         this.errorHandler = errorHandler;
-        this.maxRequestSize = maxRequestSize;
     }
 
     @Override
     public void onSubscribe(Subscription subscription) {
         this.subscription = subscription;
         System.out.println("Subscribed");
-        if (nowRequestCount < maxRequestSize) {
-            subscription.request(++nowRequestCount);
-        }
+        subscription.request(1);
     }
 
     @Override
     public void onNext(T item) {
         nextHandler.accept(item);
-        if (nowRequestCount < maxRequestSize) {
-            subscription.request(++nowRequestCount);
-        }
+        subscription.request(1);
     }
 
     @Override
