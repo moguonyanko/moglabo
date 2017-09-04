@@ -1,15 +1,21 @@
 package test.exercise.concurrent.reactive;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import exercise.concurrent.reactive.SimpleSubscriber;
 import org.junit.Test;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 import exercise.concurrent.reactive.SampleSubscriber;
+import exercise.concurrent.reactive.LimitedSubscriber;
+import exercise.concurrent.reactive.SimpleProcessor;
+import exercise.concurrent.reactive.SimpleSubscriber;
 
 /**
  * 参考:
@@ -59,7 +65,36 @@ public class TestReactive {
             publisher.subscribe(subscriber);
             IntStream.range(0, 10).forEach(publisher::submit);
         }
-
         System.out.println("この行の実行順序は一定しない");
+    }
+
+    @Test
+    public void runWithSimpleProcessor() {
+        try (SubmissionPublisher<String> publisher = new SubmissionPublisher<>()) {
+            // Processorのcloseを自分で呼び出すとSubscriberの処理中にエラーになる。
+            // SubmissionPublisherのcloseではonCompleteを実行しているのみなので，
+            // ProcessorのonComplete内でcloseを呼び出していないとcloseし損なうことになる。
+            SimpleProcessor<String, String> processor = new SimpleProcessor<>(String::toUpperCase);
+            Subscriber<String> subscriber = new SimpleSubscriber<>();
+            publisher.subscribe(processor);
+            processor.subscribe(subscriber);
+            Stream.of("hello".split("¥b")).forEach(publisher::submit);
+        }
+    }
+
+    @Test
+    public void runWithControlledSubscriber() {
+        LimitedSubscriber<Integer, List<Integer>> subscriber;
+
+        try (SubmissionPublisher<Integer> publisher = new SubmissionPublisher<>()) {
+            int limitConsume = 3;
+            subscriber = new LimitedSubscriber<>(ArrayList::new, limitConsume);
+            publisher.subscribe(subscriber);
+            IntStream.range(0, 10).forEach(publisher::submit);
+        }
+
+        List<Integer> expected = List.of(0, 1, 2);
+        List<Integer> actual = subscriber.getConsumedElements();
+        assertThat(actual, is(expected));
     }
 }

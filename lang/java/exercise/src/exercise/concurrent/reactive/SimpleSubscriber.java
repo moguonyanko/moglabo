@@ -1,5 +1,6 @@
 package exercise.concurrent.reactive;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.Flow.*;
 
 public class SimpleSubscriber<T> implements Subscriber<T> {
@@ -25,6 +26,6 @@ public class SimpleSubscriber<T> implements Subscriber<T> {
 
     @Override
     public void onComplete() {
-        System.out.println(this.getClass().getSimpleName() + ": Completed");
+        System.out.println("Completed: " + LocalDateTime.now());
     }
 }
