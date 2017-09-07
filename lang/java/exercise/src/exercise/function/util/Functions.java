@@ -1042,7 +1042,7 @@ public class Functions {
 		BiFunction<? super V, ? super V, ? extends V> remapper, Supplier<C> supplier){
 		C result = copyMap(self, supplier);
 		
-		other.keySet().parallelStream().forEach((key) -> {
+		other.keySet().stream().forEach((key) -> {
 			Optional<V> optVal = Optional.ofNullable(other.get(key));
 			/**
 			 * Map.mergeはmerge呼び出し元となるMapに副作用がある。
