@@ -8,8 +8,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 import exercise.net.HttpUtil;
 
@@ -36,6 +38,27 @@ public class TestHttp {
         assertFalse(content.isEmpty());
         // テストに成功したらダウンロードしたファイルは削除する。
         Files.delete(result);
+    }
+
+    @Test
+    @Ignore("HttpClientでmultipart/formdataが送信できるまで保留")
+    public void canSaveFileByPOST() throws Exception {
+        URI uri = new URI("http://localhost:8080/webcise/Upload");
+        // filePathの場所にuriのコンテンツがダウンロードされる。
+        Path target = Paths.get("sample/star.png");
+        int statusCode = HttpUtil.upload(uri, target);
+        assertThat(statusCode, is(200));
+    }
+
+    @Test
+    public void canGetContentAsync() throws Exception {
+        String sampleUrl = "http://localhost/";
+        URI uri = new URI(sampleUrl);
+        HttpUtil.getContentAsync(uri, result -> {
+            //System.out.println(result);
+            assertNotNull(result);
+            assertFalse(result.isEmpty());
+        });
     }
 
 }
