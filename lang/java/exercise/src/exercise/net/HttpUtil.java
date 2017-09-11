@@ -1,13 +1,16 @@
 package exercise.net;
 
-import jdk.incubator.http.HttpClient;
-import jdk.incubator.http.HttpRequest;
-import jdk.incubator.http.HttpResponse;
-
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -15,7 +18,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import javax.net.ssl.*;
 
+import jdk.incubator.http.HttpClient;
+import jdk.incubator.http.HttpHeaders;
+import jdk.incubator.http.HttpRequest;
+import jdk.incubator.http.HttpResponse;
 import static jdk.incubator.http.HttpClient.Version;
 import static jdk.incubator.http.HttpResponse.*;
 
@@ -28,10 +36,18 @@ import static jdk.incubator.http.HttpResponse.*;
  */
 public class HttpUtil {
 
-    private static void dumpRequestHeaders(HttpRequest request) {
-        Map<String, List<String>> headers = request.headers().map();
+    private static void dumpHeaders(HttpHeaders httpHeaders) {
+        Map<String, List<String>> headers = httpHeaders.map();
         headers.keySet()
             .forEach(key -> System.out.println(key + ":" + headers.get(key)));
+    }
+
+    private static void dumpRequestHeaders(HttpRequest request) {
+        dumpHeaders(request.headers());
+    }
+
+    private static void dumpResponseHeaders(HttpResponse<?> response) {
+        dumpHeaders(response.headers());
     }
 
     public static String getContent(URI uri) throws IOException,
@@ -120,6 +136,81 @@ public class HttpUtil {
         }, executor);
 
         f2.get();
+    }
+
+    // テスト用のセキュリティ証明書に対するチェックを無視する設定を行う。
+    // 参考:
+    // https://stackoverflow.com/questions/6047996/ignore-self-signed-ssl-cert-using-jersey-client
+    // https://stackoverflow.com/questions/875467/java-client-certificates-over-https-ssl/876785#876785
+    private static SSLContext createIgnoredCheckingContext()
+        throws GeneralSecurityException {
+        TrustManager[] ignoreManager = new TrustManager[]{
+            new X509TrustManager() {
+                public X509Certificate[] getAcceptedIssuers() {
+                    return null;
+                }
+                public void checkClientTrusted(X509Certificate[] certificates,
+                                               String authType) {
+                    // Does nothing
+                }
+                public void checkServerTrusted(X509Certificate[] certificates,
+                                               String authType) {
+                    // Does nothing
+                }
+            }
+        };
+
+        HostnameVerifier ignoreVerifier = (hostname, session) -> true;
+
+        SSLContext context = SSLContext.getInstance("TLS");
+        context.init(null, ignoreManager, new SecureRandom());
+        // ここでcontextやverifierの設定を行うのは不適当に思えるが
+        // メソッド呼び出し側にやらせるのも面倒である。
+        HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
+        HttpsURLConnection.setDefaultHostnameVerifier(ignoreVerifier);
+
+        return context;
+    }
+
+    public static String getContentBySSL(URI uri)
+        throws IOException, InterruptedException, GeneralSecurityException {
+        HttpClient client = HttpClient.newBuilder()
+            .sslContext(createIgnoredCheckingContext())
+            .build();
+
+        HttpRequest req = HttpRequest.newBuilder(uri)
+            .build();
+
+        HttpResponse<String> res = client.send(req, BodyHandler.asString());
+
+        //dumpResponseHeaders(res);
+        System.out.println("Used HTTP version: " + res.version());
+
+        return res.body();
+    }
+
+    public static void main(String[] args) {
+        String url = "https://localhost/";
+
+        try {
+            createIgnoredCheckingContext();
+
+            URI uri = new URI(url);
+            // HttpsURLConnectionではHTTPSを指定してもHTTP/2ではなくHTTP/1.1が
+            // プロトコルとして使用されてしまう。
+            HttpsURLConnection connection =
+                (HttpsURLConnection)uri.toURL().openConnection();
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+            try (InputStream in = connection.getInputStream();
+                 BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
+                for (String line = br.readLine(); line != null; line = br.readLine()) {
+                    System.out.println(line);
+                }
+            }
+        } catch (GeneralSecurityException | URISyntaxException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

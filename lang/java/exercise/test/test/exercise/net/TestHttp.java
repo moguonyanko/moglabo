@@ -61,4 +61,12 @@ public class TestHttp {
         });
     }
 
+    @Test
+    public void canGetContentBySSL() throws Exception {
+        String sampleURL = "https://localhost/";
+        URI uri = new URI(sampleURL);
+        String result = HttpUtil.getContentBySSL(uri);
+        assertFalse(result.isEmpty());
+    }
+
 }
