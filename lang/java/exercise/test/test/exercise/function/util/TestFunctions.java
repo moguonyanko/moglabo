@@ -86,22 +86,6 @@ import exercise.function.HTMLElement;
  */
 public class TestFunctions {
 
-	@BeforeClass
-	public static void setUpClass() {
-	}
-
-	@AfterClass
-	public static void tearDownClass() {
-	}
-
-	@Before
-	public void setUp() {
-	}
-
-	@After
-	public void tearDown() {
-	}
-
 	private static class Student {
 
 		private final String name;
