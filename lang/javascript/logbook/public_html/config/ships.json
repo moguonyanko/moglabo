@@ -259,6 +259,14 @@
 		"name": "Saratoga改",
 		"slotComposition": [36, 18, 18, 18]
 	},
+	"sara2": {
+		"name": "Saratoga Mk.II",
+		"slotComposition": [32, 24, 18, 6]
+	},
+	"sara2m2": {
+		"name": "Saratoga Mk.II Mod.2",
+		"slotComposition": [37, 24, 19, 13]
+	},
 	"arkk": {
 		"name": "Ark Royal改",
 		"slotComposition": [24, 30, 12, 12]
