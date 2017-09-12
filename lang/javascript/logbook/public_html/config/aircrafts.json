@@ -24,6 +24,11 @@
 		"type": "KB",
 		"ack": 7
 	},
+	"f4u1d": {
+		"name": "F4U-1D",
+		"type": "KB",
+		"ack": 7
+	},
 	"fw": {
 		"name": "Fw190T改",
 		"type": "KS",
@@ -189,6 +194,11 @@
 		"type": "KK",
 		"ack": 0
 	},
+	"tbf": {
+		"name": "TBF",
+		"type": "KK",
+		"ack": 1
+	},
 	"shinden": {
 		"name": "震電改",
 		"type": "KS",
@@ -243,6 +253,11 @@
 		"name": "F6F-3",
 		"type": "KS",
 		"ack": 8
+	},
+	"f6f5": {
+		"name": "F6F-5",
+		"type": "KS",
+		"ack": 10
 	},
 	"seafire3k": {
 		"name": "Seafire Mk.III改",
