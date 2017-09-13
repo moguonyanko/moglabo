@@ -85,7 +85,7 @@ public class HttpUtil {
     }
 
     // TODO:
-    // HttpClientでmultipart/formdataを送信できるようにする。
+    // HttpClientでmultipart/form-dataを送信できるようにする。
     public static int upload(URI uri, Path target)
         throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
