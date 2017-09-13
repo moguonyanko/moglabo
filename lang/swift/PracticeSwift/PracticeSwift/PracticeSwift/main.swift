@@ -265,7 +265,7 @@ private func runPracticesTheBasics() {
 
 private func runPractices() {
     //runPracticesBasicOperators()
-    runPracticesStringsAndCharacters()
+    //runPracticesStringsAndCharacters()
     //runPracticesCollectionTypes()
     //runPracticesControlFlow()
     //runPracticesFunctions()
@@ -292,7 +292,7 @@ private func runPractices() {
     //runPracticesTheBasics()
     
     // Extended Reconsideration Sample
-    //runAllCasesOfReconsiderationGenerics()
+    runAllCasesOfReconsiderationGenerics()
 }
 
 runPractices()

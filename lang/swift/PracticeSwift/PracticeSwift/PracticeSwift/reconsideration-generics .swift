@@ -496,7 +496,6 @@ private class StackFactory<S: Stack> {
     }
 }
 
-
 // TODO: 以下のコードはどうしてもコンパイルエラーになる。
 //private func makeStack<T: Stack>(type: StackType) -> T {
 //    if type == .number {
@@ -504,6 +503,42 @@ private class StackFactory<S: Stack> {
 //    } else {
 //        return AnyStack()
 //    }
+//}
+
+private struct MyElement {
+    var name: String
+}
+
+private protocol MyContainer {
+    associatedtype Item
+    var count: Int { get }
+    subscript(index: Int) -> Item { get }
+    
+    associatedtype Iterator: IteratorProtocol
+    // 現在のコンパイラでは今はまだエラーになる。
+    //associatedtype Iterator: IteratorProtocol where Iterator.Item == Item
+    func makeIterator() -> Iterator
+}
+
+private class SampleContainer: MyContainer {
+    private let items: [Int]
+    init(items: [Int]) {
+        self.items = items
+    }
+    var count: Int {
+        return items.count
+    }
+    subscript(index: Int) -> Int {
+        return items[index]
+    }
+    func makeIterator() -> IndexingIterator<[Int]> {
+        return items.makeIterator()
+    }
+}
+
+// やはり以下のコードはコンパイルエラーになる。
+//private func makeSampleContainer() -> MyContainer {
+//    return SampleContainer(items: [1, 2, 3, 4, 5])
 //}
 
 struct ReconsiderationGenerics {
