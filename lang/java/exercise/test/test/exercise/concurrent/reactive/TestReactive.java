@@ -8,20 +8,17 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import exercise.concurrent.reactive.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
-
-import exercise.concurrent.reactive.SampleSubscriber;
-import exercise.concurrent.reactive.LimitedSubscriber;
-import exercise.concurrent.reactive.SimpleProcessor;
-import exercise.concurrent.reactive.SimpleSubscriber;
 
 /**
  * 参考:
  * https://community.oracle.com/docs/DOC-1006738
  * http://www.baeldung.com/java-9-reactive-streams
  * http://download.java.net/java/jdk9/docs/api/index.html?java/util/concurrent/Flow.html
+ * http://javasampleapproach.com/java/java-9-flow-api-example-publisher-and-subscriber
  */
 public class TestReactive {
 
@@ -97,4 +94,19 @@ public class TestReactive {
         List<Integer> actual = subscriber.getConsumedElements();
         assertThat(actual, is(expected));
     }
+
+    @Test
+    public void runWithCustomPublisher()
+        throws ExecutionException, InterruptedException {
+        CompletableFuture<Void> f1 = CompletableFuture.runAsync(() -> {
+            CustomPublisher publisher = new CustomPublisher();
+            CustomSubscriber sub1 = new CustomSubscriber("Sub1");
+            CustomSubscriber sub2 = new CustomSubscriber("Sub2");
+            publisher.subscribe(sub1);
+            publisher.subscribe(sub2);
+        });
+
+        f1.get();
+    }
+
 }
