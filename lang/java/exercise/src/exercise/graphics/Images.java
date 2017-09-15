@@ -1,13 +1,16 @@
 package exercise.graphics;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
+import java.awt.image.BaseMultiResolutionImage;
 import java.awt.image.BufferedImage;
+import java.awt.image.MultiResolutionImage;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import static java.util.stream.Collectors.*;
 
 import javax.imageio.ImageIO;
@@ -75,5 +78,25 @@ public class Images {
 		throws IOException {
 		return null;
 	}
+
+	public static MultiResolutionImage loadMultiResolutionImage(
+	    List<Path> imagePaths) {
+	    List<Image> images = imagePaths.stream()
+                .map(path -> {
+                    Image image = null;
+                    try {
+                        image = ImageIO.read(path.toFile());
+                    } catch (IOException e) {
+                        throw new IllegalStateException(e);
+                    }
+                    return image;
+                })
+                .collect(Collectors.toList());
+
+        BaseMultiResolutionImage multiImage =
+            new BaseMultiResolutionImage(images.toArray(new Image[0]));
+
+        return multiImage;
+    }
 
 }
