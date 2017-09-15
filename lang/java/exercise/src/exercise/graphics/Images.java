@@ -5,7 +5,6 @@ import java.awt.image.BaseMultiResolutionImage;
 import java.awt.image.BufferedImage;
 import java.awt.image.MultiResolutionImage;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
@@ -57,7 +56,7 @@ public class Images {
 			= ImageIO.getImageReaders(ImageIO.createImageInputStream(src.toFile()));
 		List<String> formats = StreamUtil.stream(iterator, false)
 			.map(reader -> {
-				String name = "";
+				String name;
 				try {
 					name = reader.getFormatName();
 				} catch (IOException ex) {
@@ -71,7 +70,7 @@ public class Images {
 	}
 
 	/**
-	 * @todo
+	 * TODO:
 	 * implement
 	 */
 	public static BufferedImage changeDensity(BufferedImage src, String format, int density)
@@ -83,7 +82,7 @@ public class Images {
 	    List<Path> imagePaths) {
 	    List<Image> images = imagePaths.stream()
                 .map(path -> {
-                    Image image = null;
+                    Image image;
                     try {
                         image = ImageIO.read(path.toFile());
                     } catch (IOException e) {
