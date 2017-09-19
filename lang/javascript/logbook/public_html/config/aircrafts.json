@@ -254,8 +254,18 @@
 		"type": "KS",
 		"ack": 8
 	},
+	"f6f3n": {
+		"name": "F6F-3N",
+		"type": "KS",
+		"ack": 8
+	},
 	"f6f5": {
 		"name": "F6F-5",
+		"type": "KS",
+		"ack": 10
+	},
+	"f6f5n": {
+		"name": "F6F-5N",
 		"type": "KS",
 		"ack": 10
 	},
