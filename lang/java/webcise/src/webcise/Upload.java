@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import webcise.util.HttpUtil;
+
 /**
  * <em>location="."</em>と指定することによりアップロードされたファイルが
  * Tomcatのworkディレクトリ以下に保存される。
@@ -42,6 +44,12 @@ public class Upload extends HttpServlet {
 		 * 書き出されるファイルのファイル名が文字化けする。
 		 */
 		fileName = encodeFileName(fileName);
+        
+        // アプリケーションサーバがHTTP/2.0に対応できていたとしても
+        // Webサーバからプロキシしてリクエストされた場合HTTP/1.0になってしまう。
+        System.out.println("Protocol: " + request.getProtocol());
+        //HttpUtil.dumpRequestHeader(request);
+        //HttpUtil.dumpResponseHeader(response);
 
 		if (!fileName.isEmpty()) {
 			part.write(fileName);
