@@ -61,10 +61,57 @@
 			g.clickListener(clearer, () => g.clear(resultArea));
 		}
 	}
+    
+    const forAwaitOf = g => {
+        const base = doc.querySelector(".forawaitof-sample");
+        const resultArea = base.querySelector(".result-area"),
+            runner = base.querySelector(".run"),
+            clearer = base.querySelector(".clear");
+        
+        // nextの戻り値はundefinedになってしまう。
+        const doSample = async function* () {
+            const resources = [
+                "data1.json", "data2.json", "data3.json"
+            ];
+            for (const resource of resources) {
+                yield await (await fetch(resource)).json();
+            }
+        };
+        
+        let dataGenerator;
+        const sampleHandler = async () => {
+            if (!dataGenerator) {
+                dataGenerator = await doSample();
+            }
+            const obj = dataGenerator.next();
+            if (!obj.done) {
+                g.println(resultArea, obj.value);
+            } else {
+                obj = null;
+            }
+        };
+        
+        runner.addEventListener("click", async () => {
+            const content = [
+                "Hello",
+                "My",
+                "name",
+                "is",
+                "Foo"
+            ];
+            // 非同期処理にならない箇所にasync/awaitを指定してもエラーにはならない。
+            for await (const line of content) {
+                g.println(resultArea, line);
+            }
+        });
+        
+        clearer.addEventListener("click", () => g.clear(resultArea));
+    };
 
 	const main = g => {
 		const exams = [ new AsyncBasicExam(g.sel(".async-sample")) ];
 		exams.forEach(exam => exam.setup(g));
+        forAwaitOf(g);
 	};
 
 	win.goma.init(main);
