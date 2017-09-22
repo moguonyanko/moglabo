@@ -1,70 +1,39 @@
 ((window, document) => {
     "use strict";
     
-    // 以下の設定オブジェクト群は暫定である。
+    let antiaircraftBonus = {},
+        weightedMagnification = {},
+        fleetMagnification = {},
+        weightedImprovement = {},
+        floatingImprovement = {},
+        formationRevisionValues = {},
+        unionRevision = {};
     
-    const antiaircraftBonus = {
-        "秋月型・同改": {
-            "高角砲_高角砲_電探": {
-                "fixed": 7,
-                "floating": 1.7
-            },
-            "高角砲_電探": {
-                "fixed": 6,
-                "floating": 1.7
-            },
-            "高角砲_高角砲": {
-                "fixed": 4,
-                "floating": 1.6
-            }
-        }
-    };
-    
-    const weightedMagnification = {
-        "対空機銃": 6,
-        "高角砲": 4,
-        "高射装置": 4,
-        "小型電探": 3,
-        "大型電探": 3
-    };
-    
-    const fleetMagnification = {
-        "三式弾": 0.6,
-        "高角砲": 0.35,
-        "高射装置": 0.35,
-        "小型電探": 0.4,
-        "大型電探": 0.4,
-        "対空機銃": 0.2,
-        "主砲(赤)": 0.2,
-        "副砲(黄)": 0.2,
-        "艦戦": 0.2,
-        "艦爆": 0.2,
-        "水偵": 0.2
-    };
-    
-    const weightedImprovement = {
-        "対空機銃": 4,
-        "高角砲(高射装置有)": 3,
-        "高角砲(高射装置無)": 2,
-        "高射装置": 2
-    };
-    
-    const floatingImprovement = {
-        "高角砲(高射装置有)": 3,
-        "高角砲(高射装置無)": 2,
-        "高射装置": 2,
-        "小型電探": 1.5,
-        "大型電探": 1.5
-    };
-    
-    const formationRevision = {
-        normal: {
-            "単縦陣": 1.0,
-            "複縦陣": 1.2,
-            "梯形陣": 1.0,
-            "単横陣": 1.0,
-            "輪形陣": 1.6
-        }
+    const loadConfig = async () => {
+        const baseDir = "../../scripts/antiaircraftfire/";
+        
+        const antiaircraftcutin = await fetch(`${baseDir}antiaircraftcutin.json`);
+        antiaircraftBonus = await antiaircraftcutin.json();
+        
+        const magnification_weighted = await fetch(`${baseDir}magnification_weighted.json`);
+        weightedMagnification = await magnification_weighted.json();
+        
+        const magnification_fleet = await fetch(`${baseDir}magnification_fleet.json`);
+        fleetMagnification = await magnification_fleet.json();
+        
+        const improvement_weighted = await fetch(`${baseDir}improvement_weighted.json`);
+        weightedImprovement = await improvement_weighted.json();
+        
+        const improvement_fleet = await fetch(`${baseDir}improvement_fleet.json`);
+        floatingImprovement = await improvement_fleet.json();
+        
+        const formation_normal = await fetch(`${baseDir}formation_normal.json`);
+        formationRevisionValues.normal = await formation_normal.json();
+        const formation_union = await fetch(`${baseDir}formation_union.json`);
+        formationRevisionValues.union = await formation_union.json();
+        
+        const unionrevision = await fetch(`${baseDir}unionrevision.json`);
+        unionRevision = await unionrevision.json();
     };
     
     class Downing {
@@ -81,7 +50,7 @@
             const allAntiAirs = fleet.ships
                     .map(ship => ship.floatingAntiaircraft)
                     .reduce((a, b) => a + b, 0);
-            const revision = fleet.formation.revision;
+            const revision = fleet.formationRevision;
             return Math.trunc(revision * allAntiAirs) * (2 / 1.3);
         }
     }
@@ -95,7 +64,8 @@
                 return 0;
             }
             const weightedDefence = super.getWeightedDefence(fleet);
-            const result = Math.trunc((weightedDefence / 400) * enemyCarrySize);
+            const urev = fleet.unionRevision;
+            const result = Math.trunc((weightedDefence * urev / 400) * enemyCarrySize);
             return result;
         }
     }
@@ -111,8 +81,9 @@
             const weightedDefence = super.getWeightedDefence(fleet);
             const fleetDefence = super.getFleetDefence(fleet);
             const bonus = fleet.antiaircraftCutin.floatingBonus;
-            const result = Math.trunc(((weightedDefence + fleetDefence) * bonus) / 10);
-            return result;
+            const urev = fleet.unionRevision;
+            const result = ((weightedDefence + fleetDefence) * urev * bonus) / 10;
+            return Math.trunc(result);
         }
     }
     
@@ -169,9 +140,10 @@
             this.cutinTypeName = cutinTypeName;
         }
         get bonus() {
-            try {
-                return antiaircraftBonus[this.shipTypeName][this.cutinTypeName];
-            } catch(err) {
+            const cutins = antiaircraftBonus[this.shipTypeName];
+            if (cutins && this.cutinTypeName in cutins) {
+                return cutins[this.cutinTypeName];
+            } else {
                 return {
                     fixed: 0,
                     floating: 0
@@ -202,29 +174,25 @@
     class Fleet {
         constructor({ships = [], downings = [], 
             antiaircraftCutin = new MisfireAntiaircraftCutin(), 
-            formation} = {}) {
+            formationRevision = 1.0,
+            unionRevision = 1.0} = {}) {
             this.ships = ships;
             this.downings = downings;
             this.antiaircraftCutin = antiaircraftCutin;
-            this.formation = formation;
+            this.formationRevision = formationRevision;
+            this.unionRevision = unionRevision;
         }
         get interceptShip() {
             return this.ships.filter(ship => ship.intercept)[0];
         }
     }
     
-    class Formation {
-        constructor({name, revision}) {
-            this.name = name;
-            this.revision = revision;
-        }
-    }
-    
     class NormalFleet extends Fleet {
         constructor({ships = [], downings = [], 
             antiaircraftCutin, 
-            formation = new Formation({name: "単縦陣", revision: 1.0})} = {}) {
-            super({ships, downings, antiaircraftCutin, formation});
+            formationName = "単縦陣"} = {}) {
+            const formationRevision = formationRevisionValues.normal[formationName];
+            super({ships, downings, antiaircraftCutin, formationRevision});
         }
         antiaircraftFire(enemy) {
             const fleet = this;
@@ -241,8 +209,9 @@
     class UnionFleet extends Fleet {
         constructor({ships = [], downings = [], 
             antiaircraftCutin, 
-            formation = new Formation({name: "第2警戒", revision: 1.0})} = {}) {
-            super({ships, downings, antiaircraftCutin, formation});
+            formationName = "第2警戒"} = {}) {
+            const formationRevision = formationRevisionValues.union[formationName];
+            super({ships, downings, antiaircraftCutin, formationRevision});
             // 連合艦隊補正値は第1艦隊と第2艦隊で異なる。
         }
         antiaircraftFire() {
@@ -306,9 +275,8 @@
         console.log(`${enemy.targetSlotCarrySize} のうち ${downingSize} 機撃墜しました。`);
     };
     
-    const init = () => {
+    window.addEventListener("DOMContentLoaded", async () => {
+        await loadConfig();
         runTest();
-    };
-    
-    window.addEventListener("DOMContentLoaded", init);
+    });
 })(window, document);
