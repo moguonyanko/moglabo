@@ -74,11 +74,6 @@
 		"type": "KS",
 		"ack": 9
 	},
-	"f6f3": {
-		"name": "F6F-3",
-		"type": "KS",
-		"ack": 8
-	},
 	"zu": {
 		"name": "瑞雲",
 		"type": "SB",
@@ -196,6 +191,11 @@
 	},
 	"tbf": {
 		"name": "TBF",
+		"type": "KK",
+		"ack": 1
+	},
+	"tbm3d": {
+		"name": "TBM-3D",
 		"type": "KK",
 		"ack": 1
 	},
