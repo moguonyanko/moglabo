@@ -7,7 +7,7 @@
         weightedImprovement = {},
         floatingImprovement = {},
         formationRevisionValues = {},
-        unionRevision = {};
+        unionRevisionValues = {};
     
     const loadConfig = async () => {
         const baseDir = "../../scripts/antiaircraftfire/";
@@ -33,7 +33,7 @@
         formationRevisionValues.union = await formation_union.json();
         
         const unionrevision = await fetch(`${baseDir}unionrevision.json`);
-        unionRevision = await unionrevision.json();
+        unionRevisionValues = await unionrevision.json();
     };
     
     class Downing {
@@ -64,8 +64,8 @@
                 return 0;
             }
             const weightedDefence = super.getWeightedDefence(fleet);
-            const urev = fleet.unionRevision;
-            const result = Math.trunc((weightedDefence * urev / 400) * enemyCarrySize);
+            const rev = fleet.fleetRevision;
+            const result = Math.trunc((weightedDefence * rev / 400) * enemyCarrySize);
             return result;
         }
     }
@@ -81,8 +81,8 @@
             const weightedDefence = super.getWeightedDefence(fleet);
             const fleetDefence = super.getFleetDefence(fleet);
             const bonus = fleet.antiaircraftCutin.floatingBonus;
-            const urev = fleet.unionRevision;
-            const result = ((weightedDefence + fleetDefence) * urev * bonus) / 10;
+            const rev = fleet.fleetRevision;
+            const result = ((weightedDefence + fleetDefence) * rev * bonus) / 10;
             return Math.trunc(result);
         }
     }
@@ -117,10 +117,12 @@
     
     class Ship {
         constructor({antiaircraft = 0, equipments = [], 
-            intercept = false} = {}) {
+            intercept = false,
+            fleetPosition = 1} = {}) {
             this.antiaircraft = antiaircraft;
             this.equipments = equipments;
             this.intercept = intercept;
+            this.fleetPosition = fleetPosition;
         }
         get weightedAntiaircraft() {
             const allEqValue = this.equipments.map(eq => eq.weightedAntiaircraft)
@@ -175,15 +177,31 @@
         constructor({ships = [], downings = [], 
             antiaircraftCutin = new MisfireAntiaircraftCutin(), 
             formationRevision = 1.0,
-            unionRevision = 1.0} = {}) {
+            fleetRevisionValue = 1.0} = {}) {
             this.ships = ships;
             this.downings = downings;
             this.antiaircraftCutin = antiaircraftCutin;
             this.formationRevision = formationRevision;
-            this.unionRevision = unionRevision;
+            this.fleetRevisionValue = fleetRevisionValue;
+        }
+        antiaircraftFire(enemy) {
+            const fleet = this;
+            const enemyCarrySize = enemy.targetSlotCarrySize;
+            const downingSize = this.downings.map(downing => downing.execute({
+                fleet, enemyCarrySize
+            })).reduce((a, b) => a + b, 0);
+            return downingSize;              
         }
         get interceptShip() {
-            return this.ships.filter(ship => ship.intercept)[0];
+            const intercepter = this.ships.filter(ship => ship.intercept)[0];
+            if (intercepter) {
+                return intercepter;
+            } else {
+                throw new Error("迎撃艦が指定されていません。");
+            }
+        }
+        get fleetRevision() {
+            return this.fleetRevisionValue;
         }
     }
     
@@ -194,28 +212,24 @@
             const formationRevision = formationRevisionValues.normal[formationName];
             super({ships, downings, antiaircraftCutin, formationRevision});
         }
-        antiaircraftFire(enemy) {
-            const fleet = this;
-            const enemyCarrySize = enemy.targetSlotCarrySize;
-            const downingSize = this.downings.map(downing => downing.execute({
-                fleet, enemyCarrySize
-            })).reduce((a, b) => a + b, 0);
-            return downingSize;              
+        get name() {
+            return "通常艦隊";
         }
     }
     
-    // TODO: 連合艦隊は未対応
-    // Fleetを2つ持つクラスにした方がいいかもしれない。
     class UnionFleet extends Fleet {
         constructor({ships = [], downings = [], 
             antiaircraftCutin, 
             formationName = "第2警戒"} = {}) {
             const formationRevision = formationRevisionValues.union[formationName];
             super({ships, downings, antiaircraftCutin, formationRevision});
-            // 連合艦隊補正値は第1艦隊と第2艦隊で異なる。
         }
-        antiaircraftFire() {
-            throw new Error("Not implement");
+        get fleetRevision() {
+            const intercepter = super.interceptShip;
+            return unionRevisionValues[intercepter.fleetPosition] || 1.0;
+        }
+        get name() {
+            return "連合艦隊";
         }
     }
     
@@ -229,14 +243,9 @@
         }
     }
     
-    const runTest = () => {
-        const enemy = new Enemy({carries: [50, 50], targetSlotNumber: 0});
-        
-        const rd = new RateDowning({success: true}),
-            fd = new FixedDowning({success: true}),
-            mg = new MinimumGuarantee();
-        const downings = [rd, fd, mg];
-            
+    // for Test
+    
+    const makeSampleShip = (fleetPosition, intercept) => {
         const eq1 = new Equipment({
             typeName: "高角砲＋高射装置",
             antiaircraft: 10,
@@ -252,27 +261,69 @@
             antiaircraft: 4,
             improvement: 10
         });    
+        
         const equipments = [eq1, eq2, eq3];
-        //const equipments = [];
             
-        const ship1 = new Ship({
+        const ship = new Ship({
             antiaircraft: 119,
             equipments,
-            intercept: true
+            intercept,
+            fleetPosition
         });   
-        const ships = [ship1];    
+        
+        return ship;
+    };
+    
+    const makeSampleNormalFleet = downings => {
+        const ships = [
+            makeSampleShip(1, true)
+        ];    
         
         const antiaircraftCutin = new AntiaircraftCutin({
             shipTypeName: "秋月型・同改",
             cutinTypeName: "高角砲_高角砲_電探"
         });
-            
-        const fleet = new NormalFleet({downings, ships, antiaircraftCutin});
-        //const fleet = new NormalFleet({downings, ships});
+        
+        const fleet = new NormalFleet({
+            downings, 
+            ships, 
+            antiaircraftCutin
+        });
+        
+        return fleet;
+    };
+    
+    const makeSampleUnionFleet = downings => {
+        const ships = [
+            makeSampleShip(1, false),
+            makeSampleShip(1, true)
+        ];    
+        
+        const antiaircraftCutin = new AntiaircraftCutin({
+            shipTypeName: "秋月型・同改",
+            cutinTypeName: "高角砲_高角砲_電探"
+        });
+        
+        const fleet = new UnionFleet({
+            downings, 
+            ships, 
+            antiaircraftCutin
+        });
+        
+        return fleet;
+    };
+    
+    const runTest = () => {
+        const enemy = new Enemy({carries: [50, 50], targetSlotNumber: 0});
+        const rd = new RateDowning({success: true}),
+            fd = new FixedDowning({success: true}),
+            mg = new MinimumGuarantee();
+        const downings = [rd, fd, mg];
+        //const fleet = makeSampleNormalFleet(downings);
+        const fleet = makeSampleUnionFleet(downings);
         
         const downingSize = fleet.antiaircraftFire(enemy);
-        
-        console.log(`${enemy.targetSlotCarrySize} のうち ${downingSize} 機撃墜しました。`);
+        console.log(`${fleet.name}は敵艦載機${enemy.targetSlotCarrySize}機のうち${downingSize}機撃墜しました。`);
     };
     
     window.addEventListener("DOMContentLoaded", async () => {
