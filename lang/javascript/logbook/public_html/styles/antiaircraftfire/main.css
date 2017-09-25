@@ -1,2 +1,9 @@
 @charset "UTF-8";
 
+.invisible {
+    /*display: none;*/
+}
+
+.ship {
+    border: solid 1px lightgray;
+}

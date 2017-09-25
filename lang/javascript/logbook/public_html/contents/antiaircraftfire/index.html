@@ -13,7 +13,59 @@
       <a href="../../">home</a>
     </header>
     <main>
-      
+      <section>
+        <h2>艦隊種別</h2>
+        <div>
+          <label><input class="fleet-type" type="radio" name="fleet-type" value="normal" checked="checked" />通常艦隊</label>
+          <label><input class="fleet-type" type="radio" name="fleet-type" value="union" />連合艦隊</label>
+        </div>
+      </section>
+      <section>
+        <h2>陣形</h2>
+        <section>
+          <h3>通常艦隊</h3>
+          <div class="normal-formation-container"></div>
+        </section>
+        <section>
+          <h3>連合艦隊</h3>
+          <div class="union-formation-container"></div>
+        </section>
+      </section>
+      <section>
+        <h2>迎撃成否</h2>
+        <div>
+          <label><input class="success-intercept rate" type="checkbox" checked="checked" />割合撃墜</label>
+          <label><input class="success-intercept fixed" type="checkbox" checked="checked" />固定撃墜</label>
+        </div>
+      </section>
+      <section>
+        <h2>対空カットイン</h2>
+        <div class="antiaircutin-container"></div>
+      </section>
+      <section>
+        <h2>各種情報入力</h2>
+        <section class="first-fleet-info">
+          <h3>第1艦隊</h3>
+          <div class="first-fleet-info-container"></div>
+        </section>
+        <section class="second-fleet-info invisible">
+          <h3>第2艦隊</h3>
+          <div class="second-fleet-info-container"></div>
+        </section>
+      </section>
+      <section>
+        <h2>敵設定</h2>
+        <div>
+          <label>搭載数<input class="enemy-carry-size" type="number" value="0" min="0" max="1000" /></label>
+        </div>
+      </section>
+      <section>
+        <h2>計算</h2>
+        <div>
+          <button class="runner">run</button>
+          <div class="result"></div>
+        </div>
+      </section>
     </main>
     <script src="../../scripts/antiaircraftfire/main.js"></script>
   </body>
