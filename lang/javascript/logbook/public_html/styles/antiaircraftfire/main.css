@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 .invisible {
-    /*display: none;*/
+    display: none;
 }
 
 .ship {

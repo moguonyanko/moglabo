@@ -15,18 +15,18 @@
     <main>
       <section>
         <h2>艦隊種別</h2>
-        <div>
+        <div class="fleet-type-container">
           <label><input class="fleet-type" type="radio" name="fleet-type" value="normal" checked="checked" />通常艦隊</label>
           <label><input class="fleet-type" type="radio" name="fleet-type" value="union" />連合艦隊</label>
         </div>
       </section>
       <section>
         <h2>陣形</h2>
-        <section>
+        <section class="visibility-target">
           <h3>通常艦隊</h3>
           <div class="normal-formation-container"></div>
         </section>
-        <section>
+        <section class="visibility-target invisible">
           <h3>連合艦隊</h3>
           <div class="union-formation-container"></div>
         </section>
@@ -44,11 +44,11 @@
       </section>
       <section>
         <h2>各種情報入力</h2>
-        <section class="first-fleet-info">
+        <section>
           <h3>第1艦隊</h3>
           <div class="first-fleet-info-container"></div>
         </section>
-        <section class="second-fleet-info invisible">
+        <section class="visibility-target invisible">
           <h3>第2艦隊</h3>
           <div class="second-fleet-info-container"></div>
         </section>

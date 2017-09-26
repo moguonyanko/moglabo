@@ -412,7 +412,7 @@
             eqTypeNames.forEach(name => {
                 const op = ce("option");
                 op.setAttribute("value", name);
-                op.appendChild(document.createTextNode(name));
+                op.appendChild(ctn(name));
                 sel.appendChild(op);
             });
             return sel;
@@ -509,7 +509,7 @@
             optionGroup.setAttribute("label", parentType);
             Object.keys(antiaircraftBonus[parentType]).forEach(type => {
                 const option = ce("option");
-                option.appendChild(document.createTextNode(type));
+                option.appendChild(ctn(type));
                 // ページに設定値を保存してしまうと，ページがキャッシュされた後
                 // 設定値が更新された場合に最新の設定値を使用できない恐れがある。
                 // これを回避するため設定値のキーを保存するにとどめる。
@@ -531,7 +531,7 @@
         Object.keys(formationRevisionValues[fleetTypeName])
                 .forEach((name, index) => {
             const option = ce("option");
-            option.appendChild(document.createTextNode(name));
+            option.appendChild(ctn(name));
             option.setAttribute("value", name);
             if (index === 0) {
                 option.setAttribute("selected", "selected");
@@ -581,8 +581,8 @@
         return ships;
     };
     
-    const turnVisibleState = () => {
-        
+    const turnVisibleState = ({selector, visible}) => {
+        Array.from(qa(selector)).forEach(ele => ele.classList.toggle("invisible"));
     };
     
     const outputResult = ({fleet, enemy}) => {
@@ -647,10 +647,24 @@
         outputResult({fleet, enemy});
     };
     
+    const addListener = () => {
+        q(".runner").addEventListener("click", runCalc);
+        // 各input要素ではなくそのコンテナ要素にイベントリスナーを登録する。
+        // バブリングしてきたイベントを調べて各要素の表示状態を切り替える。
+        q(".fleet-type-container").addEventListener("click", evt => {
+            if (evt.target.getAttribute("class") === "fleet-type") {
+                evt.stopPropagation();
+                const selector = ".visibility-target";
+                const visible = evt.target.value === "union";
+                turnVisibleState({selector, visible});
+            }
+        });
+    };
+    
     window.addEventListener("DOMContentLoaded", async () => {
         await loadConfig();
         //runTest();
         makePage();
-        q(".runner").addEventListener("click", runCalc);
+        addListener();
     });
 })(window, document);
