@@ -382,9 +382,9 @@
         return document.createElement(elementName);
     };
     
-    const makeAntiaircraftElement = () => {
+    const makeAntiaircraftElement = (prefix = "") => {
         const antiAir = ce("label");
-        antiAir.appendChild(ctn("対空値"));
+        antiAir.appendChild(ctn(`${prefix}対空値`));
         const antiAirInput = ce("input");
         antiAirInput.setAttribute("class", "antiaircraft-value");
         antiAirInput.setAttribute("type", "number");
@@ -420,7 +420,7 @@
         
         const makeImp = () => {
             const imp = ce("label"); 
-            imp.appendChild(ctn("改修度"));
+            imp.appendChild(ctn("★"));
             const impInput = ce("input");
             impInput.setAttribute("class", "equipment-improvement");
             impInput.setAttribute("type", "number");
@@ -436,7 +436,7 @@
             const eqEle = ce("div");
             eqEle.setAttribute("class", "equipment-info-container");
             eqEle.appendChild(makeSel());
-            eqEle.appendChild(makeAntiaircraftElement());
+            eqEle.appendChild(makeAntiaircraftElement("装備"));
             eqEle.appendChild(makeImp());
             container.appendChild(eqEle);
         }
@@ -465,13 +465,15 @@
         const container = ce("div");
         container.setAttribute("class", "ship");
         
-        const antiAir = makeAntiaircraftElement();
+        const antiAir = makeAntiaircraftElement("艦娘");
         const eqEle = makeEquipmentElement();
         
         const intercept = ce("label");
         const interceptInput = ce("input");
-        interceptInput.setAttribute("class", "check-intercept");
-        interceptInput.setAttribute("type", "checkbox");
+        const interceptName = "check-intercept";
+        interceptInput.setAttribute("class", interceptName);
+        interceptInput.setAttribute("name", interceptName);
+        interceptInput.setAttribute("type", "radio");
         interceptInput.addEventListener("click", evt => {
             if (evt.target.checked) {
                 interceptInput.setAttribute("checked", "checked");
@@ -488,8 +490,8 @@
         fp.setAttribute("value", fleetPosition);
         
         container.appendChild(antiAir);
-        container.appendChild(eqEle);
         container.appendChild(intercept);
+        container.appendChild(eqEle);
         container.appendChild(fp);
         
         return container;
