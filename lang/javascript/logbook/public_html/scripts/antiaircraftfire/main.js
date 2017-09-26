@@ -366,14 +366,26 @@
     
     // DOM
     
-    const el = (id, doc) => {
-        return (doc || document).getElementById(id);
+    const q = (selector, base) => {
+        return (base || document).querySelector(selector);
+    };
+    
+    const qa = (selector, base) => {
+        return (base || document).querySelectorAll(selector);
+    };
+    
+    const ctn = txt => {
+        return document.createTextNode(txt);
+    };
+    
+    const ce = elementName => {
+        return document.createElement(elementName);
     };
     
     const makeAntiaircraftElement = () => {
-        const antiAir = document.createElement("label");
-        antiAir.appendChild(document.createTextNode("対空値"));
-        const antiAirInput = document.createElement("input");
+        const antiAir = ce("label");
+        antiAir.appendChild(ctn("対空値"));
+        const antiAirInput = ce("input");
         antiAirInput.setAttribute("class", "antiaircraft-value");
         antiAirInput.setAttribute("type", "number");
         antiAirInput.setAttribute("min", "0");
@@ -385,17 +397,20 @@
     };
     
     const makeEquipmentElement = () => {
-        const container = document.createElement("div");
+        const container = ce("div");
         container.setAttribute("class", "equipment");
         
         const wKeys = Object.keys(weightedMagnification),
             fKeys = Object.keys(fleetMagnification);
         const eqTypeNames = new Set(wKeys.concat(fKeys));
         const makeSel = () =>{
-            const sel = document.createElement("select");
+            const sel = ce("select");
             sel.setAttribute("class", "equipment-type");
+            const defaultOp = ce("option");
+            defaultOp.appendChild(ctn("装備無し"));
+            sel.appendChild(defaultOp);
             eqTypeNames.forEach(name => {
-                const op = document.createElement("option");
+                const op = ce("option");
                 op.setAttribute("value", name);
                 op.appendChild(document.createTextNode(name));
                 sel.appendChild(op);
@@ -404,9 +419,9 @@
         };
         
         const makeImp = () => {
-            const imp = document.createElement("label"); 
-            imp.appendChild(document.createTextNode("改修度"));
-            const impInput = document.createElement("input");
+            const imp = ce("label"); 
+            imp.appendChild(ctn("改修度"));
+            const impInput = ce("input");
             impInput.setAttribute("class", "equipment-improvement");
             impInput.setAttribute("type", "number");
             impInput.setAttribute("min", "0");
@@ -418,7 +433,7 @@
         
         const maxSlotSize = 5;
         for (let i = 0; i < maxSlotSize; i++) {
-            const eqEle = document.createElement("div");
+            const eqEle = ce("div");
             eqEle.setAttribute("class", "equipment-info-container");
             eqEle.appendChild(makeSel());
             eqEle.appendChild(makeAntiaircraftElement());
@@ -430,11 +445,11 @@
     };
     
     const makeEquipments = shipEle => {
-        const eqs = shipEle.querySelectorAll(".equipment-info-container");
+        const eqs = qa(".equipment-info-container", shipEle);
         const equipments = Array.from(eqs).map(eqEle => {
-            const antiaircraft = parseInt(eqEle.querySelector(".antiaircraft-value").value);
-            const typeName = eqEle.querySelector(".equipment-type").value;
-            const improvement = parseInt(eqEle.querySelector(".equipment-improvement").value);
+            const antiaircraft = parseInt(q(".antiaircraft-value", eqEle).value);
+            const typeName = q(".equipment-type", eqEle).value;
+            const improvement = parseInt(q(".equipment-improvement", eqEle).value);
             
             const equipment = new Equipment({
                 typeName, antiaircraft, improvement
@@ -447,14 +462,14 @@
     };
     
     const makeShipElement = fleetPosition => {
-        const container = document.createElement("div");
+        const container = ce("div");
         container.setAttribute("class", "ship");
         
         const antiAir = makeAntiaircraftElement();
         const eqEle = makeEquipmentElement();
         
-        const intercept = document.createElement("label");
-        const interceptInput = document.createElement("input");
+        const intercept = ce("label");
+        const interceptInput = ce("input");
         interceptInput.setAttribute("class", "check-intercept");
         interceptInput.setAttribute("type", "checkbox");
         interceptInput.addEventListener("click", evt => {
@@ -465,9 +480,9 @@
             }
         });
         intercept.appendChild(interceptInput);
-        intercept.appendChild(document.createTextNode("迎撃艦選出"));
+        intercept.appendChild(ctn("迎撃艦選出"));
         
-        const fp = document.createElement("input");
+        const fp = ce("input");
         fp.setAttribute("class", "fleet-position");
         fp.setAttribute("type", "hidden");
         fp.setAttribute("value", fleetPosition);
@@ -481,16 +496,24 @@
     };
     
     const makeAntiaircraftCutinElement = () => {
-        const container = document.createElement("div");
+        const container = ce("div");
         
-        const sel = document.createElement("select");
-        sel.setAttribute("id", "antiaircraft-cutin-type");
+        const sel = ce("select");
+        sel.setAttribute("class", "antiaircraft-cutin-type");
+        const defaultOp = ce("option");
+        defaultOp.appendChild(ctn("カットイン不発"));
+        defaultOp.setAttribute("selected", "selected");
+        sel.appendChild(defaultOp);
         Object.keys(antiaircraftBonus).forEach(parentType => {
-            const optionGroup = document.createElement("optgroup");
+            const optionGroup = ce("optgroup");
             optionGroup.setAttribute("label", parentType);
             Object.keys(antiaircraftBonus[parentType]).forEach(type => {
-                const option = document.createElement("option");
+                const option = ce("option");
                 option.appendChild(document.createTextNode(type));
+                // ページに設定値を保存してしまうと，ページがキャッシュされた後
+                // 設定値が更新された場合に最新の設定値を使用できない恐れがある。
+                // これを回避するため設定値のキーを保存するにとどめる。
+                // キーは値よりは更新頻度が低いはずである。
                 option.setAttribute("value", `${parentType},${type}`);
                 optionGroup.appendChild(option);
             });
@@ -502,13 +525,17 @@
     };
     
     const makeFormationElement = fleetTypeName => {
-        const container = document.createElement("div")
-        const sel = document.createElement("select");
-        sel.setAttribute("id", `${fleetTypeName}-formation-type`);
-        Object.keys(formationRevisionValues[fleetTypeName]).forEach(name => {
-            const option = document.createElement("option");
+        const container = ce("div");
+        const sel = ce("select");
+        sel.setAttribute("class", `${fleetTypeName}-formation-type formation-type`);
+        Object.keys(formationRevisionValues[fleetTypeName])
+                .forEach((name, index) => {
+            const option = ce("option");
             option.appendChild(document.createTextNode(name));
             option.setAttribute("value", name);
+            if (index === 0) {
+                option.setAttribute("selected", "selected");
+            }
             sel.appendChild(option);
         });
         container.appendChild(sel);
@@ -517,7 +544,7 @@
     };
     
     const appendShips = (fleetPosition, className) => {
-        const container1 = document.querySelector(className);
+        const container1 = q(className);
         const fleetShipSize = 6;
         for (let i = 0; i < fleetShipSize; i++) {
             const shipEle = makeShipElement(fleetPosition);
@@ -526,12 +553,12 @@
     };
     
     const makePage = () => {
-        const normalFc = document.querySelector(".normal-formation-container");
+        const normalFc = q(".normal-formation-container");
         normalFc.appendChild(makeFormationElement("normal"));
-        const unionFc = document.querySelector(".union-formation-container");
+        const unionFc = q(".union-formation-container");
         unionFc.appendChild(makeFormationElement("union"));
         
-        const cutinContainer = document.querySelector(".antiaircutin-container");
+        const cutinContainer = q(".antiaircutin-container");
         cutinContainer.appendChild(makeAntiaircraftCutinElement());
         
         appendShips(1, ".first-fleet-info-container");
@@ -539,14 +566,14 @@
     };
     
     const makeShips = containerClassName => {
-        const container = document.querySelector(containerClassName);
-        const ships = Array.from(container.querySelectorAll(".ship")).map(shipEle => {
-            const eqEle = shipEle.querySelector(".equipment-type");
+        const container = q(containerClassName);
+        const ships = Array.from(qa(".ship", container)).map(shipEle => {
+            const eqEle = q(".equipment-type", shipEle);
             const ship = new Ship({
-                antiaircraft: parseInt(shipEle.querySelector(".antiaircraft-value").value),
+                antiaircraft: parseInt(q(".antiaircraft-value", shipEle).value),
                 equipments: makeEquipments(shipEle),
-                intercept: Boolean(shipEle.querySelector(".check-intercept").checked),
-                fleetPosition: shipEle.querySelector(".fleet-position").value
+                intercept: Boolean(q(".check-intercept", shipEle).checked),
+                fleetPosition: q(".fleet-position", shipEle).value
             });
             return ship;
         });
@@ -554,30 +581,60 @@
         return ships;
     };
     
-    const runCalc = () => {
-        let enemyCarrySize = document.querySelector(".enemy-carry-size").value;
-        enemyCarrySize = parseInt(enemyCarrySize);
-        const enemy = new Enemy({carries: [enemyCarrySize], targetSlotNumber: 0});
+    const turnVisibleState = () => {
         
-        const rateSuccess = document.querySelector(".success-intercept.rate").checked;
-        const fixedSuccess = document.querySelector(".success-intercept.fixed").checked;
+    };
+    
+    const outputResult = ({fleet, enemy}) => {
+        const resultArea = q(".result");
+        let result;
+        try {
+            const downingSize = fleet.antiaircraftFire(enemy);
+            result = `${fleet.name}は敵艦載機${enemy.targetSlotCarrySize}機のうち${downingSize}機撃墜しました。`;
+        } catch(err) {
+            result = err.message;
+        }
+        resultArea.innerHTML = result;
+    };
+    
+    const makeAircraftCutin = () => {
+        const selectedCutinValue = q(".antiaircraft-cutin-type").value;
+        let antiaircraftCutin = new MisfireAntiaircraftCutin();
+        if (selectedCutinValue && selectedCutinValue.split(",").length >= 2) {
+            const cutinNames = selectedCutinValue.split(",");
+            antiaircraftCutin = new AntiaircraftCutin({
+                shipTypeName: cutinNames[0],
+                cutinTypeName: cutinNames[1]
+            });
+        }
         
+        return antiaircraftCutin;
+    };
+    
+    const makeDownings = ({rateSuccess, fixedSuccess}) => {
         const rd = new RateDowning({success: rateSuccess}),
             fd = new FixedDowning({success: fixedSuccess}),
             mg = new MinimumGuarantee();
         const downings = [rd, fd, mg];
-
-        const fleetTypeName = Array.from(document.querySelectorAll(".fleet-type"))
-                .filter(ele => ele.checked)[0].value;
         
-        const selectedCutinValue = el("antiaircraft-cutin-type").value;
-        const cutinNames = selectedCutinValue.split(",");
-        const antiaircraftCutin = new AntiaircraftCutin({
-            shipTypeName: cutinNames[0],
-            cutinTypeName: cutinNames[1]
+        return downings;
+    };
+    
+    const runCalc = () => {
+        const enemy = new Enemy({
+            carries: [parseInt(q(".enemy-carry-size").value)], 
+            targetSlotNumber: 0
         });
         
-        const formationName = el(`${fleetTypeName}-formation-type`).value;
+        const rateSuccess = q(".success-intercept.rate").checked;
+        const fixedSuccess = q(".success-intercept.fixed").checked;
+        const downings = makeDownings({rateSuccess, fixedSuccess});
+
+        const fleetTypeName = Array.from(qa(".fleet-type"))
+                .filter(ele => ele.checked)[0].value;
+        const formationName = q(`.${fleetTypeName}-formation-type`).value;
+        
+        const antiaircraftCutin = makeAircraftCutin();
         
         let ships = makeShips(".first-fleet-info-container");
         if (fleetTypeName === "union") {
@@ -587,18 +644,13 @@
         const fleet = makeFleet({
             downings, fleetTypeName, formationName, antiaircraftCutin, ships
         });
-        
-        const downingSize = fleet.antiaircraftFire(enemy);
-        
-        const result = `${fleet.name}は敵艦載機${enemy.targetSlotCarrySize}機のうち${downingSize}機撃墜しました。`;
-        const resultArea = document.querySelector(".result");
-        resultArea.innerHTML = result;
+        outputResult({fleet, enemy});
     };
     
     window.addEventListener("DOMContentLoaded", async () => {
         await loadConfig();
         //runTest();
         makePage();
-        document.querySelector(".runner").addEventListener("click", runCalc);
+        q(".runner").addEventListener("click", runCalc);
     });
 })(window, document);
