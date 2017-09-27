@@ -389,7 +389,7 @@
         antiAirInput.setAttribute("class", "antiaircraft-value");
         antiAirInput.setAttribute("type", "number");
         antiAirInput.setAttribute("min", "0");
-        antiAirInput.setAttribute("max", "100");
+        antiAirInput.setAttribute("max", "1000");
         antiAirInput.setAttribute("value", "0");
         antiAir.appendChild(antiAirInput);
         
