@@ -7,9 +7,17 @@
 		"name": "加賀改",
 		"slotComposition": [20, 20, 46, 12]
 	},
+	"sr": {
+		"name": "蒼龍改",
+		"slotComposition": [18, 27, 18, 10]
+	},
 	"sr2": {
 		"name": "蒼龍改二",
 		"slotComposition": [18, 35, 20, 6]
+	},
+	"hr": {
+		"name": "飛龍改",
+		"slotComposition": [18, 27, 18, 10]
 	},
 	"hr2": {
 		"name": "飛龍改二",
