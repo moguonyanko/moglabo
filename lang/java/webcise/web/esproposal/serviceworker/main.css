@@ -1,16 +1,15 @@
 @charset "UTF-8";
 
-main {
-	margin: 0.5em;
-}
-
-footer {
-	border-top: solid black 1px;
+header {
+    background-image: url(../../images/star.png);
+    background-size: 100px;
 }
 
 .result-area {
-	width: 50vw;
-	height: 20vh;
+	width: 100%;
+    max-width: 50em;
+	height: 90vh;
+    max-height: 10em;
 	background-color: whitesmoke;
 	overflow-y: scroll;
 }
