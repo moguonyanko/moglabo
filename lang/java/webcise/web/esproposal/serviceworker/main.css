@@ -5,11 +5,18 @@ header {
     background-size: 100px;
 }
 
-.result-area {
+.result {
 	width: 100%;
     max-width: 50em;
 	height: 90vh;
     max-height: 10em;
-	background-color: whitesmoke;
 	overflow-y: scroll;
+}
+
+.result-area {
+	background-color: whitesmoke;
+}
+
+.result-image {
+	background-color: beige;
 }

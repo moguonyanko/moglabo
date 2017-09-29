@@ -1,6 +1,20 @@
 ((win, doc, nav, g) => {
 	"use strict";
     
+    const q = (selector, base) => {
+        return (base || doc).querySelector(selector);
+    };
+    
+    const qa = (selector, base) => {
+        return (base || doc).querySelectorAll(selector);
+    };
+    
+    const pr = (target, content) => {
+        target.innerHTML += content + "<br />";
+    };
+    
+    const cl = target => target.innerHTML = "";
+    
     const sw = nav.serviceWorker;
 	
     const enableSW = () => {
@@ -18,8 +32,17 @@
         return registration;
     };
     
-    const getCacheKeys = async () => {
-        return await caches.keys();
+    const getCacheKeys = async pattern => {
+        if (pattern) {
+            const regex = new RegExp(pattern);
+            return (await caches.keys()).filter(key => regex.test(key));
+        } else {
+            return await caches.keys();
+        }
+    };
+    
+    const getCacheKeyString = async (pattern, separator = ",") => {
+        return (await getCacheKeys(pattern)).join(separator);
     };
     
 	const targets = {
@@ -82,6 +105,43 @@
             
             base.querySelector(".clear").addEventListener("click", () => {
                 resultArea.innerHTML = "";
+            });
+        },
+        customResponseSample() {
+            const base = q(".custom-response-sample"),
+                resultArea = q(".result-area", base),
+                resultImage = q(".result-image", base),
+                adder = q(".adder", base),
+                getter = q(".getter", base),
+                clearer = q(".clearer", base);
+            
+            getter.addEventListener("click", () => {
+                const url = "./images/blue.png";
+                const img = doc.createElement("img");
+                img.onload = () => resultImage.appendChild(img);
+                img.src = url;
+            });
+            
+            clearer.addEventListener("click", () => {
+                cl(resultArea);
+                cl(resultImage);
+            });
+            
+            if(!enableSW()){
+                return;
+            }
+            
+            adder.addEventListener("click", async () => {
+                // ここでコンテキストルートをスコープにするにはServiceWorkerスクリプトを
+                // 移動するかService-Worker-Allowedヘッダーを使用しなければならない。
+                //const scope = "/webcise/";
+                const scope = "/webcise/esproposal/serviceworker/";
+                const registration = await register({
+                    url: "custom-response-sample.js", scope
+                });
+                const keyStr = await getCacheKeyString("custom-response-sample");
+                console.log(keyStr);
+                pr(resultArea, keyStr);
             });
         }
 	};

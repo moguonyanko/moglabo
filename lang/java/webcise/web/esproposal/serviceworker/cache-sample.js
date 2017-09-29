@@ -7,8 +7,8 @@
  */
 
 const addToCache = async resources => {
-    const opendCache = await caches.open("cache-sample-v1");
-    return opendCache.addAll(resources);
+    const openedCache = await caches.open("cache-sample-v1");
+    return openedCache.addAll(resources);
 };
 
 // リソースがCacheStorageに保存されているとactivate及びinstallイベントは発生しない。
