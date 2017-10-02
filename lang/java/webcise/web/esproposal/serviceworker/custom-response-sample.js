@@ -1,13 +1,16 @@
 /**
  * 参考:
+ * https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
  * https://developer.mozilla.org/en-US/docs/Web/API/ExtendableEvent/waitUntil
  */
 
+const CACHE_VERSION = "custom-response-sample-v2";
+
 const addToCache = async () => {
-    const cache = await caches.open("custom-response-sample-v1");
+    const cache = await caches.open(CACHE_VERSION);
     return cache.addAll([
-        //"/webcise/gomakit.js", // スコープがコンテキストルートでないとキャッシュできない。
-        //"/webcise/images/star.png",
+        "/webcise/gomakit.js", // スコープがコンテキストルートでないとキャッシュできない。
+        "/webcise/images/star.png",
         "/webcise/esproposal/serviceworker/",
         "/webcise/esproposal/serviceworker/index.html",
         "/webcise/esproposal/serviceworker/main.css",
@@ -22,13 +25,21 @@ self.addEventListener("install", async event => {
     event.waitUntil(await addToCache());
 });
 
+/**
+ * Cacheにマッチするリクエストが存在しなかった時，そのリクエストを用いて
+ * サーバにリクエストを行いレスポンスを得る。得られたレスポンスはCacheに
+ * 保存しておく。
+ */
+const recoveryRequest = async request => {
+    console.log("Recovery request");
+    const res = await fetch(request);
+    const cache = await caches.open(CACHE_VERSION);
+    cache.put(request, res.clone());
+    return res;
+};
+
 self.addEventListener("fetch", async event => {
-    console.log("Custom response sample fetched");
-    event.respondWith(caches.match(event.request).catch(async () => {
-        console.log("Recovery request");
-        const res = await fetch(event.request);
-        const cache = await caches.open("custom-response-sample-v1");
-        cache.put(event.request, res.clone());
-        return res;
-    }));
+    console.log(`Fetched!: ${event.request.url}`);
+    event.respondWith(caches.match(event.request)
+            .catch(() => recoveryRequest(event.request)));
 });

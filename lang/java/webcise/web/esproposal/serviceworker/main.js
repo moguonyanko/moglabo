@@ -134,8 +134,8 @@
             adder.addEventListener("click", async () => {
                 // ここでコンテキストルートをスコープにするにはServiceWorkerスクリプトを
                 // 移動するかService-Worker-Allowedヘッダーを使用しなければならない。
-                //const scope = "/webcise/";
-                const scope = "/webcise/esproposal/serviceworker/";
+                const scope = "/webcise/";
+                //const scope = "/webcise/esproposal/serviceworker/";
                 const registration = await register({
                     url: "custom-response-sample.js", scope
                 });
