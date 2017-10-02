@@ -143,6 +143,77 @@
                 console.log(keyStr);
                 pr(resultArea, keyStr);
             });
+        },
+        updateCacheSample() {
+            if (!enableSW()) {
+                return;
+            }
+            
+            const base = q(".update-cache-sample"),
+                loader = q(".loader", base),
+                appender = q(".appender", base),
+                clearer = q(".clearer", base),
+                resultArea = q(".result-area", base),
+                resultImage = q(".result-image", base);
+                
+            const p = txt => pr(resultArea, txt);
+            
+            loader.addEventListener("click", async () => {
+                const keyStr = await getCacheKeyString("update-cache-sample");
+                const info = `キー[${keyStr}]のキャッシュが登録済みです。`;
+                p(info);
+                
+                const scope = "/webcise/esproposal/serviceworker/";
+                const url = `update-cache-sample.js`;
+                await sw.register(url);
+            });
+            
+            const getRandomVersion = () => {
+                if (Date.now() % 2 === 1) {
+                    return "v1";
+                } else {
+                    return "v2";
+                }
+            };
+            
+            // ServiceWorkerスクリプトを登録している側のスクリプトはCacheStorageに
+            // キャッシュされている可能性があるので，CacheStorageのバージョンを明示的に
+            // 参照したりしないようにする。バージョンの齟齬が発生しそうだし二重管理にもなる。
+            
+            const imageUrls = [
+                "images/red.png", 
+                "images/yellow.png", 
+                "images/green.png", 
+                "images/orange.png"
+            ];
+            
+            appender.addEventListener("click", () => {
+                const imgBase = doc.createDocumentFragment();
+                const allPromise = Promise.all(imageUrls.map(url => {
+                    return new Promise((resolve, reject) => {
+                        const img = doc.createElement("img");
+                        img.onload = event => {
+                            imgBase.appendChild(img);
+                            resolve(imgBase);
+                        };
+                        img.onerror = reject;
+                        img.src = url;
+                    });
+                }));
+                
+                allPromise.then(documentFragments => {
+                    resultImage.appendChild(imgBase);
+                    p("All images are appended");
+                }).catch(err => {
+                    resultImage.appendChild(imgBase);
+                    p(`ERROR: ${err.message}`);
+                });
+            });
+            
+            clearer.addEventListener("click", () => {
+                resultArea.innerHTML = "";
+                resultImage.innerHTML = "";
+            });    
         }
 	};
 	

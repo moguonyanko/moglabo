@@ -32,10 +32,10 @@ self.addEventListener("install", async event => {
  */
 const recoveryRequest = async request => {
     console.log("Recovery request");
-    const res = await fetch(request);
+    const response = await fetch(request);
     const cache = await caches.open(CACHE_VERSION);
-    cache.put(request, res.clone());
-    return res;
+    cache.put(request, response.clone());
+    return response;
 };
 
 self.addEventListener("fetch", async event => {
