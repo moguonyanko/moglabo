@@ -1,3 +1,7 @@
+/**
+ * @version 1.00
+ */
+
 (((win, doc, lB) => {
 	"use strict";
 	
@@ -667,8 +671,23 @@
 		};
 	};
 	
-	const init = () => {
-		testCalculateMastery();
+    const registerService = async () => {
+        if (!("serviceWorker" in navigator)) {
+            return;
+        }
+        
+        try {
+            const scope = "/logbook/";
+            const url = "sw.js";
+            await navigator.serviceWorker.register(url, {scope});
+        } catch (err) {
+            console.error(`ServiceWorker is not registered: ${err.message}`);
+        }
+    };
+    
+	const init = async () => {
+		//testCalculateMastery();
+        await registerService();
 		
 		const funcs = [
 			configLoader("aircrafts.json", setAircraftMaker),
@@ -684,6 +703,5 @@
 		});
 	};
 	
-	init();
-	
+	win.addEventListener("DOMContentLoaded", async () => { await init(); });
 })(window, document, window.lB));
