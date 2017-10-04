@@ -677,7 +677,7 @@
         }
         
         try {
-            const scope = "/logbook/";
+            const scope = "./";
             const url = "sw.js";
             await navigator.serviceWorker.register(url, {scope});
         } catch (err) {

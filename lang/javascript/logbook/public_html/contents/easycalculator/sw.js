@@ -8,6 +8,13 @@ const CACHE_KEY = `${SERVICE_NAME}-${VERSION}`;
 
 // ServiceWorkerスクリプトを登録しているスクリプトを読み込んでいるページの
 // ディレクトリがキャッシュに追加されていないとFirefoxではコンテンツデータ破損エラーになる。
+// 定数RESOURCESの最初に指定しているディレクトリがそれに当たる。
+// またスコープ配下でキャッシュに追加されなかったページをブラウザで参照した時も
+// Firefoxではコンテンツデータ破損エラーになってしまう。回避するためにはスコープを小さくする。
+// スコープを小さくするとユーティリティ関数をまとめたスクリプトのような共有のリソースは
+// 普通スコープ外に配置されているためキャッシュに追加できない。そこでHTTPレスポンスヘッダー
+// service-worker-allowedで指定したディレクトリ以下に配置してキャッシュに追加する。
+// 以下のcore.js等がそれに該当する。
 const RESOURCES = [
     `/${CONTEXT_NAME}/contents/${SERVICE_NAME}/`,
     `/${CONTEXT_NAME}/contents/${SERVICE_NAME}/index.html`,
