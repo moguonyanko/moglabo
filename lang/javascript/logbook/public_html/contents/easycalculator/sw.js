@@ -1,4 +1,4 @@
-const VERSION = "v1.00";
+const VERSION = "v1.01";
 
 const CONTEXT_NAME = "logbook";
 
@@ -41,7 +41,7 @@ const isNotCurrentCacheKey = key => {
 
 const getDeletePromise = cacheKey => {
     if (isNotCurrentCacheKey(cacheKey)) {
-        console.log(`Try to delete cache: ${cacheKey}`);
+        console.log(`Delete cache: ${cacheKey}`);
         return caches.delete(cacheKey);
     } else {
         // CacheStorage.delete()はキャッシュが削除されなかった時にfalseでresolveする
@@ -51,22 +51,22 @@ const getDeletePromise = cacheKey => {
 };
 
 self.addEventListener("install", async event => {
+    console.log(`Install: ${SERVICE_NAME}`);
     const cache = await openCaches();
     event.waitUntil(cache.addAll(RESOURCES));
 });
 
 self.addEventListener("fetch", event => {
     const request = event.request;
-    console.log(`Fetched: ${request.url}`);
+    console.log(`Fetch: ${request.url}`);
     event.respondWith(caches.match(request)
             .catch(async () => await refetch(request)));
 });
 
-// ブラウザの履歴が残っている限りactivateイベントは発生しないので
-// イベントに関連付けて古いキャッシュを削除することはできない。
-// ブラウザリロード時に最新のServiceWorkerスクリプトはダウンロードされるため
-// 古いキャッシュが使われ続けることはない。
+// ブラウザの履歴が削除された後，またはServiceWorkerが一度unregisterされた後に
+// 再びregisterされるとactivateイベントが発生する。
 self.addEventListener("activate", event => {
+    console.log(`Activate: ${SERVICE_NAME}`);
     event.waitUntil(caches.keys().then(keys => {
         return Promise.all(keys.map(key => getDeletePromise(key)));
     }));

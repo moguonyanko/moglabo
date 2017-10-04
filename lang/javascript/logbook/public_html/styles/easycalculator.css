@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+.app-info {
+    background-color: beige;
+}
+
 .ships {
     display: flex;
     flex-wrap: wrap;
@@ -8,7 +12,6 @@
 
 .ship {
     flex: 1 0 40%;
-    /*min-height: 250px;*/
     max-height: 100vh;
     min-width: 250px;
     margin: 1rem;

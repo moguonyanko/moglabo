@@ -1,5 +1,5 @@
 /**
- * @version 1.00
+ * @version 1.01
  */
 
 (((win, doc, lB) => {
@@ -670,24 +670,71 @@
 			});
 		};
 	};
+    
+    const putAppInfo = txt => {
+        const info = doc.querySelector(".app-info");
+        info.innerHTML = txt;
+    };
 	
     const registerService = async () => {
         if (!("serviceWorker" in navigator)) {
-            return;
+            throw new Error("ServiceWorker未対応");
         }
-        
-        try {
-            const scope = "./";
-            const url = "sw.js";
-            await navigator.serviceWorker.register(url, {scope});
-        } catch (err) {
-            console.error(`ServiceWorker is not registered: ${err.message}`);
-        }
+
+        const scope = "./";
+        const url = "sw.js";
+        return await navigator.serviceWorker.register(url, {scope});
     };
     
-	const init = async () => {
+    // キャッシュのクリアにはキャッシュのキーが必要になる。
+    // キャッシュ対象となるアプリのスクリプトでキャッシュのキーを
+    // 参照するべきではないので，ServiceWorkerスクリプトに
+    // キャッシュのクリアは任せてアプリのスクリプトでは
+    // ServiceWorkerのregister及びunregisterのみ行う。
+    const unregisterService = async registration => {
+        return await registration.unregister();
+    };
+    
+    const addInstallListener = () => {
+        const installer = doc.querySelector(".app-installer");
+        installer.addEventListener("click", async () => {
+            try {
+                await registerService();
+                putAppInfo("インストール成功");
+            } catch (err) {
+                putAppInfo(`インストール失敗: ${err.message}`);
+            }
+        });
+    };
+    
+    const addUninstallListener = async () => {
+        const uninstaler = doc.querySelector(".app-uninstaller");
+        uninstaler.addEventListener("click", async () => {
+            try {
+                // TODO: 
+                // 登録済みServiceWorkerのServiceWorkerRegistrationを
+                // 得る方法が分からないのでregisterを呼び出して取得している。
+                // 本来は不要なはずである。
+                const result = await unregisterService(await registerService());
+                if (result) {
+                    putAppInfo("アンインストール成功");
+                } else {
+                    putAppInfo("アンインストール失敗");
+                }
+            } catch (err) {
+                putAppInfo(`アンインストール失敗: ${err.message}`);
+            }
+        });
+    };
+    
+    const setupServiceWorkerListener = () => {
+        addInstallListener();
+        addUninstallListener();
+    };
+    
+	const init = () => {
 		//testCalculateMastery();
-        await registerService();
+        setupServiceWorkerListener();
 		
 		const funcs = [
 			configLoader("aircrafts.json", setAircraftMaker),
@@ -703,5 +750,5 @@
 		});
 	};
 	
-	win.addEventListener("DOMContentLoaded", async () => { await init(); });
+	win.addEventListener("DOMContentLoaded", init);
 })(window, document, window.lB));
