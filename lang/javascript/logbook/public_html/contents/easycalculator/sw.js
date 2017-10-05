@@ -1,4 +1,4 @@
-const VERSION = "v1.01";
+const VERSION = "v1.02";
 
 const CONTEXT_NAME = "logbook";
 
@@ -28,13 +28,6 @@ const RESOURCES = [
 
 const openCaches = async () => await caches.open(CACHE_KEY);
 
-const refetch = async request => {
-    const response = await fetch(request);
-    const cache = await openCaches();
-    cache.put(request, response.clone());
-    return response;
-};
-
 const isNotCurrentCacheKey = key => {
     return key.startsWith(SERVICE_NAME) && key !== CACHE_KEY;
 };
@@ -50,6 +43,16 @@ const getDeletePromise = cacheKey => {
     }
 };
 
+const getErrorResponse = url => {
+    const page = `<strong>Cannot get resorces</strong><p>${url}</p>`;
+    const response = new Response(page, {
+        headers: {
+            "Content-Type": "text/html"
+        }
+    });
+    return response;
+};
+
 self.addEventListener("install", async event => {
     console.log(`Install: ${SERVICE_NAME}`);
     const cache = await openCaches();
@@ -58,9 +61,24 @@ self.addEventListener("install", async event => {
 
 self.addEventListener("fetch", event => {
     const request = event.request;
-    console.log(`Fetch: ${request.url}`);
-    event.respondWith(caches.match(request)
-            .catch(async () => await refetch(request)));
+    const promise = caches.match(request)
+            .then(response => {
+                if (response) {
+                    console.log(`Fetch(from sw): ${request.url}`);
+                    return response;
+                }
+
+                return fetch(request).then(async response => {
+                    console.log(`Fetch(from server): ${request.url}`);
+                    return openCaches().then(cache => {
+                        cache.put(request, response.clone());
+                        return response;
+                    });
+                });
+            })
+            .catch(() => getErrorResponse(request.url));
+
+    event.respondWith(promise);
 });
 
 // ブラウザの履歴が削除された後，またはServiceWorkerが一度unregisterされた後に
