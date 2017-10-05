@@ -59,26 +59,26 @@ self.addEventListener("install", async event => {
     event.waitUntil(cache.addAll(RESOURCES));
 });
 
+const checkResponse = (request, response) => {
+    if (response) {
+        console.log(`Fetch(from sw): ${request.url}`);
+        return response;
+    }
+
+    return fetch(request).then(async response => {
+        console.log(`Fetch(from server): ${request.url}`);
+        return openCaches().then(cache => {
+            cache.put(request, response.clone());
+            return response;
+        });
+    });
+};
+
 self.addEventListener("fetch", event => {
     const request = event.request;
-    const promise = caches.match(request)
-            .then(response => {
-                if (response) {
-                    console.log(`Fetch(from sw): ${request.url}`);
-                    return response;
-                }
-
-                return fetch(request).then(async response => {
-                    console.log(`Fetch(from server): ${request.url}`);
-                    return openCaches().then(cache => {
-                        cache.put(request, response.clone());
-                        return response;
-                    });
-                });
-            })
-            .catch(() => getErrorResponse(request.url));
-
-    event.respondWith(promise);
+    event.respondWith(caches.match(request)
+            .then(response => checkResponse(request, response))
+            .catch(() => getErrorResponse(request.url)));
 });
 
 // ブラウザの履歴が削除された後，またはServiceWorkerが一度unregisterされた後に

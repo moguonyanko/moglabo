@@ -1,7 +1,3 @@
-/**
- * @version 1.02
- */
-
 (((win, doc, lB) => {
 	"use strict";
 	
