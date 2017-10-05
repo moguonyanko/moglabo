@@ -7,17 +7,17 @@
         return element.querySelector(selector);
     };
     
-    const display = content => {
-        qs(".info-area").innerHTML += content + "<br />";
+    const infoArea = qs(".info-area");
+
+    const aelc = (selector, listener) => {
+        qs(selector).addEventListener("click", listener);
     };
 
-    const register = async () => {
-        if (!sw) {
-            return;
-        }
+    const display = content => {
+        infoArea.innerHTML += content + "<br />";
+    };
 
-        const url = "sw.js", scope = "./";
-        const registration = await sw.register(url, {scope});
+    const subscribe = async registration => {
         const subscription = await registration.pushManager.subscribe();
         console.log(subscription);
         display(JSON.stringify(subscription));
@@ -25,11 +25,29 @@
         window.addEventListener("push", event => {
             console.log(event);
         });
+        return subscription;
+    };
+
+    const register = async () => {
+        if (!sw) {
+            return;
+        }
+        const url = "sw.js", scope = "./";
+        return await sw.register(url, {scope});
     };
 
     const init = () => {
-        qs(".register").addEventListener("click", 
-            async () => { await register(); });
+        aelc(".register", async () => {
+            const registration = await register();
+            subscribe(registration);
+        });
+
+        aelc(".updater", async () => {
+            const registration = await register();
+            registration.update();
+        });
+        
+        aelc(".clearer", () => infoArea.innerHTML = "");
     };
 
     window.addEventListener("DOMContentLoaded", init);
