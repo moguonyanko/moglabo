@@ -1,23 +1,37 @@
 /**
  * 参考:
  * https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers
+ * https://jakearchibald.com/2016/caching-best-practices/
  */
 
 const CACHE_PREFIX = "update-cache-sample-";
 
-const CACHE_BASE = "/webcise/esproposal/serviceworker/images/";
+const CONTEXT = "/webcise/";
 
-const VERSION = "v1";
+const APP_BASE = `${CONTEXT}esproposal/serviceworker/`;
+
+const CACHE_BASE = `${APP_BASE}images/`;
+
+const VERSION = "v2";
+
+const COMMON_RESOURCES = [
+    `${CONTEXT}gomakit.js`,
+    `${CONTEXT}images/star.png`,
+    APP_BASE,
+    `${APP_BASE}index.html`,
+    `${APP_BASE}main.css`,
+    `${APP_BASE}main.js`
+];
 
 const cacheTargets = {
-    [`${CACHE_PREFIX}v1`]: [
-        `${CACHE_BASE}red.png`,
-        `${CACHE_BASE}yellow.png`
-    ],
-    [`${CACHE_PREFIX}v2`]: [
+    [`${CACHE_PREFIX}v1`]: COMMON_RESOURCES.concat([
         `${CACHE_BASE}green.png`,
         `${CACHE_BASE}orange.png`
-    ]
+    ]),
+    [`${CACHE_PREFIX}v2`]: COMMON_RESOURCES.concat([
+        `${CACHE_BASE}red.png`,
+        `${CACHE_BASE}yellow.png`
+    ])
 };
 
 const getKey = () => `${CACHE_PREFIX}${VERSION}`;
@@ -26,12 +40,9 @@ self.addEventListener("activate", event => {
     console.log("Activated update cache sample");
     event.waitUntil(caches.keys().then(keys => {
         return Promise.all(keys.map(key => {
-            if (key.startsWith(CACHE_PREFIX)) {
+            if (key.startsWith(CACHE_PREFIX) && key !== getKey()) {
                 console.log(`Try to delete: ${key}`);
-                // 少なくともFirefoxではCacheStorageのdeleteしてもCacheのkeyは残る。
-                // TODO: installイベント後に登録されたはずのCacheが削除されてしまう。
                 return caches.delete(key);
-                // return Promise.resolve(true);
             } else {
                 return Promise.resolve(false);
             }

@@ -196,7 +196,9 @@
                             imgBase.appendChild(img);
                             resolve(imgBase);
                         };
-                        img.onerror = reject;
+                        img.onerror = err => {
+                            reject(new Error(`Failed fetch: ${url}. Reason: ${err.message}`));
+                        };
                         img.src = url;
                     });
                 }));
