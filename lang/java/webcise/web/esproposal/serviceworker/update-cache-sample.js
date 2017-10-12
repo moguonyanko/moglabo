@@ -11,7 +11,7 @@ const APP_BASE = `${CONTEXT}esproposal/serviceworker/`;
 
 const CACHE_BASE = `${APP_BASE}images/`;
 
-const VERSION = "v2";
+const VERSION = "v1";
 
 const getErrorPage = url => {
     const page = `
@@ -58,7 +58,7 @@ const isCacheTargetResource = url => {
     return cacheTargets[getKey()].indexOf(url) >= 0;
 };
 
-const checkResponse = async ({request, response}) => {
+const checkResponse = ({request, response}) => {
     if (response) {
         console.log(`Fetched (from cache storage): ${request.url}`);
         return Promise.resolve(response);
@@ -96,19 +96,20 @@ self.addEventListener("activate", event => {
     }));
 });
 
-self.addEventListener("install", async event => {
+self.addEventListener("install", event => {
     const key = getKey();
-    const cache = await caches.open(key);
-    console.log(`Installed: ${key}`);
-    event.waitUntil(cache.addAll(cacheTargets[key]));
+    console.log(`Install: ${key}`);
+    event.waitUntil(caches.open(key)
+            .then(cache => cache.addAll(cacheTargets[key])));
 });
 
 // CacheStorage保存対象でないリソースへのリクエスト時もfetchイベントが発生する。
-self.addEventListener("fetch", async event => {
+// waitUntilやrespondWithの引数はPromiseでなければならないので，
+// thenやcatchの関数の戻り値がPromiseでなければ意図した動作にならない場合がある。
+self.addEventListener("fetch", event => {
     const request = event.request;
-    // waitUntilやrespondWithの引数はPromiseでなければならないので，
-    // thenやcatchの関数の戻り値がPromiseでなければ意図した動作にならない場合がある。
+    // TODO: catchでデフォルトのレスポンスを返すのであれば，レスポンスのContent-Typeに
+    // 合致した値を返すようにする。
     event.respondWith(caches.match(request)
-            .then(response => checkResponse({request, response})))
-            .catch(() => getErrorPage(request.url));
+            .then(response => checkResponse({request, response})));
 });
