@@ -11,7 +11,7 @@ const APP_BASE = `${CONTEXT}esproposal/serviceworker/`;
 
 const CACHE_BASE = `${APP_BASE}images/`;
 
-const VERSION = "v1";
+const VERSION = "v2";
 
 const getErrorPage = url => {
     const page = `

@@ -20,7 +20,7 @@
     const enableSW = () => {
         return "serviceWorker" in nav;
     };
-
+    
     /**
      * デフォルトはこのディレクトリのみをスコープとする。
      * 自己証明書を用いたHTTPSで通信している場合，Chromeでは
@@ -39,6 +39,11 @@
         } else {
             return await caches.keys();
         }
+    };
+    
+    const hasCacheKey = async keyName => {
+        const keys = await getCacheKeys(keyName);
+        return keys.length > 0;
     };
 
     const getCacheKeyString = async (pattern, separator = ",") => {
@@ -148,9 +153,11 @@
             if (!enableSW()) {
                 return;
             }
-
+            
             const base = q(".update-cache-sample"),
                     loader = q(".loader", base),
+                    versionNumber = q(".version-number", base),
+                    keyChecker = q(".keychecker", base),
                     appender = q(".appender", base),
                     clearer = q(".clearer", base),
                     resultArea = q(".result-area", base),
@@ -163,11 +170,22 @@
                 const info = `キー[${keyStr}]のキャッシュが登録済みです。`;
                 p(info);
             };
-
+            
             loader.addEventListener("click", async () => {
                 const url = `update-cache-sample.js`;
                 await sw.register(url);
                 await printKeyInfo();
+            });
+            
+            // 以下のコードではキャッシュキーを指定する記述を行なっているが，本来は
+            // キャッシュキーを指定するようなコードをServiceWorkerスクリプト以外で
+            // 書くべきではない。というかキャッシュのバージョンやキーを外部スクリプトに
+            // 意識させるべきではない。それらはServiceWorkerスクリプト内だけで参照するべきである。
+            keyChecker.addEventListener("click", async () => {
+                const version = versionNumber.value;
+                const keyName = `update-cache-sample-v${version}`;
+                const result = await hasCacheKey(keyName);
+                p(`Cache storage [${keyName}] is ${result ? "used" : "not used"}`);
             });
 
             // ServiceWorkerスクリプトを登録している側のスクリプトはCacheStorageに
