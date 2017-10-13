@@ -102,11 +102,57 @@ self.addEventListener("activate", event => {
     }));
 });
 
+let retryCount = 0;
+
+const retryAddToCache = key => {
+    return caches.open(`DUMMY-${key}`).then(cache => {
+        console.log(`Retry adding to cache: ${++retryCount}`);
+        return cache.add("./index.html")
+                .then(async () => {
+                    retryCount = 0;
+                    await caches.delete(`DUMMY-${key}`);
+                    return willAddToCache();
+                })
+                .catch(() => retryAddToCache(key));
+    });
+};
+
+// TODO: Chrome向けに用意したCacheStorage追加関数なのだが
+// FetchErrorを回避できていない。
+const willAddToCache = () => {
+    const key = getKey();
+    return caches.open(key)
+            .then(cache => cache.addAll(cacheTargets[key]))
+            .catch(() => retryAddToCache());
+};
+
+// TODO: Chromeの場合，installイベントハンドラ内では一時的なキャッシュストレージに
+// 対するリソースの追加もエラーになってしまう。
+const initCache = async () => {
+    const initKey = `update-cache-initializer`;
+    try {
+        const cache = await caches.open(initKey);
+        // CacheStorageをopenするだけではFetchのエラーを回避できない。
+        await cache.add("./");
+        console.log(`Initialized: [${initKey}]`);
+    } catch (err) {
+        console.log(err.message);
+    } finally {
+        // エラー回避のためだけのCacheStorageなのでこれは削除する。
+        await caches.delete(initKey);
+        console.log(`Clean up: [${initKey}]`);
+    }
+};
+
 self.addEventListener("install", event => {
     const key = getKey();
     console.log(`Install: ${key}`);
-    event.waitUntil(caches.open(key)
-            .then(cache => cache.addAll(cacheTargets[key])));
+    const resources = cacheTargets[key];
+    event.waitUntil(caches.open(key).then(cache => cache.addAll(resources)));
+    //const cacheAdder = () => caches.open(key)
+    //        .then(cache => cache.addAll(resources));
+    //event.waitUntil(initCache().then(cacheAdder));
+    //event.waitUntil(willAddToCache());
 });
 
 // CacheStorage保存対象でないリソースへのリクエスト時もfetchイベントが発生する。

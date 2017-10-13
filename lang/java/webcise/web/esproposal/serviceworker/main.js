@@ -154,8 +154,12 @@
                 return;
             }
             
-            const base = q(".update-cache-sample"),
+            const SAMPLE_ID = "update-cache-sample";
+            
+            const base = q(`.${SAMPLE_ID}`),
                     loader = q(".loader", base),
+                    unregister = q(".unregister", base),
+                    cacheInitializer = q(".cache-initializer", base),
                     versionNumber = q(".version-number", base),
                     keyChecker = q(".keychecker", base),
                     appender = q(".appender", base),
@@ -175,6 +179,49 @@
                 const url = `update-cache-sample.js`;
                 await sw.register(url);
                 await printKeyInfo();
+            });
+            
+            // ServiceWorkerをunregisterするとCacheStorageにリソースが残っていても
+            // 使われず，ブラウザキャッシュが使われたりサーバへリクエストされたりする。
+            // fetchイベントを処理するServiceWorkerスクリプトがunregisterされるのだから
+            // 当然の動作ではある。
+            unregister.addEventListener("click", async () => {
+                try {
+                    // readyプロパティを介して登録済みServiceWorkerRegistrationを
+                    // 取得することができる。
+                    const registration = await sw.ready;
+                    const result = await registration.unregister();
+                    p(`Succeed in unregister: ${result}`);
+                } catch (err) {
+                    p(`Error unregister: ${err.message}`);
+                }
+            });
+            
+            // Chromeでは前もってCacheStorageをopenしてキャッシュに適当なリソースを
+            // 追加しておかないと，ServiceWorkerスクリプトのinstallイベントハンドラで
+            // キャッシュ対象リソースの追加が行えない。「Failed to fetch」となる。
+            // これと同じ初期化処理をServiceWorkerスクリプトのinstallイベントハンドラで
+            // 行ってもエラーになる。
+            cacheInitializer.addEventListener("click", async () => {
+                const initKey = `${SAMPLE_ID}-cache-initializer`;
+                try {
+                    const cache = await caches.open(initKey);
+                    // CacheStorageをopenするだけではFetchのエラーを回避できない。
+                    await cache.add("./");
+                    p(`Initialized: [${initKey}]`);
+                } catch(err) {
+                    p(err.message);
+                } finally {
+                    // エラー回避のためだけのCacheStorageなのでこれは削除する。
+                    await caches.delete(initKey);
+                    p(`Clean up: [${initKey}]`);
+                }
+                
+                // Promise.prototype.finallyはほとんどのブラウザで未実装。
+                //caches.open(initKey)
+                //        .then(cache => cache.add("./"))
+                //        .catch(err => p(err.message))
+                //        .finally(() => caches.delete(initKey));
             });
             
             // 以下のコードではキャッシュキーを指定する記述を行なっているが，本来は
