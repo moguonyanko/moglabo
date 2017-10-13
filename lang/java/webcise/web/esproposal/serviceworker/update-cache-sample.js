@@ -11,7 +11,7 @@ const APP_BASE = `${CONTEXT}esproposal/serviceworker/`;
 
 const CACHE_BASE = `${APP_BASE}images/`;
 
-const VERSION = "v1";
+const VERSION = "v3";
 
 const getErrorPage = url => {
     const page = `
@@ -39,8 +39,8 @@ const COMMON_RESOURCES = [
     `${APP_BASE}main.js`
 ];
 
-// バージョンごとにキャッシュ対象リソースを変えることで
-// キャッシュされるリソースとされないリソースを混在させ動作確認を行う。
+// v1とv2でキャッシュ対象リソースを変えることでキャッシュされるリソースと
+// されないリソースを混在させ動作確認を行う。
 const cacheTargets = {
     [`${CACHE_PREFIX}v1`]: COMMON_RESOURCES.concat([
         `${CACHE_BASE}green.png`,
@@ -49,6 +49,12 @@ const cacheTargets = {
     [`${CACHE_PREFIX}v2`]: COMMON_RESOURCES.concat([
         `${CACHE_BASE}red.png`,
         `${CACHE_BASE}yellow.png`
+    ]),
+    [`${CACHE_PREFIX}v3`]: COMMON_RESOURCES.concat([
+        `${CACHE_BASE}red.png`,
+        `${CACHE_BASE}yellow.png`,
+        `${CACHE_BASE}green.png`,
+        `${CACHE_BASE}orange.png`
     ])
 };
 
