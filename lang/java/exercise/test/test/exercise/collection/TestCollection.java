@@ -1,18 +1,17 @@
 package test.exercise.collection;
 
-import org.junit.*;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
+import static java.util.stream.Collectors.*;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
+import org.junit.*;
+
 /**
  * 参考:
  * http://www.journaldev.com/13121/java-9-features-with-examples
+ * JavaMagazine Vol.34
  */
 public class TestCollection {
 
@@ -29,20 +28,139 @@ public class TestCollection {
      */
 
     @Test(expected = UnsupportedOperationException.class)
-    public void 不変なMapを生成できる(){
+    public void createImmutableMap(){
         Map<String, Integer> map = Map.of("foo", 20, "bar", 30);
         map.put("baz", 40);
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void 不変なListを生成できる(){
+    public void createImmutableList(){
         List<String> list = List.of("foo", "bar", "baz");
-        list.add("hoge");
+        list.set(1, "hoge");
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void 不変なSetを生成できる(){
+    public void createImmutableSet(){
         Set<String> set = Set.of("foo", "bar", "baz");
         set.add("hoge");
     }
+
+    @Test
+    public void modifyListByArraysAsList() {
+        String[] sample = {"foo", "bar", "baz"};
+        List<String> actual = Arrays.asList(sample);
+        // Arrays.asListのリストは不変ではない。
+        actual.set(1, "modified");
+        List<String> expected = List.of("foo", "modified", "baz");
+        assertThat(actual, is(expected));
+    }
+
+    private enum ClassId implements Comparator<ClassId> {
+        A(1), B(2), C(3);
+
+        private final int classNo;
+
+        ClassId(int classNo) {
+            this.classNo = classNo;
+        }
+
+        @Override
+        public int compare(ClassId o1, ClassId o2) {
+            return o1.classNo - o2.classNo;
+        }
+    }
+
+    private static class Student {
+        private final ClassId classId;
+        private final String name;
+        private final int score;
+
+        Student(ClassId classId, String name, int score) {
+            this.classId = classId;
+            this.name = name;
+            this.score = score;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (!(obj instanceof Student)) {
+                return false;
+            }
+
+            Student that = (Student)obj;
+            return classId == that.classId &&
+                name.equals(that.name) &&
+                score == that.score;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, score);
+        }
+
+        private ClassId getClassId() {
+            return classId;
+        }
+
+        private int getScore() {
+            return score;
+        }
+    }
+
+    private static class Klass {
+        private final String name;
+        private final List<Student> students;
+
+        Klass(String name, List<Student> students) {
+            this.name = name;
+            this.students = students;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    @Test
+    public void filteringCollection() {
+        Map<ClassId, List<Student>> expected = new TreeMap<>(Map.of(
+            ClassId.A, List.of(new Student(ClassId.A, "foo", 80)),
+            ClassId.B, List.of(),
+            ClassId.C, List.of(new Student(ClassId.C, "baz", 70),
+                new Student(ClassId.C, "bze", 90))
+        ));
+
+        List<Student> students = List.of(
+            new Student(ClassId.A, "foo", 80),
+            new Student(ClassId.A, "fee", 65),
+            new Student(ClassId.B, "bar", 50),
+            new Student(ClassId.B, "bee", 55),
+            new Student(ClassId.C, "baz", 70),
+            new Student(ClassId.C, "bze", 90)
+        );
+
+        int borderScore = 70;
+
+        Map<ClassId, List<Student>> result = students.stream()
+            // ここでsortedしても結果のMapには反映されない。
+            //.sorted(Comparator.comparing(Student::getClassId))
+            .collect(
+                groupingBy(
+                    Student::getClassId,
+                    filtering(student -> student.getScore() >= borderScore,
+                        // 該当する要素が無いエントリの値は空のリストにする。
+                        toList())
+                )
+            );
+
+        Map<ClassId, List<Student>> actual = new TreeMap<>(result);
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void flatMappingCollection() {
+        // TODO: implement
+    }
+
 }
