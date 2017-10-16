@@ -18,7 +18,7 @@
             "sizes": "192x192"
         }
     ],
-    "start_url": "index.html?foobarbaz",
+    "start_url": "index.html?startpage",
     "background_color": "#ccff99",
     "display": "standalone",
     "theme_color": "#ccffcc"

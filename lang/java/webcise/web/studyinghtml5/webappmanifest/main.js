@@ -1,11 +1,22 @@
 ((window, document) => {
     "use strict";
 
-    const init = () => {
-        const greeing = document.querySelector("main .search");
-        const search = location.search;
-        greeing.innerHTML = search;
+    const sw = navigator.serviceWorker;
+
+    const registerSW = async () => {
+        if (sw) {
+            await sw.register("sw.js");
+        }
     };
 
-    window.addEventListener("DOMContentLoaded", init);
+    const displaySearchKeyword = () => {
+        const keyword = document.querySelector("main .search");
+        const search = location.search;
+        keyword.innerHTML = search;
+    };
+
+    window.addEventListener("DOMContentLoaded", async () => {
+        await registerSW();
+        displaySearchKeyword();
+    });
 })(window, document);
