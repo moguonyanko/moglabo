@@ -3,10 +3,9 @@ package test.exercise.collection;
 import java.util.*;
 import static java.util.stream.Collectors.*;
 
+import org.junit.*;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
-
-import org.junit.*;
 
 /**
  * 参考:
@@ -70,15 +69,25 @@ public class TestCollection {
         }
     }
 
+    private enum Favorite {
+        SLEEPING, READING, BASEBALL, SOCCER;
+    }
+
     private static class Student {
         private final ClassId classId;
         private final String name;
         private final int score;
+        private final List<Favorite> favorites;
 
-        Student(ClassId classId, String name, int score) {
+        Student(ClassId classId, String name, int score, List<Favorite> favorites) {
             this.classId = classId;
             this.name = name;
             this.score = score;
+            this.favorites = favorites;
+        }
+
+        Student(ClassId classId, String name, int score) {
+            this(classId, name, score, List.of());
         }
 
         @Override
@@ -105,19 +114,9 @@ public class TestCollection {
         private int getScore() {
             return score;
         }
-    }
 
-    private static class Klass {
-        private final String name;
-        private final List<Student> students;
-
-        Klass(String name, List<Student> students) {
-            this.name = name;
-            this.students = students;
-        }
-
-        public String getName() {
-            return name;
+        private List<Favorite> getFavorites() {
+            return new ArrayList<>(favorites);
         }
     }
 
@@ -160,7 +159,37 @@ public class TestCollection {
 
     @Test
     public void flatMappingCollection() {
-        // TODO: implement
+        Map<ClassId, Set<Favorite>> expected = new TreeMap<>(Map.of(
+            ClassId.A, Set.of(Favorite.SLEEPING, Favorite.BASEBALL, Favorite.READING),
+            ClassId.B, Set.of(),
+            ClassId.C, Set.of(Favorite.SLEEPING, Favorite.SOCCER, Favorite.READING)
+        ));
+
+        List<Student> students = List.of(
+            new Student(ClassId.A, "foo", 80,
+                List.of(Favorite.BASEBALL, Favorite.READING)),
+            new Student(ClassId.A, "fee", 65,
+                List.of(Favorite.SLEEPING, Favorite.READING)),
+            new Student(ClassId.B, "bar", 50),
+            new Student(ClassId.B, "bee", 55),
+            new Student(ClassId.C, "baz", 70,
+                List.of(Favorite.SLEEPING, Favorite.SOCCER)),
+            new Student(ClassId.C, "bze", 90,
+                List.of(Favorite.SLEEPING, Favorite.READING))
+        );
+
+        Map<ClassId, Set<Favorite>> result = students.stream()
+            .collect(
+                groupingBy(
+                    Student::getClassId,
+                    flatMapping(student -> student.getFavorites().stream(),
+                        toSet())
+                )
+            );
+
+        Map<ClassId, Set<Favorite>> actual = new TreeMap<>(result);
+
+        assertThat(actual, is(expected));
     }
 
 }
