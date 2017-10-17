@@ -189,6 +189,29 @@ public class HttpUtil {
         return res.body();
     }
 
+    public static void getContentWhenComplete(URI uri, Consumer<String> callback)
+        throws GeneralSecurityException, IOException, InterruptedException {
+        HttpClient client = HttpClient.newBuilder()
+            .sslContext(createIgnoredCheckingContext())
+            .build();
+
+        HttpRequest request = HttpRequest.newBuilder(uri)
+            .build();
+
+        CompletableFuture<HttpResponse<String>> future =
+            client.sendAsync(request, BodyHandler.asString());
+
+        future.whenComplete((response, exception) -> {
+            if (exception != null) {
+                callback.accept(response.body());
+            } else {
+                // レスポンスが型の都合上Stringに限定されてしまうため
+                // 例外をクライアントに渡すことができない。
+                callback.accept(exception.getMessage());
+            }
+        });
+    }
+
     public static void main(String[] args) {
         String url = "https://localhost/";
 
