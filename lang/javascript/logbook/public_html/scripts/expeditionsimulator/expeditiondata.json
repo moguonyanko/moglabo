@@ -1,0 +1,13 @@
+{
+    "expedition": [
+        {
+            "name": "",
+            "income": {
+                "fuel": "",
+                "ammunition": "",
+                "steel": "",
+                "bauxite": ""
+            }
+        }
+    ]
+}
