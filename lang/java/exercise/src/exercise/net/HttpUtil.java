@@ -91,11 +91,13 @@ public class HttpUtil {
         HttpClient client = HttpClient.newHttpClient();
 
         String boundary = "---------------------------sampleboundary2017";
+        String fileName = target.getFileName().toString();
         String contentDisposition =
-            "Content-Disposition: form-data; name=\"samplefile\"; filename=\"star.png\"";
+            "Content-Disposition: form-data; name=\"samplefile\"; filename=\"" + fileName +  "\"";
 
         HttpRequest req = HttpRequest.newBuilder(uri)
             .version(Version.HTTP_1_1)
+//            .POST(HttpRequest.BodyProcessor.fromFile(target))
             .header("Content-Type", "multipart/form-data; boundary=" + boundary)
             .POST(HttpRequest.BodyProcessor.fromString(boundary + "¥r¥n"))
             .POST(HttpRequest.BodyProcessor.fromString(contentDisposition + "¥r¥n"))

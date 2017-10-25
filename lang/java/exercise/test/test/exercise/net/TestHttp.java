@@ -41,7 +41,7 @@ public class TestHttp {
     }
 
     @Test
-    @Ignore("HttpClientでmultipart/formdataが送信できるまで保留")
+    @Ignore("HttpClientでmultipart/form-dataが送信できるまで保留")
     public void canSaveFileByPOST() throws Exception {
         URI uri = new URI("http://localhost:8080/webcise/Upload");
         // filePathの場所にuriのコンテンツがダウンロードされる。
