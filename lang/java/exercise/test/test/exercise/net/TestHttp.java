@@ -73,11 +73,18 @@ public class TestHttp {
     public void canGetContentAsyncWhenComplete() throws Exception {
         String sampleUrl = "https://localhost/";
         URI uri = new URI(sampleUrl);
-        // TODO: コールバック実行前にメインスレッドが終了してしまう。
         HttpUtil.getContentWhenComplete(uri, text -> {
             System.out.println("Finished");
             assertNotNull(text);
             assertFalse(text.isEmpty());
         });
+    }
+
+    @Test
+    public void requestWithBasicAuth() throws Exception {
+        String sampleUrl = "https://localhost/secretsite/";
+        URI uri = new URI(sampleUrl);
+        String result = HttpUtil.getContentWithBasicAuth(uri, "testuser", "secret");
+        assertFalse(result.isEmpty());
     }
 }

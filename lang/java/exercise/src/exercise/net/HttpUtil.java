@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -13,6 +15,7 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -192,7 +195,7 @@ public class HttpUtil {
     }
 
     public static void getContentWhenComplete(URI uri, Consumer<String> callback)
-        throws GeneralSecurityException, IOException, InterruptedException {
+        throws GeneralSecurityException, IOException, InterruptedException, ExecutionException {
         HttpClient client = HttpClient.newBuilder()
             .sslContext(createIgnoredCheckingContext())
             .build();
@@ -203,15 +206,42 @@ public class HttpUtil {
         CompletableFuture<HttpResponse<String>> future =
             client.sendAsync(request, BodyHandler.asString());
 
-        future.whenComplete((response, exception) -> {
+        //Executor executor = CompletableFuture.delayedExecutor(3000, TimeUnit.MILLISECONDS);
+
+        CompletableFuture<HttpResponse<String>> f1 =
+            future.whenComplete((response, exception) -> {
+            System.out.println("When Complete");
             if (exception != null) {
                 callback.accept(response.body());
             } else {
                 // レスポンスが型の都合上Stringに限定されてしまうため
-                // 例外をクライアントに渡すことができない。
+                // 例外オブジェクトそのものをクライアントに渡すことができない。
                 callback.accept(exception.getMessage());
             }
         });
+
+        // TODO: NullPointerException
+        f1.get();
+    }
+
+    public static String getContentWithBasicAuth(URI uri, String userName, String password)
+        throws IOException, InterruptedException, GeneralSecurityException {
+        HttpClient client = HttpClient.newBuilder()
+            .sslContext(createIgnoredCheckingContext())
+            .authenticator(new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(userName, password.toCharArray());
+                }
+            })
+            .build();
+
+        HttpRequest req = HttpRequest.newBuilder(uri)
+            .build();
+
+        HttpResponse<String> res = client.send(req, BodyHandler.asString());
+
+        return res.body();
     }
 
     public static void main(String[] args) {
