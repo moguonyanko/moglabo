@@ -4,10 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
@@ -15,12 +12,12 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import javax.net.ssl.*;
 
 import jdk.incubator.http.HttpClient;
@@ -206,12 +203,10 @@ public class HttpUtil {
         CompletableFuture<HttpResponse<String>> future =
             client.sendAsync(request, BodyHandler.asString());
 
-        //Executor executor = CompletableFuture.delayedExecutor(3000, TimeUnit.MILLISECONDS);
-
         CompletableFuture<HttpResponse<String>> f1 =
             future.whenComplete((response, exception) -> {
             System.out.println("When Complete");
-            if (exception != null) {
+            if (exception == null) {
                 callback.accept(response.body());
             } else {
                 // レスポンスが型の都合上Stringに限定されてしまうため
@@ -220,7 +215,7 @@ public class HttpUtil {
             }
         });
 
-        // TODO: NullPointerException
+        // getしなければwhenCompleteは呼び出されない。
         f1.get();
     }
 
@@ -242,6 +237,49 @@ public class HttpUtil {
         HttpResponse<String> res = client.send(req, BodyHandler.asString());
 
         return res.body();
+    }
+
+    private static void dumpAvailableProxies(ProxySelector proxySelector, URI uri) {
+        System.out.println(proxySelector.select(uri).stream()
+            .map(p -> p.toString())
+            .collect(Collectors.joining()));
+    }
+
+    public static void getContentViaProxyAsync(URI uri, Consumer<String> callback,
+                                               InetSocketAddress address)
+        throws ExecutionException, InterruptedException, GeneralSecurityException {
+        ProxySelector proxySelector;
+        if (address != null) {
+            proxySelector = ProxySelector.of(address);
+        } else {
+            proxySelector = ProxySelector.getDefault();
+        }
+
+        dumpAvailableProxies(proxySelector, uri);
+
+        HttpClient client = HttpClient.newBuilder()
+            .sslContext(createIgnoredCheckingContext())
+            .proxy(proxySelector)
+            .build();
+
+        HttpRequest request = HttpRequest.newBuilder(uri)
+            .build();
+
+        CompletableFuture<HttpResponse<String>> f1 =
+            client.sendAsync(request, BodyHandler.asString());
+
+        // クライアントにエラーメッセージを返してもクライアント側では
+        // メッセージの内容を解析しない限り成功か失敗かを判断できない。
+        // 何らかのフォーマットを用いてステータスコードも一緒に返すべきかもしれない。
+        f1.whenComplete((response, exception) -> {
+            if (exception == null) {
+                callback.accept(response.body());
+            } else {
+                callback.accept(exception.getMessage());
+            }
+        });
+
+        f1.get();
     }
 
     public static void main(String[] args) {

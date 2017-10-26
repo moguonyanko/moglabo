@@ -1,6 +1,7 @@
 package test.exercise.net;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -23,7 +24,6 @@ public class TestHttp {
         String sampleUrl = "http://localhost/";
         URI uri = new URI(sampleUrl);
         String result = HttpUtil.getContent(uri);
-        //System.out.println(result);
         assertFalse(result.isEmpty());
     }
 
@@ -34,7 +34,6 @@ public class TestHttp {
         Path filePath = Paths.get("sample/index.html");
         Path result = HttpUtil.getPath(uri, filePath);
         List<String> content = Files.readAllLines(result);
-        //System.out.println(content);
         assertFalse(content.isEmpty());
         // テストに成功したらダウンロードしたファイルは削除する。
         Files.delete(result);
@@ -55,7 +54,6 @@ public class TestHttp {
         String sampleUrl = "http://localhost/";
         URI uri = new URI(sampleUrl);
         HttpUtil.getContentAsync(uri, result -> {
-            //System.out.println(result);
             assertNotNull(result);
             assertFalse(result.isEmpty());
         });
@@ -86,5 +84,17 @@ public class TestHttp {
         URI uri = new URI(sampleUrl);
         String result = HttpUtil.getContentWithBasicAuth(uri, "testuser", "secret");
         assertFalse(result.isEmpty());
+    }
+
+    @Test
+    public void canGetContentViaProxy() throws Exception {
+        URI uri = new URI("https://localhost/");
+        InetSocketAddress proxyAddress = null; // Direct
+        //InetSocketAddress proxyAddress = new InetSocketAddress("proxyhost", 443);
+        HttpUtil.getContentViaProxyAsync(uri, content -> {
+            System.out.println("Proxy request end");
+            assertNotNull(content);
+            assertFalse(content.isEmpty());
+        }, proxyAddress);
     }
 }
