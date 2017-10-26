@@ -1,12 +1,33 @@
 {
-    "expedition": [
+    "expeditions": [
         {
-            "name": "",
+            "name": "海上護衛任務",
+            "time": 90,
             "income": {
-                "fuel": "",
-                "ammunition": "",
-                "steel": "",
-                "bauxite": ""
+                "fuel": 200,
+                "ammunition": 200,
+                "steel": 20,
+                "bauxite": 20
+            }
+        },
+        {
+            "name": "長距離練習航海",
+            "time": 30,
+            "income": {
+                "fuel": 0,
+                "ammunition": 100,
+                "steel": 30,
+                "bauxite": 0
+            }
+        },
+        {
+            "name": "防空射撃演習",
+            "time": 40,
+            "income": {
+                "fuel": 0,
+                "ammunition": 0,
+                "steel": 0,
+                "bauxite": 80
             }
         }
     ]

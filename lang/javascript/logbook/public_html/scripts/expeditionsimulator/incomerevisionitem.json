@@ -1,0 +1,20 @@
+{
+    "items": [
+        {
+            "name": "大発動艇",
+            "revision": 5
+        },
+        {
+            "name": "陸戦大発",
+            "revision": 2
+        },
+        {
+            "name": "特二式内火艇",
+            "revision": 1
+        },
+        {
+            "name": "特大発動艇",
+            "revision": 7
+        }
+    ]
+}
