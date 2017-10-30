@@ -29,6 +29,16 @@
                 "steel": 0,
                 "bauxite": 80
             }
+        },
+        {
+            "name": "水上機基地建設",
+            "time": 540,
+            "income": {
+                "fuel": 480,
+                "ammunition": 0,
+                "steel": 200,
+                "bauxite": 200
+            }
         }
     ]
 }

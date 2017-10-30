@@ -90,7 +90,7 @@
             return this.expeditions.map(e => e.time)
                     .reduce((e1, e2) => e1 + e2, 0);
         }
-        getIncome() {
+        get income() {
             const resultIncome = this.expeditions
                     .map(e => e.getIncome())
                     .reduce((i1, i2) => i1.merged(i2), new Income());
@@ -111,13 +111,13 @@
         isExceededTime() {
             return this.sumOfTime > this.availableTime;
         }
-        getIncome() {
+        get income() {
             if (this.isExceededTime()) {
                 const msg = `${this.name}の総遠征時間が制限時間(${this.availableTime}分)を超過しています。`;
                 throw new Error(msg);
             }
             
-            return this.expeditionService.getIncome();
+            return this.expeditionService.income;
         }
     }
     
@@ -171,13 +171,206 @@
         fleets.forEach(fleet => {
             const name = fleet.name,
                 time = fleet.sumOfTime,
-                income = fleet.getIncome();
+                income = fleet.income;
             console.log(`${name}は総遠征時間(${time}分)で収入は[${income}]です。`);
         });
     };
     
-    const init = () => {
-        testCalc();
+    // DOM
+    
+    const qs = (selector, base) => (base || document).querySelector(selector),
+        qsa = (selector, base) => (base || document).querySelectorAll(selector),
+        ce = elementName => document.createElement(elementName),
+        cdf = () => document.createDocumentFragment(),
+        ctn = text => document.createTextNode(text),
+        attr = (element, property, value) => element.setAttribute(property, value);
+    
+    const configBasePath = "../../scripts/expeditionsimulator/";
+        
+    const revisionData = {},
+        expeditionData = {};
+    
+    const loadConfigJson = async jsonName => {
+        const response = await fetch(configBasePath + jsonName);
+        if (!response.ok) {
+            throw new Error(`Failded loading ${jsonName}: ${response.status}`);
+        }
+        return await response.json();
+    };
+    
+    const initData = async () => {
+        const revisionJson = await loadConfigJson("incomerevisionitem.json");
+        const revisions = revisionJson.revisions;
+        revisions.forEach(revision => {
+            revisionData[revision.name] = revision;
+        });
+        const expeditionJson = await loadConfigJson("expeditiondata.json");
+        const expeditions = expeditionJson.expeditions;
+        expeditions.forEach(expedition => {
+            expeditionData[expedition.name] = expedition;
+        });
+    };
+    
+    const makeConfigSelector = data => {
+        const sel = ce("select");
+        const initialOpt = ce("option");
+        attr(initialOpt, "selected", true);
+        initialOpt.appendChild(ctn("未選択"));
+        sel.appendChild(initialOpt);
+        Object.keys(data).forEach(name => {
+            const opt = ce("option");
+            attr(opt, "value", name);
+            opt.appendChild(ctn(name));
+            sel.appendChild(opt);
+        });
+        return sel;
+    };
+    
+    const makeSizeElement = ({name, min, max, defaultValue = 0, className}) => {
+        const label = ce("label");
+        label.appendChild(ctn(name));
+        const size = ce("input");
+        attr(size, "type", "number");
+        attr(size, "min", min);
+        attr(size, "max", max);
+        attr(size, "value", defaultValue);
+        attr(size, "class", className);
+        label.appendChild(size);
+        return label;
+    };
+    
+    const makeRevisionSelectors = () => {
+        const bases = qsa(".revision-container");
+        Array.from(bases).forEach(base => {
+            const frag = cdf();
+            const sel = makeConfigSelector(revisionData);
+            attr(sel, "class", "revision-data-selector");
+            frag.appendChild(sel);
+            const size = makeSizeElement({
+                name: "装備数",
+                min: 0,
+                max: 4,
+                defaultValue: 4,
+                className: "revision-data-size"
+            });
+            frag.appendChild(size);
+            base.appendChild(frag);
+        });
+    };
+    
+    const makeSuccessExpeditionInput = () => {
+        const successLabel = ce("label");
+        const successEle = ce("input");
+        attr(successEle, "class", "expedition-success-check");
+        attr(successEle, "type", "checkbox");
+        successLabel.appendChild(successEle);
+        successLabel.appendChild(ctn("大成功"));
+        return successLabel;
+    };
+    
+    const makeExpeditionSelectors = () => {
+        const bases = qsa(".expedition-container");
+        Array.from(bases).forEach(base => {
+            const frag = cdf();
+            const sel = makeConfigSelector(expeditionData);
+            attr(sel, "class", "expedition-data-selector");
+            frag.appendChild(sel);
+            const size = makeSizeElement({
+                name: "遠征回数",
+                min: 0,
+                max: 99,
+                defaultValue: 1,
+                className: "expedition-data-size"
+            });
+            frag.appendChild(size);
+            frag.appendChild(makeSuccessExpeditionInput());
+            base.appendChild(frag);
+        });
+    };
+    
+    const getSelectedRevisionItems = fleetEle => {
+        const revBase = qs(".revision-container", fleetEle);
+        const items = [];
+        const name = qs(".revision-data-selector", revBase).value;
+        if (!(name in revisionData)) {
+            return items;
+        }
+        const size = parseInt(qs(".revision-data-size", revBase).value);
+        for (let i = 0; i < size; i++) {
+            const obj = revisionData[name];
+            items.push(new IncomeRevisionItem(obj));
+        }
+        return items;
+    };
+    
+    const getSelectedExpedtions = fleetEle => {
+        const selector = qs(".expedition-data-selector", fleetEle);
+        const expedtions = [];
+        const name = selector.value;
+        if (!(name in expeditionData)) {
+            return expedtions;
+        }
+        const expedtionObj = expeditionData[name];
+        const time = expedtionObj.time,
+            income = new Income(expedtionObj.income);
+        const incomeRevisionItems = getSelectedRevisionItems(fleetEle);
+        const greetSuccess = qs(".expedition-success-check", fleetEle).checked;
+        const size = parseInt(qs(".expedition-data-size", fleetEle).value);
+        for (let i = 0; i < size; i++) {
+            const expedition = new Expedition({
+                name,
+                time, 
+                income,
+                incomeRevisionItems,
+                greetSuccess
+            });
+            expedtions.push(expedition);
+        }
+        return expedtions;
+    };
+    
+    const makeFleets = () => {
+        const fleetEles = qsa(".fleet-container");
+        const fleets = Array.from(fleetEles).map(fleetEle => {
+            const name = qs(".fleet-name input", fleetEle).value;
+            const availableTime = parseInt(qs(".availabletime", fleetEle).value);
+            const expeditions = getSelectedExpedtions(fleetEle);
+            return new Fleet({
+                name,
+                availableTime,
+                expeditions
+            });
+        });
+        return fleets;
+    };
+    
+    const addListener = () => {
+        const calculater = qs(".calc");
+        const result = qs(".result");
+        calculater.addEventListener("click", () => {
+            result.innerHTML = "";
+            const fleets = makeFleets();
+            console.log(fleets);
+            fleets.forEach(fleet => {
+                try {
+                    const info = [
+                        `${fleet.name}は総遠征時間(${fleet.sumOfTime}分)で`,
+                        `収入は[${fleet.income}]です。<br />`
+                    ];
+                    result.innerHTML += info.join("");
+                } catch(err) {
+                    result.innerHTML += `${err.message}<br />`;
+                }
+            });
+        });
+    };
+    
+    const init = async () => {
+        //testCalc();
+        await initData();
+        makeRevisionSelectors();
+        makeExpeditionSelectors();
+        addListener();
     };
     
     window.addEventListener("DOMContentLoaded", init);

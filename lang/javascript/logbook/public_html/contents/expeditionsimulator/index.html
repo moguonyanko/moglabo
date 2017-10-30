@@ -13,7 +13,34 @@
       <a href="../../">home</a>
     </header>
     <main>
-      <p>開発中…</p>
+      <section>
+        <h2>遠征</h2>
+        <div class="fleet-container">
+          <label class="fleet-name">艦隊名:<input type="text" value="第1艦隊" /></label>
+          <div class="expedition-container"></div>
+          <label>利用時間:<input class="availabletime" type="number" min="0" max="6000" value="1440" /></label>
+          <div class="revision-container"></div>
+        </div>
+        <div class="fleet-container">
+          <label class="fleet-name">艦隊名:<input type="text" value="第2艦隊" /></label>
+          <div class="expedition-container"></div>
+          <label>利用時間:<input class="availabletime" type="number" min="0" max="6000" value="1440" /></label>
+          <div class="revision-container"></div>
+        </div>
+        <div class="fleet-container">
+          <label class="fleet-name">艦隊名:<input type="text" value="第3艦隊" /></label>
+          <div class="expedition-container"></div>
+          <label>利用時間:<input class="availabletime" type="number" min="0" max="6000" value="1440" /></label>
+          <div class="revision-container"></div>
+        </div>
+      </section>
+      <section>
+        <h2>結果</h2>
+        <div>
+          <button class="calc">計算</button>
+          <p class="result"></p>
+        </div>
+      </section>
     </main>
     <script src="../../scripts/expeditionsimulator/main.js"></script>
   </body>
