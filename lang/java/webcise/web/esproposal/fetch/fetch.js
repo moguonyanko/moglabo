@@ -386,6 +386,9 @@
             });
             
             clearer.addEventListener("click", resetArea);
+        },
+        readableStreamSAmple() {
+            // TODO: implement
         }
 	};
 
