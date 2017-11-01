@@ -387,8 +387,57 @@
             
             clearer.addEventListener("click", resetArea);
         },
-        readableStreamSAmple() {
-            // TODO: implement
+        readableStreamSample() {
+            const base = doc.querySelector(".readablestream-sample"),
+                runner = base.querySelector(".runner"),
+                clearer = base.querySelector(".clearer"),
+                resultArea = base.querySelector(".result-area");
+                
+            const readImage = async (url, consumer) => {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+                if (!response.body) {
+                    throw new Error("Response body is not implemented");
+                }
+                // response.bodyはReadableStream。
+                // このReadableStreamを介して画像を読み込むとUint8Arrayが得られる。
+                const reader = response.body.getReader();
+                try {
+                    while (true) {
+                        const {done, value} = await reader.read();
+                        if (done) {
+                            break;
+                        }
+                        consumer(value);
+                    }
+                } finally {
+                    // 呼ぶ必要があるかどうかは不明。
+                    reader.releaseLock();
+                }
+                // 将来的には以下のコードでも動作するようになるはずである。
+                //for await (const chunk of response.body) {
+                //    consumer(chunk);
+                //}
+            };    
+                
+            runner.addEventListener("click", async () => {
+                const consumeImage = chunk => {
+                    resultArea.innerHTML += `Readed: ${chunk.length} byte<br />`;
+                    const blob = new Blob([ chunk ], { type: "image/png" });
+                    const img = doc.createElement("img");
+                    const blobUrl = URL.createObjectURL(blob);
+                    img.onload = () => {
+                        resultArea.appendChild(img);
+                        URL.revokeObjectURL(blobUrl);
+                    };
+                    img.src = blobUrl;
+                };
+                await readImage("samplestar.png", consumeImage);
+            });    
+                
+            clearer.addEventListener("click", () => resultArea.innerHTML = "");
         }
 	};
 
