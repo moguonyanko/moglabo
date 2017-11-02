@@ -169,6 +169,49 @@
             clearer.addEventListener("click", () => {
                 resultArea.innerHTML = "";
             });
+        },
+        forAwaitOfSample3() {
+            const base = doc.querySelector(".forawaitof-sample3"),
+                  bound = base.querySelector(".bound"),
+                  size = base.querySelector(".size"),
+                  runner = base.querySelector(".run"),
+                  clearer = base.querySelector(".clear"),
+                  resultArea = base.querySelector(".result-area");
+            
+            
+            const getRandomNumber = async function* () {
+                if (!bound.value) {
+                    return;
+                }
+                const url = `/webcise/RandomNumber?bound=${parseInt(bound.value)}`;
+                while (true) {
+                    const response = await fetch(url);
+                    const json = await response.json();
+                    yield Number(json.result); 
+                }
+            };
+            
+            runner.addEventListener("click", async () => {
+                if (!size.value) {
+                    return;
+                }
+                
+                let count = 0, 
+                    limit = parseInt(size.value);
+                for await (const number of getRandomNumber()) {
+                    resultArea.innerHTML += `${number}`;
+                    if (++count < limit) {
+                        resultArea.innerHTML += `,`;
+                    } else {
+                        resultArea.innerHTML += `<br />`;
+                        break;
+                    }
+                }
+            });
+            
+            clearer.addEventListener("click", () => {
+                resultArea.innerHTML = "";
+            });
         }
     };
 

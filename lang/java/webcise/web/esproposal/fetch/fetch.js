@@ -430,6 +430,7 @@
                     const blobUrl = URL.createObjectURL(blob);
                     img.onload = () => {
                         resultArea.appendChild(img);
+                        // revokeしてもimgがDOMに残っている限りimgを追加できない。
                         URL.revokeObjectURL(blobUrl);
                     };
                     img.src = blobUrl;
