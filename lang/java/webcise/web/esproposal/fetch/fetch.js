@@ -439,6 +439,65 @@
             });    
                 
             clearer.addEventListener("click", () => resultArea.innerHTML = "");
+        },
+        readableStreamIterationSample() {
+            const base = doc.querySelector(".readablestream-iteration-sample"),
+                resultArea = base.querySelector(".result-area"),
+                bound = base.querySelector(".bound"),
+                size = base.querySelector(".size"),
+                runner = base.querySelector(".runner"),
+                clearer = base.querySelector(".clearer");
+                
+            const streamAsyncGenerator = async function* (readableStream) {
+                const reader = readableStream.getReader();
+                try {
+                    while (true) {
+                        // readにバイトサイズを指定して少しずつレスポンスを読みたいが
+                        // readは引数を取らない。
+                        const {done, value} = await reader.read();
+                        if (done) {
+                            return;
+                        }
+                        yield value;
+                    }
+                } finally {
+                    reader.releaseLock();
+                }
+            }; 
+            
+            const Uint8ArrayToString = array => {
+                let s = [];
+                for (let i = 0, len = array.byteLength; i < len; i++) {
+                    s.push(String.fromCharCode(array[i]));
+                }
+                return s.join("");
+            };
+              
+            runner.addEventListener("click", async () => {
+                const url = `/webcise/RandomNumber?bound=${parseInt(bound.value)}`;
+                const response = await fetch(url);
+                if (!response.body) {
+                    resultArea.innerHTML = "Response body is not enable <br />";
+                    return;
+                }
+                let count = 0, 
+                    limit = parseInt(size.value);
+                for await (const chunk of streamAsyncGenerator(response.body)) {
+                    console.log(chunk);
+                    // Responseを2回読むことになるので以下のコードはエラーになる。
+                    //console.log(await response.json());
+                    //// Response.bodyが既に使われているとcloneもエラーになる。
+                    //console.log(await (response.clone()).json());
+                    let jsonStr = Uint8ArrayToString(chunk);
+                    console.log(jsonStr);
+                    const json = JSON.parse(jsonStr);
+                    resultArea.innerHTML += `${json.result}<br />`;
+                }
+            });
+            
+            clearer.addEventListener("click", () => {
+                resultArea.innerHTML = "";
+            });
         }
 	};
 
