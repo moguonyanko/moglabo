@@ -211,6 +211,83 @@
         });
     };
     
+    // IndexedDB
+    // Reference: 
+    // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
+    
+    const DB_NAME = "expeditionsimulator";
+    
+    const DB_VERSION = 1;
+    
+    const REVISION_STORE_NAME = "revision",
+        EXPEDITION_STORE_NAME = "expedition";
+    
+    const createStore = ({db, configName, storeName}) => {
+        //db.deleteObjectStore(storeName);
+        const store = db.createObjectStore(storeName, {keyPath: `${storeName}`});
+        return new Promise(async (resolve, reject) => {
+            try {
+                // TODO: 書き込み可能でobjectStoreを開けない。
+                const transaction = db.transaction([storeName], "readwrite");
+                transaction.oncomplete = () => {
+                    resolve({transactionStore, json});
+                };
+                transaction.onerror = event => {
+                    reject(event);
+                };
+                const json = await loadConfigJson(configName);
+                const transactionStore = transaction.objectStore(storeName);
+                const request = transactionStore.add(JSON.stringify(json));
+                reuqest.onsuccess = event => {
+                    console.log(event);
+                };
+                reuqest.onerror = event => {
+                    reject(event);
+                };
+            } catch (err) {
+                console.log(err);
+                reject(err);
+            }
+        });
+    };
+    
+    const createRevisionStore = async db => {
+        const {transactionStore, json} = await createStore({
+            db,
+            storeName: REVISION_STORE_NAME,
+            configName: "incomerevisionitem.json"
+        });
+    };
+    
+    const createExpeditionStore = async db => {
+        const {transactionStore, json} = await createStore({
+            db,
+            storeName: EXPEDITION_STORE_NAME,
+            configName: "expeditiondata.json"
+        });
+    };
+    
+    const openDB = () => {
+        const request = window.indexedDB.open(DB_NAME, DB_VERSION);
+        return new Promise((resolve, reject) => {
+            request.onupgradeneeded = async event => {
+                const db = event.target.result;
+                try {
+                    await createRevisionStore(db);
+                    await createExpeditionStore(db);
+                } catch (err) {
+                    reject(err);
+                }
+            };
+            request.onsuccess = event => {
+                resolve(event.target.result);
+            };
+            request.onerror = event => {
+                reject(event);
+            };
+        });
+    };
+    
     const makeConfigSelector = data => {
         const sel = ce("select");
         const initialOpt = ce("option");
@@ -367,6 +444,12 @@
     
     const init = async () => {
         //testCalc();
+        try {
+            await openDB();
+        } catch(err) {
+            console.error(err);
+        }
+        
         await initData();
         makeRevisionSelectors();
         makeExpeditionSelectors();
