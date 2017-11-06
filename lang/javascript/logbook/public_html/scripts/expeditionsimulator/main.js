@@ -217,59 +217,96 @@
     
     const DB_NAME = "expeditionsimulator";
     
+    // 新しいバージョンを現在のDBのバージョンより古くするとエラーになる。
     const DB_VERSION = 1;
     
     const REVISION_STORE_NAME = "revision",
         EXPEDITION_STORE_NAME = "expedition";
-    
-    const createStore = ({db, configName, storeName}) => {
-        //db.deleteObjectStore(storeName);
-        const store = db.createObjectStore(storeName, {keyPath: `${storeName}`});
-        return new Promise(async (resolve, reject) => {
-            try {
-                // TODO: 書き込み可能でobjectStoreを開けない。
-                const transaction = db.transaction([storeName], "readwrite");
-                transaction.oncomplete = () => {
-                    resolve({transactionStore, json});
-                };
-                transaction.onerror = event => {
-                    reject(event);
-                };
-                const json = await loadConfigJson(configName);
-                const transactionStore = transaction.objectStore(storeName);
-                const request = transactionStore.add(JSON.stringify(json));
-                reuqest.onsuccess = event => {
-                    console.log(event);
-                };
-                reuqest.onerror = event => {
-                    reject(event);
-                };
-            } catch (err) {
-                console.log(err);
-                reject(err);
+        
+    const sampleData = {
+        samples: [
+            {
+                "name": "大発動艇",
+                "revision": 5
+            },
+            {
+                "name": "陸戦大発",
+                "revision": 2
+            },
+            {
+                "name": "特二式内火艇",
+                "revision": 1
+            },
+            {
+                "name": "特大発動艇",
+                "revision": 7
             }
+        ]
+    };
+        
+    const addAllItems = ({db, configName, storeName}) => {
+        return new Promise(async (resolve, reject) => {
+            const transaction = db.transaction([storeName], "readwrite");
+            transaction.oncomplete = resolve;
+            transaction.onerror = reject;
+            const store = transaction.objectStore(storeName);
+            const json = await loadConfigJson(configName);
+            // TODO: JSONは追加に失敗するがそれと同じ内容のsampleDataは追加に成功する。
+            //const json = sampleData;
+            //console.log(json);
+            //console.log(sampleData);
+            Object.keys(json).forEach(key => json[key].forEach(item => {
+                const request = store.add(item);
+                request.onsuccess = () => {
+                    console.log(`Added: ${JSON.stringify(item)}`);
+                };
+                request.onerror = reject;
+            }));
+        });
+    };
+    
+    const createStore = ({db, keyPath, configName, storeName}) => {
+        return new Promise((resolve, reject) => {
+            try {
+                db.deleteObjectStore(storeName);
+            } catch(err) { 
+                // TODO: 削除対象のstoreが存在した場合だけdeleteObjectStoreしたい。
+                // しかしstoreの存在を確認する方法が不明である。
+            }
+            const store = db.createObjectStore(storeName, {keyPath});
+            store.createIndex(`${storeName}index`, keyPath, {unique: true});
+            store.transaction.oncomplete = async event => {
+                try {
+                    await addAllItems({db, configName, storeName});
+                    resolve(store);
+                } catch (err) {
+                    reject(err);
+                }
+            };
         });
     };
     
     const createRevisionStore = async db => {
-        const {transactionStore, json} = await createStore({
+        await createStore({
             db,
+            keyPath: "name",
             storeName: REVISION_STORE_NAME,
             configName: "incomerevisionitem.json"
         });
     };
     
     const createExpeditionStore = async db => {
-        const {transactionStore, json} = await createStore({
+        await createStore({
             db,
+            keyPath: "name",
             storeName: EXPEDITION_STORE_NAME,
             configName: "expeditiondata.json"
         });
     };
     
-    const openDB = () => {
-        const request = window.indexedDB.open(DB_NAME, DB_VERSION);
+    const initConfig = () => {
         return new Promise((resolve, reject) => {
+            const request = window.indexedDB.open(DB_NAME, DB_VERSION);
             request.onupgradeneeded = async event => {
                 const db = event.target.result;
                 try {
@@ -277,14 +314,13 @@
                     await createExpeditionStore(db);
                 } catch (err) {
                     reject(err);
+                } finally {
+                    // 設定を後から追加することがないのでDBをすぐにcloseする。
+                    db.close();
                 }
             };
-            request.onsuccess = event => {
-                resolve(event.target.result);
-            };
-            request.onerror = event => {
-                reject(event);
-            };
+            request.onsuccess = resolve;
+            request.onerror = reject;
         });
     };
     
@@ -445,7 +481,7 @@
     const init = async () => {
         //testCalc();
         try {
-            await openDB();
+            await initConfig();
         } catch(err) {
             console.error(err);
         }
