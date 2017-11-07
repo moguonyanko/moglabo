@@ -217,50 +217,40 @@
     
     const DB_NAME = "expeditionsimulator";
     
-    // 新しいバージョンを現在のDBのバージョンより古くするとエラーになる。
+    // 新しいバージョンを現在のDBのバージョンより古くするとエラーが発生する。
+    // 実際のDBバージョンはDB_VERSION+(オブジェクトストアの総数-1)になる。
     const DB_VERSION = 1;
+    
+    const idb = window.indexedDB;
+    
+    let db;
     
     const REVISION_STORE_NAME = "revision",
         EXPEDITION_STORE_NAME = "expedition";
         
-    const sampleData = {
-        samples: [
-            {
-                "name": "大発動艇",
-                "revision": 5
-            },
-            {
-                "name": "陸戦大発",
-                "revision": 2
-            },
-            {
-                "name": "特二式内火艇",
-                "revision": 1
-            },
-            {
-                "name": "特大発動艇",
-                "revision": 7
-            }
-        ]
-    };
-        
+    /**
+     * IDBDatabase.transactionによるトランザクションの開始が非同期処理より前に
+     * 行われているとデータの追加に失敗する。非同期処理の最中にトランザクションが
+     * 終了してしまうようである。
+     * https://stackoverflow.com/questions/22605065/transactioninactiveerror-in-indexeddb
+     * https://stackoverflow.com/questions/40314074/indexeddb-transactioninactiveerror
+     */
     const addAllItems = ({db, configName, storeName}) => {
         return new Promise(async (resolve, reject) => {
-            const transaction = db.transaction([storeName], "readwrite");
-            transaction.oncomplete = resolve;
-            transaction.onerror = reject;
-            const store = transaction.objectStore(storeName);
             const json = await loadConfigJson(configName);
-            // TODO: JSONは追加に失敗するがそれと同じ内容のsampleDataは追加に成功する。
-            //const json = sampleData;
-            //console.log(json);
-            //console.log(sampleData);
+            const transaction = db.transaction([storeName], "readwrite");
+            const store = transaction.objectStore(storeName);
+            console.log(`Try to add: ${JSON.stringify(json)}`);
+            transaction.oncomplete = () => resolve(store);
+            transaction.onerror = reject;
             Object.keys(json).forEach(key => json[key].forEach(item => {
-                const request = store.add(item);
-                request.onsuccess = () => {
-                    console.log(`Added: ${JSON.stringify(item)}`);
-                };
-                request.onerror = reject;
+                    try {
+                        const request = store.add(item);
+                        request.onerror = reject;
+                    } catch (err) {
+                        console.log(err);
+                        reject(err);
+                    }
             }));
         });
     };
@@ -268,26 +258,30 @@
     const createStore = ({db, keyPath, configName, storeName}) => {
         return new Promise((resolve, reject) => {
             try {
-                db.deleteObjectStore(storeName);
-            } catch(err) { 
-                // TODO: 削除対象のstoreが存在した場合だけdeleteObjectStoreしたい。
-                // しかしstoreの存在を確認する方法が不明である。
-            }
-            const store = db.createObjectStore(storeName, {keyPath});
-            store.createIndex(`${storeName}index`, keyPath, {unique: true});
-            store.transaction.oncomplete = async event => {
-                try {
-                    await addAllItems({db, configName, storeName});
-                    resolve(store);
-                } catch (err) {
-                    reject(err);
+                if (db.objectStoreNames.contains(storeName)) {
+                    db.deleteObjectStore(storeName);
                 }
-            };
+                console.log(`Try to create store: ${storeName}`);
+                const store = db.createObjectStore(storeName, {keyPath});
+                console.log(`Created store: ${storeName}`);
+                store.createIndex(`${storeName}index`, keyPath, {unique: true});
+                store.transaction.oncomplete = async () => {
+                    try {
+                        resolve(await addAllItems({db, configName, storeName}));
+                    } catch (err) {
+                        console.log(err);
+                        reject(err);
+                    }
+                };
+            } catch (err) {
+                console.log(err);
+                reject(err);
+            }
         });
     };
     
     const createRevisionStore = async db => {
-        await createStore({
+        return await createStore({
             db,
             keyPath: "name",
             storeName: REVISION_STORE_NAME,
@@ -296,7 +290,7 @@
     };
     
     const createExpeditionStore = async db => {
-        await createStore({
+        return await createStore({
             db,
             keyPath: "name",
             storeName: EXPEDITION_STORE_NAME,
@@ -304,26 +298,54 @@
         });
     };
     
-    const initConfig = () => {
+    /**
+     * オブジェクトストアを2つ作成するためにバージョンを変えて2回IndexedDBをopenしている。
+     * このような処理は不要にしたいが他にオブジェクトストアを2つ以上作成する方法が見つからない。
+     * 普通に作成しようとするとInvalidStateErrorとなる。
+     * 参考:
+     * https://stackoverflow.com/questions/20097662/how-to-create-multiple-object-stores-in-indexeddb
+     */
+    const initDB = () => {
         return new Promise((resolve, reject) => {
-            const request = window.indexedDB.open(DB_NAME, DB_VERSION);
+            let request;
+            try {
+                // TODO: 誤ったバージョンを指定してもopen自体は成功してしまう。
+                // その後の処理でエラーが発生する。
+                // 2回openするアプローチでは正確なバージョンを指定することができない。
+                request = idb.open(DB_NAME, DB_VERSION);
+            } catch(err) {
+                request = idb.open(DB_NAME, DB_VERSION + 1);
+            }
             request.onupgradeneeded = async event => {
-                const db = event.target.result;
-                try {
-                    await createRevisionStore(db);
-                    await createExpeditionStore(db);
-                } catch (err) {
-                    reject(err);
-                } finally {
-                    // 設定を後から追加することがないのでDBをすぐにcloseする。
-                    db.close();
-                }
+                db = event.target.result;
+                await createRevisionStore(db);
+                db.close();
+                request = idb.open(DB_NAME, DB_VERSION + 1);
+                request.onupgradeneeded = async event => {
+                    db = event.target.result;
+                    await createExpeditionStore(db);           
+                };
+                //request.onsuccess = event => resolve(event.target.result);
+                //request.onerror = event => reject(event);
             };
-            request.onsuccess = resolve;
-            request.onerror = reject;
+            request.onsuccess = event => {
+                db = event.target.result;
+                resolve(db);
+            };
+            request.onerror = event => reject(event);
         });
     };
     
+    const getAllData = storeName => {
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction([storeName]);
+            const store = tx.objectStore(storeName);
+            const request = store.getAll();
+            request.onsuccess = event => resolve(event.target.result);
+            request.onerror = reject;
+        });
+    };
+
     const makeConfigSelector = data => {
         const sel = ce("select");
         const initialOpt = ce("option");
@@ -354,7 +376,7 @@
     
     const makeRevisionSelectors = () => {
         const bases = qsa(".revision-container");
-        Array.from(bases).forEach(base => {
+        Array.from(bases).forEach(async base => {
             const frag = cdf();
             const sel = makeConfigSelector(revisionData);
             attr(sel, "class", "revision-data-selector");
@@ -481,11 +503,12 @@
     const init = async () => {
         //testCalc();
         try {
-            await initConfig();
-        } catch(err) {
+            await initDB();
+            console.log(db);
+        } catch (err) {
             console.error(err);
-        }
-        
+        } 
+
         await initData();
         makeRevisionSelectors();
         makeExpeditionSelectors();
