@@ -187,9 +187,6 @@
     
     const configBasePath = "../../scripts/expeditionsimulator/";
         
-    const revisionData = {},
-        expeditionData = {};
-    
     const loadConfigJson = async jsonName => {
         const response = await fetch(configBasePath + jsonName);
         if (!response.ok) {
@@ -198,35 +195,35 @@
         return await response.json();
     };
     
-    const initData = async () => {
-        const revisionJson = await loadConfigJson("incomerevisionitem.json");
-        const revisions = revisionJson.revisions;
-        revisions.forEach(revision => {
-            revisionData[revision.name] = revision;
-        });
-        const expeditionJson = await loadConfigJson("expeditiondata.json");
-        const expeditions = expeditionJson.expeditions;
-        expeditions.forEach(expedition => {
-            expeditionData[expedition.name] = expedition;
-        });
-    };
-    
     // IndexedDB
     // Reference: 
     // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
     
-    const DB_NAME = "expeditionsimulator";
-    
-    // 新しいバージョンを現在のDBのバージョンより古くするとエラーが発生する。
-    // 実際のDBバージョンはDB_VERSION+(オブジェクトストアの総数-1)になる。
-    const DB_VERSION = 1;
+    const DB_NAME_PREFIX = "expeditionsimulator";
     
     const idb = window.indexedDB;
     
-    let db;
-    
-    const REVISION_STORE_NAME = "revision",
-        EXPEDITION_STORE_NAME = "expedition";
+    const REVISION_DB_NAME = `${DB_NAME_PREFIX}_revision`,
+        EXPEDITION_DB_NAME = `${DB_NAME_PREFIX}_expedition`;
+        
+    const dbConfig = {
+        revision: {
+            version: 1,
+            dbName: `${DB_NAME_PREFIX}_revision`,
+            storeName: "revision",
+            configPath: "incomerevisionitem.json",
+            keyPath: "name",
+            index: "name"
+        },
+        expedition: {
+            version: 1,
+            dbName: `${DB_NAME_PREFIX}_expedition`,
+            storeName: "expedition",
+            configPath: "expeditiondata.json",
+            keyPath: "name",
+            index: "name"
+        }
+    };
         
     /**
      * IDBDatabase.transactionによるトランザクションの開始が非同期処理より前に
@@ -235,9 +232,9 @@
      * https://stackoverflow.com/questions/22605065/transactioninactiveerror-in-indexeddb
      * https://stackoverflow.com/questions/40314074/indexeddb-transactioninactiveerror
      */
-    const addAllItems = ({db, configName, storeName}) => {
+    const addAllItems = ({db, configPath, storeName}) => {
         return new Promise(async (resolve, reject) => {
-            const json = await loadConfigJson(configName);
+            const json = await loadConfigJson(configPath);
             const transaction = db.transaction([storeName], "readwrite");
             const store = transaction.objectStore(storeName);
             console.log(`Try to add: ${JSON.stringify(json)}`);
@@ -255,7 +252,7 @@
         });
     };
     
-    const createStore = ({db, keyPath, configName, storeName}) => {
+    const createStore = ({db, index, keyPath, configPath, storeName}) => {
         return new Promise((resolve, reject) => {
             try {
                 if (db.objectStoreNames.contains(storeName)) {
@@ -264,10 +261,10 @@
                 console.log(`Try to create store: ${storeName}`);
                 const store = db.createObjectStore(storeName, {keyPath});
                 console.log(`Created store: ${storeName}`);
-                store.createIndex(`${storeName}index`, keyPath, {unique: true});
+                store.createIndex(index, keyPath, {unique: true});
                 store.transaction.oncomplete = async () => {
                     try {
-                        resolve(await addAllItems({db, configName, storeName}));
+                        resolve(await addAllItems({db, configPath, storeName}));
                     } catch (err) {
                         console.log(err);
                         reject(err);
@@ -280,62 +277,107 @@
         });
     };
     
-    const createRevisionStore = async db => {
-        return await createStore({
-            db,
-            keyPath: "name",
-            storeName: REVISION_STORE_NAME,
-            configName: "incomerevisionitem.json"
+    const initDatabases = () => {
+        const promises = Object.keys(dbConfig).map(key => {
+            return new Promise((resolve, reject) => {
+                const config = dbConfig[key];
+                const request = idb.open(config.dbName, config.version);
+                request.onupgradeneeded = async event => {
+                    const arg = Object.assign({ db: event.target.result }, config);
+                    await createStore(arg);
+                };
+                request.onsuccess = event => {
+                    const db = event.target.result;
+                    // ここでcloseするとデータの追加に失敗する。
+                    //db.close();
+                    resolve(db);
+                };
+                request.onerror = reject;
+            });
+        });
+        return new Promise((resolve, reject) => {
+            Promise.all(promises).then(resolve).catch(reject);
         });
     };
     
-    const createExpeditionStore = async db => {
-        return await createStore({
-            db,
-            keyPath: "name",
-            storeName: EXPEDITION_STORE_NAME,
-            configName: "expeditiondata.json"
+    const getStoredData = configName => {
+        return new Promise((resolve, reject) => {
+            const config = dbConfig[configName];
+            const request = idb.open(config.dbName, config.version);
+            request.onerror = reject;
+            request.onsuccess = event => {
+                const db = event.target.result;
+                const tx = db.transaction([config.storeName]);
+                const store = tx.objectStore(config.storeName);
+                const index = store.index(config.index);
+                const cursorRequest = index.openCursor();
+                
+                const results = {};
+                cursorRequest.onsuccess = event => {
+                    if (event.target.result) {
+                        const cursor = event.target.result;
+                        results[cursor.key] = cursor.value;
+                        // ここでresolveを呼び出しても同じレコードしか返せない。
+                        //resolve(cursor.value);
+                        cursor.continue();
+                    } else {
+                        db.close();
+                        resolve(results);
+                    }
+                };
+                
+// IteratorかGeneratorでレコードを1件ずつ処理できるようにしたいが
+// どちらもTransactionInactiveErrorが発生してしまう。
+                
+//// Iterator version                
+//                cursorRequest.onsuccess = event => {
+//                    resolve({
+//                        [Symbol.iterator] () {
+//                            return {
+//                                next: () => {
+//                                    const cursor = event.target.result;
+//                                    if (!cursor) {
+//                                        db.close();
+//                                        return { done: true };
+//                                    }
+//                                    const value = cursor.value;
+//                                    cursor.continue();
+//                                    return {
+//                                        done: false,
+//                                        value
+//                                    };
+//                                }
+//                            };
+//                        }
+//                    });
+//                };
+                
+//// Generator version                
+//                cursorRequest.onsuccess = event => {
+//                    resolve(function* () {
+//                        while (true) {
+//                            const cursor = event.target.result;
+//                            if (!cursor) {
+//                                db.close();
+//                                return;
+//                            }
+//                            const value = cursor.value;
+//                            cursor.continue();
+//                            yield value;
+//                        }
+//                    });
+//                };
+            };
         });
     };
+    
+    const getStoredExpedition = async () => await getStoredData("expedition");
+    
+    const getStoredRevision = async () => await getStoredData("revision");
     
     /**
-     * オブジェクトストアを2つ作成するためにバージョンを変えて2回IndexedDBをopenしている。
-     * このような処理は不要にしたいが他にオブジェクトストアを2つ以上作成する方法が見つからない。
-     * 普通に作成しようとするとInvalidStateErrorとなる。
-     * 参考:
-     * https://stackoverflow.com/questions/20097662/how-to-create-multiple-object-stores-in-indexeddb
+     * @deprecated getAllは非標準メソッドらしい。
      */
-    const initDB = () => {
-        return new Promise((resolve, reject) => {
-            let request;
-            try {
-                // TODO: 誤ったバージョンを指定してもopen自体は成功してしまう。
-                // その後の処理でエラーが発生する。
-                // 2回openするアプローチでは正確なバージョンを指定することができない。
-                request = idb.open(DB_NAME, DB_VERSION);
-            } catch(err) {
-                request = idb.open(DB_NAME, DB_VERSION + 1);
-            }
-            request.onupgradeneeded = async event => {
-                db = event.target.result;
-                await createRevisionStore(db);
-                db.close();
-                request = idb.open(DB_NAME, DB_VERSION + 1);
-                request.onupgradeneeded = async event => {
-                    db = event.target.result;
-                    await createExpeditionStore(db);           
-                };
-                //request.onsuccess = event => resolve(event.target.result);
-                //request.onerror = event => reject(event);
-            };
-            request.onsuccess = event => {
-                db = event.target.result;
-                resolve(db);
-            };
-            request.onerror = event => reject(event);
-        });
-    };
-    
     const getAllData = storeName => {
         return new Promise((resolve, reject) => {
             const tx = db.transaction([storeName]);
@@ -374,9 +416,27 @@
         return label;
     };
     
-    const makeRevisionSelectors = () => {
+    // for Test
+    const dumpRevisionData = async () => {
+        try {
+            const gf = await getStoredRevision();
+            console.log(gf);
+//            for (const v of gf) {
+//                console.log(v);
+//            }
+//            const g = gf();
+//            console.log(g.next());
+//            console.log(g.next());
+//            console.log(g.next());
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    
+    const makeRevisionSelectors = async () => {
+        const revisionData = await getStoredRevision();
         const bases = qsa(".revision-container");
-        Array.from(bases).forEach(async base => {
+        Array.from(bases).forEach(base => {
             const frag = cdf();
             const sel = makeConfigSelector(revisionData);
             attr(sel, "class", "revision-data-selector");
@@ -403,7 +463,8 @@
         return successLabel;
     };
     
-    const makeExpeditionSelectors = () => {
+    const makeExpeditionSelectors = async () => {
+        const expeditionData = await getStoredExpedition(); 
         const bases = qsa(".expedition-container");
         Array.from(bases).forEach(base => {
             const frag = cdf();
@@ -423,10 +484,11 @@
         });
     };
     
-    const getSelectedRevisionItems = fleetEle => {
+    const getSelectedRevisionItems = async fleetEle => {
         const revBase = qs(".revision-container", fleetEle);
         const items = [];
         const name = qs(".revision-data-selector", revBase).value;
+        const revisionData = await getStoredRevision();
         if (!(name in revisionData)) {
             return items;
         }
@@ -438,17 +500,18 @@
         return items;
     };
     
-    const getSelectedExpedtions = fleetEle => {
+    const getSelectedExpedtions = async fleetEle => {
         const selector = qs(".expedition-data-selector", fleetEle);
         const expedtions = [];
         const name = selector.value;
+        const expeditionData = await getStoredExpedition(); 
         if (!(name in expeditionData)) {
             return expedtions;
         }
         const expedtionObj = expeditionData[name];
         const time = expedtionObj.time,
             income = new Income(expedtionObj.income);
-        const incomeRevisionItems = getSelectedRevisionItems(fleetEle);
+        const incomeRevisionItems = await getSelectedRevisionItems(fleetEle);
         const greetSuccess = qs(".expedition-success-check", fleetEle).checked;
         const size = parseInt(qs(".expedition-data-size", fleetEle).value);
         for (let i = 0; i < size; i++) {
@@ -466,15 +529,16 @@
     
     const makeFleets = () => {
         const fleetEles = qsa(".fleet-container");
-        const fleets = Array.from(fleetEles).map(fleetEle => {
+        const fleets = Array.from(fleetEles).map(async fleetEle => {
             const name = qs(".fleet-name input", fleetEle).value;
             const availableTime = parseInt(qs(".availabletime", fleetEle).value);
-            const expeditions = getSelectedExpedtions(fleetEle);
-            return new Fleet({
+            const expeditions = await getSelectedExpedtions(fleetEle);
+            const fleet = new Fleet({
                 name,
                 availableTime,
                 expeditions
             });
+            return fleet;
         });
         return fleets;
     };
@@ -485,8 +549,9 @@
         calculater.addEventListener("click", () => {
             result.innerHTML = "";
             const fleets = makeFleets();
+            // TODO: Fleetの配列ではなくPromiseの配列が返ってきてしまう。
             console.log(fleets);
-            fleets.forEach(fleet => {
+            fleets.map(f => f.then(fleet => {
                 try {
                     const info = [
                         `${fleet.name}は総遠征時間(${fleet.sumOfTime}分)で`,
@@ -496,22 +561,33 @@
                 } catch(err) {
                     result.innerHTML += `${err.message}<br />`;
                 }
-            });
+            }));
+//            fleets.forEach(fleet => {
+//                try {
+//                    const info = [
+//                        `${fleet.name}は総遠征時間(${fleet.sumOfTime}分)で`,
+//                        `収入は[${fleet.income}]です。<br />`
+//                    ];
+//                    result.innerHTML += info.join("");
+//                } catch(err) {
+//                    result.innerHTML += `${err.message}<br />`;
+//                }
+//            });
         });
     };
     
     const init = async () => {
         //testCalc();
         try {
-            await initDB();
-            console.log(db);
+            const dbs = await initDatabases();
+            console.log(dbs);
         } catch (err) {
             console.error(err);
         } 
 
-        await initData();
-        makeRevisionSelectors();
-        makeExpeditionSelectors();
+        // TODO: オブジェクトストアの更新が行われた場合にページの構築が間に合わない。
+        await makeRevisionSelectors();
+        await makeExpeditionSelectors();
         addListener();
     };
     
