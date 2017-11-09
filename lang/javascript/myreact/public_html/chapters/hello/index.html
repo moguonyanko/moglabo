@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>My React Top Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="../../react/build/react.js"></script>
+    <script src="../../react/build/react-dom.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>My React Top Page</h1>
+    </header>
+    <main>
+      <div id="app"></div>
+    </main>
+    <script>
+      ReactDOM.render(
+          React.DOM.h1({
+            className: "appclass",
+            id: "appid",
+            htmlFor: "appFor",
+            style: {
+              background: "lime",
+              color: "red",
+              fontFamily: "Monospace"
+            }
+          },
+          React.DOM.span(null, 
+              React.DOM.em(null, "Hell"),
+              "o!"
+            ),
+          " world!"),
+          document.getElementById("app")
+      );
+    </script>
+  </body>
+</html>
