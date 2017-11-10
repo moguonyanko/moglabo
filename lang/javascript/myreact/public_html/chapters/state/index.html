@@ -2,19 +2,34 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>State</title>
+    <title>State, Lifecycle</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="../../react/build/react.js"></script>
     <script src="../../react/build/react-dom.js"></script>
+    <script src="../../react/build/react-with-addons.js"></script>
+    <style>
+      .log {
+          width: 100%;
+          max-width: 600px;
+          height: 50vh;
+          max-height: 200px;
+          border: solid darkgray 1px;
+          background-color: lightgray;
+          overflow-y: scroll;
+      }
+    </style>
   </head>
   <body>
     <header>
-      <h1>State</h1>
+      <h1>State, Lifecycle</h1>
     </header>
     <main>
       <div id="app"></div>
-      <div>
-        <button class="outsider">外部からコンポーネントを操作</button>
+      <div class="log"></div>
+      <div class="control">
+        <button class="statesetter">状態の変更</button>
+        <button class="propsetter">プロパティの変更</button>
+        <button class="logclear">ログクリア</button>
       </div>
     </main>
     <script src="main.js"></script>
