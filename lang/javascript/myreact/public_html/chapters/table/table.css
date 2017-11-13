@@ -1,0 +1,31 @@
+@charset "UTF-8";
+
+:root {
+    --common-table-padding: 0.5em;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+    border: 1px solid black;
+}
+
+td {
+    border-top: 1px solid black;
+    cursor: cell;
+    padding: var(--common-table-padding);
+}
+
+th {
+    cursor: pointer;
+    padding: var(--common-table-padding);
+}
+
+#app {
+    border: 1px solid lightgray;
+    background-color: whitesmoke;
+    width: 100%;
+    max-width: 800px;
+    /*height: 100vh;*/
+    /*max-height: 400px;*/
+}
