@@ -65,6 +65,43 @@ const createTable = tableContext => {
     return table;
 };
 
+const createBlob = (tebleContext, format) => {
+    if (!format) {
+        throw new Error("Format is not found");
+    }
+    let contents;
+    if (format.toLowerCase() === "json") {
+        // 二次元配列はJSONとして妥当である。
+        contents = JSON.stringify(tebleContext.state.data);
+    } else {
+        contents = tebleContext.state.data.reduce((result, row) => {
+            const line = row.reduce((rowResult, cell, idx) => {
+                const tmp = [
+                    rowResult,
+                    `"${cell.replace(/"/g, `""`)}"`,
+                    (idx < (row.length - 1) ? "," : "")
+                ];
+                return tmp.join("");
+            }, "");
+            return result + line + "\n";
+        }, "");
+    }
+    const type = `text/${format}`;
+    const blob = new Blob([contents], {type});
+    return blob;
+};
+
+/**
+ * saveElementはa要素のみ対応
+ */
+const saveBlob = ({saveElement, blob, format}) => {
+    if (saveElement.nodeName !== "A") {
+        throw new Error(`Unsupported save element: ${saveElement.nodeName}`);
+    }
+    saveElement.href = URL.createObjectURL(blob);
+    saveElement.download = `data.${format}`;
+};
+
 const Table = React.createClass({
     displayName: "Table",
     propTypes: {
@@ -73,7 +110,7 @@ const Table = React.createClass({
             React.PropTypes.arrayOf(React.PropTypes.string))
     },
     _preSearchData: null,
-    _nowSearchData: null,
+    _log: [],
     getInitialState() {
         return {
             data: this.props.initialData,
@@ -82,6 +119,27 @@ const Table = React.createClass({
             edit: null, // { row: 行番号, cell: 列番号 }
             search: false
         };
+    },
+    _logSetState(newState) {
+        const clonedState = Object.assign({}, 
+            this._log.length === 0 ? this.state : newState);
+        this._log.push(clonedState);
+        this.setState(newState);
+    },
+    _replay() {
+        if (this._log.length <= 0) {
+            console.warn("ステートが保存されていません。");
+            return;
+        }
+        let idx = -1;
+        const intervalId = setInterval(() => {
+            idx++;
+            if (idx === (this._log.length - 1)) {
+                console.log("保存済みステートはもうありません。");
+                clearInterval(intervalId);
+            }
+            this.setState(this._log[idx]);
+        }, 1000);
     },
     _sort(event) {
         const column = event.target.cellIndex;
@@ -92,7 +150,7 @@ const Table = React.createClass({
             const ascend = r1[column] > r2[column] ? 1 : -1;
             return descending ? descend : ascend;
         });
-        this.setState({ 
+        this._logSetState({ 
             data,
             sortby: column,
             descending
@@ -103,37 +161,33 @@ const Table = React.createClass({
             row: parseInt(event.target.dataset.row),
             cell: event.target.cellIndex
         };
-        this.setState({ edit });
+        this._logSetState({ edit });
     },
     _save(event) {
         event.preventDefault();
         const input = event.target.firstChild;
         const data = Array.from(this.state.data);
         data[this.state.edit.row][this.state.edit.cell] = input.value;
-        this.setState({
+        this._logSetState({
             edit: null, // 編集完了を示すnull
             data
         });    
     },
     _search(event) {
-        const searchText = event.target.value.toLowerCase();
+        const searchText = event.target.value;
         if (!searchText) {
-            this.setState({
+            this._logSetState({
                 data: this._preSearchData
             });
             return;
         }
-        if (!this._nowSearchData) {
-            this._nowSearchData = this._preSearchData;
-        }
         const searchColumnIdx = event.target.dataset.idx;
-        const searchData = this._nowSearchData.filter(row => {
-            const cellText = row[searchColumnIdx].toString().toLowerCase();
+        const searchData = this._preSearchData.filter(row => {
+            const cellText = row[searchColumnIdx].toString();
             const found = cellText.indexOf(searchText) > -1;
             return found;
         });
-        this._nowSearchData = searchData;
-        this.setState({
+        this._logSetState({
             data: searchData
         });
     },
@@ -157,17 +211,16 @@ const Table = React.createClass({
     _toggleSearch(event) {
         if (this.state.search) {
             // TOOD: ReactのAPIを介してinnerTextを変更する方法があるのではないか。
-            event.target.innerText = "検索";
-            this.setState({
+            //event.target.innerText = "検索";
+            this._logSetState({
                 data: this._preSearchData,
                 search: false
             });
             this._preSearchData = null;
         } else {
-            event.target.innerText = "検索完了";
+            //event.target.innerText = "検索完了";
             this._preSearchData = this.state.data;
-            this._nowSearchData = null;
-            this.setState({
+            this._logSetState({
                 search: true
             });
         }
@@ -176,16 +229,55 @@ const Table = React.createClass({
         return createTable(this);
     },
     _renderToolBar() {
-        return React.DOM.button({
-            onClick: this._toggleSearch,
-            className: "toolbar"
-        },
-        "検索");
+        const context = this;
+        return React.DOM.div({
+                className: "toolbar"
+            }, 
+            React.DOM.button({
+                onClick: this._toggleSearch,
+                className: "toolbutton"
+            }, "検索"),
+            React.DOM.a({
+                onClick: event => {
+                    const format = "json";
+                    const blob = createBlob(context, format);
+                    saveBlob({
+                        saveElement: event.target,
+                        blob,
+                        format
+                    });
+                },
+                href: "data.json",
+                className: "toolbutton"
+            }, "JSONで保存"),
+            React.DOM.a({
+                onClick: event => {
+                    const format = "csv";
+                    const blob = createBlob(context, format);
+                    saveBlob({
+                        saveElement: event.target,
+                        blob,
+                        format
+                    });
+                },
+                href: "data.csv",
+                className: "toolbutton"
+            }, "CSVで保存")
+        );
+    },
+    componentDidMount() {
+        document.onkeydown = event => {
+            const downedAltShiftR = event.altKey && event.shiftKey && 
+                event.keyCode === 82;
+            if (downedAltShiftR) {
+                this._replay();
+            }
+        };
     },
     render() {
         return React.DOM.div(null, 
-            this._renderTable(),
-            this._renderToolBar());
+            this._renderToolBar(),
+            this._renderTable());
     }
 }); 
 

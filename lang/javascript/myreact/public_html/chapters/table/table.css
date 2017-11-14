@@ -22,7 +22,27 @@ th {
 }
 
 .search-text {
-    width: 100%;
+    width: 80%;
+}
+
+/**
+ * a要素を用いたボタンのスタイルは下記サイトを利用して作成した。
+ * http://css3buttongenerator.com/
+ */
+.toolbutton {
+  font-family: Arial;
+  color: #1f081f;
+  font-size: 12px;
+  background: #a2afb8;
+  padding: 5px 10px 5px 10px;
+  text-decoration: none;
+  margin: 0.5em;
+  border: 0; /* buttonのボーダーを削除してaの外観と合わせる。 */
+}
+
+.toolbutton:hover {
+  background: #767e82;
+  text-decoration: none;
 }
 
 #app {
