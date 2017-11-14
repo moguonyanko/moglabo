@@ -31,7 +31,9 @@ const createTableHead = tableContext => {
 const createtableBody = tableContext => {
     const tBody = React.DOM.tbody({
         onDoubleClick: tableContext._showEditor
-    }, tableContext.state.data.map((row, rowIdx) => {
+    }, 
+    tableContext._renderSearch(),
+    tableContext.state.data.map((row, rowIdx) => {
         const tr = React.DOM.tr({key: rowIdx}, row.map((cell, cellIdx) => {
             let content = cell;
             const edit = tableContext.state.edit;
@@ -70,12 +72,15 @@ const Table = React.createClass({
         initialData: React.PropTypes.arrayOf(
             React.PropTypes.arrayOf(React.PropTypes.string))
     },
+    _preSearchData: null,
+    _nowSearchData: null,
     getInitialState() {
         return {
             data: this.props.initialData,
             sortby: null,
             descending: false,
-            edit: null // { row: 行番号, cell: 列番号 }
+            edit: null, // { row: 行番号, cell: 列番号 }
+            search: false
         };
     },
     _sort(event) {
@@ -110,8 +115,77 @@ const Table = React.createClass({
             data
         });    
     },
-    render() {
+    _search(event) {
+        const searchText = event.target.value.toLowerCase();
+        if (!searchText) {
+            this.setState({
+                data: this._nowSearchData
+            });
+            return;
+        }
+        if (!this._nowSearchData) {
+            this._nowSearchData = this._preSearchData;
+        }
+        const searchColumnIdx = event.target.dataset.idx;
+        const searchData = this._nowSearchData.filter(row => {
+            const cellText = row[searchColumnIdx].toString().toLowerCase();
+            const found = cellText.indexOf(searchText) > -1;
+            return found;
+        });
+        this._nowSearchData = searchData;
+        this.setState({
+            data: searchData
+        });
+    },
+    _renderSearch() {
+        if (!this.state.search) {
+            return null;
+        }
+        const tr = React.DOM.tr({
+            onChange: this._search
+        }, this.props.headers.map((header, headerIdx) => {
+            const td = React.DOM.td({key: headerIdx}, 
+                React.DOM.input({
+                    type: "text",
+                    "data-idx": headerIdx,
+                    className: "search-text"
+                }));
+            return td;
+        }));
+        return tr;
+    },
+    _toggleSearch(event) {
+        if (this.state.search) {
+            // TOOD: ReactのAPIを介してinnerTextを変更する方法があるのではないか。
+            event.target.innerText = "検索";
+            this.setState({
+                data: this._preSearchData,
+                search: false
+            });
+            this._preSearchData = null;
+        } else {
+            event.target.innerText = "検索完了";
+            this._preSearchData = this.state.data;
+            this._nowSearchData = null;
+            this.setState({
+                search: true
+            });
+        }
+    },
+    _renderTable() {
         return createTable(this);
+    },
+    _renderToolBar() {
+        return React.DOM.button({
+            onClick: this._toggleSearch,
+            className: "toolbar"
+        },
+        "検索");
+    },
+    render() {
+        return React.DOM.div(null, 
+            this._renderTable(),
+            this._renderToolBar());
     }
 }); 
 

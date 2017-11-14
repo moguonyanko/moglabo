@@ -21,11 +21,13 @@ th {
     padding: var(--common-table-padding);
 }
 
+.search-text {
+    width: 100%;
+}
+
 #app {
     border: 1px solid lightgray;
     background-color: whitesmoke;
     width: 100%;
     max-width: 800px;
-    /*height: 100vh;*/
-    /*max-height: 400px;*/
 }
