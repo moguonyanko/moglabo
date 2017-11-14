@@ -229,7 +229,6 @@ const Table = React.createClass({
         return createTable(this);
     },
     _renderToolBar() {
-        const context = this;
         return React.DOM.div({
                 className: "toolbar"
             }, 
@@ -240,7 +239,7 @@ const Table = React.createClass({
             React.DOM.a({
                 onClick: event => {
                     const format = "json";
-                    const blob = createBlob(context, format);
+                    const blob = createBlob(this, format);
                     saveBlob({
                         saveElement: event.target,
                         blob,
@@ -253,7 +252,7 @@ const Table = React.createClass({
             React.DOM.a({
                 onClick: event => {
                     const format = "csv";
-                    const blob = createBlob(context, format);
+                    const blob = createBlob(this, format);
                     saveBlob({
                         saveElement: event.target,
                         blob,
