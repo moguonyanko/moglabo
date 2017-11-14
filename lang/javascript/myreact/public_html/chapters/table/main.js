@@ -119,7 +119,7 @@ const Table = React.createClass({
         const searchText = event.target.value.toLowerCase();
         if (!searchText) {
             this.setState({
-                data: this._nowSearchData
+                data: this._preSearchData
             });
             return;
         }
