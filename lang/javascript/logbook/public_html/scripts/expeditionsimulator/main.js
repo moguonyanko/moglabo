@@ -296,13 +296,14 @@
                     await createStore(arg);
                     doResolve(db, resolve);
                 };
+                // onupgradeneeded内でawaitされている場合,onupgradeneededが
+                // 終了していなくてもonsuccessが実行される。
                 request.onsuccess = event => {
-                    console.log(event);
                     const db = event.target.result;
                     console.log(`IDB init succeeded: ${db.name}`);
                     // TODO: onupgradeneededが呼び出されなかった時だけ
-                    // onsuccessでresolveを呼び出さなければならない。
-                    //doResolve(db, resolve);
+                    // onsuccess内でresolveを呼び出さなければならない。
+                    doResolve(db, resolve);
                 };
                 request.onerror = reject;
             });
