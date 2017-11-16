@@ -2,15 +2,15 @@ package practicejsf.bean;
 
 public class Author {
 	
-	private final int id;
+	private final String id;
 	private final String name;
 
-	public Author(int id, String name) {
+	public Author(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 	

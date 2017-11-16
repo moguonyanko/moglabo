@@ -36,7 +36,7 @@ public class Library {
 			ResultSet rs = statement.executeQuery(QUERY_SELECT_ALL_AUTHORS);
 
 			while (rs.next()) {
-				int id = rs.getInt("id");
+				String id = rs.getString("id");
 				String name = rs.getString("name");
 				Author author = new Author(id, name);
 				result.add(author);
