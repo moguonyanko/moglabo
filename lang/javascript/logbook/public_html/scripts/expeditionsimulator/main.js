@@ -238,11 +238,15 @@
             const transaction = db.transaction([storeName], "readwrite");
             const store = transaction.objectStore(storeName);
             console.log(`Try to add: ${JSON.stringify(json)}`);
-            transaction.oncomplete = () => resolve(store);
+            transaction.oncomplete = () => {
+                console.log(`Transaction completed: ${storeName}`);
+                resolve(store);
+            };
             transaction.onerror = reject;
             Object.keys(json).forEach(key => json[key].forEach(item => {
                     try {
                         const request = store.add(item);
+                        console.log(`Added: ${JSON.stringify(item)}`);
                         request.onerror = reject;
                     } catch (err) {
                         console.log(err);
@@ -282,15 +286,23 @@
             return new Promise((resolve, reject) => {
                 const config = dbConfig[key];
                 const request = idb.open(config.dbName, config.version);
+                let doResolve = (db, resv) => {
+                    db.close();
+                    resv(db);
+                };
                 request.onupgradeneeded = async event => {
-                    const arg = Object.assign({ db: event.target.result }, config);
+                    const db = event.target.result;
+                    const arg = Object.assign({ db }, config);
                     await createStore(arg);
+                    doResolve(db, resolve);
                 };
                 request.onsuccess = event => {
+                    console.log(event);
                     const db = event.target.result;
-                    // ここでcloseするとデータの追加に失敗する。
-                    //db.close();
-                    resolve(db);
+                    console.log(`IDB init succeeded: ${db.name}`);
+                    // TODO: onupgradeneededが呼び出されなかった時だけ
+                    // onsuccessでresolveを呼び出さなければならない。
+                    //doResolve(db, resolve);
                 };
                 request.onerror = reject;
             });
@@ -585,9 +597,9 @@
             console.error(err);
         } 
 
-        // TODO: オブジェクトストアの更新が行われた場合にページの構築が間に合わない。
         await makeRevisionSelectors();
         await makeExpeditionSelectors();
+        console.log("Maked page elements");
         addListener();
     };
     
