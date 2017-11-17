@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+.dashboard-right,
+.SidebarCommonModules,
+.SearchNavigation-canopy,
+.AdaptiveRelatedSearches,
+#global-nav-search {
+    display: none;
+}
+
+div.txt:nth-child(5) > label:nth-child(1) > input:nth-child(2) {
+    width: 1em;
+}
