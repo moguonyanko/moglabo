@@ -286,24 +286,28 @@
             return new Promise((resolve, reject) => {
                 const config = dbConfig[key];
                 const request = idb.open(config.dbName, config.version);
-                let doResolve = (db, resv) => {
+                const doResolve = (db, resv) => {
                     db.close();
                     resv(db);
                 };
-                request.onupgradeneeded = async event => {
+                const storePromises = {};
+                request.onupgradeneeded = event => {
                     const db = event.target.result;
                     const arg = Object.assign({ db }, config);
-                    await createStore(arg);
-                    doResolve(db, resolve);
+                    storePromises[config.dbName] = createStore(arg);
                 };
-                // onupgradeneeded内でawaitされている場合,onupgradeneededが
-                // 終了していなくてもonsuccessが実行される。
+                // onupgradeneeded内でawaitされている場合，onupgradeneededが
+                // 終了していなくてもonsuccessのリスナーが実行される。
+                // resolveはDBのバージョンに関係なく必ず実行されるonsuccess内で
+                // 呼び出すべきである。
                 request.onsuccess = event => {
                     const db = event.target.result;
                     console.log(`IDB init succeeded: ${db.name}`);
-                    // TODO: onupgradeneededが呼び出されなかった時だけ
-                    // onsuccess内でresolveを呼び出さなければならない。
-                    doResolve(db, resolve);
+                    if (storePromises[config.dbName] instanceof Promise) { // DB is upgraded
+                        storePromises[config.dbName].then(() => doResolve(db, resolve));
+                    } else { // DB is not upgraded
+                        doResolve(db, resolve);
+                    }
                 };
                 request.onerror = reject;
             });
