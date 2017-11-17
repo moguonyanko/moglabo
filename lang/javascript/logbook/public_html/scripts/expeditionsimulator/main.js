@@ -560,36 +560,34 @@
         return fleets;
     };
     
+    const displayResults = fleets => {
+        const result = qs(".result");
+        result.innerHTML = "";
+        fleets.forEach(fleet => {
+            try {
+                const info = [
+                    `${fleet.name}は総遠征時間(${fleet.sumOfTime}分)で`,
+                    `収入は[${fleet.income}]です。<br />`
+                ];
+                result.innerHTML += info.join("");
+            } catch (err) {
+                result.innerHTML += `${err.message}<br />`;
+            }
+        });
+    };
+    
     const addListener = () => {
         const calculater = qs(".calc");
-        const result = qs(".result");
         calculater.addEventListener("click", () => {
-            result.innerHTML = "";
             const fleets = makeFleets();
             // TODO: Fleetの配列ではなくPromiseの配列が返ってきてしまう。
-            console.log(fleets);
-            fleets.map(f => f.then(fleet => {
-                try {
-                    const info = [
-                        `${fleet.name}は総遠征時間(${fleet.sumOfTime}分)で`,
-                        `収入は[${fleet.income}]です。<br />`
-                    ];
-                    result.innerHTML += info.join("");
-                } catch(err) {
-                    result.innerHTML += `${err.message}<br />`;
-                }
-            }));
-//            fleets.forEach(fleet => {
-//                try {
-//                    const info = [
-//                        `${fleet.name}は総遠征時間(${fleet.sumOfTime}分)で`,
-//                        `収入は[${fleet.income}]です。<br />`
-//                    ];
-//                    result.innerHTML += info.join("");
-//                } catch(err) {
-//                    result.innerHTML += `${err.message}<br />`;
-//                }
-//            });
+            // console.log(fleets);
+            
+            // Promise.allを使うことでPromiseの定義された順序と同じ順序で並んだ結果を
+            // 得ることができる。
+            // Promise.all(iterable):
+            //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+            Promise.all(fleets).then(displayResults);
         });
     };
     
