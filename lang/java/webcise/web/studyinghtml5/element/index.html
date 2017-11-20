@@ -240,13 +240,23 @@
 				</style>
 				<h2>menu</h2>
 				<p>コンテキストメニューに追加する選択肢を定義します</p>
-				<p>menuやmenuitemに非対応だとmenuitemの内容がそのままページ上に表示されてしまいます。</p>
+				<p>
+                  menuやmenuitemに非対応だとmenuitemの内容がそのままページ上に表示されてしまいます。
+                </p>
 				<div class="context-area" contextmenu="menusamplecontainer">ここを右クリック</div>
 				<menu type="context" id="menusamplecontainer">
-					<menuitem onclick="alert(this.innerText);">サンプルメニュー1</menuitem>
-					<menuitem onclick="alert(this.innerText);">サンプルメニュー2</menuitem>
+					<menuitem type="command" onclick="alert(this.innerText);">サンプルメニュー1</menuitem>
+					<menuitem type="command" onclick="alert(this.innerText);">サンプルメニュー2</menuitem>
 					<hr />
-					<menuitem onclick="alert(this.innerText);">サンプルメニュー3</menuitem>
+					<menuitem type="command" 
+                              label="This is sample menu item" 
+                              icon="../../favicon.ico"
+                              onclick="alert(this.innerText);">サンプルメニュー3</menuitem>
+                    <hr />
+                    <menuitem type="checkbox">サンプルメニュー4</menuitem>
+                    <hr />
+                    <menuitem type="radio" radiogroup="samplemenuA" checked="checked">サンプルメニュー5-1</menuitem>
+                    <menuitem type="radio" radiogroup="samplemenuA">サンプルメニュー5-2</menuitem>
 				</menu>	
 			</article>
 
