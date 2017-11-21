@@ -80,19 +80,23 @@ public class TestReactive {
     }
 
     @Test
-    public void runWithControlledSubscriber() {
-        LimitedSubscriber<Integer, List<Integer>> subscriber;
+    public void runWithControlledSubscriber() throws Exception {
+        CompletableFuture<Void> f1 = CompletableFuture.runAsync(() -> {
+            LimitedSubscriber<Integer, List<Integer>> subscriber;
 
-        try (SubmissionPublisher<Integer> publisher = new SubmissionPublisher<>()) {
-            int limitConsume = 3;
-            subscriber = new LimitedSubscriber<>(ArrayList::new, limitConsume);
-            publisher.subscribe(subscriber);
-            IntStream.range(0, 10).forEach(publisher::submit);
-        }
+            try (SubmissionPublisher<Integer> publisher = new SubmissionPublisher<>()) {
+                int limitConsume = 3;
+                subscriber = new LimitedSubscriber<>(limitConsume);
+                publisher.subscribe(subscriber);
+                IntStream.range(0, 10).forEach(publisher::submit);
+            }
+        });
 
-        List<Integer> expected = List.of(0, 1, 2);
-        List<Integer> actual = subscriber.getConsumedElements();
-        assertThat(actual, is(expected));
+        Executor executor = CompletableFuture.delayedExecutor(100L, TimeUnit.MILLISECONDS);
+        CompletableFuture<Void> f2 = f1.thenRunAsync(() ->
+            System.out.println("FINISHED"), executor);
+
+        f2.get();
     }
 
     @Test
