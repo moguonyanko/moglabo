@@ -1,10 +1,8 @@
 package test.exercise.concurrent;
 
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.junit.Test;
@@ -13,6 +11,7 @@ import static org.hamcrest.CoreMatchers.*;
 
 /**
  * 参考サイト:
+ * https://community.oracle.com/docs/DOC-995305
  * http://www.baeldung.com/java-completablefuture
  * http://www.deadcoderising.com/java8-writing-asynchronous-code-with-completablefuture/
  * http://www.journaldev.com/13121/java-9-features-with-examples
@@ -258,6 +257,40 @@ public class TestCompletableFuture {
         String expected = "Hello, World";
         String actual = future.get();
         assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void useCompletedFuture() {
+        int expected = 100;
+        CompletableFuture<Integer> f = CompletableFuture.completedFuture(expected);
+
+        System.out.println("is Done?: " + f.isDone());
+
+        int actual = f.join();
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void useCompletableFutureWithExecutor() {
+        int expected = 100;
+        Supplier<Integer> supplier = () -> {
+            System.out.println("supplier:" + Thread.currentThread().getName());
+            return expected;
+        };
+        ExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+        CompletableFuture<Integer> f =
+            CompletableFuture.supplyAsync(supplier, executor);
+        f.thenAccept(actual -> {
+            System.out.println("thenAccept:" + Thread.currentThread().getName());
+            assertThat(actual, is(expected));
+        });
+
+        // main threadを待たせる。
+        System.out.println("main:" + Thread.currentThread().getName());
+        f.join();
+
+        executor.shutdown();
     }
 
 }
