@@ -293,4 +293,102 @@ public class TestCompletableFuture {
         executor.shutdown();
     }
 
+    @Test
+    public void chainOneToOneCompletableFutures() {
+        CompletableFuture<Integer> f1 = CompletableFuture.supplyAsync(() -> 2);
+        CompletableFuture<Integer> f2 = f1.thenApply(i -> i * i);
+        CompletableFuture<Void> f3 = f2.thenAccept(i -> assertThat(i, is(4)));
+        CompletableFuture<Void> f4 = f3.thenRun(() -> {
+            System.out.println("thenRun:" + Thread.currentThread().getName());
+        });
+        CompletableFuture<Void> f5 = f4.thenRunAsync(() -> {
+            // thenRunAsyncの場合スレッドにForkJoinPoolが使用されている。
+            System.out.println("thenRunAsync:" + Thread.currentThread().getName());
+        });
+
+        f5.join();
+    }
+
+    @Test
+    public void composeCompletionStage() {
+        CompletableFuture<String> f0 = CompletableFuture.supplyAsync(() -> "TEST:");
+
+        CompletableFuture<String> f1 =
+            f0.thenCompose(s -> CompletableFuture.supplyAsync(() -> s + "Hello"));
+
+        String expected = "TEST:Hello";
+        String actual = f1.join();
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void combineCompletionStage() {
+        CompletableFuture<Integer> f1 = CompletableFuture.supplyAsync(() -> 1);
+        CompletableFuture<String> f2 = CompletableFuture.supplyAsync(() -> ":value");
+        CompletableFuture<String> f3 = f1.thenCombine(f2,
+            (f1Result, f2Result) -> f1Result.toString() + f2Result);
+
+        String expected = "1:value";
+        String actual = f3.join();
+        assertThat(actual, is(expected));
+
+        // joinされ結果を取得されたCompletableFutureを再利用して
+        // 新しいCompletableFutureを作成することができる。
+        CompletableFuture<Void> f4 = f3.thenAccept(System.out::println);
+        f4.join();
+    }
+
+    @Test
+    public void acceptEitherCompletionStages() {
+        int v1 = 1, v2 = 100;
+
+        CompletableFuture<Integer> lateFuture = CompletableFuture.supplyAsync(() -> v1,
+            CompletableFuture.delayedExecutor(150L, TimeUnit.MILLISECONDS));
+
+        CompletableFuture<Integer> earlyFuture = CompletableFuture.supplyAsync(() -> {
+            boolean flag = true;
+            if (flag) {
+                return v2;
+            } else {
+                throw new RuntimeException("f2 error!");
+            }
+        }, CompletableFuture.delayedExecutor(50L, TimeUnit.MILLISECONDS));
+
+        CompletableFuture<Void> f = lateFuture.acceptEither(earlyFuture,
+            earlierFinishedResult -> {
+            // 関数の引数として渡されるのは『より早く完了した』CompletableFutureの結果である。
+            // ここではf1よりf2の方が早く処理が完了するのでf2の結果が引数として渡される。
+            // CompletableFuture.anyOfと振る舞いは似ている。
+            // なお他のCompletableFutureの結果はgetを呼ぶなりして自分で取得する必要がある。
+            System.out.println("Is f1 done?: " + lateFuture.isDone());
+            System.out.println("Is f2 done?: " + earlyFuture.isDone());
+            assertThat(earlierFinishedResult, is(v2));
+        });
+
+        f.join();
+    }
+
+    @Test
+    public void anyOfCompletionStages() {
+        // anyOfにCompletableFuture<T>を返すバージョンが存在しないのはAPIの欠陥と思われる。
+        CompletableFuture<Object> f = CompletableFuture.anyOf(
+            CompletableFuture.supplyAsync(() -> "FOO",
+                CompletableFuture.delayedExecutor(150, TimeUnit.MILLISECONDS)),
+            CompletableFuture.supplyAsync(() -> "BAR",
+                CompletableFuture.delayedExecutor(50, TimeUnit.MILLISECONDS)),
+            // allOfの戻り値がCompletableFuture<Object>なので以下のように型の異なる
+            // CompletableFutureも混在させることができてしまう。このCompletableFutureが
+            // 最も早く完了するとClassCastExceptionが発生する。
+            //CompletableFuture.supplyAsync(() -> 100,
+            //    CompletableFuture.delayedExecutor(20, TimeUnit.MILLISECONDS)),
+            CompletableFuture.supplyAsync(() -> "BAZ",
+                CompletableFuture.delayedExecutor(200, TimeUnit.MILLISECONDS))
+        );
+
+        String expected = "BAR";
+        // 型安全なanyOfがあれば不要なキャスト
+        String actual = (String)f.join();
+        assertThat(actual, is(expected));
+    }
+
 }
