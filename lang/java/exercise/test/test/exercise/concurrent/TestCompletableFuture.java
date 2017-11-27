@@ -16,6 +16,7 @@ import static org.hamcrest.CoreMatchers.*;
  * http://www.baeldung.com/java-completablefuture
  * http://www.deadcoderising.com/java8-writing-asynchronous-code-with-completablefuture/
  * http://www.journaldev.com/13121/java-9-features-with-examples
+ * https://www.callicoder.com/java-8-completablefuture-tutorial/
  */
 public class TestCompletableFuture {
 
@@ -405,6 +406,61 @@ public class TestCompletableFuture {
         );
 
         f.join();
+    }
+
+    @Test
+    public void canCompleteCompletableFuture() {
+        CompletableFuture<String> future =
+            CompletableFuture.supplyAsync(() -> "Original");
+
+        // 完了前のCompletableFutureの結果を差し替える。
+        // completeの呼び出しによってCompletableFutureは完了状態に遷移するため
+        // 以降のcomplete呼び出しは無視される。
+        boolean replaced = future.complete("Replaced value");
+        if (replaced) {
+            future.complete("Ignored!");
+            future.complete("Ignored!!");
+        }
+
+        // CompletableFutureがcomplete呼び出し前に完了していた場合差し替えは起きないので
+        // CompletableFuture生成時の値が結果として得られる。
+        String expected = replaced ? "Replaced value" : "Original";
+        String actual = future.join();
+        assertThat(actual, is(expected));
+        System.out.println("Completed: " + actual);
+    }
+
+    @Test
+    public void checkUsedThreadByCompletableFutures() {
+        CompletableFuture<String> f1a = CompletableFuture.supplyAsync(() -> {
+            System.out.println("f1a: " + Thread.currentThread().getName());
+            return "One";
+        });
+        // xxxAsyncメソッドではないメソッドで生成されたCompletableFutureの実行には
+        // 元となったCompletableFuture(ここではf1a)を生成したスレッドと同じスレッドが
+        // 使用される。
+        CompletableFuture<String> f1b = f1a.thenApply(s -> {
+            System.out.println("f1b: " + Thread.currentThread().getName());
+            return s + "Two";
+        });
+        // xxxAsyncメソッドで生成されたCompletableFutureの実行にはForkJoinPoolの
+        // スレッドプールが使われる。
+        CompletableFuture<String> f1c = f1a.thenApplyAsync(s -> {
+            System.out.println("f1c: " + Thread.currentThread().getName());
+            return s + "Three";
+        });
+
+        // Executorを生成してxxxAsyncメソッドに渡した場合はForkJoinPoolではなく
+        // Executorのスレッドプールが使われる。
+        Executor executor = Executors.newFixedThreadPool(2);
+        CompletableFuture<String> f1d = f1a.thenApplyAsync(s -> {
+            System.out.println("f1d: " + Thread.currentThread().getName());
+            return s + "Four";
+        }, executor);
+
+        assertThat(f1b.join(), is("OneTwo"));
+        assertThat(f1c.join(), is("OneThree"));
+        assertThat(f1d.join(), is("OneFour"));
     }
 
 }
