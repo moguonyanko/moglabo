@@ -2,6 +2,7 @@ package test.exercise.concurrent;
 
 import java.io.IOException;
 import java.util.concurrent.*;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -389,6 +390,21 @@ public class TestCompletableFuture {
         // 型安全なanyOfがあれば不要なキャスト
         String actual = (String)f.join();
         assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void allOfCompletionStages() {
+        // CompletableFuture.allOfの戻り値はCompletableFuture<Void>なので，
+        // allOfの引数もCompletableFuture<Void>など結果が返らないものか，結果を
+        // 必要としないCompletableFutureになる。
+        CompletableFuture<Void> f = CompletableFuture.allOf(
+            CompletableFuture.runAsync(() -> System.out.println("One")),
+            CompletableFuture.runAsync(() -> System.out.println(2)),
+            CompletableFuture.runAsync(() -> System.out.println(3)),
+            CompletableFuture.runAsync(() -> System.out.println("Four"))
+        );
+
+        f.join();
     }
 
 }
