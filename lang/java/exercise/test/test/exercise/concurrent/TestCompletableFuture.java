@@ -1,11 +1,14 @@
 package test.exercise.concurrent;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.Test;
@@ -253,7 +256,7 @@ public class TestCompletableFuture {
     @Test
     public void getResultByDelayedCompletableFuture() throws
             ExecutionException, InterruptedException {
-        Executor executor = CompletableFuture.delayedExecutor(1L, TimeUnit.SECONDS);
+        Executor executor = CompletableFuture.delayedExecutor(50, TimeUnit.MILLISECONDS);
         CompletableFuture<String> future = CompletableFuture.supplyAsync(
                 () -> "Hello, World", executor
         );
@@ -484,6 +487,83 @@ public class TestCompletableFuture {
 
         int expected = 200;
         int actual = f1.join();
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void canCombineCompletableFutures() {
+        int sampleHeight = 100;
+        CompletableFuture<Integer> getHeight = CompletableFuture.supplyAsync(() -> {
+            try {
+                TimeUnit.MILLISECONDS.sleep(100);
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
+            System.out.println("Try get height");
+            return sampleHeight;
+        });
+
+        int sampleWidth = 50;
+        CompletableFuture<Integer> getWidth = CompletableFuture.supplyAsync(() -> {
+            try {
+                TimeUnit.MILLISECONDS.sleep(50);
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
+            System.out.println("Try get width");
+            return sampleWidth;
+        });
+
+        CompletableFuture<Integer> getArea = getHeight.thenCombine(getWidth,
+            (height, width) -> height * width);
+
+        int expected = sampleHeight * sampleWidth;
+        int actual = getArea.join();
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void canGetResultAllOfFutures() {
+        int[] values = IntStream.rangeClosed(1, 10).toArray();
+
+        List<CompletableFuture<Integer>> fs = Arrays.stream(values)
+            // IntStream.mapはIntStreamを返す。他のオブジェクトのStreamに
+            // 変換したければmapToObjを使う。
+            //.map(i -> CompletableFuture.supplyAsync(() -> i * i))
+            .mapToObj(i -> CompletableFuture.supplyAsync(() -> {
+                try {
+                    TimeUnit.MILLISECONDS.sleep(10L);
+                } catch (InterruptedException e) {
+                    throw new IllegalStateException(e);
+                }
+                return i * i;
+            }))
+            .collect(Collectors.toList());
+
+        // allOfで生成されたCompletableFutureはCompletableFuture<Void>であるため
+        // これから直接結果を得ることはできない。
+        // T[]をallOfの引数(可変長引数)に渡すことができる。
+        CompletableFuture<Void> futuresByAllOf = CompletableFuture.allOf(
+            fs.toArray(new CompletableFuture[fs.size()])
+        );
+
+        // allOfで生成されたCompletableFutureから結果を得るために
+        // List<CompletableFuture<Integer>>のStreamを使っている。
+        // しかし実際のところallOfで生成されたCompletableFutureは
+        // まったく使用されていない。
+        CompletableFuture<List<Integer>> allResults =
+            futuresByAllOf.thenApply(wasteFuture -> {
+            return fs.stream().map(f -> f.join()).collect(Collectors.toList());
+        });
+
+        int expected = IntStream.rangeClosed(1, 10)
+            .map(n -> n * n)
+            .sum();
+
+        int actual = allResults.join().stream()
+            .mapToInt(i -> i)
+            .sum();
+
         assertThat(actual, is(expected));
     }
 
