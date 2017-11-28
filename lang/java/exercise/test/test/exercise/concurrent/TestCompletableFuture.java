@@ -1,8 +1,10 @@
 package test.exercise.concurrent;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -461,6 +463,28 @@ public class TestCompletableFuture {
         assertThat(f1b.join(), is("OneTwo"));
         assertThat(f1c.join(), is("OneThree"));
         assertThat(f1d.join(), is("OneFour"));
+    }
+
+    @Test
+    public void canComposeCompletableFutures() {
+        Map<String, String> users = Map.of("001", "foo", "002", "bar", "003", "baz");
+        Map<String, Integer> bank = Map.of("foo", 100, "bar", 200, "baz", 50);
+
+        Function<String, CompletableFuture<String>> getUserName =
+            id -> CompletableFuture.supplyAsync(() -> users.get(id));
+
+        Function<String, CompletableFuture<Integer>> getBankValue =
+            userName -> CompletableFuture.supplyAsync(() -> bank.get(userName));
+
+        String sampleId = "002";
+        // thenApplyだとCompletableFutureが入れ子になる所を
+        // thenComposeを使うことでフラットにできる。
+        CompletableFuture<Integer> f1 = getUserName.apply(sampleId)
+            .thenCompose(userName -> getBankValue.apply(userName));
+
+        int expected = 200;
+        int actual = f1.join();
+        assertThat(actual, is(expected));
     }
 
 }

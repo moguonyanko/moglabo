@@ -45,10 +45,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import static java.time.temporal.TemporalAdjusters.*;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.is;
@@ -67,22 +63,6 @@ import exercise.time.TimeZones;
  */
 public class TestTimePractice {
 	
-	@BeforeClass
-	public static void setUpClass() {
-	}
-	
-	@AfterClass
-	public static void tearDownClass() {
-	}
-	
-	@Before
-	public void setUp() {
-	}
-	
-	@After
-	public void tearDown() {
-	}
-
 	@Test
 	public void nextは翌日の曜日を得る(){
 		DayOfWeeks dayOfWeek = new DayOfWeeks(DayOfWeek.MONDAY);
@@ -297,7 +277,7 @@ public class TestTimePractice {
 	
 	@Test
 	public void 時差を考慮して時刻を計算する(){
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年 MMM月 d日 ahh時mm分");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年 M月 d日 ahh時mm分");
 
 		LocalDateTime fromLocalTime = LocalDateTime.of(2015, Month.SEPTEMBER, 25, 17, 4);
 		ZoneId fromZone = ZoneId.of("Asia/Tokyo");
@@ -344,7 +324,7 @@ public class TestTimePractice {
 		LocalDateTime localTimestamp = LocalDateTime.ofInstant(timestamp, ZoneId.systemDefault());
 		
 		String expected = "2015年 9月 28日 14時39分";
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年 MMM月 d日 HH時mm分");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年 M月 d日 HH時mm分");
 		String actual = localTimestamp.format(formatter);
 		
 		assertThat(actual, is(expected));
@@ -815,7 +795,7 @@ public class TestTimePractice {
 			.ofLocalizedDateTime(FormatStyle.SHORT)
 			.withLocale(Locale.JAPAN);
 		
-		String expected = "15/11/09 1:00";
+		String expected = "2015/11/09 1:00";
 		
 		LocalDateTime time = LocalDateTime.of(2015, Month.NOVEMBER, 9, 1, 0);
 		String actual = time.format(formatter);
@@ -826,7 +806,7 @@ public class TestTimePractice {
 		
 		/**
 		 * 生成済みのDateTimeFormatterからFormatStyleだけ異なる
-		 * 新しいDateTimeFoematterを生成することはできないようだ。
+		 * 新しいDateTimeFormatterを生成することはできないようだ。
 		 * DateTimeFormatter.getLocaleで書式設定時のLocaleは得られるが，
 		 * 同じ要領でFormatStyleが得られるメソッドは存在しない。
 		 */

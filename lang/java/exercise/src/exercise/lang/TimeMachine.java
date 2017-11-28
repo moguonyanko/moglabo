@@ -27,6 +27,10 @@ public interface TimeMachine<T extends Temporal, U extends TimeMachine>
 	default T now(){
 		return getTime();
 	}
+
+	private Duration between(T base, T time) {
+		return Duration.between(base, time);
+	}
 	
 	default T toPast(T time){
 		T base = now();
@@ -36,7 +40,7 @@ public interface TimeMachine<T extends Temporal, U extends TimeMachine>
 		 * コンパイルが通らない。
 		 * <pre>T extends Temporal</pre>
 		 */
-		setTime((T)base.minus(Duration.between(base, time)));
+		setTime((T)base.minus(between(base, time)));
 		
 		return now();
 	}
@@ -44,7 +48,7 @@ public interface TimeMachine<T extends Temporal, U extends TimeMachine>
 	default T toFuture(T time){
 		T base = now();
 		
-		setTime((T)base.plus(Duration.between(base, time)));
+		setTime((T)base.plus(between(base, time)));
 		
 		return now();
 	}
