@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -564,6 +565,46 @@ public class TestCompletableFuture {
             .mapToInt(i -> i)
             .sum();
 
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void canHandleExceptionOfCompletableFuture() {
+        Consumer<String> open = url -> System.out.println("Open: " + url);
+
+        Function<String, Integer> getValue = id -> {
+            if (id == null || id.isEmpty()) {
+                throw new IllegalArgumentException("Invalid ID: " + id);
+            }
+            return 100;
+        };
+
+        Consumer<String> close = url -> System.out.println("Close: " + url);
+
+        String id = null;
+        String url = "sample://database";
+        int errorValue = -1;
+        CompletableFuture<Integer> f = CompletableFuture.supplyAsync(() -> {
+            open.accept(url);
+            int value = getValue.apply(id);
+            return value;
+        }).handleAsync((response, throwable) -> {
+            // handleはexceptionallyと異なり正常終了したかどうかに関わらず
+            // 必ず呼び出されるのでリソースの解放などを行うのに向いているかもしれない。
+            // handleにはAsync系メソッドが提供されているのもexceptionallyとの違いである。
+            close.accept(url);
+            if (throwable == null) {
+                return response;
+            } else {
+                // throwableはスローできない。
+                // throw throwable;
+                System.out.println(throwable.getMessage());
+                return errorValue;
+            }
+        });
+
+        int expected = errorValue;
+        int actual = f.join();
         assertThat(actual, is(expected));
     }
 
