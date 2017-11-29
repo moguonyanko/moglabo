@@ -596,7 +596,7 @@ public class TestCompletableFuture {
             if (throwable == null) {
                 return response;
             } else {
-                // throwableはスローできない。
+                // ここでthrowableはスローできない。
                 // throw throwable;
                 System.out.println(throwable.getMessage());
                 return errorValue;
@@ -606,6 +606,31 @@ public class TestCompletableFuture {
         int expected = errorValue;
         int actual = f.join();
         assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void canCompleteByCompleteExceptionally() {
+        Function<String, CompletableFuture<Integer>> getValue = id -> {
+            return CompletableFuture.supplyAsync(() -> {
+                if (id == null || id.isEmpty()) {
+                    throw new IllegalArgumentException("Illegal id: " + id);
+                }
+                return 100;
+            });
+        };
+
+        CompletableFuture<Integer> f = getValue.apply("");
+        boolean done = f.completeExceptionally(new IllegalStateException("Illegal State"));
+        System.out.println("Is future done?: " + done);
+
+        // completeExceptionallyの引数に渡した例外が直接スローされてくるわけではない。
+        try {
+            f.join();
+        } catch (CompletionException ce) {
+            if (!(ce.getCause() instanceof IllegalStateException)) {
+                fail();
+            }
+        }
     }
 
 }
