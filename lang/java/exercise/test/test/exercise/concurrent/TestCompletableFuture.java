@@ -633,4 +633,64 @@ public class TestCompletableFuture {
         }
     }
 
+    @Test
+    public void canHandleExceptionByWhenComplete() {
+        boolean ok = false;
+        CompletableFuture<String> f = CompletableFuture.supplyAsync(() -> {
+            if (!ok) {
+                throw new IllegalStateException("Illegal State!");
+            }
+            return "OK";
+        });
+
+        // whenCompleteの引数はBiConsumerなので引数のラムダ式内では結果を返せない。
+        // ただしwhenCompleteが返すCompletableFuture自体は値を返すことができる。
+        // 要するにwhenCompleteはCompletableFuture完了後の処理を分離して指定するための
+        // メソッドと考えられる。例えばログ出力などである。
+        // handleと異なりwhenCompleteは引数で受け取った例外を伝搬させる。
+        // 正確にはCompletionExceptionでラップされた例外を伝搬させる。
+        CompletableFuture<String> f2 = f.whenCompleteAsync((result, ex) -> {
+            if (ex == null) {
+                System.out.println("Success: " + result);
+            } else {
+                System.out.println("Fail: " + ex.getMessage());
+            }
+        });
+
+//        f2.exceptionally(t -> {
+//            System.out.println(Thread.currentThread().getName());
+//            return "NG";
+//        });
+
+        try {
+            String result = f2.join();
+            System.out.println("Result: " + result);
+        } catch (CompletionException ce) {
+            System.out.println("whenComplete throw exception");
+            if (!(ce.getCause() instanceof IllegalStateException)) {
+                fail();
+            }
+        }
+    }
+
+    // 例外処理が絡むメソッドの使い分けについて
+    //
+    // exceptionally:
+    // 例外が発生した時のみ実行したい処理がある
+    // 受け取った例外はそれ以上伝搬したくない
+    // 元のCompletableFutureを生成したスレッドと同じスレッドで処理されて構わない
+    // (＝スレッドがブロックされる，つまり非同期で例外処理を行うことができない？)
+    //
+    // handle:
+    // 正常完了したかどうかに関係なく実行したい処理がある
+    // 受け取った例外はそれ以上伝搬したくない
+    // 元のCompletableFutureを生成したスレッドとは異なるスレッドプールのスレッドで
+    // 処理したい時がある(handleAsync)
+    //
+    // whenComplete:
+    // メインの処理とは直接関係なくメインの処理完了後に行いたい処理がある
+    // 受け取った例外を伝搬したい
+    // 元のCompletableFutureを生成したスレッドとは異なるスレッドプールのスレッドで
+    // 処理したい時がある(whenCompleteAsync)
+
 }
