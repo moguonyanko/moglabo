@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import static java.util.concurrent.Flow.*;
+import static java.util.stream.Collectors.*;
 
 import exercise.concurrent.reactive.*;
 import org.junit.Test;
@@ -111,6 +114,31 @@ public class TestReactive {
         });
 
         f1.get();
+    }
+
+    @Test
+    public void useSimpleConsumerSubscriber() {
+        List<Integer> values = new ArrayList<>();
+        try (SubmissionPublisher<Integer> publisher = new SubmissionPublisher<>()) {
+            // 右辺のダイヤモンド演算子<>が記述されていないと
+            // EchoSubscriberのTはObject型になる。
+            Subscriber<Integer> subscriber = new EchoSubscriber<>(
+                i -> values.add(i),
+                System.err::println);
+            publisher.subscribe(subscriber);
+            IntStream.rangeClosed(1, 10).forEach(publisher::submit);
+        }
+
+        CompletableFuture<Void> f = CompletableFuture.runAsync(() -> {
+            System.out.println("Finished: useSimpleConsumerSubscriber");
+            List<Integer> expected = IntStream.rangeClosed(1, 10)
+                                    .mapToObj(i -> Integer.valueOf(i))
+                                    .collect(toList());
+            assertThat(values, is(expected));
+            System.out.println(values);
+        });
+
+        f.join();
     }
 
 }
