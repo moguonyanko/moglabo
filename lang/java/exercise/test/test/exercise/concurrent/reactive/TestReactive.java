@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import static java.util.concurrent.Flow.*;
 import static java.util.stream.Collectors.*;
 
-import exercise.concurrent.reactive.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+
+import exercise.concurrent.reactive.*;
 
 /**
  * 参考:
@@ -139,6 +139,56 @@ public class TestReactive {
         });
 
         f.join();
+    }
+
+    @Test
+    public void canUseFakeProcessor() {
+        List<String> results = new ArrayList<>();
+        try (SubmissionPublisher<String> publisher = new SubmissionPublisher<>()) {
+            Subscriber<String> subscriber = new FakeProcessor<>(
+                s -> s.toUpperCase(),
+                s -> results.add(s),
+                System.err::println
+            );
+            publisher.subscribe(subscriber);
+            Stream.of("hello".split("")).forEach(publisher::submit);
+        }
+
+        String expected = "HELLO";
+        String actual = results.stream().collect(joining());
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void canUseRealProcessor() {
+        List<Integer> results = new ArrayList<>();
+        try (SubmissionPublisher<String> publisher = new SubmissionPublisher<>()) {
+            // ProcessorはSubmissionPublisherを継承していたとしても
+            // try-with-resources文に記述してはいけない。Processorの処理が
+            // 完了する前にcloseされてしまうようである。
+            Processor<String, Integer> processor = new RealProcessor<>(
+                s -> s.length(),
+                System.err::println
+            );
+            Subscriber<Integer> subscriber = new EchoSubscriber<>(
+                i -> results.add(i),
+                System.err::println
+            );
+            // Processorは既存のSubscriberの処理と直交する処理を追加したい時に
+            // 便利かもしれない。
+            publisher.subscribe(processor);
+            processor.subscribe(subscriber);
+            Stream.of("AB,CD,EFG,HIJ,K,LM,N".split(",")).forEach(publisher::submit);
+            // Processorのcloseは自分で呼び出してはいけない。やはりProcessorの処理が
+            // 完了する前にcloseされてしまう。Publisherのcloseは呼び出してもよい。
+            // processor.close();
+        }
+
+        String expected = "2-2-3-3-1-2-1";
+        String actual = results.stream()
+            .map(i -> String.valueOf(i))
+            .collect(joining("-"));
+        assertThat(actual, is(expected));
     }
 
 }
