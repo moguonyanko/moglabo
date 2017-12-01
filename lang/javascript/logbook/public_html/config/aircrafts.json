@@ -74,6 +74,11 @@
 		"type": "KS",
 		"ack": 9
 	},
+	"sd4": {
+		"name": "紫電改四",
+		"type": "KS",
+		"ack": 10
+	},
 	"zu": {
 		"name": "瑞雲",
 		"type": "SB",
@@ -315,12 +320,40 @@
         "intercept": 3,
         "antibomb": 2
     },
+    "hien": {
+		"name": "三式戦 飛燕",
+		"type": "RS",
+		"ack": 8,
+        "intercept": 3,
+        "antibomb": 1
+    },
+    "hayate": {
+		"name": "四式戦 疾風",
+		"type": "RS",
+		"ack": 10,
+        "intercept": 1,
+        "antibomb": 1
+    },
     "raiden": {
 		"name": "雷電",
 		"type": "KYS",
 		"ack": 6,
         "intercept": 2,
         "antibomb": 5
+    },
+    "siden11": {
+		"name": "紫電一一型",
+		"type": "KYS",
+		"ack": 8,
+        "intercept": 1,
+        "antibomb": 1
+    },
+    "siden21sidenkai": {
+		"name": "紫電二一型 紫電改",
+		"type": "KYS",
+		"ack": 9,
+        "intercept": 3,
+        "antibomb": 1
     },
     "spitfire1": {
 		"name": "Spitfire Mk.I",
