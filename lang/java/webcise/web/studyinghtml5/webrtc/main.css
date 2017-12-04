@@ -4,6 +4,10 @@ pre {
     font-family: serif;
 }
 
+aside {
+    border-top: 1px solid lightgray;
+}
+
 .camera-container {
     width: 50vw;
     min-height: 300px;
