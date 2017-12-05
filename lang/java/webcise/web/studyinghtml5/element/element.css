@@ -5,7 +5,6 @@ body {
 }
 
 aside {
-	max-width: 70vw;
 	/**
      * aside自体を中央揃え 
      * asideはブロック要素なので margin: auto で中央揃えされる。
