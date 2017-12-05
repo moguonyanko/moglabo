@@ -15,4 +15,5 @@
 **/.idea
 **/*.iml
 **/out
-/lang/java/webcise/web/studyinghtml5/webrtc/rtcdatachannel/adapter.js
+**/adapter.js
+
