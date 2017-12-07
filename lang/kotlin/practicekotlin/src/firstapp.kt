@@ -1,9 +1,11 @@
 /**
- * My first kotlin application
+ * Simplest version
  *
  * Reference:
  * https://kotlinlang.org/docs/tutorials/getting-started.html
  * https://kotlinlang.org/docs/tutorials/koans.html
+ *
+ * さらにこのプロジェクトのプログラム作成では https://try.kotlinlang.org/ を参考にしている。
  */
 
 /**
