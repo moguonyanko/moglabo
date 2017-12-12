@@ -1,3 +1,5 @@
+package practicekotlin.examples.basicsyntax
+
 /**
  * Use ranges and in
  */

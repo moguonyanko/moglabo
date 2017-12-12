@@ -1,3 +1,5 @@
+package practicekotlin.examples.basicsyntax
+
 /**
  * Null-checks
  */

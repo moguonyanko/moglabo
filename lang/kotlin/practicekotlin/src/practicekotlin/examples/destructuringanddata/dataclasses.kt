@@ -1,7 +1,10 @@
+package practicekotlin.examples.destructuringanddata
+
 /**
  * Data classes
  */
 
+// data classの場合プロパティが少なくとも1つは無いとコンパイルエラーになる。
 private data class Student(val name: String, val score: Int)
 
 // privateを指定していないとコンパイルエラーになる。

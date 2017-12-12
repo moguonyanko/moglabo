@@ -1,3 +1,5 @@
+package practicekotlin.examples.destructuringanddata
+
 /**
  * Destructuring declarations
  */

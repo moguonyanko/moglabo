@@ -1,3 +1,5 @@
+package practicekotlin.examples.basicsyntax
+
 /**
  * is-checks and smart casts
  */

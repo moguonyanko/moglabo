@@ -1,3 +1,5 @@
+package practicekotlin.examples.basicsyntax
+
 /**
  * Use when
  */
@@ -7,7 +9,7 @@ fun main(args: Array<String>) {
     println(cases(false))
     println(cases(10.5))
     println(cases("こんにちは"))
-    println(cases(fun () {}))
+    println(cases(fun() {}))
     println(cases(MySampleSubClass()))
 }
 

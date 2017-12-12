@@ -1,3 +1,5 @@
+package practicekotlin.examples.helloworld
+
 /**
  * Reading many names from the command line
  *
