@@ -27,7 +27,7 @@
 			this.bonus = bonus;
             this.defaultNoSkillBonus = defaultNoSkillBonus;
 		} 
-		
+        
 		toString () {
 			return this.name;
 		}
@@ -61,9 +61,36 @@
 	const CORRECTION_VALUES = {
 		[AIRCRAFT_TYPE_NAMES.KS]: 0.2,
 		[AIRCRAFT_TYPE_NAMES.KB]: 0.25,
-		[AIRCRAFT_TYPE_NAMES.SS]: 0.2
+		[AIRCRAFT_TYPE_NAMES.SS]: 0.2,
+        // TODO: 局戦と陸戦が改修で対空が上昇すると仮定している。
+		[AIRCRAFT_TYPE_NAMES.KYS]: 0.2,
+		[AIRCRAFT_TYPE_NAMES.RS]: 0.2
 	};
 	
+    /**
+     * 防空時の偵察機補正
+     */
+    const getScoutingRevision = {
+        // 艦上偵察機
+        [AIRCRAFT_TYPE_NAMES.KT](aircraft) {
+            if (aircraft.search >= 9) {
+                return 1.3;
+            } else {
+                return 1.2;
+            }
+        },
+        // 水上偵察機・大型飛行艇
+        [AIRCRAFT_TYPE_NAMES.ST](aircraft) {
+            if (aircraft.search >= 9) {
+                return 1.16;
+            } else if (aircraft.search >= 8) {
+                return 1.13;
+            } else {
+                return 1.1;
+            }
+        }
+    };
+    
 	const getCorrectionValue = aircraft => {
 		if (aircraft.type.name in CORRECTION_VALUES) {
 			return CORRECTION_VALUES[aircraft.type.name];
@@ -88,16 +115,18 @@
 		constructor ({
             name, 
             type, 
-            ack = 0, 
-            intercept = 0,
-            antibomb = 0,
-            skill = 7, 
+            ack = 0, //対空
+            intercept = 0, //迎撃
+            antibomb = 0, //対爆
+            search = 0, //索敵
+            skill = 7, //内部熟練度
 			improvement = IMPROVEMENT_VALUES.DEFAULT } = {}) {
 			this.name = name;
 			this.type = type;
 			this.ack = ack;
 			this.intercept = intercept;
 			this.antibomb = antibomb;
+            this.search = search;
 			this.skill = skill;
 			this.improvement = improvement;
 		}
@@ -131,6 +160,9 @@
 			const s = [
 				`name=${this.name}`,
 				`ack=${this.ack}`,
+				`intercept=${this.intercept}`,
+				`antibomb=${this.antibomb}`,
+				`search=${this.search}`,
 				`skill=${this.skill}`,
 				`improvement=${this.improvement}`
 			];
@@ -192,19 +224,39 @@
 			return "Invalid slot number : " + this.slotNo;
 		}
 	}
-	
+    
+    const MASTERYMODE = {
+        SOTRIE: "sortie",
+        AIRDEFENCE: "airDefence"
+    };
+    
     /**
      * 制空値の計算を行う。
-     * 防空時には未対応。
+     * 
+     * @todo
+     * 局戦や陸戦も改修によって対空が上がるものとみなしている。
      */
-	const calculateMastery = (ac, slot, noSkillBonus = false) => {
-        const ack = ac.ack + getValueByImprovement(ac);
-        const skillBonus = noSkillBonus ? 0 : getSkillBonus(ac);
-		const mastery = (ack + (ac.intercept * 1.5)) * 
-			Math.sqrt(slot.size) + skillBonus;
-		return parseInt(mastery);
-	};
+    const calculateMasteryFuncs = {
+        [MASTERYMODE.SOTRIE]({ac, slot, noSkillBonus = false} = {}) {
+            const ack = ac.ack + getValueByImprovement(ac);
+            const skillBonus = noSkillBonus ? 0 : getSkillBonus(ac);
+            const mastery = (ack + (ac.intercept * 1.5)) * 
+                Math.sqrt(slot.size) + skillBonus;
+            return parseInt(mastery);
+        },
+        [MASTERYMODE.AIRDEFENCE]({ac, slot, noSkillBonus = false} = {}) {
+            const ack = ac.ack + getValueByImprovement(ac);
+            const skillBonus = noSkillBonus ? 0 : getSkillBonus(ac);
+            const mastery = (ack + ac.intercept + (ac.antibomb * 2)) * 
+                Math.sqrt(slot.size) + skillBonus;
+            return parseInt(mastery);
+        }
+    };
 	
+    /**
+     * TODO:
+     * 基地航空隊でも使うクラスなのでShipは不適当。
+     */
 	class Ship {
 		constructor (name, slotComposition) {
 			this.name = name;
@@ -259,13 +311,18 @@
 			this.setAircraft(slotNo, null);
 		}
 		
-		getMasteryOneSlot (slotNo) {
+		getMasteryOneSlot ({slotNo, mode = MASTERYMODE.SOTRIE} = {}) {
 			if (this.slots.has(slotNo)) {
 				const ac = this.getAircraft(slotNo);
 				if (ac) {
                     const slot = this.getSlot(slotNo);
                     const noSkillBonus = this.getNoSkillBonus(slotNo);
-					return calculateMastery(ac, slot, noSkillBonus);
+                    const func = calculateMasteryFuncs[mode];
+                    if (typeof func === "function") {
+    					return func({ac, slot, noSkillBonus});
+                    } else {
+                        throw new Error(`Unsupported mastery mode: ${mode}`);
+                    }
 				} else {
 					return 0;
 				}
@@ -273,16 +330,39 @@
 				return 0;
 			}
 		}
+        
+        getSearchAircrafts() {
+            const isSearch = slot => {
+                const typeName = slot.aircraft.type.name;
+                return typeName === AIRCRAFT_TYPE_NAMES.KT || 
+                    typeName === AIRCRAFT_TYPE_NAMES.ST;
+            };
+            
+            return Array.from(this.slots.values())
+                .filter(isSearch)
+                .map(slot => slot.aircraft);
+        }
 		
-		get mastery () {
+        getMastery(mode) {
 			const masteries = lB.map(this.slots.keys(), 
-				slotNo => this.getMasteryOneSlot(slotNo));
+				slotNo => this.getMasteryOneSlot({slotNo, mode}));
 			
-			const result = lB.reduce(masteries, (a, b) => a + b);
+			let result = lB.reduce(masteries, (a, b) => a + b);
+            
+            if (mode === MASTERYMODE.AIRDEFENCE) {
+                const searchAcs = this.getSearchAircrafts();
+                searchAcs.forEach(ac => {
+                    const revFunc = getScoutingRevision[ac.type.name];
+                    if (typeof revFunc === "function") {
+                        const revision = revFunc(ac);
+                        result *= revision;
+                    }
+                });
+            }
 			
-			return result;
-		}
-		
+			return parseInt(result);
+        }
+        
 		toString () {
 			const s = [this.name].concat(lB.map(this.slots.entries(), value => {
 				const [slotNo, slot] = value;
@@ -301,10 +381,10 @@
 		setSlot () {
             // NoNameShipのスロットは空の状態から変更させない。
 		}
-		
-		get mastery () {
-			return 0;
-		}
+        
+        getMastery() {
+            return 0;
+        }
 	}
 	
 	const SHIPS = {};
@@ -335,7 +415,8 @@
         return new Aircraft({name, type, ack});
     };
     
-	const testCalculateMastery = () => {
+    const testCalculateMasteryCaseSortie = () => {
+        console.log("***** 出撃テスト *****");
 		const ship1 = new Ship("ag", [20, 20, 32, 10]);
 		
 		ship1.setAircraft(1, makeAircraft("rp", getAircraftType(AIRCRAFT_TYPE_NAMES.KS), 10));
@@ -345,7 +426,7 @@
         ship1.setNoSkillBonus(4, true);
 		
 		console.log(ship1.toString());
-		console.log(ship1.mastery);
+		console.log(ship1.getMastery());
 		
 		const ship2 = new Ship("kg", [20, 20, 46, 12]);
 		
@@ -360,9 +441,50 @@
         ship2.setNoSkillBonus(4, true);
 		
 		console.log(ship2.toString());
-		console.log(ship2.mastery);
-		
-		console.log(ship1.mastery + ship2.mastery);
+		console.log(ship2.getMastery());
+    };
+    
+    const testCalculateMasteryCaseAirDefence = () => {
+        console.log("***** 防空テスト *****");
+        const base1 = new Ship("no1base", [4, 18, 18, 18]);
+		base1.setAircraft(1, new Aircraft({ 
+            "name": "彩雲",
+            "type": getAircraftType(AIRCRAFT_TYPE_NAMES.KT),
+            "search": 9
+        }));
+//		base1.setAircraft(1, new Aircraft({ 
+//            "name": "烈風",
+//            "type": getAircraftType(AIRCRAFT_TYPE_NAMES.KS),
+//            "ack": 10
+//        }));
+		base1.setAircraft(2, new Aircraft({ 
+            "name": "一式戦 隼Ⅱ型",
+            "type": getAircraftType(AIRCRAFT_TYPE_NAMES.RS),
+            "ack": 6,
+            "intercept": 2
+        }));
+		base1.setAircraft(3, new Aircraft({ 
+            "name": "雷電",
+            "type": getAircraftType(AIRCRAFT_TYPE_NAMES.KYS),
+            "ack": 6,
+            "intercept": 2,
+            "antibomb": 5
+        }));
+		base1.setAircraft(4, new Aircraft({ 
+            "name": "三式戦 飛燕",
+            "type": getAircraftType(AIRCRAFT_TYPE_NAMES.RS),
+            "ack": 8,
+            "intercept": 3,
+            "antibomb": 1
+        }));
+        const mode = "airDefence";
+        console.log(base1.toString());
+		console.log(base1.getMastery(mode));
+    };
+    
+	const testCalculateMastery = () => {
+        testCalculateMasteryCaseSortie();
+        testCalculateMasteryCaseAirDefence();
 	};
 	
 	/* 計算対象指定用ページの構築 */
@@ -628,12 +750,21 @@
 		});
 	};
 	
+    const getSelectedMasteryModeName = () => {
+        const modeEles = doc.querySelectorAll(".mastery-mode");
+        const checkedValues = Array.from(modeEles)
+            .filter(ele => ele.checked)
+            .map(ele => ele.value);
+        return checkedValues[0];
+    };
+    
 	const initPage = () => {
 		appendAllShips();
 		
 		lB.select(".calculator").addEventListener("click", evt => {
 			const ships = getAllSelectedShips();
-			const masteries = lB.map(ships, ship => ship.mastery);
+            const mode = getSelectedMasteryModeName();
+			const masteries = lB.map(ships, ship => ship.getMastery(mode));
 			const result = lB.reduce(masteries, (m1, m2) => m1 + m2);
 			const resultArea = lB.select(".result .result-area");
 			resultArea.innerText = result;
@@ -729,7 +860,7 @@
     };
     
 	const init = () => {
-		//testCalculateMastery();
+		testCalculateMastery();
         setupServiceWorkerListener();
 		
 		const funcs = [

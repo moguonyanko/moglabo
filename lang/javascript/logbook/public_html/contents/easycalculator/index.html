@@ -12,17 +12,20 @@
     <header>
       <h1>簡易計算機</h1>
       <a href="../../">ホーム</a>
-      <div>
+      <!-- PWA対応できる準備が整うまで隠す。 -->
+      <div hidden="hidden">
         <button class="app-installer">インストール</button>
         <button class="app-uninstaller">アンインストール</button>
         <p class="app-info"></p>
       </div>
-      <p>
-        複数のオブジェクト内の値をまとめて計算します。
-      </p>
     </header>
     <main>
       <div class="result">
+        <div class="mastery-mode-container">
+          <p>制空モード</p>
+          <label><input class="mastery-mode" type="radio" name="mastery-mode" value="sortie" checked="checked" />出撃</label>
+          <label><input class="mastery-mode" type="radio" name="mastery-mode" value="airDefence" />防空</label>
+        </div>
         <button class="calculator">計算</button>
         <span>値=</span><span class="emphasis result-area">0</span>
       </div>

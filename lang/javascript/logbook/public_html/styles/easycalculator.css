@@ -33,3 +33,7 @@
 .aircraft-nobonus-checker-container {
     white-space: nowrap;
 }
+
+.mastery-mode-container {
+    border: 1px lightgray solid;
+}

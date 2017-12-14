@@ -107,6 +107,10 @@
 		"name": "あきつ丸",
 		"slotComposition": [8, 8, 8]
 	},
+	"i400": {
+		"name": "伊400改",
+		"slotComposition": [3, 3]
+	},
 	"i401": {
 		"name": "伊401改",
 		"slotComposition": [3, 3]

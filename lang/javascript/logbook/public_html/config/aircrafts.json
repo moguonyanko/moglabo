@@ -413,14 +413,33 @@
     },
     "taiteichan": {
 		"name": "二式大艇",
-		"type": "ST"
+		"type": "ST",
+        "search": 12
     },
     "catarina": {
 		"name": "PBY-5A Catalina",
-		"type": "ST"
+		"type": "ST",
+        "search": 9
     },
     "saiun": {
 		"name": "彩雲",
-		"type": "KT"
+		"type": "KT",
+        "search": 9
+    },
+    "saiuncl": {
+		"name": "彩雲(東カロリン空)",
+		"type": "KT",
+        "search": 10
+    },
+    "keiunkt": {
+		"name": "試製景雲(艦偵型)",
+		"type": "KT",
+        "search": 11
+    },
+    "nisikikantei": {
+		"name": "二式艦上偵察機",
+		"type": "KT",
+        "ack": 1,
+        "search": 7
     }
 }
