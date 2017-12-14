@@ -490,7 +490,12 @@
 	/* 計算対象指定用ページの構築 */
 	
 	const selectAllShipElements = () => {
-		return lB.selectAll(".ships .ship");
+		const shipEles = lB.selectAll(".ships .ship");
+        // 計算対象に指定されている要素だけ集めて返す。
+        const selectedShipEles = Array.from(shipEles).filter(shipEle => {
+            return shipEle.querySelector(".enable-ship-data").checked;
+        });
+        return selectedShipEles;
 	};
 	
 	const appendAircraft = (aircraftSelector, acName) => {
@@ -803,6 +808,8 @@
         info.innerHTML = txt;
     };
 	
+    // PWA対応(実装中)
+    
     const registerService = async () => {
         if (!("serviceWorker" in navigator)) {
             throw new Error("ServiceWorker未対応");
