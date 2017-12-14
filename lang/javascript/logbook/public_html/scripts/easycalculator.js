@@ -333,6 +333,9 @@
         
         getSearchAircrafts() {
             const isSearch = slot => {
+                if (!slot.aircraft) {
+                    return false;
+                }
                 const typeName = slot.aircraft.type.name;
                 return typeName === AIRCRAFT_TYPE_NAMES.KT || 
                     typeName === AIRCRAFT_TYPE_NAMES.ST;
@@ -491,11 +494,7 @@
 	
 	const selectAllShipElements = () => {
 		const shipEles = lB.selectAll(".ships .ship");
-        // 計算対象に指定されている要素だけ集めて返す。
-        const selectedShipEles = Array.from(shipEles).filter(shipEle => {
-            return shipEle.querySelector(".enable-ship-data").checked;
-        });
-        return selectedShipEles;
+        return shipEles;
 	};
 	
 	const appendAircraft = (aircraftSelector, acName) => {
@@ -749,8 +748,23 @@
 		return findSelectedShip(idx, shipSel.value);
 	};
 	
+    /**
+     * 計算対象に指定されていてかつ艦か基地航空隊が選択されている要素だけ集めて返す。
+     */
+    const getTargetShipNames = () => {
+        const getNameFunc = ele => ele.querySelector(".ship-selector").value;
+        const shipEles = selectAllShipElements();
+        const shipNames = Array.from(shipEles).filter(shipEle => {
+            const checked = shipEle.querySelector(".enable-ship-data").checked;
+            const value = getNameFunc(shipEle);
+            return checked && value && (value !== "未選択");
+        }).map(getNameFunc);
+        return shipNames;
+    };
+    
 	const getAllSelectedShips = () => {
-		return lB.map(selectAllShipElements(), (selectBase, idx) => {
+        const shipEles = selectAllShipElements();
+		return lB.map(shipEles, (selectBase, idx) => {
 			return getSelectedShip(selectBase, idx);
 		});
 	};
@@ -767,10 +781,14 @@
 		appendAllShips();
 		
 		lB.select(".calculator").addEventListener("click", evt => {
-			const ships = getAllSelectedShips();
+			const allShips = getAllSelectedShips();
+            const targetShipNames = getTargetShipNames();
+            // TODO: 同じ名前の艦や基地航空隊が複数選択されている時に正しく絞り込むことができない。
+            const targetShips = allShips.filter(ship => 
+                            targetShipNames.includes(ship.name));
             const mode = getSelectedMasteryModeName();
-			const masteries = lB.map(ships, ship => ship.getMastery(mode));
-			const result = lB.reduce(masteries, (m1, m2) => m1 + m2);
+			const masteries = lB.map(targetShips, ship => ship.getMastery(mode));
+            const result = masteries.reduce((m1, m2) => m1 + m2, 0);
 			const resultArea = lB.select(".result .result-area");
 			resultArea.innerText = result;
 		}, false);
