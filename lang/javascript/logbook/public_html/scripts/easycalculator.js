@@ -749,17 +749,17 @@
 	};
 	
     /**
-     * 計算対象に指定されていてかつ艦か基地航空隊が選択されている要素だけ集めて返す。
+     * 計算対象に指定されていてかつ任意の艦か基地航空隊が選択されている要素はtrue，
+     * それ以外の要素はfalseを割り当てた配列を返す。
      */
-    const getTargetShipNames = () => {
-        const getNameFunc = ele => ele.querySelector(".ship-selector").value;
+    const getTargetShipFlags = () => {
         const shipEles = selectAllShipElements();
-        const shipNames = Array.from(shipEles).filter(shipEle => {
+        const flags = Array.from(shipEles).map((shipEle, index) => {
             const checked = shipEle.querySelector(".enable-ship-data").checked;
-            const value = getNameFunc(shipEle);
+            const value = ele => ele.querySelector(".ship-selector").value;
             return checked && value && (value !== "未選択");
-        }).map(getNameFunc);
-        return shipNames;
+        });
+        return flags;
     };
     
 	const getAllSelectedShips = () => {
@@ -782,10 +782,8 @@
 		
 		lB.select(".calculator").addEventListener("click", evt => {
 			const allShips = getAllSelectedShips();
-            const targetShipNames = getTargetShipNames();
-            // TODO: 同じ名前の艦や基地航空隊が複数選択されている時に正しく絞り込むことができない。
-            const targetShips = allShips.filter(ship => 
-                            targetShipNames.includes(ship.name));
+            const flags = getTargetShipFlags();
+            const targetShips = allShips.filter((ship, index) => flags[index]);
             const mode = getSelectedMasteryModeName();
 			const masteries = lB.map(targetShips, ship => ship.getMastery(mode));
             const result = masteries.reduce((m1, m2) => m1 + m2, 0);
