@@ -609,8 +609,8 @@ public class TestCompletableFuture {
         assertThat(actual, is(expected));
     }
 
-    @Test
-    public void canCompleteByCompleteExceptionally() {
+    @Test(expected = IllegalStateException.class)
+    public void canCompleteByCompleteExceptionally() throws Throwable {
         Function<String, CompletableFuture<Integer>> getValue = id -> {
             return CompletableFuture.supplyAsync(() -> {
                 if (id == null || id.isEmpty()) {
@@ -628,9 +628,7 @@ public class TestCompletableFuture {
         try {
             f.join();
         } catch (CompletionException ce) {
-            if (!(ce.getCause() instanceof IllegalStateException)) {
-                fail();
-            }
+            throw ce.getCause();
         }
     }
 
@@ -696,15 +694,12 @@ public class TestCompletableFuture {
 
     @Test(expected = TimeoutException.class)
     public void canTimeoutOfCompletableFutures() throws Throwable {
-        CompletableFuture<String> f1 = CompletableFuture.supplyAsync(() -> "Hello");
-        CompletableFuture<String> f2 = CompletableFuture.supplyAsync(() -> {
-            try {
-                TimeUnit.MILLISECONDS.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return "World";
-        });
+        Executor delayedExecutor =
+            CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS);
+        CompletableFuture<String> f1 =
+            CompletableFuture.supplyAsync(() -> "Hello");
+        CompletableFuture<String> f2 =
+            CompletableFuture.supplyAsync(() -> "World", delayedExecutor);
         BiFunction<String, String, String> func = (s1, s2) -> s1 + s2;
 
         CompletableFuture<String> f = f1.thenCombine(f2, func)
@@ -714,6 +709,8 @@ public class TestCompletableFuture {
                     System.out.println(actual);
                 } else {
                     // TimeoutExceptionはメッセージを持っていない。
+                    // このexceptionは自動的にCompletionExceptionにラップされて
+                    // Futureの評価を行ったブロックまで伝搬される。
                     System.out.println("TIMEOUT: " + exception);
                 }
             });
@@ -729,15 +726,11 @@ public class TestCompletableFuture {
 
     @Test
     public void completeWithDefaultValueWhenTimeout() {
+        Executor delayedExecutor =
+            CompletableFuture.delayedExecutor(100, TimeUnit.MILLISECONDS);
         CompletableFuture<Integer> f1 = CompletableFuture.supplyAsync(() -> 10);
-        CompletableFuture<Integer> f2 = CompletableFuture.supplyAsync(() -> {
-            try {
-                TimeUnit.MILLISECONDS.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return 100;
-        });
+        CompletableFuture<Integer> f2 =
+            CompletableFuture.supplyAsync(() -> 100, delayedExecutor);
         BiFunction<Integer, Integer, Integer> func = (i1, i2) -> i1 * i2;
 
         CompletableFuture<Integer> f = f1.thenCombine(f2, func)
@@ -748,7 +741,7 @@ public class TestCompletableFuture {
                 } else {
                     // completeOnTimeoutを使用してデフォルト値を返しているので
                     // TimeoutExceptionは渡されてこない。
-                    System.out.println("Timeout: " + exception.getMessage());
+                    System.out.println("Timeout: " + exception);
                 }
             });
 
