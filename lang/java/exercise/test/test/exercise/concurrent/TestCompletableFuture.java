@@ -713,15 +713,48 @@ public class TestCompletableFuture {
                 if (exception == null) {
                     System.out.println(actual);
                 } else {
-                    System.out.println("TIMEOUT: " + exception.getMessage());
+                    // TimeoutExceptionはメッセージを持っていない。
+                    System.out.println("TIMEOUT: " + exception);
                 }
             });
 
         try {
             f.join();
         } catch (CompletionException ce) {
+            // Future内で発生した例外は全てCompletionExceptionにラップされて
+            // 伝搬されてくる。
             throw ce.getCause();
         }
+    }
+
+    @Test
+    public void completeWithDefaultValueWhenTimeout() {
+        CompletableFuture<Integer> f1 = CompletableFuture.supplyAsync(() -> 10);
+        CompletableFuture<Integer> f2 = CompletableFuture.supplyAsync(() -> {
+            try {
+                TimeUnit.MILLISECONDS.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return 100;
+        });
+        BiFunction<Integer, Integer, Integer> func = (i1, i2) -> i1 * i2;
+
+        CompletableFuture<Integer> f = f1.thenCombine(f2, func)
+            .completeOnTimeout(-1, 50, TimeUnit.MILLISECONDS)
+            .whenCompleteAsync((result, exception) -> {
+                if (exception == null) {
+                    System.out.println("Not timeout: " + result);
+                } else {
+                    // completeOnTimeoutを使用してデフォルト値を返しているので
+                    // TimeoutExceptionは渡されてこない。
+                    System.out.println("Timeout: " + exception.getMessage());
+                }
+            });
+
+        int actual = f.join();
+        int expected = -1;
+        assertThat(actual, is(expected));
     }
 
 }
