@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -692,5 +693,35 @@ public class TestCompletableFuture {
     // 受け取った例外を伝搬したい
     // 元のCompletableFutureを生成したスレッドとは異なるスレッドプールのスレッドで
     // 処理したい時がある(whenCompleteAsync)
+
+    @Test(expected = TimeoutException.class)
+    public void canTimeoutOfCompletableFutures() throws Throwable {
+        CompletableFuture<String> f1 = CompletableFuture.supplyAsync(() -> "Hello");
+        CompletableFuture<String> f2 = CompletableFuture.supplyAsync(() -> {
+            try {
+                TimeUnit.MILLISECONDS.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "World";
+        });
+        BiFunction<String, String, String> func = (s1, s2) -> s1 + s2;
+
+        CompletableFuture<String> f = f1.thenCombine(f2, func)
+            .orTimeout(50, TimeUnit.MILLISECONDS)
+            .whenComplete((actual, exception) -> {
+                if (exception == null) {
+                    System.out.println(actual);
+                } else {
+                    System.out.println("TIMEOUT: " + exception.getMessage());
+                }
+            });
+
+        try {
+            f.join();
+        } catch (CompletionException ce) {
+            throw ce.getCause();
+        }
+    }
 
 }
