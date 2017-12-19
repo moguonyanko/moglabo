@@ -5,5 +5,5 @@
 package practicekotlin.kotlininaction.chapter2
 
 fun main(args: Array<String>) {
-    // TODO: Implement
+    println("こんにちは ${if(args.isNotEmpty()) args[0] else "名無し"}")
 }
