@@ -4,7 +4,7 @@
 
 package practicekotlin.kotlininaction.chapter2
 
-private enum class Color2 {
+enum class Color2 {
     RED, YELLOW, BLUE, VIOLET, INDIGO, ORANGE, GREEN
 }
 
