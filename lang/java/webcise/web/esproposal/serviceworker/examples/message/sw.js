@@ -36,24 +36,18 @@ const checkResponse = ({request, response}) => {
     return promise;
 };
 
-/**
- * TODO: 呼び出しても何も行われない。
- */
-const sendMessage = event => {
-    event.waitUntil(async () => {
-        console.log(event);
-        if (!event.clientId) {
-            return;
-        }
-        const client = clients.get(event.clientId);
-        if (!client) {
-            return;
-        }
-        console.log(client);
-        const url = event.resuest.url,
-            message = `Fetch event: ${Date.now()}`;
-        client.postMessage({url, message});
-    });
+const sendMessage = async event => {
+    if (!event.clientId) {
+        return;
+    }
+    const client = await clients.get(event.clientId);
+    if (!client) {
+        return;
+    }
+    console.log(`${client.id}:${client.type}:${client.url}`);
+    const url = event.request.url,
+        message = `Fetch event: ${Date.now()}`;
+    client.postMessage({url, message});
 };
 
 self.addEventListener("activate", event => {
@@ -77,8 +71,9 @@ self.addEventListener("install", event => {
 });
 
 self.addEventListener("fetch", event => {
-    sendMessage(event);
     const request = event.request;
+    // responeWithとwaitUntilは同時に使えない？
     event.respondWith(caches.match(request)
         .then(response => checkResponse({request, response})));
+    sendMessage(event);
 });

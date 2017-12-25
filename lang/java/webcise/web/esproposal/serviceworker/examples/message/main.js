@@ -1,11 +1,16 @@
-((window, document) => {
+((window, document, navigator) => {
     "use strict";
 
     const sw = navigator.serviceWorker;
 
     const register = async () => await sw.register("./sw.js", {scope: "./"});
 
-    const request = async url => {
+    const unregister = async () => {
+        const registration = await sw.ready;
+        registration && registration.unregister();
+    };
+
+    const getJSON = async url => {
         const response = await fetch(url);
         return await response.json();
     };
@@ -16,20 +21,18 @@
             ld = document.querySelector(".load"),
             res = document.querySelector(".result");
 
-        reg.addEventListener("click", async () => {
-            const regist = await register();
-            unreg.addEventListener("click", () => regist && regist.unregister());
-        });
+        reg.addEventListener("click", async () => await register());
+
+        unreg.addEventListener("click", async () => await unregister());
 
         ld.addEventListener("click", async () => {
-            const json = await request("./sample.json");
+            const json = await getJSON("./sample.json");
             res.innerHTML += `${JSON.stringify(json)}<br />`;
         });
 
-        // TODO: messageイベントが発生しない。
         sw.addEventListener("message", event => {
             const {url, message} = event.data;
             res.innerHTML += `${url}: ${message}<br />`;
         });
     });
-})(window, document);
+})(window, document, navigator);
