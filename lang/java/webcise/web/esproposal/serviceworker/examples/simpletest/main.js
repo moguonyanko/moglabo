@@ -4,7 +4,7 @@
     const sw = navigator.serviceWorker;
 
     const register = async () => {
-        const registration = await sw.register("./sw.js", {scope: "/"});
+        const registration = await sw.register("./sw.js", {scope: "./"});
         return registration;
     };
 

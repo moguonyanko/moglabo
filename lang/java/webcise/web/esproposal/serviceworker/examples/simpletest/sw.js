@@ -37,7 +37,7 @@ const checkResponse = ({request, response}) => {
 };
 
 self.addEventListener("activate", event => {
-    console.log(`Activated: ${getKey()}`);
+    console.log(`Activated: ${CACHE_KEY}`);
     event.waitUntil(caches.keys().then(keys => {
         return Promise.all(keys.map(key => {
             if (key.startsWith(CACHE_PREFIX) && key !== CACHE_KEY) {
@@ -51,12 +51,13 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("install", event => {
-    console.log(`Install: ${CACHE_KEY}`);
+    console.log(`Installed: ${CACHE_KEY}`);
     event.waitUntil(caches.open(CACHE_KEY)
         .then(cache => cache.addAll(cacheTargets)));
 });
 
 self.addEventListener("fetch", event => {
+    console.log(`Fetched client id: ${event.clientId}`);
     const request = event.request;
     event.respondWith(caches.match(request)
         .then(response => checkResponse({request, response})));
