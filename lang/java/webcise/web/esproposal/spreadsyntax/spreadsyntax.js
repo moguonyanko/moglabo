@@ -43,7 +43,7 @@
                 output.innerHTML = "";
             });
         },
-        objectSpread() {
+        objectRest() {
             const { output, run, clear } = getParts("object-rest-destructuring");
             
             const getSampleObject = () => {
