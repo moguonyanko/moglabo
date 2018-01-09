@@ -213,6 +213,13 @@
             ];
 			return msg.join(",");
 		}
+        
+        // ここでtoJSONが定義されていなければ呼び出している箇所でエラーとなる。
+        // ObjectにtoJSONは定義されていないので
+        // toStringのように自動で呼び出されたりはしない。
+        toJSON() {
+            return { ...this };
+        }
 	}
 	
 	class InvalidSlotError extends Error {
@@ -232,9 +239,6 @@
     
     /**
      * 制空値の計算を行う。
-     * 
-     * @todo
-     * 局戦や陸戦も改修によって対空が上がるものとみなしている。
      */
     const calculateMasteryFuncs = {
         [MASTERYMODE.SOTRIE]({ac, slot, noSkillBonus = false} = {}) {
@@ -374,6 +378,16 @@
 			
 			return s.join("\n");
 		}
+        
+        toJSON() {
+            const clonedObj = { ...this };
+            const slots = {};
+            for (let [key, value] of clonedObj.slots) {
+                slots[key] = value.toJSON();
+            }
+            clonedObj.slots = slots;
+            return clonedObj;
+        }
 	}
 	
 	class NoNameShip extends Ship {
@@ -445,6 +459,9 @@
 		
 		console.log(ship2.toString());
 		console.log(ship2.getMastery());
+        
+        console.log(JSON.stringify(ship1));
+        console.log(JSON.stringify(ship2));
     };
     
     const testCalculateMasteryCaseAirDefence = () => {
@@ -483,6 +500,7 @@
         const mode = "airDefence";
         console.log(base1.toString());
 		console.log(base1.getMastery(mode));
+        console.log(JSON.stringify(base1));
     };
     
 	const testCalculateMastery = () => {
@@ -756,7 +774,8 @@
         const shipEles = selectAllShipElements();
         const flags = Array.from(shipEles).map((shipEle, index) => {
             const checked = shipEle.querySelector(".enable-ship-data").checked;
-            const value = ele => ele.querySelector(".ship-selector").value;
+            const fn = ele => ele.querySelector(".ship-selector").value;
+            const value = fn(shipEle);
             return checked && value && (value !== "未選択");
         });
         return flags;
@@ -883,7 +902,7 @@
     };
     
 	const init = () => {
-		testCalculateMastery();
+		//testCalculateMastery();
         setupServiceWorkerListener();
 		
 		const funcs = [
