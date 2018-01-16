@@ -4,9 +4,8 @@
 
 package practicekotlin.kotlininaction.chapter3
 
-// Collectionを拡張してメソッド追加している？
-// privateで定義するぶんには問題無いか。
-private fun <T> Collection<T>.joinToString(
+// Collectionを拡張して関数を追加している。
+fun <T> Collection<T>.joinToString(
     separator: String = ":",
     prefix: String = "(",
     postfix: String = ")"
