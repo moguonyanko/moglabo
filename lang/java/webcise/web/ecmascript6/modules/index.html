@@ -1,68 +1,61 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8" />
-        <title>Modules</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <style>
-            :root {
-                --common-bg-color: rgba(102, 102, 153, 0.2);
-                --common-result-color: rgba(204, 204, 204, 0.2);
-            }
-            
-            .result-area {
-                width: 50%;
-                height: 100px;
-                margin: 5px;
-                border: 1px var(--common-bg-color) solid;
-                border-radius: 5px;
-                background-color: var(--common-bg-color);
-                overflow-y: scroll;
-            }
-        </style>
-    </head>
-    <body>
-        <header role="banner">
-            <h1>Modules</h1>
-            <p>
-                ECMAScript6からスクリプトのインポート・エクスポートができるように予定です。<br />
-                ブラウザの実装状況は良くありません。
-            </p>
-        </header>        
+  <head>
+    <meta charset="UTF-8" />
+    <title>Modules</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+          --common-bg-color: rgba(102, 102, 153, 0.2);
+          --common-result-color: rgba(204, 204, 204, 0.2);
+      }
 
-        <div role="main">
-            <section class="import-container">
-                <h2>インポート・エクスポート</h2>
-                <p>importキーワードで外部スクリプトがexportしたオブジェクトを利用する。</p>
-                <div>
-                    <div class="result-area"></div>
-                    <div>
-                        <label><input class="calc-source-value" type="number" value="10" /></label>
-                        <label><input class="calc-source-value" type="number" value="20" /></label>
-                        <label><input class="calc-source-value" type="number" value="30" /></label>
-                        <div>
-                            <button class="calc-executer">平均値</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
+      .result-area {
+          width: 50%;
+          height: 100px;
+          margin: 5px;
+          border: 1px var(--common-bg-color) solid;
+          border-radius: 5px;
+          background-color: var(--common-bg-color);
+          overflow-y: scroll;
+      }
+    </style>
+  </head>
+  <body>
+    <header role="banner">
+      <h1>Modules</h1>
+      <p>
+        type="module"で読み込まれたスクリプトではimport及びexportを使い
+        関数やプロパティを参照したり公開したりできます。
+      </p>
+    </header>        
+    <div role="main">
+      <section class="import-container">
+        <h2>インポート・エクスポート</h2>
+        <p>importキーワードで外部スクリプトがexportした関数やプロパティを利用する。</p>
+        <div>
+          <div class="result-area"></div>
+          <div>
+            <label><input class="calc-source-value" type="number" value="10" /></label>
+            <label><input class="calc-source-value" type="number" value="20" /></label>
+            <label><input class="calc-source-value" type="number" value="30" /></label>
+            <div>
+              <button class="calc-executer">平均値</button>
+            </div>
+          </div>
         </div>
-
-        <aside role="complementary">
-            <h3>参考</h3>
-            <ul>
-                <li><a href="http://es6-features.org/">ECMAScript 6 — New Features: Overview & Comparison</a></li>
-                <li><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/import">MDN import</a></li>
-                <li><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/export">MDN export</a></li>
-                <li><a href="http://exploringjs.com/es6/ch_modules.html">Exploring ES6 16. Modules</a></li>
-            </ul>
-        </aside>
-
-        <footer role="contentinfo">
-            <small>Copyright &copy; 2016 moguonyanko All rights reserved.</small>
-        </footer>
-
-        <script src="../../gomakit.js"></script>
-        <script src="modules.js"></script>
-    </body>
+      </section>
+    </div>
+    <aside role="complementary">
+      <h3>参考</h3>
+      <ul>
+        <li><a href="http://es6-features.org/">ECMAScript 6 — New Features: Overview & Comparison</a></li>
+        <li><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/import">MDN import</a></li>
+        <li><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/export">MDN export</a></li>
+        <li><a href="http://exploringjs.com/es6/ch_modules.html">Exploring ES6 16. Modules</a></li>
+      </ul>
+    </aside>
+    <script src="../../gomakit.js"></script>
+    <script src="modules.js" type="module"></script>
+  </body>
 </html>
