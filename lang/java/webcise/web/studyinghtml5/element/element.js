@@ -134,6 +134,9 @@
 			const opener = d.querySelector(this.base + ".dialog-open-button");
 			opener.addEventListener("click", () => {
 				const dialog = d.querySelector(this.base + ".dialog-sample-2");
+                if (typeof dialog.showModal !== "function") {
+                    return;
+                }
 				/**
 				 * Firefox53ではダイアログの表示・非表示を切り替えることができない。
 				 */
@@ -151,7 +154,21 @@
 			});
 		}
 	}
-
+    
+    const sampleDialogInit3 = () => {
+        const base = document.querySelector(".dialog-element-sample");
+        const dialog = base.querySelector(".dialog-sample-3");
+        const button = base.querySelector(".dialog-clos-button");
+        button.addEventListener("click", () => {
+            // Firefox60でもcloseは未実装。Chromeではcloseできる。
+            if (typeof dialog.close !== "function") {
+                console.log("Cannot close dialog.");
+                return;
+            }
+            dialog.close();
+        });
+    };
+    
 	const myModules = {
 		progress: Progress,
 		dataset: Dataset,
@@ -166,6 +183,7 @@
 				myModule.init();
 			}
 		}
+        sampleDialogInit3();
 	}
 
 	init();
