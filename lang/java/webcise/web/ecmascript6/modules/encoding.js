@@ -1,5 +1,3 @@
-"use strict";
-
 const doEncode = src => encodeURIComponent(src);
 
 export default doEncode;

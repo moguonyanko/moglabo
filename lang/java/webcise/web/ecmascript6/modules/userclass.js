@@ -1,4 +1,4 @@
-"use strict";
+// moduleで読み込まれたスクリプトは自動的にstrictモードになる。
 
 class User {
     constructor({name, age}) {
