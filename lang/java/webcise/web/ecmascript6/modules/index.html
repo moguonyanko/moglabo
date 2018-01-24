@@ -19,6 +19,10 @@
           background-color: var(--common-bg-color);
           overflow-y: scroll;
       }
+
+      .decode-result {
+          background-color: whitesmoke;
+      }
     </style>
   </head>
   <body>
@@ -45,6 +49,28 @@
           </div>
         </div>
       </section>
+      <section class="default-function-export-sample">
+        <h2>defaultエクスポート</h2>
+        <section>
+          <h3>関数のエクスポート</h3>
+          <label>input:<input class="encode-target" type="text" value="1+1=2" /></label>
+          <label>output:<span class="decode-result"></span></label>
+          <div>
+            <button class="encode-runner">encode</button>
+          </div>
+        </section>
+        <section class="default-class-export-sample">
+          <h3>クラスのエクスポート</h3>
+          <div class="result-area"></div>
+          <div>
+            <label>name:<input class="user-name" type="text" value="Taro" /></label>
+            <label>age:<input class="user-age" type="number" min="0" max="130" value="30" /></label>
+            <div>
+              <button class="runner">run</button>
+            </div>
+          </div>
+        </section>
+      </section>
     </div>
     <aside role="complementary">
       <h3>参考</h3>
@@ -57,5 +83,37 @@
     </aside>
     <script src="../../gomakit.js"></script>
     <script src="modules.js" type="module"></script>
+    <script type="module">
+      // このブロック内でimportされた関数や宣言された変数もグローバルオブジェクトにはならない。
+      // つまりtype="module"内では明示的にwindowオブジェクトに紐付けない限り
+      // 何を宣言してもグローバルオブジェクトにならない。
+      // default exportされたモジュールにasを使って別名をつけることはできない。
+      // 別名でimportすることは可能。
+      import encd from "./encoding.js";
+      const runner = document.querySelector(".encode-runner");
+      runner.addEventListener("click", () => {
+        const target = document.querySelector(".encode-target").value;
+        if (target) {
+          const result = encd(target);
+          document.querySelector(".decode-result").innerHTML = result;
+        }
+      });
+      //window.runner = runner;
+    </script>
+    <script type="module">
+      import MyUser from "./userclass.js";
+      // 何もインポートしない時つまりモジュールによる副作用だけを期待する時は
+      // importの後にモジュールのパスだけ記述する。
+      //import "./userclass.js";
+      const base = document.querySelector(".default-class-export-sample");
+      const listener = () => {
+        const name = base.querySelector(".user-name").value;
+        const age = base.querySelector(".user-age").value;
+        const user = new MyUser({name, age});
+        const resultArea = base.querySelector(".result-area");
+        resultArea.innerHTML = user.toString();
+      };
+      base.querySelector(".runner").addEventListener("click", listener);
+    </script>
   </body>
 </html>
