@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Content Security Policy(CSP)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <header>
+      <h1>Content Security Policy(CSP)</h1>
+      <a href="../">home</a>
+    </header>
+    <main>
+      <section class="default-src-example">
+        <h2>default-src 'self'</h2>
+        <p>自身のドメイン以外からコンテンツを読み込まないようにする。(サブドメインは可)</p>
+        <p>
+          このページを読み込んだドメインがmyhostではない場合以下のボタンを押すとエラーになる。
+          しかしエラーをtry-catchで捕捉することができない。
+        </p>
+        <button class="runner">myhostからスクリプト読み込み</button>
+      </section>
+    </main>
+    <aside>
+      <h3>参考</h3>
+      <p>MDN</p>
+      <ul>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP">Content Security Policy (CSP)</a></li>
+      </ul>
+    </aside>
+    <script src="main.js" type="module"></script>
+  </body>
+</html>
