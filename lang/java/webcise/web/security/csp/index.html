@@ -4,6 +4,18 @@
     <meta charset="UTF-8" />
     <title>Content Security Policy(CSP)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 
+    Content Security Policyヘッダがdefault-src 'self'だった場合、
+    インラインのCSSもエラーになる。
+    -->
+    <!--
+    <style>
+      :root {
+          font-size: 100%;
+      }
+    </style>
+    -->
+    <link rel="stylesheet" href="main.css" />
   </head>
   <body>
     <header>
@@ -15,7 +27,7 @@
         <h2>default-src 'self'</h2>
         <p>自身のドメイン以外からコンテンツを読み込まないようにする。(サブドメインは可)</p>
         <p>
-          このページを読み込んだドメインがmyhostではない場合以下のボタンを押すとエラーになる。
+          このページを読み込んだドメインがmyhostではない場合以下のボタンを押すとエラーになる。<br />
           しかしエラーをtry-catchで捕捉することができない。
         </p>
         <button class="runner">myhostからスクリプト読み込み</button>
