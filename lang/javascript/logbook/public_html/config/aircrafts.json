@@ -29,6 +29,11 @@
 		"type": "KB",
 		"ack": 7
 	},
+	"fm2": {
+		"name": "FM-2",
+		"type": "KB",
+		"ack": 6
+	},
 	"fw": {
 		"name": "Fw190T改",
 		"type": "KS",
@@ -440,6 +445,12 @@
 		"name": "試製景雲(艦偵型)",
 		"type": "KT",
         "search": 11
+    },
+    "saiuntei4": {
+		"name": "彩雲(偵四)",
+		"type": "KT",
+        "ack": 2,
+        "search": 10
     },
     "nisikikantei": {
 		"name": "二式艦上偵察機",
