@@ -8,9 +8,11 @@ package practicekotlin.kotlininaction.chapter3
 private class MyUser2(val id: String, var name: String)
 
 // 関数の引数にvalやvarは指定できない。
-private fun saveUser() {
+private fun saveUser(changeUser: Boolean) {
     var usr = MyUser2("B001", "")
-    usr = MyUser2("B002", "  ")
+    if (changeUser) {
+        usr = MyUser2("B002", "  ")
+    }
 
     fun validate(value: String?, field: String) {
         if (value.isNullOrBlank()) {
@@ -24,7 +26,7 @@ private fun saveUser() {
 
 fun main(args: Array<String>) {
     try {
-        saveUser()
+        saveUser(true)
     } catch (ex: Exception) {
         println(ex.message)
     }
