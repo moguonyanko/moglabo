@@ -16,6 +16,12 @@ import static org.hamcrest.CoreMatchers.*;
 
 import exercise.net.HttpUtil;
 
+/**
+ * 実行時のVMオプションに以下の--add-moduleを指定しないとNoClassDefErrorとなる。
+ * <em>--add-modules jdk.incubator.httpclient</em>
+ * Java10では以下のようになるものと思われる。
+ * <em>--add-modules jdk.httpclient</em>
+ */
 public class TestHttp {
 
     @Test
