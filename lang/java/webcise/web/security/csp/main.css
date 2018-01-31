@@ -1,5 +1,16 @@
 @charset "UTF-8";
 
-:root {
-    font-size: 100%;
+.example {
+    width: fit-content;
+    background-color: beige;
+}
+
+.description {
+    width: 100%;
+    max-width: 80em;
+}
+
+#loading-result-area {
+    background-color: violet;
+    text-align: center;
 }
