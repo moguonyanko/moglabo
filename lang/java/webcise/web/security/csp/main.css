@@ -1,13 +1,18 @@
 @charset "UTF-8";
 
-.example {
-    width: fit-content;
-    background-color: beige;
+section {
+    background-color: whitesmoke;
+    margin-bottom: 0.5em;
+    width: 100%;
 }
 
-.description {
-    width: 100%;
-    max-width: 80em;
+.example {
+    background-color: beige;
+    overflow-x: scroll;
+}
+
+#external-host-script {
+    background-color: lawngreen;
 }
 
 #loading-result-area {

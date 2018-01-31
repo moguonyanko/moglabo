@@ -1,7 +1,7 @@
 package webcise;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -17,6 +17,9 @@ public class CspReport extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+        // 違反報告JSONはそれほど大きいオブジェクトにならないはずなので
+        // JsonObjectを使っている。もし大きくなりそうな時はJsonParserを
+        // 使うべきかもしれない。
         try (JsonReader reader = Json.createReader(request.getInputStream())) {
             JsonObject jsonObject = reader.readObject();
             String allResult = jsonObject.toString();

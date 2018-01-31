@@ -29,11 +29,14 @@
           エラーをtry-catchで捕捉することはできない。
         </p>
         <button class="runner">myhostからスクリプト読み込み</button>
+        <div id="external-host-script"></div>
         <p class="description">
           Content Security Policyヘッダがdefault-src 'self'のみだった場合、インラインのCSSもエラーになる。
           script-src 'unsafe-inline'やstyle-src 'unsafe-inline'とするとインラインスクリプトやスタイルは読み込めるが、今度は自身のドメインから読み込めなくなる。
         </p>
-        <div id="loading-result-area"></div>
+      </section>
+      <section>
+        <h2>Content-Security-Policy-Report-Only</h2>
         <p>
           Content-Security-Policy-Report-Onlyとすれば違反報告だけを行わせることができる。
         </p>
@@ -44,13 +47,18 @@
           この場合report-uriに報告だけ行われて読み込み拒否されるはずのインラインスクリプトやインラインスタイルは正常に処理される。<br />
           報告で送信されるJSONは以下のようなフォーマットになっている。
         </p>
+        <div id="loading-result-area"></div>
         <p>報告されるJSONは以下の通り。Firefox60で確認した。</p>
         <div class="example">
           {"csp-report":{"blocked-uri":"self","document-uri":"https://localhost/webcise/security/csp/","line-number":7,"original-policy":"default-src https://localhost; report-uri https://localhost/webcise/CspReport","referrer":"https://localhost/webcise/security/","script-sample":"\n      :root {\n          font-size: 100%...","source-file":"https://localhost/webcise/security/csp/","violated-directive":"default-src"}}
         </div>
-        <p>SafariTPでは以下のようになった。フォーマットにも含まれる情報にもブラウザ互換性が無いようである。</p>
+        <p>SafariTPでは以下のようになった。フォーマットにもJSONに含まれる情報の内容にもブラウザ互換性が無いようである。</p>
         <div class="example">
           {"csp-report":{"document-uri":"https://localhost/webcise/security/csp/","referrer":"","violated-directive":"default-src 'self'","effective-directive":"style-src","original-policy":"default-src 'self'; report-uri https://localhost/webcise/CspReport","blocked-uri":"","status-code":0}}
+        </div>
+        <p>クロスオリジンに絡む違反も報告される。</p>
+        <div class="example">
+          {"csp-report":{"document-uri":"https://localhost/webcise/security/csp/","referrer":"https://localhost/webcise/security/","violated-directive":"default-src 'self'","effective-directive":"script-src","original-policy":"default-src 'self'; report-uri https://localhost/webcise/CspReport","blocked-uri":"https://myhost","status-code":0}}
         </div>
       </section>
     </main>

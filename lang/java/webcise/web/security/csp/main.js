@@ -5,7 +5,7 @@ const examples = {
                 const base = document.querySelector(".default-src-example"),
                     runner = base.querySelector(".runner");
                 const listener = () => {
-                    const url = "//myhost/webcise/security/csp/dummy.js";
+                    const url = "//localhost/webcise/security/csp/dummy.js";
                     const newSc = document.createElement("script");
                     const klass = "dummy-script";
                     newSc.setAttribute("class", klass);
