@@ -133,7 +133,12 @@
 	const loadSearchConfig = async () => {
 		const loadItems = async () => {
 			const items = await lb.getConfig("searchitem.json");
-			const searchItems = lb.objToMap(items);
+            const result = Object.entries(items).sort((itemA, itemB) => {
+                return itemA[1].name <= itemB[1].name ? -1 : 1;
+            });
+            // Object.entriesの結果をそのままMapコンストラクタに渡して
+            // Mapオブジェクトを得ることができる。
+			const searchItems = new Map(result);
 			return searchItems;
 		};
 		

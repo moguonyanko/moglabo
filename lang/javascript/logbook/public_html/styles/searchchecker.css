@@ -1,0 +1,53 @@
+@charset "UTF-8";
+
+main {
+    min-width: 100vw;
+}
+
+.param-panel {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.param-panel section {
+    margin: 0.5rem;
+}
+
+.search-item-section {
+    flex: 2;
+    max-height: 50vh;
+    overflow-y: scroll;
+}
+
+.ships-section {
+    flex: 1;
+}
+
+.search-area-section {
+    flex: 1;
+}
+
+.level-section {
+    flex: 1;
+}
+
+.ship {
+    margin: 0.5rem;
+}
+
+.search-area-panel {
+    display: flex;
+    align-items: flex-start;
+}
+
+.search-area-panel .search-area-element {
+    margin: 0.5rem;
+}
+
+.search-area-panel .search-point-list {
+    min-width: 4rem;
+}
+
+.result-area {
+    font-weight: bold;
+}

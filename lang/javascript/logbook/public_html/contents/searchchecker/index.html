@@ -1,130 +1,69 @@
 <!DOCTYPE html>
 <html lang="ja">
-	<head>
-		<meta charset="UTF-8" />
-		<title>検索確認</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<style>
-			main {
-				min-width: 100vw;
-			}
-			
-			.param-panel {
-				display: flex;
-				flex-wrap: wrap;
-			}
-
-			.param-panel section {
-				margin: 0.5rem;
-			}
-			
-			.search-item-section {
-				flex: 2;
-				max-height: 50vh;
-				overflow-y: scroll;
-			}
-
-			.ships-section {
-				flex: 1;
-			}
-
-			.search-area-section {
-				flex: 1;
-			}
-			
-			.level-section {
-				flex: 1;
-			}
-
-			.ship {
-				margin: 0.5rem;
-			}
-			
-			.search-area-panel {
-				display: flex;
-				align-items: flex-start;
-			}
-			
-			.search-area-panel .search-area-element {
-				margin: 0.5rem;
-			}
-			
-			.search-area-panel .search-point-list {
-				min-width: 4rem;
-			}
-			
-			.result-area {
-				font-weight: bold;
-			}
-		</style>
-	</head>
-	<body>
-		<header>
-			<h1>検索確認</h1>
-		</header>
-
-		<main>
-			<section>
-				<h2>パラメータ</h2>
-				<div class="param-panel">
-					<section class="search-item-section">
-						<h3>Item list</h3>
-						<!--
-						select要素は(4スロット*6隻)個用意する。
-						-->
-					</section>
-
-					<section class="ships-section">
-						<h3>Raw search values</h3>
-						<div class="ship">
-							<label>1=<input type="number" value="59" min="0" max="200" /></label>
-						</div>
-						<div class="ship">
-							<label>2=<input type="number" value="43" min="0" max="200" /></label>
-						</div>
-						<div class="ship">
-							<label>3=<input type="number" value="70" min="0" max="200" /></label>
-						</div>
-						<div class="ship">
-							<label>4=<input type="number" value="78" min="0" max="200" /></label>
-						</div>
-						<div class="ship">
-							<label>5=<input type="number" value="41" min="0" max="200" /></label>
-						</div>
-						<div class="ship">
-							<label>6=<input type="number" value="46" min="0" max="200" /></label>
-						</div>
-					</section>
-
-					<section class="search-area-section">
-						<h3>Area</h3>
-						<div class="search-area-panel">
-							<div class="search-area-container search-area-element"></div>
-							<select class="search-point-list search-area-element"></select>
-						</div>
-					</section>
-					
-					<section class="level-section">
-						<h3>Level</h3>
-						<div>
-							<label>level=<input type="number" min="1" max="120" value="120" /></label>
-						</div>
-					</section>
-				</div>
-			</section>
-
-			<section>
-				<h2>計算</h2>
-				<button class="calc-runner">実行</button>
-				<p>スコア=<span class="result-area"></span></p>
-			</section>
-		</main>
-
-		<aside>
-			<p><a href="/logbook/">home</a></p>
-		</aside>
-
-		<script src="/logbook/scripts/core.js"></script>
-		<script src="/logbook/scripts/searchchecker.js"></script>
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>検索確認</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../styles/searchchecker.css" />
+  </head>
+  <body>
+    <header>
+      <h1>検索確認</h1>
+      <p><a href="../../">home</a></p>
+    </header>
+    <main>
+      <section>
+        <h2>パラメータ</h2>
+        <div class="param-panel">
+          <section class="search-item-section">
+            <h3>Item list</h3>
+            <!--
+            select要素は(4スロット*6隻)個用意する。
+            -->
+          </section>
+          <section class="ships-section">
+            <h3>Raw search values</h3>
+            <div class="ship">
+              <label>1=<input type="number" value="59" min="0" max="200" /></label>
+            </div>
+            <div class="ship">
+              <label>2=<input type="number" value="43" min="0" max="200" /></label>
+            </div>
+            <div class="ship">
+              <label>3=<input type="number" value="70" min="0" max="200" /></label>
+            </div>
+            <div class="ship">
+              <label>4=<input type="number" value="78" min="0" max="200" /></label>
+            </div>
+            <div class="ship">
+              <label>5=<input type="number" value="41" min="0" max="200" /></label>
+            </div>
+            <div class="ship">
+              <label>6=<input type="number" value="46" min="0" max="200" /></label>
+            </div>
+          </section>
+          <section class="search-area-section">
+            <h3>Area</h3>
+            <div class="search-area-panel">
+              <div class="search-area-container search-area-element"></div>
+              <select class="search-point-list search-area-element"></select>
+            </div>
+          </section>
+          <section class="level-section">
+            <h3>Level</h3>
+            <div>
+              <label>level=<input type="number" min="1" max="120" value="120" /></label>
+            </div>
+          </section>
+        </div>
+      </section>
+      <section>
+        <h2>計算</h2>
+        <button class="calc-runner">実行</button>
+        <p>スコア=<span class="result-area"></span></p>
+      </section>
+    </main>
+    <script src="../../scripts/core.js"></script>
+    <script src="../../scripts/searchchecker.js"></script>
+  </body>
 </html>
