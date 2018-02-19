@@ -88,4 +88,37 @@ public class TestOptional {
         Optional.of(hoge).or(supplier).ifPresent(System.out::println);
         Optional.empty().or(supplier).ifPresent(System.out::println);
     }
+
+    /**
+     * 参考:
+     * JavaMagazine36
+     */
+    @Test
+    public void checkLappedNulOptional() {
+        // Optional.<String>empty()はOptional.ofNullable((String)null)と同じ。
+        // emptyの前の<String>がないと後続のmapやorでコンパイルエラーとなる。
+        String actual = Optional.<String>empty()
+            // orElseGetはOptionalの元になった値と同じ型の値しか返せない。
+            // しかしここでStringを返すと後続のOptional.mapがコンパイルエラーになる。
+            //.orElseGet(() -> Optional.of("not null"))
+            .flatMap(value -> {
+                // nullをラップしたOptionalに対してflatMap及びmapは何も行わない。
+                // したがって以下のコードが実行されることはない。
+                System.out.println("flatMap");
+                if (value != null) {
+                    return Optional.of(value);
+                } else {
+                    return Optional.of("not null");
+                }
+            })
+            .map(String::toUpperCase)
+            .or(() -> Optional.of("NULL"))
+            .get();
+
+        assertThat(actual, is("NULL"));
+
+        // Optionalの目的の1つにnullチェックの排除があるのだから、
+        // nullを含むOptionalに対してはOptional.mapもOptional.flatMapも
+        // 何も行わないのである。
+    }
 }

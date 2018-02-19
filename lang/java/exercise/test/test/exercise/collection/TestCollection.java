@@ -70,7 +70,7 @@ public class TestCollection {
     }
 
     private enum Favorite {
-        SLEEPING, READING, BASEBALL, SOCCER;
+        SLEEPING, READING, BASEBALL, SOCCER
     }
 
     private static class Student {
@@ -190,6 +190,42 @@ public class TestCollection {
         Map<ClassId, Set<Favorite>> actual = new TreeMap<>(result);
 
         assertThat(actual, is(expected));
+    }
+
+    /**
+     * 参考:
+     * JavaMagazine36
+     */
+    @Test
+    public void  testRemoveElementFromList() {
+        List<String> sample = Arrays.asList("foo", "bar", "baz", "fuga", "hoge");
+        // AbstractListはremoveをサポートしないのでArrayListでラップする。
+        List<String> l1 = new ArrayList<>(sample);
+        List<String> expected = Arrays.asList("bar", "baz", "hoge");
+
+        // ConcurrentModificationExceptionがスローされる。
+//        l1.forEach(s -> {
+//            if (s.startsWith("f")) {
+//                l1.remove(s);
+//            }
+//        });
+
+        // ListIteratorを使えば正常に値を削除できる。
+        // しかし後述のArrayList.removeIfを使う方がシンプルである。
+//        ListIterator<String> iterator = l1.listIterator();
+//        while (iterator.hasNext()) {
+//            if (iterator.next().startsWith("f")) {
+//                // イテレータの元になったリストも変更される。
+//                // 無論元のリストがremoveをサポートしていなければ
+//                // UnsupportedOperationExceptionとなる。
+//                iterator.remove();
+//            }
+//        }
+
+        // ConcurrentModificationExceptionは発生しない。
+        l1.removeIf(v -> v.startsWith("f"));
+
+        assertThat(l1, is(expected));
     }
 
 }
