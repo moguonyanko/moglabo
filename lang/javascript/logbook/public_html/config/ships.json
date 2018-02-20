@@ -227,6 +227,10 @@
 		"name": "武蔵改",
 		"slotComposition": [7, 7, 7, 7]
 	},
+	"mss2": {
+		"name": "武蔵改二",
+		"slotComposition": [5, 5, 5, 8, 5]
+	},
 	"ngt": {
 		"name": "長門改",
 		"slotComposition": [3, 3, 3, 3]
