@@ -1,3 +1,8 @@
+/**
+ * @fileOverview 支援艦隊のタイプを調べて返すモジュール
+ */
+
+
 // プロパティをSymbolにするとfor...inによるイテレーションができない。
 // JSON.stringifyでJSON文字列化することもできなくなる。
 // 参考: https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Symbol
@@ -29,9 +34,17 @@ class ShipType {
     }
 }
 
+/**
+ * @description 支援艦隊を構成する艦
+ * @todo このクラスに限らず艦種名をハードコーディングしている箇所を整理する。
+ */
 class Ship {
     constructor( {antisubmarine = false, shipType}) {
         this.antisubmarine = antisubmarine; // 対潜航空攻撃可能
+        if (shipType.typeName === "海防艦") {
+            // 海防艦は対潜航空攻撃の可否を問われないので常にtrueとする。
+            this.antisubmarine = true;
+        }
         this.shipType = shipType;
     }
 
@@ -165,6 +178,9 @@ class Fleet {
         return this.getShipTypeCount(typeName => types.includes(typeName));
     }
 
+    /**
+     * @description 対潜航空攻撃可能かどうか
+     */
     get canAntiSubmarine() {
         const existAntiSubmarineKeibo = ship => {
             return ship.shipType.typeName === "軽空母" && ship.antisubmarine;
@@ -193,6 +209,11 @@ class Fleet {
         }
     }
 
+    /**
+     * @description 支援艦隊のタイプを調べて返す。
+     * @todo 判定部分が煩雑である。SupportRuleなどの抽象的な層を取り入れて
+     * 整理したい。
+     */
     checkSupport() {
         const acCount = this.supportTypes.get(SUPPORT_TYPE.AC);
         const asaCount = this.supportTypes.get(SUPPORT_TYPE.ASA);
