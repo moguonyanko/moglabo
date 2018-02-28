@@ -239,4 +239,5 @@ const main = async () => {
 // ブラウザで動作しなくなってしまう。
 // async functionはawaitを指定せずに呼び出すとPromiseが返るのだが、
 // 以下のmain呼び出しではthen()を呼び出さずmain()だけでも正しい結果が得られてしまう。
-main().then();
+//main().then();
+window.addEventListener("DOMContentLoaded", async () => { await main(); });
