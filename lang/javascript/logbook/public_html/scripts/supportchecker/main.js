@@ -1,12 +1,19 @@
 // プロパティをSymbolにするとfor...inによるイテレーションができない。
 // JSON.stringifyでJSON文字列化することもできなくなる。
 // 参考: https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Symbol
+
+/**
+ * @description 支援艦隊のタイプ
+ */
 const SUPPORT = {
     AIR: "航空支援",
     SUBMARINE: "航空支援(対潜支援)",
     FIRE: "砲撃支援",
     TORPEDO: "雷撃支援"
 };
+/**
+ * @description 艦の支援タイプ
+ */
 const SUPPORT_TYPE = {
     AC: "空母系",
     ASA: "航空支援系A",
@@ -37,26 +44,99 @@ class Ship {
     }
 }
 
-const ESSENCIAL_SHIP = new Ship({
-    antisubmarine: false,
-    shipType: new ShipType({typeName: "駆逐艦"})
-});
+/**
+ * @description 支援艦隊の最大艦数
+ */
+const MAX_SHIP_SIZE = 6;
+
+/**
+ * @description 必須艦種名
+ */
+const ESSENCIAL_SHIP_NAME = "駆逐艦";
+
+/**
+ * @description 必須艦種の数
+ */
+const ESSENCIAL_SHIP_SIZE = 2;
 
 // 駆逐艦2隻は支援艦隊に必須。
-const ESSENCIAL_SHIPS = [ESSENCIAL_SHIP, ESSENCIAL_SHIP];
+const ESSENCIAL_SHIPS = (() => {
+    const essencialShip = new Ship({
+        antisubmarine: false,
+        shipType: new ShipType({typeName: ESSENCIAL_SHIP_NAME})
+    });
+    const ships = new Array(ESSENCIAL_SHIP_SIZE).fill(essencialShip);
+    return ships;
+})();
+
+const getShipSpaceSize = () => MAX_SHIP_SIZE - ESSENCIAL_SHIPS.length;
+
+class FleetError extends Error {
+    constructor( {ships, message}) {
+        super(message);
+        this.ships = ships;
+    }
+}
+
+class InvalidFleetError extends FleetError {
+    constructor(ships) {
+        const msg = [
+            `支援艦隊に${ESSENCIAL_SHIP_NAME}が${ESSENCIAL_SHIPS.length}隻必須です。`,
+            "引数の艦隊にこれらの艦が含まれていません。また組み込む余裕がありません。"
+        ];
+        const message = msg.join("");
+        super({ships, message});
+    }
+}
+
+class MissingShipsError extends FleetError {
+    constructor() {
+        const message = "支援艦隊に艦が存在しません。";
+        super({ships: [], message});
+    }
+}
+
+/**
+ * @description 値が存在しなかった時にデフォルト値を返すMap
+ */
+class DefaultMap extends Map {
+    constructor( {args = [], defaultValue}) {
+        super(args);
+        this.defaultValue = defaultValue;
+    }
+
+    get(key) {
+        const value = super.get(key);
+        if (value === undefined) {
+            return this.defaultValue;
+        } else {
+            return value;
+        }
+    }
+}
 
 class Fleet {
     constructor( {ships = []} = {}) {
-        this.ships = ships.concat(ESSENCIAL_SHIPS);
+        const kuchikus = ships.filter(ship =>
+            ship.shipType.typeName === ESSENCIAL_SHIP_NAME);
+        if (kuchikus.length >= ESSENCIAL_SHIPS.length) {
+            this.ships = ships;
+        } else if (kuchikus.length < ESSENCIAL_SHIPS.length &&
+            ships.length <= getShipSpaceSize()) {
+            this.ships = ships.concat(ESSENCIAL_SHIPS);
+        } else {
+            throw new InvalidFleetError(ships);
+        }
         const reducer = (acc, current) => {
-            const count = acc.get(current) || 0;
+            const count = acc.get(current);
             acc.set(current, count + 1);
             return acc;
         };
+        const defaultValue = 0;
         this.shipTypeNames = this.ships.map(ship => ship.shipType.typeName)
-            .reduce(reducer, new Map());
+            .reduce(reducer, new DefaultMap({defaultValue}));
         this.supportTypes = this.ships.map(ship => ship.shipType.supportType)
-            .reduce(reducer, new Map());
+            .reduce(reducer, new DefaultMap({defaultValue}));
     }
 
     getShipTypeCount(predicate) {
@@ -69,13 +149,17 @@ class Fleet {
         return count;
     }
 
-    // 戦艦系の数
+    /**
+     * @description 戦艦系の数
+     */
     get senkanCount() {
         const types = ["戦艦", "高速戦艦", "航空戦艦"];
         return this.getShipTypeCount(typeName => types.includes(typeName));
     }
 
-    // 重巡系の数
+    /**
+     * @description 重巡系の数
+     */
     get jyujyunCount() {
         const types = ["重巡洋艦", "航空巡洋艦"];
         return this.getShipTypeCount(typeName => types.includes(typeName));
@@ -89,11 +173,11 @@ class Fleet {
             return false;
         }
 
-        const antiSubmarinaCountMap = new Map();
+        const antiSubmarinaCountMap = new DefaultMap({defaultValue: 0});
         this.ships.forEach(ship => {
             if (ship.antisubmarine) {
                 const typeName = ship.shipType.typeName;
-                const currentCount = antiSubmarinaCountMap.get(typeName) || 0;
+                const currentCount = antiSubmarinaCountMap.get(typeName);
                 antiSubmarinaCountMap.set(typeName, currentCount + 1);
             }
         });
@@ -130,7 +214,8 @@ class Fleet {
             }
         } else {
             if (acCount >= 1 ||
-                (asaCount >= 2 || asbCount >= 2)) {
+                (asaCount >= 2 ||
+                    asbCount >= 2)) {
                 support = SUPPORT.AIR;
             }
         }
@@ -225,11 +310,117 @@ const runTest = () => {
     console.log(`支援タイプは ${support} です。`);
 };
 
+// DOM
+
+const createShipSelector = config => {
+    const reducer = (acc, current) => {
+        acc.appendChild(current);
+        return acc;
+    };
+
+    const opts = Object.entries(config).map(entry => {
+        const opt = document.createElement("option");
+        opt.setAttribute("value", JSON.stringify(entry));
+        opt.appendChild(document.createTextNode(entry[0]));
+        return opt;
+    }).reduce(reducer, document.createDocumentFragment());
+
+    const sel = document.createElement("select");
+    sel.setAttribute("class", "ship-selector");
+    const initialOp = document.createElement("option");
+    initialOp.setAttribute("selected", "selected");
+    sel.appendChild(initialOp);
+    sel.appendChild(opts);
+    return sel;
+};
+
+const createShipChecker = () => {
+    const checker = document.createElement("input");
+    checker.setAttribute("type", "checkbox");
+    checker.setAttribute("class", "antisubmarine-enable");
+    const label = document.createElement("label");
+    label.appendChild(checker);
+    label.appendChild(document.createTextNode("対潜航空攻撃可能"));
+    return label;
+};
+
+const createShipContainer = config => {
+    const container = document.createDocumentFragment();
+    const spaceSize = getShipSpaceSize();
+    for (let i = 0; i < spaceSize; i++) {
+        const subContainer = document.createElement("div");
+        subContainer.setAttribute("class", "ship-sub-container");
+        const sel = createShipSelector(config);
+        const checker = createShipChecker();
+        subContainer.appendChild(sel);
+        subContainer.appendChild(checker);
+        container.appendChild(subContainer);
+    }
+    return container;
+};
+
+const initPage = config => {
+    const base = document.querySelector(".ship-base");
+    const shipContainer = createShipContainer(config);
+    base.appendChild(shipContainer);
+};
+
+const createCheckFleet = () => {
+    const subContainers = document.querySelectorAll(".ship-sub-container");
+    const ships = Array.from(subContainers).map(subContainer => {
+        const sel = subContainer.querySelector(".ship-selector");
+        const selectedValue = sel.value;
+        if (selectedValue) {
+            const shipInfo = JSON.parse(selectedValue);
+            const antisubmarine =
+                subContainer.querySelector(".antisubmarine-enable").checked;
+            const ship = new Ship({
+                antisubmarine,
+                shipType: new ShipType({
+                    typeName: shipInfo[0],
+                    supportType: shipInfo[1]
+                })});
+            return ship;
+        } else {
+            return null;
+        }
+    }).filter(ship => ship !== null);
+
+    if (ships.length > 0) {
+        return new Fleet({ships});
+    } else {
+        throw new MissingShipsError();
+    }
+};
+
+const shipListener = event => {
+    if (event.target.classList.contains("lb-event-runner")) {
+        event.stopPropagation();
+        const result = document.querySelector(".result");
+        try {
+            const fleet = createCheckFleet();
+            result.innerHTML = fleet.support;
+        } catch (err) {
+            result.innerHTML = err.message;
+        }
+    }
+};
+
+const addListener = () => {
+    const base = document.querySelector(".input-section");
+    const options = {
+        passive: true // preventDefaultを呼び出すことはない。
+    };
+    base.addEventListener("mouseup", shipListener, options);
+    base.addEventListener("touchend", shipListener, options);
+};
+
 const main = async () => {
-    runTest();
     try {
+        //runTest();
         const config = await loadConfig();
-        console.log(config);
+        initPage(config);
+        addListener();
     } catch (err) {
         console.error(err.message);
     }
@@ -240,4 +431,12 @@ const main = async () => {
 // async functionはawaitを指定せずに呼び出すとPromiseが返るのだが、
 // 以下のmain呼び出しではthen()を呼び出さずmain()だけでも正しい結果が得られてしまう。
 //main().then();
-window.addEventListener("DOMContentLoaded", async () => { await main(); });
+window.addEventListener("DOMContentLoaded", async () => {
+    await main();
+});
+
+// Promiseのエラーの取りこぼしを防ぐ。
+window.addEventListener("unhandledrejection", err => {
+    console.log(err);
+    console.error(err.message);
+});
