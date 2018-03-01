@@ -130,11 +130,11 @@ class DefaultMap extends Map {
 
 class Fleet {
     constructor( {ships = []} = {}) {
-        const kuchikus = ships.filter(ship =>
+        const esShips = ships.filter(ship =>
             ship.shipType.typeName === ESSENCIAL_SHIP_NAME);
-        if (kuchikus.length >= ESSENCIAL_SHIPS.length) {
+        if (esShips.length >= ESSENCIAL_SHIPS.length) {
             this.ships = ships;
-        } else if (kuchikus.length < ESSENCIAL_SHIPS.length &&
+        } else if (esShips.length < ESSENCIAL_SHIPS.length &&
             ships.length <= getShipSpaceSize()) {
             this.ships = ships.concat(ESSENCIAL_SHIPS);
         } else {

@@ -74,11 +74,7 @@ const createCheckFleet = () => {
         }
     }).filter(ship => ship !== null);
 
-    if (ships.length > 0) {
-        return new supportchecker.Fleet({ships});
-    } else {
-        throw new supportchecker.MissingShipsError();
-    }
+    return new supportchecker.Fleet({ships});
 };
 
 const shipListener = event => {
