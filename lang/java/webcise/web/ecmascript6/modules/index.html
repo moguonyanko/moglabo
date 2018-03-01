@@ -71,6 +71,32 @@
           </div>
         </section>
       </section>
+      <section class="nomodule-support-example">
+        <h2>nomodule属性とModule読み込み回数</h2>
+        <p>
+          ブラウザがtype=moduleに対応していない場合、script要素のsrcに指定されたスクリプトは読み込まれない。
+        </p>
+        <p>
+          <strong>type=moduleに対応しているブラウザはnomodule属性があるscript要素を無視する。</strong>
+        </p>
+        <p>
+          nomodule属性を指定しておけばtype=moduleに対応しているブラウザに影響を与えずに、
+          type=moduleに対応していないブラウザにスクリプトを読ませることができる。
+        </p>
+        <p>
+          type=moduleが指定されたscript要素ではそのscript要素が何回記述されていても
+          同じスクリプトは1回しか実行されない。
+        </p>
+        <p>
+          type=moduleが指定されていない場合はscript要素で指定された数だけスクリプトが実行される。
+          nomodule属性が指定されている場合も同じ。
+        </p>
+        <div class="result-area"></div>
+        <script type="module" src="yesmodule.js"></script>
+        <script type="module" src="yesmodule.js"></script>
+        <script nomodule src="nomodule.js"></script>
+        <script nomodule src="nomodule.js"></script>
+      </section>
     </div>
     <aside role="complementary">
       <h3>参考</h3>
@@ -80,6 +106,8 @@
         <li><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Statements/export">MDN export</a></li>
         <li><a href="http://exploringjs.com/es6/ch_modules.html">Exploring ES6 16. Modules</a></li>
         <li><a href="https://hacks.mozilla.org/2015/08/es6-in-depth-modules/">ES6 In Depth: Modules</a></li>
+        <li><a href="https://jakearchibald.com/2017/es-modules-in-browsers/">ECMAScript modules in browsers</a></li>
+        <li><a href="https://ponyfoo.com/articles/es6-modules-in-depth">ES6 Modules in Depth</a></li>
       </ul>
     </aside>
     <script src="../../gomakit.js"></script>
