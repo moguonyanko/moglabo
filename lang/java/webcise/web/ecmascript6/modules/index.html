@@ -97,6 +97,23 @@
         <script nomodule src="nomodule.js"></script>
         <script nomodule src="nomodule.js"></script>
       </section>
+      <section class="credentials-example">
+        <h2>Moduleとクッキー</h2>
+        <p>
+          crossorigin="use-credentials"を指定しなければクッキーなどをモジュール読み込み時に
+          受け取ることができないはずだが、crossorigin属性の有無に関わらずできてしまっている。
+        </p>
+        <div class="result-area"></div>
+        <script type="module" src="/webcise/ModuleScript"></script>
+        <!--<script type="module" crossorigin="use-credentials">-->
+        <script type="module">
+          // 同じモジュールでもimportから読み込む場合は再度読むことができる？
+          import helloModule from "/webcise/ModuleScript";
+          
+          const result = document.querySelector(".credentials-example .result-area");
+          result.innerHTML += helloModule();
+        </script>
+      </section>
     </div>
     <aside role="complementary">
       <h3>参考</h3>
