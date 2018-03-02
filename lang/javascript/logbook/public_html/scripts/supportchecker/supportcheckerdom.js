@@ -1,4 +1,5 @@
-import supportchecker from "../../scripts/supportchecker/supportchecker.js";
+// importするモジュールの名前はdefault exportした時の名前と一致していなくても良い。
+import SC from "../../scripts/supportchecker/supportchecker.js";
 
 const createShipSelector = config => {
     const reducer = (acc, current) => {
@@ -34,7 +35,7 @@ const createShipChecker = () => {
 
 const createShipContainer = config => {
     const container = document.createDocumentFragment();
-    const spaceSize = supportchecker.util.getShipSpaceSize();
+    const spaceSize = SC.util.getShipSpaceSize();
     for (let i = 0; i < spaceSize; i++) {
         const subContainer = document.createElement("div");
         subContainer.setAttribute("class", "ship-sub-container");
@@ -62,9 +63,9 @@ const createCheckFleet = () => {
             const shipInfo = JSON.parse(selectedValue);
             const antisubmarine =
                 subContainer.querySelector(".antisubmarine-enable").checked;
-            const ship = new supportchecker.Ship({
+            const ship = new SC.Ship({
                 antisubmarine,
-                shipType: new supportchecker.ShipType({
+                shipType: new SC.ShipType({
                     typeName: shipInfo[0],
                     supportType: shipInfo[1]
                 })});
@@ -74,7 +75,7 @@ const createCheckFleet = () => {
         }
     }).filter(ship => ship !== null);
 
-    return new supportchecker.Fleet({ships});
+    return new SC.Fleet({ships});
 };
 
 const shipListener = event => {
@@ -101,8 +102,8 @@ const addListener = () => {
 
 const main = async () => {
     try {
-        //supportchecker.util.runTest();
-        const config = await supportchecker.util.loadConfig();
+        SC.util.runTest();
+        const config = await SC.util.loadConfig();
         initPage(config);
         addListener();
     } catch (err) {

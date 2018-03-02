@@ -2,7 +2,6 @@
  * @fileOverview 支援艦隊のタイプを調べて返すモジュール
  */
 
-
 // プロパティをSymbolにするとfor...inによるイテレーションができない。
 // JSON.stringifyでJSON文字列化することもできなくなる。
 // 参考: https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Symbol
@@ -26,6 +25,31 @@ const SUPPORT_TYPE = {
     FIRE: "砲撃支援系",
     OTHER: "その他"
 };
+/**
+ * @description 艦種名
+ */
+const SHIP_TYPE_NAME = {
+    SEIKIKUBO: "正規空母",
+    SOUBO: "装甲空母",
+    KEIBO: "軽空母",
+    SUIBO: "水上機母艦",
+    YOURIKU: "揚陸艦",
+    KOUSEN: "航空戦艦",
+    KOUJYUN: "航空巡洋艦",
+    HOKYU: "補給艦",
+    SENKAN: "戦艦",
+    KOUSOKUSENKAN: "高速戦艦",
+    JYUJYUN: "重巡洋艦",
+    KUCHIKU: "駆逐艦",
+    KEIJYUN: "軽巡洋艦",
+    RAIJYUN: "重雷装巡洋艦",
+    RENJYUN: "練習巡洋艦",
+    SENSUIBOKAN: "潜水母艦",
+    SENSUI: "潜水艦",
+    SENBO: "潜水空母",
+    KOUSAKU: "工作艦",
+    KAIBOU: "海防艦"
+};
 
 class ShipType {
     constructor( {typeName, supportType = SUPPORT_TYPE.OTHER}) {
@@ -36,12 +60,11 @@ class ShipType {
 
 /**
  * @description 支援艦隊を構成する艦
- * @todo このクラスに限らず艦種名をハードコーディングしている箇所を整理する。
  */
 class Ship {
     constructor( {antisubmarine = false, shipType}) {
         this.antisubmarine = antisubmarine; // 対潜航空攻撃可能
-        if (shipType.typeName === "海防艦") {
+        if (shipType.typeName === SHIP_TYPE_NAME.KAIBOU) {
             // 海防艦は対潜航空攻撃の可否を問われないので常にtrueとする。
             this.antisubmarine = true;
         }
@@ -53,7 +76,8 @@ class Ship {
     }
 
     toString() {
-        return `[${this.shipType.typeName}:対潜航空攻撃${this.antisubmarine ? "可能" : "不可能"}]`;
+        return `[${this.shipType.typeName}:対潜航空攻撃${this.antisubmarine ?
+            "可能" : "不可能"}]`;
     }
 }
 
@@ -65,7 +89,7 @@ const MAX_SHIP_SIZE = 6;
 /**
  * @description 必須艦種名
  */
-const ESSENCIAL_SHIP_NAME = "駆逐艦";
+const ESSENCIAL_SHIP_NAME = SHIP_TYPE_NAME.KUCHIKU;
 
 /**
  * @description 必須艦種の数
@@ -166,7 +190,11 @@ class Fleet {
      * @description 戦艦系の数
      */
     get senkanCount() {
-        const types = ["戦艦", "高速戦艦", "航空戦艦"];
+        const types = [
+            SHIP_TYPE_NAME.SENKAN,
+            SHIP_TYPE_NAME.KOUSOKUSENKAN,
+            SHIP_TYPE_NAME.KOUSEN
+        ];
         return this.getShipTypeCount(typeName => types.includes(typeName));
     }
 
@@ -174,7 +202,10 @@ class Fleet {
      * @description 重巡系の数
      */
     get jyujyunCount() {
-        const types = ["重巡洋艦", "航空巡洋艦"];
+        const types = [
+            SHIP_TYPE_NAME.JYUJYUN,
+            SHIP_TYPE_NAME.KOUJYUN
+        ];
         return this.getShipTypeCount(typeName => types.includes(typeName));
     }
 
@@ -183,7 +214,8 @@ class Fleet {
      */
     get canAntiSubmarine() {
         const existAntiSubmarineKeibo = ship => {
-            return ship.shipType.typeName === "軽空母" && ship.antisubmarine;
+            return ship.shipType.typeName === SHIP_TYPE_NAME.KEIBO &&
+                ship.antisubmarine;
         };
         if (!this.ships.some(existAntiSubmarineKeibo)) {
             return false;
@@ -197,12 +229,12 @@ class Fleet {
                 antiSubmarinaCountMap.set(typeName, currentCount + 1);
             }
         });
-        if (antiSubmarinaCountMap.get("軽空母") >= 2 ||
-            antiSubmarinaCountMap.get("海防艦") >= 2 ||
-            antiSubmarinaCountMap.has("水上機母艦") ||
-            antiSubmarinaCountMap.has("補給艦") ||
-            antiSubmarinaCountMap.has("揚陸艦") ||
-            antiSubmarinaCountMap.has("軽巡洋艦")) {
+        if (antiSubmarinaCountMap.get(SHIP_TYPE_NAME.KEIBO) >= 2 ||
+            antiSubmarinaCountMap.get(SHIP_TYPE_NAME.KAIBOU) >= 2 ||
+            antiSubmarinaCountMap.has(SHIP_TYPE_NAME.SUIBO) ||
+            antiSubmarinaCountMap.has(SHIP_TYPE_NAME.HOKYU) ||
+            antiSubmarinaCountMap.has(SHIP_TYPE_NAME.YOURIKU) ||
+            antiSubmarinaCountMap.has(SHIP_TYPE_NAME.KEIJYUN)) {
             return true;
         } else {
             return false;
@@ -331,17 +363,18 @@ const runTest = () => {
 };
 
 const supportchecker = {
-    Fleet, 
-    Ship, 
-    ShipType, 
+    Fleet,
+    Ship,
+    ShipType,
     FleetError,
     InvalidFleetError,
     MissingShipsError,
     util: {
         runTest,
-        loadConfig, 
+        loadConfig,
         getShipSpaceSize
     }
 };
 
+// トップレベルの名前空間だけexportすることでimportする側で名前衝突する危険を抑える。
 export default supportchecker;
