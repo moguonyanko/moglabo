@@ -1,6 +1,8 @@
 // importするモジュールの名前はdefault exportした時の名前と一致していなくても良い。
 import SC from "../../scripts/supportchecker/supportchecker.js";
 
+const EVENT_TARGET_PREFIX = "lb-event-";
+
 const createShipSelector = config => {
     const reducer = (acc, current) => {
         acc.appendChild(current);
@@ -15,7 +17,7 @@ const createShipSelector = config => {
     }).reduce(reducer, document.createDocumentFragment());
 
     const sel = document.createElement("select");
-    sel.setAttribute("class", "ship-selector");
+    sel.setAttribute("class", `${EVENT_TARGET_PREFIX}ship-selector`);
     const initialOp = document.createElement("option");
     initialOp.setAttribute("selected", "selected");
     sel.appendChild(initialOp);
@@ -28,6 +30,7 @@ const createShipChecker = () => {
     checker.setAttribute("type", "checkbox");
     checker.setAttribute("class", "antisubmarine-enable");
     const label = document.createElement("label");
+    label.setAttribute("class", "antisubmarine-enable-label");
     label.appendChild(checker);
     label.appendChild(document.createTextNode("対潜航空攻撃可能"));
     return label;
@@ -57,7 +60,7 @@ const initPage = config => {
 const createCheckFleet = () => {
     const subContainers = document.querySelectorAll(".ship-sub-container");
     const ships = Array.from(subContainers).map(subContainer => {
-        const sel = subContainer.querySelector(".ship-selector");
+        const sel = subContainer.querySelector(`.${EVENT_TARGET_PREFIX}ship-selector`);
         const selectedValue = sel.value;
         if (selectedValue) {
             const shipInfo = JSON.parse(selectedValue);
@@ -78,26 +81,61 @@ const createCheckFleet = () => {
     return new SC.Fleet({ships});
 };
 
-const shipListener = event => {
-    if (event.target.classList.contains("lb-event-runner")) {
+const diplaySupportType = () => {
+    const result = document.querySelector(".result");
+    try {
+        const fleet = createCheckFleet();
+        result.innerHTML = fleet.support;
+    } catch (err) {
+        result.innerHTML = err.message;
+    }
+};
+
+const changeAntiSubmarineChecker = (target) => {
+    if (target.tagName.toLowerCase() !== "select") {
+        return;
+    }
+    // changeイベント経由でイベントリスナーにイベントが通知された場合でなくても
+    // selectのvalueを取得することはできる。
+    // ただしinput要素を含むdiv要素など直接の操作の対象でない要素はtargetにならない。
+    const value = JSON.parse(target.value);
+    const shipTypeName = value[0];
+    // TODO: parentNodeなどNodeの親子関係に依存したコードは避けた方がよい。
+    // 親子関係を破壊するサードパーティ製ライブラリと組み合わせた場合正常に動作しなくなる。
+    const parent = target.parentNode;
+    const checker = parent.querySelector(".antisubmarine-enable");
+    // 海防艦の場合、対潜航空攻撃可能かどうかは問われない。(そもそも航空攻撃不可能)
+    if (shipTypeName === "海防艦") {
+        checker.setAttribute("disabled", "disabled");
+    } else {
+        checker.removeAttribute("disabled");
+    }
+};
+
+const updatePage = (target) => {
+    const classList = target.classList;
+    if (classList.contains(`${EVENT_TARGET_PREFIX}runner`)) {
+        diplaySupportType();
+    } else if (classList.contains(`${EVENT_TARGET_PREFIX}ship-selector`)) {
+        changeAntiSubmarineChecker(target);
+    }
+};
+
+const eventListener = event => {
+    const className = event.target.getAttribute("class");
+    if (className && className.startsWith(EVENT_TARGET_PREFIX)) {
         event.stopPropagation();
-        const result = document.querySelector(".result");
-        try {
-            const fleet = createCheckFleet();
-            result.innerHTML = fleet.support;
-        } catch (err) {
-            result.innerHTML = err.message;
-        }
+        updatePage(event.target);
     }
 };
 
 const addListener = () => {
-    const base = document.querySelector(".input-section");
+    const subject = document.querySelector(".input-section");
     const options = {
         passive: true // preventDefaultを呼び出すことはない。
     };
-    base.addEventListener("mouseup", shipListener, options);
-    base.addEventListener("touchend", shipListener, options);
+    subject.addEventListener("mouseup", eventListener, options);
+    subject.addEventListener("touchend", eventListener, options);
 };
 
 const main = async () => {

@@ -210,14 +210,20 @@ class Fleet {
     }
 
     /**
+     * @description 引数の艦が対潜航空攻撃可能な軽空母であればtrue、それ以外の場合は
+     * falseを返します。
+     */
+    static isAntiSubmarineLAC(ship) {
+        return ship.shipType.typeName === SHIP_TYPE_NAME.KEIBO &&
+            ship.antisubmarine;
+    }
+        
+    /**
      * @description 対潜航空攻撃可能かどうか
      */
     get canAntiSubmarine() {
-        const existAntiSubmarineKeibo = ship => {
-            return ship.shipType.typeName === SHIP_TYPE_NAME.KEIBO &&
-                ship.antisubmarine;
-        };
-        if (!this.ships.some(existAntiSubmarineKeibo)) {
+        // 自身のクラスに属するstaticメソッドを呼び出す場合でもクラス名は必須である。
+        if (!this.ships.some(Fleet.isAntiSubmarineLAC)) {
             return false;
         }
 
