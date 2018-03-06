@@ -9,7 +9,7 @@
 /**
  * @description 支援艦隊のタイプ
  */
-const SUPPORT = {
+const SUPPORTS = {
     AIR: "航空支援",
     SUBMARINE: "航空支援(対潜支援)",
     FIRE: "砲撃支援",
@@ -18,7 +18,7 @@ const SUPPORT = {
 /**
  * @description 艦の支援タイプ
  */
-const SUPPORT_TYPE = {
+const SUPPORT_TYPES = {
     AC: "空母系",
     ASA: "航空支援系A",
     ASB: "航空支援系B",
@@ -28,7 +28,7 @@ const SUPPORT_TYPE = {
 /**
  * @description 艦種名
  */
-const SHIP_TYPE_NAME = {
+const SHIP_TYPE_NAMES = {
     SEIKIKUBO: "正規空母",
     SOUBO: "装甲空母",
     KEIBO: "軽空母",
@@ -52,7 +52,7 @@ const SHIP_TYPE_NAME = {
 };
 
 class ShipType {
-    constructor( {typeName, supportType = SUPPORT_TYPE.OTHER}) {
+    constructor( {typeName, supportType = SUPPORT_TYPES.OTHER}) {
         this.typeName = typeName;
         this.supportType = supportType;
     }
@@ -64,7 +64,7 @@ class ShipType {
 class Ship {
     constructor( {antisubmarine = false, shipType}) {
         this.antisubmarine = antisubmarine; // 対潜航空攻撃可能
-        if (shipType.typeName === SHIP_TYPE_NAME.KAIBOU) {
+        if (shipType.typeName === SHIP_TYPE_NAMES.KAIBOU) {
             // 海防艦は対潜航空攻撃の可否を問われないので常にtrueとする。
             this.antisubmarine = true;
         }
@@ -72,7 +72,7 @@ class Ship {
     }
 
     get supportType() {
-        return SUPPORT_TYPE[this.shipType.supportType] || SUPPORT_TYPE.OTHER;
+        return SUPPORT_TYPES[this.shipType.supportType] || SUPPORT_TYPES.OTHER;
     }
 
     toString() {
@@ -89,7 +89,7 @@ const MAX_SHIP_SIZE = 6;
 /**
  * @description 必須艦種名
  */
-const ESSENCIAL_SHIP_NAME = SHIP_TYPE_NAME.KUCHIKU;
+const ESSENCIAL_SHIP_NAME = SHIP_TYPE_NAMES.KUCHIKU;
 
 /**
  * @description 必須艦種の数
@@ -191,9 +191,9 @@ class Fleet {
      */
     get senkanCount() {
         const types = [
-            SHIP_TYPE_NAME.SENKAN,
-            SHIP_TYPE_NAME.KOUSOKUSENKAN,
-            SHIP_TYPE_NAME.KOUSEN
+            SHIP_TYPE_NAMES.SENKAN,
+            SHIP_TYPE_NAMES.KOUSOKUSENKAN,
+            SHIP_TYPE_NAMES.KOUSEN
         ];
         return this.getShipTypeCount(typeName => types.includes(typeName));
     }
@@ -203,8 +203,8 @@ class Fleet {
      */
     get jyujyunCount() {
         const types = [
-            SHIP_TYPE_NAME.JYUJYUN,
-            SHIP_TYPE_NAME.KOUJYUN
+            SHIP_TYPE_NAMES.JYUJYUN,
+            SHIP_TYPE_NAMES.KOUJYUN
         ];
         return this.getShipTypeCount(typeName => types.includes(typeName));
     }
@@ -214,7 +214,7 @@ class Fleet {
      * falseを返します。
      */
     static isAntiSubmarineLAC(ship) {
-        return ship.shipType.typeName === SHIP_TYPE_NAME.KEIBO &&
+        return ship.shipType.typeName === SHIP_TYPE_NAMES.KEIBO &&
             ship.antisubmarine;
     }
         
@@ -235,12 +235,12 @@ class Fleet {
                 antiSubmarinaCountMap.set(typeName, currentCount + 1);
             }
         });
-        if (antiSubmarinaCountMap.get(SHIP_TYPE_NAME.KEIBO) >= 2 ||
-            antiSubmarinaCountMap.get(SHIP_TYPE_NAME.KAIBOU) >= 2 ||
-            antiSubmarinaCountMap.has(SHIP_TYPE_NAME.SUIBO) ||
-            antiSubmarinaCountMap.has(SHIP_TYPE_NAME.HOKYU) ||
-            antiSubmarinaCountMap.has(SHIP_TYPE_NAME.YOURIKU) ||
-            antiSubmarinaCountMap.has(SHIP_TYPE_NAME.KEIJYUN)) {
+        if (antiSubmarinaCountMap.get(SHIP_TYPE_NAMES.KEIBO) >= 2 ||
+            antiSubmarinaCountMap.get(SHIP_TYPE_NAMES.KAIBOU) >= 2 ||
+            antiSubmarinaCountMap.has(SHIP_TYPE_NAMES.SUIBO) ||
+            antiSubmarinaCountMap.has(SHIP_TYPE_NAMES.HOKYU) ||
+            antiSubmarinaCountMap.has(SHIP_TYPE_NAMES.YOURIKU) ||
+            antiSubmarinaCountMap.has(SHIP_TYPE_NAMES.KEIJYUN)) {
             return true;
         } else {
             return false;
@@ -252,29 +252,29 @@ class Fleet {
      * @todo 判定部分が煩雑である。SupportRuleなどの抽象的な層を取り入れて整理したい。
      */
     checkSupport() {
-        const acCount = this.supportTypes.get(SUPPORT_TYPE.AC);
-        const asaCount = this.supportTypes.get(SUPPORT_TYPE.ASA);
-        const asbCount = this.supportTypes.get(SUPPORT_TYPE.ASB);
-        const fireCount = this.supportTypes.get(SUPPORT_TYPE.FIRE);
+        const acCount = this.supportTypes.get(SUPPORT_TYPES.AC);
+        const asaCount = this.supportTypes.get(SUPPORT_TYPES.ASA);
+        const asbCount = this.supportTypes.get(SUPPORT_TYPES.ASB);
+        const fireCount = this.supportTypes.get(SUPPORT_TYPES.FIRE);
 
-        let support = SUPPORT.TORPEDO;
+        let support = SUPPORTS.TORPEDO;
         if (fireCount >= 1) {
             if ((acCount + asaCount) >= 2) {
-                support = SUPPORT.AIR;
+                support = SUPPORTS.AIR;
             } else {
                 const bc = this.senkanCount,
                     hc = this.jyujyunCount;
                 if (bc >= 2 ||
                     (bc >= 1 && hc >= 3) ||
                     hc >= 4) {
-                    support = SUPPORT.FIRE;
+                    support = SUPPORTS.FIRE;
                 }
             }
         } else {
             if (acCount >= 1 ||
                 (asaCount >= 2 ||
                     asbCount >= 2)) {
-                support = SUPPORT.AIR;
+                support = SUPPORTS.AIR;
             }
         }
         return support;
@@ -283,8 +283,8 @@ class Fleet {
     get support() {
         let result = this.checkSupport();
 
-        if (result === SUPPORT.AIR && this.canAntiSubmarine) {
-            result = SUPPORT.SUBMARINE;
+        if (result === SUPPORTS.AIR && this.canAntiSubmarine) {
+            result = SUPPORTS.SUBMARINE;
         }
 
         return result;
@@ -310,21 +310,21 @@ const getTestFleetA = () => {
         antisubmarine: true,
         shipType: new ShipType({
             typeName: "軽空母",
-            supportType: SUPPORT_TYPE.AC
+            supportType: SUPPORT_TYPES.AC
         })}),
         s2 = new Ship({shipType: new ShipType({
                 typeName: "軽空母",
-                supportType: SUPPORT_TYPE.AC
+                supportType: SUPPORT_TYPES.AC
             })}),
         s3 = new Ship({
             antisubmarine: true,
             shipType: new ShipType({
                 typeName: "水上機母艦",
-                supportType: SUPPORT_TYPE.ASA
+                supportType: SUPPORT_TYPES.ASA
             })}),
         s4 = new Ship({shipType: new ShipType({
                 typeName: "航空巡洋艦",
-                supportType: SUPPORT_TYPE.ASB
+                supportType: SUPPORT_TYPES.ASB
             })});
     const ships = [
         s1, s2, s3, s4
@@ -336,23 +336,23 @@ const getTestFleetB = () => {
     const s1 = new Ship({
         shipType: new ShipType({
             typeName: "戦艦",
-            supportType: SUPPORT_TYPE.FIRE
+            supportType: SUPPORT_TYPES.FIRE
         })}),
         s2 = new Ship({
             antisubmarine: true,
             shipType: new ShipType({
                 typeName: "補給艦",
-                supportType: SUPPORT_TYPE.ASB
+                supportType: SUPPORT_TYPES.ASB
             })}),
         s3 = new Ship({
             antisubmarine: true,
             shipType: new ShipType({
                 typeName: "軽空母",
-                supportType: SUPPORT_TYPE.AC
+                supportType: SUPPORT_TYPES.AC
             })}),
         s4 = new Ship({shipType: new ShipType({
                 typeName: "戦艦",
-                supportType: SUPPORT_TYPE.FIRE
+                supportType: SUPPORT_TYPES.FIRE
             })});
     const ships = [
         s1, s2, s3, s4
@@ -379,7 +379,8 @@ const supportchecker = {
         runTest,
         loadConfig,
         getShipSpaceSize
-    }
+    },
+    shipTypeNames: SHIP_TYPE_NAMES
 };
 
 // トップレベルの名前空間だけexportすることでimportする側で名前衝突する危険を抑える。

@@ -103,6 +103,10 @@ const diplaySupportType = () => {
 };
 
 const changeAntiSubmarineChecker = target => {
+    // まだ艦種が選択されていない時は空文字になっている。
+    if (!target.value) {
+        return;
+    }
     // changeイベント経由でイベントリスナーにイベントが通知された場合でなくても
     // selectのvalueを取得することはできる。
     // ただしinput要素を含むdiv要素など直接の操作の対象でない要素はtargetにならない。
@@ -113,7 +117,7 @@ const changeAntiSubmarineChecker = target => {
     const parent = target.parentNode;
     const checker = parent.querySelector(`.${CLASS_NAMES.antiSubmarineCheck}`);
     // 海防艦の場合、対潜航空攻撃可能かどうかは問われない。(そもそも航空攻撃不可能)
-    if (shipTypeName === "海防艦") {
+    if (shipTypeName === SC.shipTypeNames.KAIBOU) {
         checker.setAttribute("disabled", "disabled");
     } else {
         checker.removeAttribute("disabled");
@@ -144,6 +148,11 @@ const addListener = () => {
     };
     subject.addEventListener("mouseup", eventListener, options);
     subject.addEventListener("touchend", eventListener, options);
+    // AndroidのChromeやiOSのSafariではchangeイベントに対して
+    // リスナーを登録しないとselect要素で選択された値を取得できない。
+    // touchendイベントがselect要素から値を取得できるタイミングよりも
+    // 早く発生してしまうためである。
+    subject.addEventListener("change", eventListener, options);
 };
 
 const main = async () => {
