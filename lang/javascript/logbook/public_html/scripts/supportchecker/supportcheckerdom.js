@@ -3,6 +3,17 @@ import SC from "../../scripts/supportchecker/supportchecker.js";
 
 const EVENT_TARGET_PREFIX = "lb-event-";
 
+const CLASS_NAMES = {
+    shipSelect: `${EVENT_TARGET_PREFIX}ship-selector`,
+    antiSubmarineCheck: "antisubmarine-enable",
+    antiSubmarineLabel: "antisubmarine-enable-label",
+    shipSubContainer: "ship-sub-container",
+    shipBase: "ship-base",
+    result: "result",
+    inputSection: "input-section",
+    runner: `${EVENT_TARGET_PREFIX}runner`
+};
+
 const createShipSelector = config => {
     const reducer = (acc, current) => {
         acc.appendChild(current);
@@ -17,7 +28,7 @@ const createShipSelector = config => {
     }).reduce(reducer, document.createDocumentFragment());
 
     const sel = document.createElement("select");
-    sel.setAttribute("class", `${EVENT_TARGET_PREFIX}ship-selector`);
+    sel.setAttribute("class", CLASS_NAMES.shipSelect);
     const initialOp = document.createElement("option");
     initialOp.setAttribute("selected", "selected");
     sel.appendChild(initialOp);
@@ -28,9 +39,9 @@ const createShipSelector = config => {
 const createShipChecker = () => {
     const checker = document.createElement("input");
     checker.setAttribute("type", "checkbox");
-    checker.setAttribute("class", "antisubmarine-enable");
+    checker.setAttribute("class", CLASS_NAMES.antiSubmarineCheck);
     const label = document.createElement("label");
-    label.setAttribute("class", "antisubmarine-enable-label");
+    label.setAttribute("class", CLASS_NAMES.antiSubmarineLabel);
     label.appendChild(checker);
     label.appendChild(document.createTextNode("対潜航空攻撃可能"));
     return label;
@@ -41,7 +52,7 @@ const createShipContainer = config => {
     const spaceSize = SC.util.getShipSpaceSize();
     for (let i = 0; i < spaceSize; i++) {
         const subContainer = document.createElement("div");
-        subContainer.setAttribute("class", "ship-sub-container");
+        subContainer.setAttribute("class", CLASS_NAMES.shipSubContainer);
         const sel = createShipSelector(config);
         const checker = createShipChecker();
         subContainer.appendChild(sel);
@@ -52,20 +63,20 @@ const createShipContainer = config => {
 };
 
 const initPage = config => {
-    const base = document.querySelector(".ship-base");
+    const base = document.querySelector(`.${CLASS_NAMES.shipBase}`);
     const shipContainer = createShipContainer(config);
     base.appendChild(shipContainer);
 };
 
 const createCheckFleet = () => {
-    const subContainers = document.querySelectorAll(".ship-sub-container");
+    const subContainers = document.querySelectorAll(`.${CLASS_NAMES.shipSubContainer}`);
     const ships = Array.from(subContainers).map(subContainer => {
-        const sel = subContainer.querySelector(`.${EVENT_TARGET_PREFIX}ship-selector`);
+        const sel = subContainer.querySelector(`.${CLASS_NAMES.shipSelect}`);
         const selectedValue = sel.value;
         if (selectedValue) {
             const shipInfo = JSON.parse(selectedValue);
             const antisubmarine =
-                subContainer.querySelector(".antisubmarine-enable").checked;
+                subContainer.querySelector(`.${CLASS_NAMES.antiSubmarineCheck}`).checked;
             const ship = new SC.Ship({
                 antisubmarine,
                 shipType: new SC.ShipType({
@@ -82,7 +93,7 @@ const createCheckFleet = () => {
 };
 
 const diplaySupportType = () => {
-    const result = document.querySelector(".result");
+    const result = document.querySelector(`.${CLASS_NAMES.result}`);
     try {
         const fleet = createCheckFleet();
         result.innerHTML = fleet.support;
@@ -91,10 +102,7 @@ const diplaySupportType = () => {
     }
 };
 
-const changeAntiSubmarineChecker = (target) => {
-    if (target.tagName.toLowerCase() !== "select") {
-        return;
-    }
+const changeAntiSubmarineChecker = target => {
     // changeイベント経由でイベントリスナーにイベントが通知された場合でなくても
     // selectのvalueを取得することはできる。
     // ただしinput要素を含むdiv要素など直接の操作の対象でない要素はtargetにならない。
@@ -103,7 +111,7 @@ const changeAntiSubmarineChecker = (target) => {
     // TODO: parentNodeなどNodeの親子関係に依存したコードは避けた方がよい。
     // 親子関係を破壊するサードパーティ製ライブラリと組み合わせた場合正常に動作しなくなる。
     const parent = target.parentNode;
-    const checker = parent.querySelector(".antisubmarine-enable");
+    const checker = parent.querySelector(`.${CLASS_NAMES.antiSubmarineCheck}`);
     // 海防艦の場合、対潜航空攻撃可能かどうかは問われない。(そもそも航空攻撃不可能)
     if (shipTypeName === "海防艦") {
         checker.setAttribute("disabled", "disabled");
@@ -114,9 +122,9 @@ const changeAntiSubmarineChecker = (target) => {
 
 const updatePage = (target) => {
     const classList = target.classList;
-    if (classList.contains(`${EVENT_TARGET_PREFIX}runner`)) {
+    if (classList.contains(CLASS_NAMES.runner)) {
         diplaySupportType();
-    } else if (classList.contains(`${EVENT_TARGET_PREFIX}ship-selector`)) {
+    } else if (classList.contains(CLASS_NAMES.shipSelect)) {
         changeAntiSubmarineChecker(target);
     }
 };
@@ -130,7 +138,7 @@ const eventListener = event => {
 };
 
 const addListener = () => {
-    const subject = document.querySelector(".input-section");
+    const subject = document.querySelector(`.${CLASS_NAMES.inputSection}`);
     const options = {
         passive: true // preventDefaultを呼び出すことはない。
     };
