@@ -67,6 +67,14 @@
 		"name": "瑞鳳改",
 		"slotComposition": [18, 12, 12, 6]
 	},
+	"zh2": {
+		"name": "瑞鳳改二",
+		"slotComposition": [21, 18, 12, 6]
+	},
+	"zh2o": {
+		"name": "瑞鳳改二乙",
+		"slotComposition": [18, 15, 15, 2]
+	},
 	"rh": {
 		"name": "龍鳳改",
 		"slotComposition": [21, 9, 9, 6]
