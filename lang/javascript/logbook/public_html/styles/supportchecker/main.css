@@ -1,2 +1,16 @@
 @charset "UTF-8";
 
+.ship-base {
+    background-color: snow;
+}
+
+.ship-sub-container {
+    display: flex;
+    /*justify-content: space-around;*/
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.ship-sub-container > * {
+    /*flex-grow: 1;*/
+}
