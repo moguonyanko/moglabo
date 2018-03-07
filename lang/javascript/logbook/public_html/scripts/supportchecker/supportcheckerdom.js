@@ -136,7 +136,8 @@ const updatePage = (target) => {
 const eventListener = event => {
     const className = event.target.getAttribute("class");
     if (className && className.startsWith(EVENT_TARGET_PREFIX)) {
-        event.stopPropagation();
+        event.stopImmediatePropagation();
+        //event.stopPropagation();
         updatePage(event.target);
     }
 };
@@ -153,6 +154,12 @@ const addListener = () => {
     // touchendイベントがselect要素から値を取得できるタイミングよりも
     // 早く発生してしまうためである。
     subject.addEventListener("change", eventListener, options);
+    // Event.stopImmediatePropagationが呼び出される場合、同じ要素に対して登録された
+    // 同じイベントタイプのイベントリスナーの実行も抑制される。
+    // 従って以下のイベントリスナーは実行されなくなる。
+    //subject.addEventListener("change", event => {
+    //    alert("Happen!");
+    //}, options);
 };
 
 const main = async () => {
