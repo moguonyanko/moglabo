@@ -19,6 +19,26 @@ const getImageObject = async url => {
     return await res.blob();
 };
 
+const getImageContainer = () => document.querySelector(".imagecontainer");
+
+const sampleImageClassName = "sampleimage";
+
+const appendImage = blob => {
+    const url = window.URL.createObjectURL(blob);
+    const img = document.createElement("img");
+    img.className = sampleImageClassName;
+    img.onload = () => {
+        window.URL.revokeObjectURL(blob);
+        getImageContainer().appendChild(img);
+    };
+    img.src = url;
+};
+
+const clearImage = () => {
+    const imgs = getImageContainer().querySelectorAll(`.${sampleImageClassName}`);
+    Array.from(imgs).forEach(img => img.parentNode.removeChild(img));
+};
+
 const listener = async event => {
     const classList = event.target.classList;
     if (classList.contains("appinput")) {
@@ -29,20 +49,11 @@ const listener = async event => {
     if (classList.contains("swcontrol")) {
         await swListener(classList);
     } else {
-        const container = document.querySelector(".imagecontainer");
         if (classList.contains("download")) {
             const blob = await getImageObject("yellowarrow.png");
-            const url = window.URL.createObjectURL(blob);
-            const img = document.createElement("img");
-            img.className = "sampleimage";
-            img.onload = () => {
-                window.URL.revokeObjectURL(blob);
-                container.appendChild(img);
-            };
-            img.src = url;
+            appendImage(blob);
         } else if (classList.contains("clear")) {
-            const imgs = container.querySelectorAll(".sampleimage");
-            Array.from(imgs).forEach(img => img.parentNode.removeChild(img));
+            clearImage();
         }
     }
 };

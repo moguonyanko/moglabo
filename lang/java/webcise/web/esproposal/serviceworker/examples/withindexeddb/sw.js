@@ -1,6 +1,6 @@
 /**
  * TODO:
- * 練習としてconsole.infoに出力しているログをIndexedDBに出力してみる。
+ * 練習として何か適当なオブジェクトをIndexedDBを使って読み書きする。
  */
 
 // TODO: ServiceWorkerでmoduleをimportする方法が不明。以下はエラーになる。
