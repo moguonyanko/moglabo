@@ -1,3 +1,14 @@
+/**
+ * ServiceWorkerスクリプトにシンタックスエラーなどがある状態で登録してしまうと
+ * Webページ表示の際にエラーが発生し続けてページを表示することができなくなる。
+ * ServiceWorkerを登録解除すればエラーは解消されるが、ServiceWorkerの登録解除機能を
+ * ブラウザが提供しない場合は自分で登録解除するしかない。
+ * <p>ServiceWorker登録解除コード</p>
+ * <pre>
+ * navigator.serviceWorker.ready.then(reg => reg.unregister());
+ * </pre>
+ */
+
 const sw = navigator.serviceWorker;
 
 const swListener = async classList => {
