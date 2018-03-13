@@ -880,11 +880,8 @@
         const uninstaler = doc.querySelector(".app-uninstaller");
         uninstaler.addEventListener("click", async () => {
             try {
-                // TODO: 
-                // 登録済みServiceWorkerのServiceWorkerRegistrationを
-                // 得る方法が分からないのでregisterを呼び出して取得している。
-                // 本来は不要なはずである。
-                const result = await unregisterService(await registerService());
+                const registration = await navigator.serviceWorker.ready;
+                const result = await unregisterService(registration);
                 if (result) {
                     putAppInfo("アンインストール成功");
                 } else {
