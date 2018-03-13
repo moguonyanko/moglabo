@@ -299,6 +299,14 @@
 		"name": "Gambier Bay改",
 		"slotComposition": [16, 12, 6]
 	},
+	"intpd": {
+		"name": "Intrepid",
+		"slotComposition": [37, 36, 19, 4]
+	},
+	"intpdk": {
+		"name": "Intrepid改",
+		"slotComposition": [40, 36, 21, 15]
+	},
     "ab_case1": {
 		"name": "基地航空隊(戦闘機・攻撃機)",
 		"slotComposition": [18, 18, 18, 18]
