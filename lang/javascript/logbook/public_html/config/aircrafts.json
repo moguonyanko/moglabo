@@ -365,6 +365,13 @@
         "intercept": 3,
         "antibomb": 1
     },
+    "sidenkai343s301": {
+		"name": "紫電改(三四三空)戦闘301",
+		"type": "KYS",
+		"ack": 11,
+        "intercept": 4,
+        "antibomb": 2
+    },
     "spitfire1": {
 		"name": "Spitfire Mk.I",
 		"type": "RS",
