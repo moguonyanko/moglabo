@@ -869,7 +869,11 @@ const registerService = async () => {
 // キャッシュのクリアは任せてアプリのスクリプトでは
 // ServiceWorkerのregister及びunregisterのみ行う。
 const unregisterService = async registration => {
-    return registration || await registration.unregister();
+    if (registration) {
+        return await registration.unregister();
+    } else {
+        return false;
+    }
 };
 
 const addInstallListener = () => {
@@ -937,5 +941,6 @@ const init = async () => {
 };
 
 win.addEventListener("DOMContentLoaded", async () => await init());
+// Promise関連のエラーの取りこぼしを防ぐためのコード
 win.addEventListener("rejectionhandled", e => console.error(e));
 win.addEventListener("unhandledrejection", e => console.error(e));

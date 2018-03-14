@@ -1,4 +1,8 @@
-const VERSION = "v1.07";
+/**
+ * @fileOverview EasyCalculator用のServiceWorkerスクリプト
+ */
+
+const VERSION = "v1.09";
 const CONTEXT_NAME = "logbook";
 const APP_NAME = "easycalculator";
 const APP_ROOT = `/${CONTEXT_NAME}/contents/${APP_NAME}/`;
@@ -42,8 +46,33 @@ const getDeletePromise = cacheKey => {
     }
 };
 
-const getErrorResponse = url => {
-    const page = `<strong>Cannot get resorces</strong><p>${url}</p>`;
+const createErrorPage = ({url, error}) => `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='UTF-8' />
+<title>Easy Calculator Error</title>
+</head>
+<body>
+<header>
+<h1>Easy Calculator Error</h1>
+</header>
+<main>
+<section>
+<h2>Cannot get resorces</h2>
+<p>${url}</p>
+<section>
+<h3>Cause</h3>
+<p>${error.message}</p>
+</section>
+</section>
+</main>
+</body>
+</html>
+`;
+
+const getErrorResponse = ({url, error}) => {
+    const page = createErrorPage({url, error});
     const response = new Response(page, {
         headers: {
             "Content-Type": "text/html"
@@ -52,20 +81,25 @@ const getErrorResponse = url => {
     return response;
 };
 
-self.addEventListener("install", async event => {
+self.addEventListener("install", event => {
     console.log(`Install: ${APP_NAME}`);
-    const cache = await openCaches();
-    event.waitUntil(cache.addAll(targetResources));
+    event.waitUntil(openCaches().then(ch => ch.addAll(targetResources)));
 });
 
 const checkResponse = (request, response) => {
+    // CacheStorageにリソースが存在した場合
     if (response) {
+        // ここでエラーを発生させるとEvent.respondWith().catch()のcatchに記述した
+        // 内容に基づいてエラー処理が行われる。
+        //throw new Error("test error");
         console.log(`Fetch(from service worker): ${request.url}`);
         return Promise.resolve(response);
     }
     // CacheStorageにリソースが存在しなかった場合
-    return fetch(request).then(async response => {
+    return fetch(request).then(response => {
         console.log(`Fetch(from server): ${request.url}`);
+        // CacheStorage保存対象のリソースだった場合はCacheStorageに保存してから
+        // レスオポンスを返す。
         if (targetResources.indexOf(request.url) >= 0) {
             return openCaches().then(cache => {
                 cache.put(request, response.clone());
@@ -82,7 +116,10 @@ self.addEventListener("fetch", event => {
     const request = event.request;
     event.respondWith(caches.match(request)
         .then(response => checkResponse(request, response))
-        .catch(() => getErrorResponse(request.url)));
+        .catch(error => getErrorResponse({
+                url: request.url,
+                error
+            })));
 });
 
 // ブラウザの履歴が削除された後，またはServiceWorkerが一度unregisterされた後に
