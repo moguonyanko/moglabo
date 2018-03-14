@@ -222,7 +222,13 @@ class Slot {
     // ObjectにtoJSONは定義されていないので
     // toStringのように自動で呼び出されたりはしない。
     toJSON() {
-        return {...this};
+        // Safariでエラーになる。(TPはOK)
+        //return {...this};
+        return {
+            size: this.size,
+            aircraft: this.aircraft,
+            noSkillBonus: this.noSkillBonus
+        };
     }
 }
 
@@ -384,7 +390,9 @@ class Ship {
     }
 
     toJSON() {
-        const clonedObj = {...this};
+        // Safariでエラーになる。(TPはOK)
+        //const clonedObj = {...this};
+        const clonedObj = Object.assign({}, this);
         const slots = {};
         for (let [key, value] of clonedObj.slots) {
             slots[key] = value.toJSON();
@@ -823,7 +831,7 @@ const initPage = () => {
         const resultArea = lB.select(".result .result-area");
         resultArea.innerText = result;
     }, false);
-    
+
     console.info("Finished init page: " + new Date());
 };
 
@@ -929,3 +937,5 @@ const init = async () => {
 };
 
 win.addEventListener("DOMContentLoaded", async () => await init());
+win.addEventListener("rejectionhandled", e => console.error(e));
+win.addEventListener("unhandledrejection", e => console.error(e));

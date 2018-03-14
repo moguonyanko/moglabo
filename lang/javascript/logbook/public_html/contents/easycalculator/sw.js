@@ -1,4 +1,4 @@
-const VERSION = "v1.04";
+const VERSION = "v1.07";
 const CONTEXT_NAME = "logbook";
 const APP_NAME = "easycalculator";
 const APP_ROOT = `/${CONTEXT_NAME}/contents/${APP_NAME}/`;
@@ -13,7 +13,7 @@ const CACHE_KEY = `${APP_NAME}-${VERSION}`;
 // 普通スコープ外に配置されているためキャッシュに追加できない。
 // そこでHTTPレスポンスヘッダーservice-worker-allowedで指定したディレクトリ以下に
 // 該当ファイルを配置してキャッシュに追加する。以下のcore.jsがそれに該当する。
-const RESOURCES = [
+const targetResources = [
     APP_ROOT,
     `${APP_ROOT}index.html`,
     `${APP_ROOT}styles/easycalculator.css`,
@@ -55,29 +55,34 @@ const getErrorResponse = url => {
 self.addEventListener("install", async event => {
     console.log(`Install: ${APP_NAME}`);
     const cache = await openCaches();
-    event.waitUntil(cache.addAll(RESOURCES));
+    event.waitUntil(cache.addAll(targetResources));
 });
 
 const checkResponse = (request, response) => {
     if (response) {
-        console.log(`Fetch(from sw): ${request.url}`);
-        return response;
+        console.log(`Fetch(from service worker): ${request.url}`);
+        return Promise.resolve(response);
     }
-
+    // CacheStorageにリソースが存在しなかった場合
     return fetch(request).then(async response => {
         console.log(`Fetch(from server): ${request.url}`);
-        return openCaches().then(cache => {
-            cache.put(request, response.clone());
+        if (targetResources.indexOf(request.url) >= 0) {
+            return openCaches().then(cache => {
+                cache.put(request, response.clone());
+                return response;
+            });
+        } else {
+            // CacheStorage保存対象のリソースでなければそのままレスポンスを返す。
             return response;
-        });
+        }
     });
 };
 
 self.addEventListener("fetch", event => {
     const request = event.request;
     event.respondWith(caches.match(request)
-            .then(response => checkResponse(request, response))
-            .catch(() => getErrorResponse(request.url)));
+        .then(response => checkResponse(request, response))
+        .catch(() => getErrorResponse(request.url)));
 });
 
 // ブラウザの履歴が削除された後，またはServiceWorkerが一度unregisterされた後に
