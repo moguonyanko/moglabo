@@ -1,10 +1,8 @@
-const VERSION = "v1.02";
-
+const VERSION = "v1.04";
 const CONTEXT_NAME = "logbook";
-
-const SERVICE_NAME = "easycalculator";
-
-const CACHE_KEY = `${SERVICE_NAME}-${VERSION}`;
+const APP_NAME = "easycalculator";
+const APP_ROOT = `/${CONTEXT_NAME}/contents/${APP_NAME}/`;
+const CACHE_KEY = `${APP_NAME}-${VERSION}`;
 
 // ServiceWorkerスクリプトを登録しているスクリプトを読み込んでいるページの
 // ディレクトリがキャッシュに追加されていないとFirefoxではコンテンツデータ破損エラーになる。
@@ -12,24 +10,25 @@ const CACHE_KEY = `${SERVICE_NAME}-${VERSION}`;
 // またスコープ配下でキャッシュに追加されなかったページをブラウザで参照した時も
 // Firefoxではコンテンツデータ破損エラーになってしまう。回避するためにはスコープを小さくする。
 // スコープを小さくするとユーティリティ関数をまとめたスクリプトのような共有のリソースは
-// 普通スコープ外に配置されているためキャッシュに追加できない。そこでHTTPレスポンスヘッダー
-// service-worker-allowedで指定したディレクトリ以下に配置してキャッシュに追加する。
-// 以下のcore.js等がそれに該当する。
+// 普通スコープ外に配置されているためキャッシュに追加できない。
+// そこでHTTPレスポンスヘッダーservice-worker-allowedで指定したディレクトリ以下に
+// 該当ファイルを配置してキャッシュに追加する。以下のcore.jsがそれに該当する。
 const RESOURCES = [
-    `/${CONTEXT_NAME}/contents/${SERVICE_NAME}/`,
-    `/${CONTEXT_NAME}/contents/${SERVICE_NAME}/index.html`,
+    APP_ROOT,
+    `${APP_ROOT}index.html`,
+    `${APP_ROOT}styles/easycalculator.css`,
+    `${APP_ROOT}scripts/easycalculator.js`,
+    `${APP_ROOT}scripts/aircrafts.json`,
+    `${APP_ROOT}scripts/ships.json`,
+    `/${CONTEXT_NAME}/favicon.ico`,
     `/${CONTEXT_NAME}/styles/common.css`,
-    `/${CONTEXT_NAME}/styles/easycalculator.css`,
-    `/${CONTEXT_NAME}/scripts/core.js`,
-    `/${CONTEXT_NAME}/scripts/easycalculator.js`,
-    `/${CONTEXT_NAME}/config/aircrafts.json`,
-    `/${CONTEXT_NAME}/config/ships.json`
+    `/${CONTEXT_NAME}/scripts/core.js`
 ];
 
 const openCaches = async () => await caches.open(CACHE_KEY);
 
 const isNotCurrentCacheKey = key => {
-    return key.startsWith(SERVICE_NAME) && key !== CACHE_KEY;
+    return key.startsWith(APP_NAME) && key !== CACHE_KEY;
 };
 
 const getDeletePromise = cacheKey => {
@@ -54,7 +53,7 @@ const getErrorResponse = url => {
 };
 
 self.addEventListener("install", async event => {
-    console.log(`Install: ${SERVICE_NAME}`);
+    console.log(`Install: ${APP_NAME}`);
     const cache = await openCaches();
     event.waitUntil(cache.addAll(RESOURCES));
 });
@@ -84,7 +83,7 @@ self.addEventListener("fetch", event => {
 // ブラウザの履歴が削除された後，またはServiceWorkerが一度unregisterされた後に
 // 再びregisterされるとactivateイベントが発生する。
 self.addEventListener("activate", event => {
-    console.log(`Activate: ${SERVICE_NAME}`);
+    console.log(`Activate: ${APP_NAME}`);
     event.waitUntil(caches.keys().then(keys => {
         return Promise.all(keys.map(key => getDeletePromise(key)));
     }));

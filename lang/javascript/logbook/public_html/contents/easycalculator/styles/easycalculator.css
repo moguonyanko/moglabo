@@ -1,5 +1,20 @@
 @charset "UTF-8";
 
+.emphasis {
+	color: blue;
+	font-weight: bold;
+}
+
+.error {
+	color: red;
+	font-style: italic;
+}
+
+.info {
+	color: navy;
+	font-size: small;
+}
+
 .app-info {
     background-color: beige;
 }
