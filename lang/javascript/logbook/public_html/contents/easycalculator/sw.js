@@ -2,7 +2,7 @@
  * @fileOverview EasyCalculator用のServiceWorkerスクリプト
  */
 
-const VERSION = "v1.09";
+const VERSION = "v1.10";
 const CONTEXT_NAME = "logbook";
 const APP_NAME = "easycalculator";
 const APP_ROOT = `/${CONTEXT_NAME}/contents/${APP_NAME}/`;
@@ -21,6 +21,7 @@ const targetResources = [
     APP_ROOT,
     `${APP_ROOT}index.html`,
     `${APP_ROOT}styles/easycalculator.css`,
+    `${APP_ROOT}scripts/easycalculatordom.js`,
     `${APP_ROOT}scripts/easycalculator.js`,
     `${APP_ROOT}scripts/aircrafts.json`,
     `${APP_ROOT}scripts/ships.json`,
