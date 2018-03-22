@@ -23,6 +23,7 @@ import javax.net.ssl.*;
 import jdk.incubator.http.HttpClient;
 import jdk.incubator.http.HttpHeaders;
 import jdk.incubator.http.HttpRequest;
+import jdk.incubator.http.HttpRequest.BodyPublisher;
 import jdk.incubator.http.HttpResponse;
 import static jdk.incubator.http.HttpClient.Version;
 import static jdk.incubator.http.HttpResponse.*;
@@ -97,15 +98,15 @@ public class HttpUtil {
 
         HttpRequest req = HttpRequest.newBuilder(uri)
             .version(Version.HTTP_1_1)
-//            .POST(HttpRequest.BodyProcessor.fromFile(target))
+//            .POST(BodyPublisher.fromFile(target))
             .header("Content-Type", "multipart/form-data; boundary=" + boundary)
-            .POST(HttpRequest.BodyProcessor.fromString(boundary + "¥r¥n"))
-            .POST(HttpRequest.BodyProcessor.fromString(contentDisposition + "¥r¥n"))
-            .POST(HttpRequest.BodyProcessor.fromString("Content-Type: image/png¥r¥n"))
-            .POST(HttpRequest.BodyProcessor.fromString("¥r¥n"))
-            .POST(HttpRequest.BodyProcessor.fromByteArray(Files.readAllBytes(target)))
-            .POST(HttpRequest.BodyProcessor.fromString("¥r¥n"))
-            .POST(HttpRequest.BodyProcessor.fromString(boundary + "¥r¥n"))
+            .POST(BodyPublisher.fromString(boundary + "¥r¥n"))
+            .POST(BodyPublisher.fromString(contentDisposition + "¥r¥n"))
+            .POST(BodyPublisher.fromString("Content-Type: image/png¥r¥n"))
+            .POST(BodyPublisher.fromString("¥r¥n"))
+            .POST(BodyPublisher.fromByteArray(Files.readAllBytes(target)))
+            .POST(BodyPublisher.fromString("¥r¥n"))
+            .POST(BodyPublisher.fromString(boundary + "¥r¥n"))
             .build();
 
         HttpResponse<String> res = client.send(req, BodyHandler.asString());
@@ -192,7 +193,7 @@ public class HttpUtil {
     }
 
     public static void getContentWhenComplete(URI uri, Consumer<String> callback)
-        throws GeneralSecurityException, IOException, InterruptedException, ExecutionException {
+        throws GeneralSecurityException, InterruptedException, ExecutionException {
         HttpClient client = HttpClient.newBuilder()
             .sslContext(createIgnoredCheckingContext())
             .build();
@@ -241,7 +242,7 @@ public class HttpUtil {
 
     private static void dumpAvailableProxies(ProxySelector proxySelector, URI uri) {
         System.out.println(proxySelector.select(uri).stream()
-            .map(p -> p.toString())
+            .map(Proxy::toString)
             .collect(Collectors.joining()));
     }
 
