@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <title>New Element exercise</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- ページ内の相対URLの基点を指定します。 -->
+    <!-- ページ内の相対URLの基点(基底URL)を指定します。 -->
     <base target="_blank" href="/webcise/studyinghtml5/element/" />
     <link rel="shortcut icon" href="../../favicon.ico" />
     <link rel="stylesheet" href="element.css" />
@@ -665,9 +665,9 @@
           <p>メディアクエリに指定した幅の条件に合致するデバイスでは横長の画像を表示するといったことが可能。</p>
           <picture>
             <source media="(min-width: 800px)"
-                 sizes="50vw"
-                 srcset="../../images/circle.png 800w,
-                 ../../images/square.png 1200w" />
+                    sizes="50vw"
+                    srcset="../../images/circle.png 800w,
+                    ../../images/square.png 1200w" />
             <img src="../../images/star.png" alt="default image"
                  sizes="50vw"
                  srcset="../../images/launcher1.png 180w,
@@ -675,10 +675,13 @@
           </picture>
         </section>
         <section>
-          <h3>参考</h3>
-          <ul>
-            <li><a href="https://www.html5rocks.com/ja/tutorials/responsive/picture-element/">レスポンシブイメージのネイティブサポート</a></li>
-          </ul>
+          <h3>基底URLによるアンカーの解決</h3>
+          <p></p>
+          <a href="#myanchor">a要素のhrefをbase要素のhrefの末尾につけてページがリクエストされます。</a>
+          <div id="myanchor">
+            <p>ページ遷移後id="myanchor"の位置にジャンプする。</p>
+            <p>つまりこのテキストを含む要素にジャンプします。</p>
+          </div>
         </section>
       </article>
     </section>
@@ -686,6 +689,8 @@
       <h3 class="aside-text">参考サイト</h3>
       <p class="aside-text"><a href="http://www.w3schools.com/">w3schools.com</a></p>
       <p class="aside-text"><a href="https://developer.mozilla.org/">MDN</a></p>
+      <p class="aside-text"><a href="https://www.html5rocks.com/ja/tutorials/responsive/picture-element/">レスポンシブイメージのネイティブサポート</a></p>
+      <p class="aside-text"><a href="https://developer.mozilla.org/ja/docs/Web/HTML/Element/base">&lt;base&gt;: 文書の基底 URL 要素</a></p>
     </aside>
     <script src="element.js" async="async"></script>
   </body>
