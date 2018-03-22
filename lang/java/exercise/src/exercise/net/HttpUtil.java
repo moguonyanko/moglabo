@@ -23,7 +23,7 @@ import javax.net.ssl.*;
 import jdk.incubator.http.HttpClient;
 import jdk.incubator.http.HttpHeaders;
 import jdk.incubator.http.HttpRequest;
-import jdk.incubator.http.HttpRequest.BodyPublisher;
+//import jdk.incubator.http.HttpRequest.BodyPublisher;
 import jdk.incubator.http.HttpResponse;
 import static jdk.incubator.http.HttpClient.Version;
 import static jdk.incubator.http.HttpResponse.*;
@@ -87,6 +87,7 @@ public class HttpUtil {
 
     // TODO:
     // HttpClientでmultipart/form-dataを送信できるようにする。
+    // BodyPublisherを参照するとコンパイルエラーになるため一時的にコメントアウトしている。
     public static int upload(URI uri, Path target)
         throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
@@ -100,13 +101,13 @@ public class HttpUtil {
             .version(Version.HTTP_1_1)
 //            .POST(BodyPublisher.fromFile(target))
             .header("Content-Type", "multipart/form-data; boundary=" + boundary)
-            .POST(BodyPublisher.fromString(boundary + "¥r¥n"))
-            .POST(BodyPublisher.fromString(contentDisposition + "¥r¥n"))
-            .POST(BodyPublisher.fromString("Content-Type: image/png¥r¥n"))
-            .POST(BodyPublisher.fromString("¥r¥n"))
-            .POST(BodyPublisher.fromByteArray(Files.readAllBytes(target)))
-            .POST(BodyPublisher.fromString("¥r¥n"))
-            .POST(BodyPublisher.fromString(boundary + "¥r¥n"))
+//            .POST(BodyPublisher.fromString(boundary + "¥r¥n"))
+//            .POST(BodyPublisher.fromString(contentDisposition + "¥r¥n"))
+//            .POST(BodyPublisher.fromString("Content-Type: image/png¥r¥n"))
+//            .POST(BodyPublisher.fromString("¥r¥n"))
+//            .POST(BodyPublisher.fromByteArray(Files.readAllBytes(target)))
+//            .POST(BodyPublisher.fromString("¥r¥n"))
+//            .POST(BodyPublisher.fromString(boundary + "¥r¥n"))
             .build();
 
         HttpResponse<String> res = client.send(req, BodyHandler.asString());
