@@ -1,5 +1,5 @@
 /**
- * @fileOverview 非同期のClipboardAPIを調査するためのモジュール
+ * @fileOverview 非同期のClipboard APIを調査するためのモジュール
  */
 
 const clipboardDescriptors = {
@@ -7,7 +7,8 @@ const clipboardDescriptors = {
     write: {name: "clipboard-write"}
 };
 
-// Permission APIでユーザーの許可を得なければClipboard APIを使用することはできない。
+// 非同期のClipboard APIはPermission APIでユーザーの許可を得なければ
+// 使用することができない。エラーが返される。
 const permit = async descriptor => {
     const status = await navigator.permissions.query(descriptor);
     console.info(status);
