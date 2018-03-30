@@ -284,6 +284,11 @@
 		"type": "小型電探",
 		"value": 4
 	},
+	"sksg": {
+		"name": "SK+SGレーダー",
+		"type": "大型電探",
+		"value": 12
+	},
 	"sl": {
 		"name": "探照灯",
 		"type": "探照灯",
