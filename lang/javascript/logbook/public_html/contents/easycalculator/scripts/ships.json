@@ -23,6 +23,14 @@
 		"name": "飛龍改二",
 		"slotComposition": [18, 36, 22, 3]
 	},
+	"sk": {
+		"name": "翔鶴",
+		"slotComposition": [21, 21, 21, 12]
+	},
+	"skk": {
+		"name": "翔鶴改",
+		"slotComposition": [24, 24, 24, 12]
+	},
 	"sk2": {
 		"name": "翔鶴改二",
 		"slotComposition": [27, 27, 27, 12]
@@ -30,6 +38,14 @@
 	"sk2k": {
 		"name": "翔鶴改二甲",
 		"slotComposition": [34, 21, 12, 9]
+	},
+	"zk": {
+		"name": "瑞鶴",
+		"slotComposition": [21, 21, 21, 12]
+	},
+	"zkk": {
+		"name": "瑞鶴改",
+		"slotComposition": [24, 24, 24, 12]
 	},
 	"zk2": {
 		"name": "瑞鶴改二",
