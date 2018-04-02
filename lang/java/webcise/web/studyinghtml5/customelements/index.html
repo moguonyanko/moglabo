@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Custom Elements</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Custom Elements</h1>
+      <a href="../">home</a>
+    </header>
+    <main>
+      <section>
+        <h2>Autonomous custom elements</h2>
+        <div class="simple-list-container">
+          <simple-list values="apple orange banana" separator=" "></simple-list>
+        </div>
+      </section>
+      <section>
+        <h2>Customized built-in elements</h2>
+        <p is="repeat-paragraph">sample paragraph</p>
+        <p>Customized built-in elementsを実装しているブラウザは存在しない？</p>
+      </section>
+      <section>
+        <h3>備考</h3>
+        <p> 
+          HTML内のcustom elementが書かれた場所より後ろでcustom elementのcustomElements.defineが呼び出されても正常にcustom eldementは解析される。
+        </p>
+        <p>
+          またcustomElements.defineがDOMContentLoadedイベント時に呼び出された場合でも問題なくcustom elementは解析される。
+        </p>
+      </section>
+    </main>
+    <aside>
+      <h3>参考</h3>
+      <ul>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements">Using custom elements</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define">CustomElementRegistry.define()</a></li>
+      </ul>
+    </aside>
+    <script src="dom.js" type="module"></script>
+  </body>
+</html>
