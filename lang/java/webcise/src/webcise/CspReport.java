@@ -1,6 +1,7 @@
 package webcise;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -24,6 +25,12 @@ public class CspReport extends HttpServlet {
             JsonObject jsonObject = reader.readObject();
             String allResult = jsonObject.toString();
             System.out.println(allResult);
+            
+            // リクエストボディの違反報告JSONをレスポンスとして返すことで
+            // ブラウザのデバッガでも内容を確認できるようにする。しかしブラウザには
+            // レスポンスが返ってこない。
+            PrintWriter out = response.getWriter();
+            out.print(allResult);
         }
     }
     
