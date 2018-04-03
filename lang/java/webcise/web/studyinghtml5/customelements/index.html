@@ -20,17 +20,41 @@
       </section>
       <section>
         <h2>Customized built-in elements</h2>
-        <p is="repeat-paragraph">sample paragraph</p>
-        <p>Customized built-in elementsを実装しているブラウザは存在しない？</p>
+        <p is="upper-paragraph">sample paragraph</p>
+        <p>
+          Customized built-in elementsの方がブラウザの対応状況が悪いようである。
+        </p>
       </section>
       <section>
         <h3>備考</h3>
-        <p> 
-          HTML内のcustom elementが書かれた場所より後ろでcustom elementのcustomElements.defineが呼び出されても正常にcustom eldementは解析される。
-        </p>
-        <p>
-          またcustomElements.defineがDOMContentLoadedイベント時に呼び出された場合でも問題なくcustom elementは解析される。
-        </p>
+        <div class="note">
+          <p class="sentence sentence1"> 
+            HTML内のcustom elementが書かれた場所より後ろでcustom elementのcustomElements.defineが呼び出されても正常にcustom eldementは解析される。
+          </p>
+          <div class="object object1"></div>
+          <p class="sentence sentence2"> 
+            またcustomElements.defineがDOMContentLoadedイベント時に呼び出された場合でも問題なくcustom elementは解析される。
+          </p>
+          <div class="object object2"></div>
+        </div>
+      </section>
+      <section>
+        <h2>コールバック関数の利用</h2>
+        <span><calc-exec class="calculator" lhs="0" rhs="0" operator="+" /></span>
+        <div class="control">
+          <label><input class="ev-target lhs" type="number" value="0" /></label>
+          <label>
+            <!--演算子-->
+            <select class="ev-target operator">
+              <option value="+">+</option>
+              <option value="-">-</option>
+              <option value="*">×</option>
+              <option value="/">÷</option>
+            </select>
+          </label>
+          <label><input class="ev-target rhs" type="number" value="0" /></label>
+          <button class="ev-target reset">reset</button>
+        </div>
       </section>
     </main>
     <aside>

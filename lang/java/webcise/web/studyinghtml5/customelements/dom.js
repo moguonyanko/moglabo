@@ -3,14 +3,65 @@ import mce from "./customelements.js";
 const defineElements = () => {
     // custom elementの名前には必ずハイフンを含まなければならない。
     customElements.define("simple-list", mce.AutoList);
-    customElements.define("repeat-paragraph", mce.RepeatParagraph, {extends: "p"});
+    customElements.define("upper-paragraph", mce.UpperParagraph, {extends: "p"});
+    customElements.define("calc-exec", mce.Calculator);
+};
+
+const addListener = () => {
+    const ctrl = document.querySelector(".control");
+    const options = {
+        passive: true
+    };
+    const lhsEle = ctrl.querySelector(".lhs"),
+        rhsEle = ctrl.querySelector(".rhs"),
+        operatorEle = ctrl.querySelector(".operator");
+    ctrl.addEventListener("change", event => {
+        if (event.target.classList.contains("ev-target")) {
+            event.stopPropagation();
+            const {lhs, rhs, operator} = {
+                lhs: lhsEle.value,
+                rhs: rhsEle.value,
+                operator: operatorEle.value
+            };
+            const calcEle = document.querySelector(".calculator");
+            calcEle.setAttribute("lhs", lhs);
+            calcEle.setAttribute("rhs", rhs);
+            calcEle.setAttribute("operator", operator);
+        }
+    }, options);
+
+    const resetter = ctrl.querySelector(".reset");
+    resetter.addEventListener("click", event => {
+        if (event.target.classList.contains("reset")) {
+            event.stopPropagation();
+            // resetするのにいちいち要素をremove&appendする必要はないのだが
+            // custom elementのlifecycle callbacksを確認するために行なっている。
+            const calcEle = document.querySelector(".calculator");
+            const parent = calcEle.parentNode;
+            parent.removeChild(calcEle);
+            const newCalcEle = document.createElement("calc-exec");
+            newCalcEle.setAttribute("lhs", 0);
+            newCalcEle.setAttribute("rhs", 0);
+            newCalcEle.setAttribute("operator", "+");
+            parent.appendChild(newCalcEle);
+
+            lhsEle.value = 0;
+            rhsEle.value = 0;
+            operatorEle.value = "+";
+        }
+    }, options);
 };
 
 const init = () => {
     // customElements.defineを呼び出す前にcustom elementのコンストラクタを
     // 呼び出すとTypeErrorになる。
     defineElements();
-    //mce.test.runTest();
+    addListener();
+    //try {
+    //    mce.test.runTest();
+    //} catch (err) {
+    //    console.error(err.message);
+    //}
 };
 
 window.addEventListener("DOMContentLoaded", init);
