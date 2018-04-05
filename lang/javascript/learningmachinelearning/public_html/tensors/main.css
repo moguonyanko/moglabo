@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+h1 {
+    text-align: center;
+}
+
+.samplecanvas {
+    background-color: beige;
+    border: solid 1px whitesmoke;
+}
+
+.control {
+    display: flex;
+    flex-wrap: wrap;
+}

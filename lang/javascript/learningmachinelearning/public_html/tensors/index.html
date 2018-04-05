@@ -12,11 +12,27 @@
   </head>
   <body>
     <header>
-      <h1>Tensors</h1>
       <a href="../">home</a>
+      <h1>Tensors</h1>
     </header>
     <main>
+      <canvas class="samplecanvas"></canvas>
+      <div class="control">
+        <label>Horizontal scaling<input class="matrixelement m11" type="number" value="1" min="1" /></label>
+        <label>Horizontal skewing<input class="matrixelement m12" type="number" value="0" min="0" /></label>
+        <label>Vertical skewing<input class="matrixelement m21" type="number" value="0" min="0" /></label>
+        <label>Vertical scaling<input class="matrixelement m22" type="number" value="1" min="1" /></label>
+        <label>Horizontal moving<input class="matrixelement dx" type="number" value="0" min="0" /></label>
+        <label>Vertical moving<input class="matrixelement dy" type="number" value="0" min="0" /></label>
+      </div>
     </main>
     <script src="main.js" type="module"></script>
+    <aside>
+      <h3>参考</h3>
+      <ul>
+        <li><a href="https://js.tensorflow.org/tutorials/core-concepts.html">Core Concepts in TensorFlow.js</a></li>
+        <li><a href="https://developer.mozilla.org/ja/docs/Web/Guide/HTML/Canvas_tutorial/Transformations">Transformations</a></li>
+      </ul>
+    </aside>
   </body>
 </html>
