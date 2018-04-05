@@ -1,5 +1,5 @@
 /**
- * @fileOverview TensorFlow.jsでCanvasの座標空間を変換するモジュール
+ * @fileOverview TensorFlow.jsから得たテンソルでCanvasの座標空間を変換するモジュール
  */
 
 const transform = async ({context, tensor}) => {
