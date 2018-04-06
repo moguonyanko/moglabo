@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Operations</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="../favicon.ico" />
+    <link rel="stylesheet" href="../common.css" />
+    <link rel="stylesheet" href="operations.css" />
+    <!-- ルートディレクトリのtfjs.jsは以下のURLから取得した。 -->
+    <!--<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>-->
+    <script src="../tfjs.js"></script>
+  </head>
+  <body>
+    <header>
+      <a href="../">home</a>
+      <h1>Operations</h1>
+      <p>TensorFlowを行列計算に用いることができる。</p>
+    </header>
+    <main>
+      <section>
+        <h2>行列の加減乗除</h2>
+        <div class="inputs">
+          <div class="matrix">
+            <p>Matrix 1</p>
+            <label>m1<input class="matrixvalue m1" type="number" value="1" /></label>
+            <label>m2<input class="matrixvalue m1" type="number" value="2" /></label>
+            <label>m3<input class="matrixvalue m1" type="number" value="3" /></label>
+            <label>m4<input class="matrixvalue m1" type="number" value="4" /></label>
+          </div>
+          <div class="matrix">
+            <p>Matrix 2</p>
+            <label>m1<input class="matrixvalue m2" type="number" value="4" /></label>
+            <label>m2<input class="matrixvalue m2" type="number" value="3" /></label>
+            <label>m3<input class="matrixvalue m2" type="number" value="2" /></label>
+            <label>m4<input class="matrixvalue m2" type="number" value="1" /></label>
+          </div>
+          <div class="operations">
+            <label><input class="operation" name="operation" 
+                          type="radio" value="add" checked />加算</label>
+            <label><input class="operation" name="operation" 
+                          type="radio" value="sub" />減算</label>
+            <label><input class="operation" name="operation" 
+                          type="radio" value="mul" />乗算</label>
+            <label><input class="operation" name="operation" 
+                          type="radio" value="div" />除算</label>
+          </div>
+        </div>
+        <div class="outputs">
+          <p>計算結果=<span class="result"></span></p>
+        </div>
+      </section>
+    </main>
+    <script src="main.js" type="module"></script>
+    <aside>
+      <h3>参考</h3>
+      <ul>
+        <li><a href="https://js.tensorflow.org/tutorials/core-concepts.html">Core Concepts in TensorFlow.js</a></li>
+      </ul>
+    </aside>
+  </body>
+</html>
