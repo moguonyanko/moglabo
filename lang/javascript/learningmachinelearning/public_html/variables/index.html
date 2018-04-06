@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Variables</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="../favicon.ico" />
+    <link rel="stylesheet" href="main.css" />
+    <!-- ルートディレクトリのtfjs.jsは以下のURLから取得した。 -->
+    <!--<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>-->
+    <script src="../tfjs.js"></script>
+  </head>
+  <body>
+    <header>
+      <a href="../">home</a>
+      <h1>Variables</h1>
+      <p>Tensorと違いVariableは可変です。</p>
+      <p>Variableの行列を更新・取得した結果を使ってCanvasの座標変換を行なっています。</p>
+    </header>
+    <main>
+      <skew-canvas width="90vw" height="300" runtime="3000"
+                   virticalskewlimit="30" horizontalskewlimit="40" />
+    </main>
+    <script src="main.js" type="module"></script>
+    <aside>
+      <h3>参考</h3>
+      <ul>
+        <li><a href="https://js.tensorflow.org/tutorials/core-concepts.html">Core Concepts in TensorFlow.js</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame">window.requestAnimationFrame()</a></li>
+        <li><a href="http://www.javascriptkit.com/javatutors/requestanimationframe.shtml">Understanding JavaScript's requestAnimationFrame() method for smooth animations</a></li>
+      </ul>
+    </aside>
+  </body>
+</html>
