@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+.scalars {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.scalars label {
+    /*flex: 1;*/
+}
