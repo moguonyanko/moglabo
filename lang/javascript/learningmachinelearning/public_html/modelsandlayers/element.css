@@ -1,5 +1,7 @@
 @charset "UTF-8";
 
+/* custom elementをドキュメントから独立させることでパフォーマンスの向上を図る。 */
+/* しかし実際にどこにどのくらいの効果が出ているのかを確認できていない。 */
 :host {
     display: block;
     contain: content;
@@ -7,6 +9,8 @@
 
 /* custom-elementのfont-sizeをユーザーがカスタマイズできるようにしている。 */
 /* 指定がなかった時はデフォルト値の100%を用いる。 */
+/* custom elementに :host([属性名(ここではfont-size)]) の属性が記述されていなければ
+   ユーザーが指定したスタイルは適用されない。 */
 :host([font-size]) {
     font-size: var(--tensor-formula-fontsize, 100%);
 }
@@ -16,4 +20,9 @@
     color: blue;
     display: flex;
     flex-wrap: wrap;
+}
+
+.resultcontainer {
+    width: fit-content;
+    border-bottom: 1px solid black;
 }

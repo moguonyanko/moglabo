@@ -63,9 +63,16 @@ class FormulaElement extends HTMLElement {
         // ShadowDOMで読み込んだCSSはShadowDOM内の要素にしか適用されない。
         // ShadowDOMのidやclassはユーザーのDOM(LightDOM)と衝突しない。同じ値を用いても問題無い。
         // ShadowDOM内のインラインstyle要素もCSPのチェック対象となる。
+        // 
+        // slot要素はユーザーがcustom elementの内部に記述した内容で置き換えられる。
+        // ユーザーが何も記述しなかった時はslot要素の内部のテキストが出力される。
+        // 置き換えられるとはいったもののユーザーが記述したコンテンツはShadowDOMとしては
+        // 扱われていないようにデバッガ上では見える。あくまでもLightDOMなのかもしれない。
+        // 少なくともユーザーがslot要素に対応して記述した要素のshadowRootはnullになっている。
         const html = `
         <div class="formula-container">
         <link rel="stylesheet" href="element.css" />
+        <slot name="description">Example Formula</slot>
         <div class="inputs">
           <div class="scalars">
             <label>a=<input class="eventtarget scalar scalar-a" type="number" value="${a}" /></label>
@@ -77,7 +84,7 @@ class FormulaElement extends HTMLElement {
           </div>
         </div>
         <div class="outputs">
-          <p>y=<span class="result"></span></p>
+          <p class="resultcontainer">y=<span class="result"></span></p>
         </div>
         </div>
 `;
@@ -91,16 +98,19 @@ class FormulaElement extends HTMLElement {
         const root = this.shadowRoot;
         const inputs = root.querySelector(".inputs");
         const outputs = root.querySelector(".outputs");
-        let formula = createFormula(inputs);
-        let x = getX(inputs);
-        addListener({
-            inputs,
-            outputs,
-            initialFormula: formula,
-            initialX: x
-        });
-        // 初期表示
-        await displayResult({base: outputs, result: formula.predict(x)});
+        try {
+            let formula = createFormula(inputs);
+            let x = getX(inputs);
+            addListener({
+                inputs,
+                outputs,
+                initialFormula: formula,
+                initialX: x
+            });
+            await displayResult({base: outputs, result: formula.predict(x)});
+        } catch (err) {
+            console.error(`初期表示失敗:${err.message}`);
+        }
     }
 }
 
