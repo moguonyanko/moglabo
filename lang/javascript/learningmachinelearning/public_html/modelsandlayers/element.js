@@ -55,10 +55,10 @@ class FormulaElement extends HTMLElement {
         const shadow = this.attachShadow({mode: "open"});
         
         // 方程式の各パラメータをcustom elementの属性から取得する。
-        const a = this.getAttribute("a");
-        const b = this.getAttribute("b");
-        const c = this.getAttribute("c");
-        const x = this.getAttribute("x");
+        const a = this.getAttribute("initial-a");
+        const b = this.getAttribute("initial-b");
+        const c = this.getAttribute("initial-c");
+        const x = this.getAttribute("initial-x");
 
         // ShadowDOMで読み込んだCSSはShadowDOM内の要素にしか適用されない。
         // ShadowDOMのidやclassはユーザーのDOM(LightDOM)と衝突しない。同じ値を用いても問題無い。

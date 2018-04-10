@@ -52,6 +52,7 @@ class UpperParagraph extends HTMLParagraphElement {
 class Calculator extends HTMLElement {
     // attributeChangedCallbackを動作させるために
     // 属性を返す関数を明示的に定義しておく必要がある。
+    // attributeChangedCallbackを利用しないなら定義する必要は無い。
     static get observedAttributes() {
         return ["lhs", "rhs", "operator"];
     }
