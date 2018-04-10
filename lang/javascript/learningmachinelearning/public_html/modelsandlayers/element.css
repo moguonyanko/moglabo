@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+:host {
+    display: block;
+    contain: content;
+}
+
+/* custom-elementのfont-sizeをユーザーがカスタマイズできるようにしている。 */
+/* 指定がなかった時はデフォルト値の100%を用いる。 */
+:host([font-size]) {
+    font-size: var(--tensor-formula-fontsize, 100%);
+}
+
+.scalars {
+    font-style: italic;
+    color: blue;
+    display: flex;
+    flex-wrap: wrap;
+}
