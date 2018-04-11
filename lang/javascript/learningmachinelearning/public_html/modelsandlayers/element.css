@@ -15,6 +15,11 @@
     font-size: var(--tensor-formula-fontsize, 100%);
 }
 
+/* background属性を指定したcustom element全てにスタイルを適用できる。 */
+:host([background]) {
+    background-color: var(--tensor-custom-bg, beige);
+}
+
 .scalars {
     font-style: italic;
     color: blue;
@@ -25,4 +30,33 @@
 .resultcontainer {
     width: fit-content;
     border-bottom: 1px solid black;
+}
+
+.title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.description {
+    background-color: blanchedalmond;
+}
+
+/* custom elementが定義される前に適用されるスタイル */
+/*
+tensor-model:not(:defined) {
+  display: block;
+  height: 80vh;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+*/
+
+.hiddenlayer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.result {
+    word-wrap: break-word;
 }

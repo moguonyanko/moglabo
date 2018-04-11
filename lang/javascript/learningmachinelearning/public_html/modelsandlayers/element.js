@@ -4,6 +4,8 @@
 
 import ml from "./modelsandlayers.js";
 
+// Formula element
+
 const createFormula = (base = document) => {
     const {a, b, c} = {
         a: parseFloat(base.querySelector(".scalar-a").value),
@@ -53,7 +55,7 @@ class FormulaElement extends HTMLElement {
         // custom elementのクライアントにshadowRootの参照を許可しない場合はclosedを指定する。
         // closedにするとこのファイル内からもShadowRootを参照できなくなる。
         const shadow = this.attachShadow({mode: "open"});
-        
+
         // 方程式の各パラメータをcustom elementの属性から取得する。
         const a = this.getAttribute("initial-a");
         const b = this.getAttribute("initial-b");
@@ -94,10 +96,11 @@ class FormulaElement extends HTMLElement {
 
     async connectedCallback() {
         console.info(`connectedCallback: ${new Date().toLocaleString()}`);
-        console.info(`要素が割り当てられたslot: ${this.assignedSlot}`);
         const root = this.shadowRoot;
         const inputs = root.querySelector(".inputs");
         const outputs = root.querySelector(".outputs");
+        const slotted = root.querySelector("span[slot='description']");
+        console.info(`要素が割り当てられたslot: ${slotted && slotted.assignedSlot}`);
         try {
             let formula = createFormula(inputs);
             let x = getX(inputs);
@@ -114,8 +117,142 @@ class FormulaElement extends HTMLElement {
     }
 }
 
+// Model element
+
+const addModelEventListener = node => {
+    const root = node.shadowRoot;
+
+    const container = root.querySelector(".modelcontainer");
+    const layerSize = container.querySelector(".layersize");
+    const resultArea = container.querySelector(".result");
+    let layerConfigs = [];
+
+    const funcs = {
+        addlayer() {
+            const units = parseInt(container.querySelector(".units").value);
+            const activation = container.querySelector(".activation").value;
+            if (!activation || isNaN(units)) {
+                return;
+            }
+            const layerConfig = new ml.LayerConfig({
+                units, activation
+            });
+            layerConfigs.push(layerConfig);
+            layerSize.innerHTML = layerConfigs.length;
+        },
+        async predict() {
+            const inputShape = parseInt(container.querySelector(".inputshape").value);
+            const width = parseInt(container.querySelector(".width").value);
+            if ([inputShape, width].some(isNaN)) {
+                return;
+            }
+            const inputData = tf.ones([width, inputShape]);
+            const model = new ml.Model({inputShape, layerConfigs});
+            const result = model.predict(inputData);
+            const data = await result.data();
+            resultArea.innerHTML = data.toString();
+        },
+        reset() {
+            layerConfigs = [];
+            layerSize.innerHTML = 0;
+            resultArea.innerHTML = "&nbsp;";
+        }
+    };
+
+    container.addEventListener("click", async event => {
+        if (event.target.classList.contains("evtarget")) {
+            event.stopPropagation();
+            Object.keys(funcs)
+                .filter(key => event.target.classList.contains(key))
+                .forEach(key => funcs[key]());
+        }
+    });
+};
+
+class ModelElement extends HTMLElement {
+    constructor() {
+        super();
+
+        const shadow = this.attachShadow({mode: "open"});
+
+        // custom elementの属性名も当然公開インターフェースとなる。
+        let initialSampleSize = parseInt(this.getAttribute("initialsamplesize"));
+        if (isNaN(initialSampleSize)) {
+            initialSampleSize = 1;
+        }
+
+        // 活性化関数のリストをユーザーがカスタマイズできるようにしている。
+        // slot要素のnameは必然的に公開インターフェースとなる。
+        const html = `
+          <div class="modelcontainer">
+            <link rel="stylesheet" href="element.css" />
+            <div class="inputs">
+              <button class="evtarget reset">モデル初期化</button>
+              <div>
+                <p class="title">入力層</p>
+                <label>サイズ<input class="inputshape" type="number" value="5" min="0" /></label>
+              </div>
+              <div class="hiddenlayer">
+                <p class="title">隠れ層</p>
+                <label>次元の数<input class="units" type="number" value="2" min="0" /></label>
+                <label>
+                  活性化関数
+                  <slot name="activation">
+                    <select class="activation">
+                      <option value="relu" selected>Relu</option>
+                      <option value="softmax">Softmax</option>
+                    </select>
+                  </slot>
+                </label>
+                <div>
+                  <button class="evtarget addlayer">追加</button>
+                  <span>追加済みレイヤ数=<strong class="layersize">0</strong>個</span>
+                </div>
+              </div>
+              <div>
+                <p class="title">サンプルデータサイズ</p>
+                <div class="description">
+                    <p>サンプルデータは全ての要素を1に設定した行列です。</p>
+                    <p>列数は入力層のサイズと同じ値になります。</p>
+                </div>
+                <label>行数<input class="width" type="number" value="${initialSampleSize}" min="1" /></label>
+              </div>
+            </div>
+            <div class="outputs">
+              <p class="title">出力層</p>
+              <button class="evtarget predict">モデル評価</button>
+              <p class="result">&nbsp;</p>
+            </div>
+          </div>
+`;
+
+        shadow.innerHTML = html;
+
+        // <template>から読み込んでcustom elementをDOMに追加するコード
+        // ただし以下のコードではDOMへの追加は成功しなかった。
+        //const template = document.querySelector("#tensor-model");
+        //const templateNode = template.content.cloneNode(true);
+        //shadow.appendChild(templateNode);
+    }
+
+    connectedCallback() {
+        addModelEventListener(this);
+
+        // slotchangeイベント確認用コード
+        const slot = this.shadowRoot.querySelector("slot");
+        slot.addEventListener("slotchange", event => {
+            console.log(event);
+            console.log(slot.assignedNodes());
+        });
+    }
+}
+
 const myElement = {
-    FormulaElement
+    FormulaElement,
+    ModelElement,
+    test: {
+        runTest: ml.test.runTest
+    }
 };
 
 export default myElement;

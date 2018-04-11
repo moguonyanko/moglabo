@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+section {
+    background-color: beige;
+}
+
 tensor-formula {
     /* 
     この変数名(=CSS カスタム プロパティ)でユーザーがcustom element(=コンポーネント)の
@@ -7,8 +11,9 @@ tensor-formula {
     つまりCSS カスタム プロパティは公開インターフェースとなる。
     */
     --tensor-formula-fontsize: 150%;
+    --tensor-custom-bg: rgba(204, 255, 204, 0.2);
 }
 
-section {
-    background-color: beige;
+tensor-model {
+    --tensor-custom-bg: rgba(255, 204, 153, 0.2);
 }

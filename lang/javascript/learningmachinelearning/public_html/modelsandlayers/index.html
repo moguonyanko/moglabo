@@ -21,9 +21,30 @@
       <section>
         <h2>tf.tidy()で方程式の解を求める</h2>
         <tensor-formula initial-a="2" initial-b="4" initial-c="8" initial-x="2" 
-                        font-size>
+                        font-size background>
           <span slot="description">y = a*x^2 + b*x + cを解く</span>
         </tensor-formula>
+      </section>
+      <section>
+        <h2>tf.model()で予測モデルを生成する</h2>
+        <tensor-model initialsamplesize="2" background>
+          <!-- option要素だけslotに挿し込むことはできなかった。 -->
+          <select class="activation" slot="activation">
+            <option value="relu" selected>Relu</option>
+            <option value="softmax">Softmax</option>
+            <option value="sigmoid">Sigmoid</option>
+            <option value="tanh">Tanh</option>
+            <option value="softplus">Softplus</option>
+          </select>
+        </tensor-model>
+        <!-- 
+        templateではcustom elementを挿入できなかった。 
+        仮にできたとしてもユーザーのHTML内にコンポーネントのHTMLを書き込むのは
+        <template>であれば表示されないとしてもメリットが見えない。
+        -->
+        <!--
+        <template id="tensor-model"></template>
+        -->
       </section>
     </main>
     <script src="main.js" type="module"></script>
@@ -34,6 +55,8 @@
         <li><a href="https://developers.google.com/web/fundamentals/web-components/shadowdom">Shadow DOM v1: 自己完結型ウェブ コンポーネント</a></li>
         <li><a href="https://developers.google.com/web/fundamentals/web-components/customelements">カスタム要素 v1: 再利用可能なウェブ コンポーネント</a></li>
         <li><a href="https://developers.google.com/web/updates/2016/06/css-containment">Chrome 52 に CSS Containment が導入</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template">&lt;template&gt;(MDN)</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Slotable/assignedSlot">Slotable.assignedSlot(MDN)</a></li>
       </ul>
     </aside>
   </body>
