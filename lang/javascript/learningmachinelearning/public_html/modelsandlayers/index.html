@@ -36,6 +36,15 @@
             <option value="tanh">Tanh</option>
             <option value="softplus">Softplus</option>
           </select>
+          <!-- 複数種類のslotを指定して置き換えることも可能。 -->
+          <!-- ただしこの要素はShadowDOM内には含まれない。 -->
+          <!-- ユーザーが記述したDOMはあくまでもLightDOMになる。 -->
+          <select class="sampledata" slot="sampledatalist">
+            <option value="normal" selected>正規分布</option>
+            <option value="uniform">一様分布</option>
+            <option value="ones">全要素1</option>
+            <option value="zeros">全要素0</option>
+          </select>
         </tensor-model>
         <!-- 
         templateではcustom elementを挿入できなかった。 

@@ -119,6 +119,43 @@ class FormulaElement extends HTMLElement {
 
 // Model element
 
+const sampleDataFactory = {
+    ones(shape) {
+        return tf.ones(shape);
+    },
+    zeros(shape) {
+        return tf.zeros(shape);
+    },
+    uniform(shape) {
+        return tf.randomUniform(shape);
+    },
+    normal(shape) {
+        return tf.randomNormal(shape);
+    }
+};
+
+/**
+ * @private
+ * @function
+ * @name getSlottedValue
+ * @argument {Object} 引数オブジェクト 
+ * @param {String} selector valueを得る要素のセレクタ
+ * @param {Node} shadowContainer slot置き換えが行われなかった時に
+ * 参照される、ShadowDOM内の要素
+ * @description slotで置き換えられた要素のvalueを返します。
+ * 置き換えが行われなかった場合はShadowDOMに存在する元の要素を参照して
+ * valueを返します。
+ * slot属性を指定してユーザーが挿入したDOMはShadowDOM内には含まれません。
+ * このDOMを参照するには現在のページのDocumentオブジェクトに対して
+ * querySelectorなどが実行される必要があります。もちろんShadowDOMの要素は
+ * 現在のページのDocumentに対するquerySelectorで参照することはできません。
+ */
+const getSlottedValue = ({selector, shadowContainer}) => {
+    const node = document.querySelector(selector) ||
+        shadowContainer.querySelector(selector);
+    return node && node.value;
+};
+
 const addModelEventListener = node => {
     const root = node.shadowRoot;
 
@@ -130,9 +167,12 @@ const addModelEventListener = node => {
     const funcs = {
         addlayer() {
             const units = parseInt(container.querySelector(".units").value);
-            const activation = container.querySelector(".activation").value;
+            const activation = getSlottedValue({
+                selector: ".activation",
+                shadowContainer: container
+            });
             if (!activation || isNaN(units)) {
-                return;
+                throw new TypeError(`Invalid units or activation: units=${units}, activation=${activation}`);
             }
             const layerConfig = new ml.LayerConfig({
                 units, activation
@@ -144,9 +184,17 @@ const addModelEventListener = node => {
             const inputShape = parseInt(container.querySelector(".inputshape").value);
             const width = parseInt(container.querySelector(".width").value);
             if ([inputShape, width].some(isNaN)) {
-                return;
+                throw new TypeError(`Found invalid sample data size: ${[inputShape, width]}`);
             }
-            const inputData = tf.ones([width, inputShape]);
+            const sampleDataType = getSlottedValue({
+                selector: ".sampledata",
+                shadowContainer: container
+            });
+            const factory = sampleDataFactory[sampleDataType];
+            if (typeof factory !== "function") {
+                throw new TypeError(`Invalid sample data type: ${sampleDataType}`);
+            }
+            const inputData = factory([width, inputShape]);
             const model = new ml.Model({inputShape, layerConfigs});
             const result = model.predict(inputData);
             const data = await result.data();
@@ -183,47 +231,58 @@ class ModelElement extends HTMLElement {
 
         // 活性化関数のリストをユーザーがカスタマイズできるようにしている。
         // slot要素のnameは必然的に公開インターフェースとなる。
+        // slot内部の要素のclass等もユーザーが知っている必要がある。
         const html = `
-          <div class="modelcontainer">
-            <link rel="stylesheet" href="element.css" />
-            <div class="inputs">
-              <button class="evtarget reset">モデル初期化</button>
+        <div class="modelcontainer">
+          <link rel="stylesheet" href="element.css" />
+          <div class="inputs">
+            <button class="evtarget reset">モデル初期化</button>
+            <div>
+              <p class="title">入力層</p>
+              <label>サイズ<input class="inputshape" type="number" value="5" min="0" /></label>
+            </div>
+            <div class="hiddenlayer">
+              <p class="title">隠れ層</p>
+              <label>次元の数<input class="units" type="number" value="2" min="0" /></label>
+              <label>
+                活性化関数
+                <slot name="activation">
+                  <select class="activation">
+                    <option value="relu" selected>Relu</option>
+                    <option value="softmax">Softmax</option>
+                  </select>
+                </slot>
+              </label>
               <div>
-                <p class="title">入力層</p>
-                <label>サイズ<input class="inputshape" type="number" value="5" min="0" /></label>
+                <button class="evtarget addlayer">追加</button>
+                <span>追加済みレイヤ数=<strong class="layersize">0</strong>個</span>
               </div>
-              <div class="hiddenlayer">
-                <p class="title">隠れ層</p>
-                <label>次元の数<input class="units" type="number" value="2" min="0" /></label>
+            </div>
+            <div>
+              <p class="title">サンプルデータサイズ</p>
+              <div class="description">
+                <p>列数は入力層のサイズと同じ値になります。</p>
+              </div>
+              <div>
                 <label>
-                  活性化関数
-                  <slot name="activation">
-                    <select class="activation">
-                      <option value="relu" selected>Relu</option>
-                      <option value="softmax">Softmax</option>
+                  データ構成
+                  <slot name="sampledatalist">
+                    <select class="sampledata">
+                      <option value="ones" selected>全要素1</option>
+                      <option value="zeros">全要素0</option>
                     </select>
                   </slot>
                 </label>
-                <div>
-                  <button class="evtarget addlayer">追加</button>
-                  <span>追加済みレイヤ数=<strong class="layersize">0</strong>個</span>
-                </div>
               </div>
-              <div>
-                <p class="title">サンプルデータサイズ</p>
-                <div class="description">
-                    <p>サンプルデータは全ての要素を1に設定した行列です。</p>
-                    <p>列数は入力層のサイズと同じ値になります。</p>
-                </div>
-                <label>行数<input class="width" type="number" value="${initialSampleSize}" min="1" /></label>
-              </div>
-            </div>
-            <div class="outputs">
-              <p class="title">出力層</p>
-              <button class="evtarget predict">モデル評価</button>
-              <p class="result">&nbsp;</p>
+              <label>行数<input class="width" type="number" value="${initialSampleSize}" min="1" /></label>
             </div>
           </div>
+          <div class="outputs">
+            <p class="title">出力層</p>
+            <button class="evtarget predict">モデル評価</button>
+            <p class="result">&nbsp;</p>
+          </div>
+        </div>
 `;
 
         shadow.innerHTML = html;
@@ -239,10 +298,13 @@ class ModelElement extends HTMLElement {
         addModelEventListener(this);
 
         // slotchangeイベント確認用コード
-        const slot = this.shadowRoot.querySelector("slot");
-        slot.addEventListener("slotchange", event => {
-            console.log(event);
-            console.log(slot.assignedNodes());
+        const slots = this.shadowRoot.querySelectorAll("slot");
+        Array.from(slots).forEach(slot => {
+            slot.addEventListener("slotchange", event => {
+                console.log(event);
+                // slotにユーザーが挿入しようとした要素が不適切ならここで失敗させることもできる。
+                console.log(slot.assignedNodes());
+            });
         });
     }
 }
