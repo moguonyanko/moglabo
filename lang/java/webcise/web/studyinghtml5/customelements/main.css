@@ -12,6 +12,11 @@ calc-exec {
     font-size: 200%;
 }
 
+/* marginは効くがmargin-bottomは効かない。 */
+programming-datalist {
+    margin: 0.5rem;
+}
+
 /* グリッドレイアウトの練習 */
 
 .note {
