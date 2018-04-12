@@ -61,44 +61,44 @@ class Calculator extends HTMLElement {
         super();
 
         const shadow = this.attachShadow({mode: "open"});
-        
+
         const base = document.createElement("div");
         shadow.appendChild(base);
     }
-    
+
     getCalcAttributes() {
         const {lhs, rhs, operator} = {
             lhs: this.getAttribute("lhs"),
             rhs: this.getAttribute("rhs"),
             operator: this.getAttribute("operator")
         };
-        
+
         return {lhs, rhs, operator};
     }
-    
+
     displayResult(result) {
         const shadow = this.shadowRoot;
         shadow.firstChild.innerHTML = result;
     }
-    
+
     execute() {
         const result = calc(this.getCalcAttributes());
         this.displayResult(result);
     }
-    
+
     connectedCallback() {
         console.info("connectedCallback");
         this.execute();
     }
-    
+
     disconnectedCallback() {
         console.info("disconnectedCallback");
     }
-    
+
     adoptedCallback() {
         console.info("adoptedCallback");
     }
-    
+
     attributeChangedCallback(name, oldValue, newValue) {
         console.info(`attributeChangedCallback: name=${name}, oldValue=${oldValue}, newValue=${newValue}`);
         this.execute();
@@ -118,30 +118,59 @@ const calc = ({lhs, rhs, operator}) => {
     } else {
         return NaN;
         //throw new TypeError(`Invalid operator: ${operator}`);
-    }
+}
 };
+
+class ProgrammingList extends HTMLElement {
+    constructor() {
+        super();
+
+        const shadow = this.attachShadow({mode: "open"});
+        const template = document.querySelector(".programming-datalist");
+        // cloneNodeでもimportNodeでもcustom elementの追加は可能。
+        // それぞれの方法でどういう違いがあるのかは不明である。
+        //const clone = template.content.cloneNode(true);
+        const clone = document.importNode(template.content, true);
+        shadow.appendChild(clone);
+    }
+
+    connectedCallback() {
+        // LightDOMの要素を得るにはdocument経由。shadowRoot以下には存在しない。
+        console.info(document.querySelector("#sampledataid"));
+        
+        const shadow = this.shadowRoot;
+        const memo = this.getAttribute("memo") || "Nothing!";
+        shadow.querySelector("#memoview").innerHTML = memo;
+    }
+
+    // custom elementが最初にShadowDOMに追加される時には呼び出されない。
+    adoptedCallback() {
+        console.info(`adoptedCallback: ${new Date().toLocaleString()}`);
+    }
+}
 
 const runTest = () => {
     /*
-    const listEle = new AutoList();
-    console.log(listEle);
-    const pEle = new UpperParagraph();
-    console.log(pEle);
-    */
-   // customElements.defineで登録されていないとコンストラクタ呼び出しでエラーになる。
-   const calculator = new Calculator();
-   calculator.setAttribute("lhs", 10);
-   calculator.setAttribute("rhs", 20);
-   calculator.setAttribute("operator", "+");
-   const {lhs, rhs, operator} = calculator.getCalcAttributes();
-   const result = calc({lhs, rhs, operator});
-   console.log(result);
+     const listEle = new AutoList();
+     console.log(listEle);
+     const pEle = new UpperParagraph();
+     console.log(pEle);
+     */
+    // customElements.defineで登録されていないとコンストラクタ呼び出しでエラーになる。
+    const calculator = new Calculator();
+    calculator.setAttribute("lhs", 10);
+    calculator.setAttribute("rhs", 20);
+    calculator.setAttribute("operator", "+");
+    const {lhs, rhs, operator} = calculator.getCalcAttributes();
+    const result = calc({lhs, rhs, operator});
+    console.log(result);
 };
 
 const myCustomElements = {
     AutoList,
     UpperParagraph,
     Calculator,
+    ProgrammingList,
     test: {
         runTest
     }

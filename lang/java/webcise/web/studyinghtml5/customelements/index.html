@@ -56,12 +56,67 @@
           <button class="ev-target reset">reset</button>
         </div>
       </section>
+      <section class="template-example">
+        <h2>templateの使用</h2>
+        <p>template要素の内容をcustom elementに取り込んでShadowDOMに追加できる。</p>
+        <programming-datalist>
+          <!-- 
+          同じslotを指定した場合、最初に見つかったslotに両方の要素が挿入される。
+          先に挿入された要素が後の要素に上書きされたりはしない。 
+          -->
+          <dt id="sampledataid" slot="programmingdata">Swift</dt>
+          <dd slot="programmingdata">Objective-Cの後継言語。</dd>
+        </programming-datalist>
+        <!-- custom elementを複数記述すれば全てtemplateでの置き換え対象となる。 -->
+        <programming-datalist memo="Memo from element attribute!">
+          <!-- 
+          slotに挿入されるDOMはLightDOMなのでslotに挿入される要素間ではidは衝突する。
+          document.getElementById("sampledataid")で返されるのは上に記述された
+          Swiftのdt要素だけである。
+          -->
+          <dt id="sampledataid" slot="programmingdata">R</dt>
+          <dd slot="programmingdata">統計計算に向いた言語。</dd>
+        </programming-datalist>
+        <template class="programming-datalist">
+          <!-- 
+          template内で読み込んだCSSのスタイルはShadowDOMにある
+          custom elementの要素にしか適用されない。slotに挿入された要素は
+          LightDOM内にあるのでスタイルが適用されない。
+          -->
+          <link rel="stylesheet" href="template.css" />
+          <dl>
+            <dt>Java</dt>
+            <dd>オブジェクト指向のプログラミング言語。静的型付け。</dd>
+            <dt>JavaScript</dt>
+            <dd>Webのフロントエンドでよく使われるプログラミング言語。動的型付け。</dd>
+            <dt>Kotlin</dt>
+            <dd>Javaのスーパーセットみたいなもの。静的型付け。</dd>
+            <slot name="programmingdata">
+              他に何かあれば追加してください。
+            </slot>
+            <!-- 同じslotへの追加は1回のみ。従ってこちらには挿入されない。 -->
+            <slot name="programmingdata">
+              <em>他に何かあれば追加してください。</em>
+              <!--
+              templateを用いた方法ではcustom elementの属性を取得して
+              DOMを構築することができない。以下のようなイベントハンドラも無意味。
+              onload="this.innerHTML = this.getAttribute('memo')"
+              ただしconnectedCallbackを利用して後から属性値をcustom elementのDOMに
+              追加することはできる。
+              -->
+              <span id="memoview"></span>
+            </slot>
+          </dl>
+        </template>
+      </section>
     </main>
     <aside>
       <h3>参考</h3>
       <ul>
         <li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements">Using custom elements</a></li>
         <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define">CustomElementRegistry.define()</a></li>
+        <li><a href="https://developers.google.com/web/fundamentals/web-components/customelements">カスタム要素 v1: 再利用可能なウェブ コンポーネント</a></li>
+        <li><a href="https://developers.google.com/web/fundamentals/web-components/shadowdom">Shadow DOM v1: 自己完結型ウェブ コンポーネント</a></li>
       </ul>
     </aside>
     <script src="dom.js" type="module"></script>

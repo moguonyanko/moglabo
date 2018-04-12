@@ -5,6 +5,13 @@ const defineElements = () => {
     customElements.define("simple-list", mce.AutoList);
     customElements.define("upper-paragraph", mce.UpperParagraph, {extends: "p"});
     customElements.define("calc-exec", mce.Calculator);
+
+    customElements.define("programming-datalist", mce.ProgrammingList);
+    // 無名classを使った定義も可能だがユーザー側のスクリプト(このスクリプト)に
+    // コンポーネントの詳細を記述したコードが混ざってしまう。
+    //customElements.define("programming-datalist", class extends HTMLElement {
+    //    // implement 
+    //});
 };
 
 const addListener = () => {
