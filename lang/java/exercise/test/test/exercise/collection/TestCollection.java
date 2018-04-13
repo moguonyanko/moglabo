@@ -228,4 +228,79 @@ public class TestCollection {
         assertThat(l1, is(expected));
     }
 
+    /**
+     * 参考:
+     * Java magazine Vol.37
+     */
+    private static class ImmutableListA {
+        private List<String> lst;
+        ImmutableListA() {
+            lst = Arrays.asList("Foo", "Bar", "Baz");
+        }
+        ImmutableListA(String[] elements) {
+            lst = Arrays.asList(elements);
+        }
+        String get(int idx) {
+            return lst.get(idx);
+        }
+    }
+
+    private static class ImmutableListB {
+        private List<String> lst;
+        ImmutableListB(String ...elements) {
+            lst = Collections.unmodifiableList(Arrays.asList(elements));
+        }
+        String get(int idx) {
+            return lst.get(idx);
+        }
+    }
+
+    @Test
+    public void canNotMakeImmutableList() {
+        ImmutableListA la = new ImmutableListA();
+        String s1 = la.get(0);
+        String expected = s1;
+        s1 = "Modified";
+        String actual = la.get(0);
+        assertThat(actual, is(expected));
+
+        // Arrays.asListの引数の配列を変更するとオブジェクトのリストも変更される。
+        // Arrays.asListを使うと不変性が壊されるということである。
+        String[] elements = {"apple", "orange", "banana"};
+        ImmutableListA ia = new ImmutableListA(elements);
+        elements[0] = "tomato";
+        String expected2 = "tomato";
+        String actual2 = ia.get(0);
+        assertThat(actual2, is(expected2));
+    }
+
+    @Test
+    public void canNotMakeImmutableListWithThoughUnmodifiableList() {
+        String[] elements = {"Hello", "World", "!"};
+        ImmutableListB imt = new ImmutableListB(elements);
+        String modifiedString = "Hi";
+        String expected = modifiedString;
+        // 元の可変長引数リストを変更するとオブジェクト内のリストも変更されてしまう。
+        // Collections.unmodifiableListの引数にArrays.asListが使われているため。
+        elements[0] = modifiedString;
+        String actual = imt.get(0);
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void catEqualsListAndSet() {
+        LinkedList<Integer> llst = new LinkedList<>(Arrays.asList(1, 2, 3));
+        HashSet<Integer> hset = new HashSet<>(Arrays.asList(1, 2, 3));
+        // ListとSetの比較は構成要素が同じでもfalseになる。
+        assertFalse(llst.equals(hset));
+
+        // lstとalstの型は実行時の型も含めて異なるがequalsはtrueを返す。
+        ArrayList<Integer> alst = new ArrayList<>(Arrays.asList(1, 2, 3));
+        assertEquals(alst, llst);
+
+        // List同様、Set同士の型が異なっても構成要素が等しければequalsはtrueを返す。
+        TreeSet<Integer> tset = new TreeSet<>(Arrays.asList(1, 2, 3));
+        assertEquals(tset, hset);
+    }
+
 }
