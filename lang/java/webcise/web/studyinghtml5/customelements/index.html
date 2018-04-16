@@ -109,6 +109,18 @@
           </dl>
         </template>
       </section>
+      <section>
+        <h2>iframeで読み込んだファイルからTemplateを取り込む</h2>
+        <iframe class="custom-templates-frame" src="templates.html" hidden></iframe>
+        <my-userdata description="アプリケーションテスト用ユーザーです" background>
+          <span slot="user-name">名前:<input type="text" value="名無し" /></span>
+          <span slot="user-age">年齢:<input type="number" value="20" min="0" max="130" /></span>
+        </my-userdata>
+        <my-menulist shopname="近所のファストフード" background>
+          <span slot="my-menu-item-1">ハンバーガー</span>
+          <span slot="my-menu-item-2">ポテト</span>
+        </my-menulist>
+      </section>
     </main>
     <aside>
       <h3>参考</h3>
@@ -117,6 +129,7 @@
         <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define">CustomElementRegistry.define()</a></li>
         <li><a href="https://developers.google.com/web/fundamentals/web-components/customelements">カスタム要素 v1: 再利用可能なウェブ コンポーネント</a></li>
         <li><a href="https://developers.google.com/web/fundamentals/web-components/shadowdom">Shadow DOM v1: 自己完結型ウェブ コンポーネント</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots">Using templates and slots</a></li>
       </ul>
     </aside>
     <script src="dom.js" type="module"></script>

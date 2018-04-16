@@ -12,6 +12,9 @@ const defineElements = () => {
     //customElements.define("programming-datalist", class extends HTMLElement {
     //    // implement 
     //});
+    
+    customElements.define("my-userdata", mce.MyUserData);
+    customElements.define("my-menulist", mce.MyMenuList);
 };
 
 const addListener = () => {
@@ -71,5 +74,7 @@ const init = () => {
     //}
 };
 
-window.addEventListener("DOMContentLoaded", init);
+window.addEventListener("load", init);
+// DOMContentLoadedを使うとiframeの読み込みが完了する前にイベントが発生してしまう。
+//window.addEventListener("DOMContentLoaded", init);
 window.addEventListener("unhandledrejection", err => console.error(err));

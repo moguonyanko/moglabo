@@ -1,6 +1,16 @@
 @charset "UTF-8";
 
+/* このスタイル指定が無いとtemplate内の要素に対する背景色の指定などが効かない。 */
+/* 正確にはdisplay: block;が指定されていることが大事である。 */
+:host {
+    display: block;
+    contain: content;
+}
+
 /* custome elementへのスタイルの適用具合はブラウザによって差が見られる。 */
+:host([background]) {
+    background-color: var(--my-custom-bg, snow);
+}
 
 dt {
     color: blue;
@@ -25,7 +35,25 @@ dl:nth-of-type(2) {
     background-color: darkseagreen;
 }
 
+.base {
+    width: fit-content;
+}
+
+.menulist {
+    list-style: upper-roman;
+}
+
+.menulist li {
+    font-weight: bold;
+}
+
+.shopname {
+    font-size: 1.2rem;
+    text-decoration: yellow underline;
+}
+
 #memoview {
     color: red;
     font-size: 1.5rem;
 }
+

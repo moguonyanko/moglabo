@@ -149,6 +149,50 @@ class ProgrammingList extends HTMLElement {
     }
 }
 
+const getTemplate = name => {
+    const iframe = document.querySelector(".custom-templates-frame");
+    const frameDoc = iframe.contentWindow.document;
+    const template = frameDoc.querySelector(`.${name}`);
+    return template;
+};
+
+const insertAttribute = ({node, template, attributeName}) => {
+    const attr = node.getAttribute(attributeName);
+    if (attr) {
+        template.content.querySelector(`.${attributeName}`).innerHTML = attr;
+    }
+};
+
+class MyUserData extends HTMLElement {
+    constructor() {
+        super();
+
+        const template = getTemplate("my-userdata");
+        insertAttribute({
+            node: this,
+            attributeName: "description",
+            template
+        });
+        const shadow = this.attachShadow({mode: "open"});
+        shadow.appendChild(template.content.cloneNode(true));
+    }
+}
+
+class MyMenuList extends HTMLElement {
+    constructor() {
+        super();
+
+        const template = getTemplate("my-menulist");
+        insertAttribute({
+            node: this,
+            attributeName: "shopname",
+            template
+        });
+        const shadow = this.attachShadow({mode: "open"});
+        shadow.appendChild(template.content.cloneNode(true));
+    }
+}
+
 const runTest = () => {
     /*
      const listEle = new AutoList();
@@ -171,6 +215,8 @@ const myCustomElements = {
     UpperParagraph,
     Calculator,
     ProgrammingList,
+    MyUserData,
+    MyMenuList,
     test: {
         runTest
     }

@@ -17,6 +17,23 @@ programming-datalist {
     margin: 0.5rem;
 }
 
+/* custom element自体はLightDOMに存在していると考えられる。 */
+/* そのため内部のShadowDOMの要素に幅が指定されていても背景色を適用できない。 */
+/* CSSカスタムプロパティを使ってステイルを適用するべきなのだろう。 */
+my-userdata {
+    /*background-color: beige;*/
+    --my-custom-bg: beige;
+}
+
+/* ユーザーが挿入した要素はLightDOMなのでユーザーのCSSでスタイル適用可能。 */
+my-userdata span {
+    border: solid red 1px;
+}
+
+my-menulist {
+    --my-custom-bg: whitesmoke;
+}
+
 /* グリッドレイアウトの練習 */
 
 .note {
