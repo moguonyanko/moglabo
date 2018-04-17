@@ -16,21 +16,42 @@
       <h1>Get Started</h1>
     </header>
     <main>
-      <h2>predictの戻り値(tf.Tensor)</h2>
-      <div class="result json">
-        <p class="title">JSON.stringify</p>
-      </div>
-      <div class="result toString">
-        <p class="title">toString</p>
-      </div>
-      <div class="result data">
-        <p class="title">data()</p>
-      </div>
+      <section>
+        <h2>predictの戻り値(tf.Tensor)</h2>
+        <div class="result json">
+          <p class="title">JSON.stringify</p>
+        </div>
+        <div class="result toString">
+          <p class="title">toString</p>
+        </div>
+        <div class="result data">
+          <p class="title">data()</p>
+        </div>
+      </section>
+      <section>
+        <h2>参考:WebAssembly</h2>
+        <template class="calc-template">
+          <link rel="stylesheet" href="template.css" />
+          <div class="base">
+            <label><input class="parameter lhs" type="number" value="0" /></label>
+            <label>+<input class="operator" name="operator" type="radio" value="add" checked /></label>
+            <label>-<input class="operator" name="operator" type="radio" value="sub" /></label>
+            <label>*<input class="operator" name="operator" type="radio" value="mul" /></label>
+            <label>/<input class="operator" name="operator" type="radio" value="div" /></label>
+            <label><input class="parameter rhs" type="number" value="0" /></label>
+            <label>=<strong class="result">0</strong></label>
+            <div class="report"></div>
+          </div>
+        </template>
+        <wasm-calculation />
+      </section>
     </main>
     <aside>
       <h3>参考</h3>
       <ul>
         <li><a href="https://js.tensorflow.org/index.html#getting-started">Getting Started</a></li>
+        <li><a href="https://github.com/AssemblyScript/assemblyscript/wiki/Hello-World">AssemblyScript/assemblyscript Hello World</a></li>
+        <li><a href="https://html5experts.jp/shumpei-shiraishi/24409/">WebAssemblyの基礎から最新動向</a></li>
       </ul>
     </aside>
     <script src="main.js" type="module"></script>

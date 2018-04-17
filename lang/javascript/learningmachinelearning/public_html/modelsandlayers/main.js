@@ -10,13 +10,13 @@ import el from "./element.js";
 
 const main = async () => {
     //el.test.runTest();
-    
+
     const elementName = "tensor-formula";
     // custom componentのconnectedCallbackの方が先に呼び出される。
     customElements.whenDefined(elementName).then(() =>
         console.info(`${elementName} is ready`));
     customElements.define(elementName, el.FormulaElement);
-    
+
     customElements.define("tensor-model", el.ModelElement);
 };
 

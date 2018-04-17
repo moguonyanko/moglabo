@@ -16,5 +16,8 @@
 **/*.iml
 **/out
 **/adapter.js
+**/bin
+**/tfjs.js
+**/node_modules
+**/package-lock.json
 
-/lang/javascript/learningmachinelearning/public_html/tfjs.js

@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+:host {
+    display: block;
+    contain: content;
+}
+
+.base {
+    width: fit-content;
+    background-color: beige;
+}
+
+.report {
+    height: 3rem;;
+    color: red;
+    overflow-y: scroll;
+}
