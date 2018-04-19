@@ -20,15 +20,13 @@ const initCanvas = () => {
     drawSampleShape();
 };
 
+// SafariTPにはOffscreenCanvasが実装されているがgetContext("webgl")で
+// WebGLRenderingContextを得ることしかできない。getContext("2d")の戻り値は
+// nullになる。WebGLRenderingContextにtransferFromImageBitmapは実装されていない。
 const getOffscreenCanvas = ({width, height}) => {
-    let canvas;
-    try {
-        canvas = new OffscreenCanvas(width, height);
-    } catch (err) {
-        canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-    }
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
     return canvas;
 };
 

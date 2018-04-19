@@ -2,15 +2,17 @@
  * @fileOverview Canvasの新しいレンダリングコンテキスト調査用モジュール
  */
 
+// 「bitmaprenderer」を指定しないとtransferFromImageBitmapメソッドが
+// 見つからずエラーになる。
+// canvasがドキュメントに追加済みの場合contextはnullになってしまう。
+// 現状のtransferFromImageBitmapメソッドはオフスクリーンのcanvasの
+// コンテキストに対してしか実行できないようである。
+// SafariTPの場合OffscreenCanvasからはwebglのコンテキストしか取得できない。
+// しかしwebglのコンテキストにはtransferFromImageBitmapが実装されていない。
+// すなわち2018/04/19時点ではbitmaprendererをgetContextに指定して得られる
+// ImageBitmapRenderingContextでしかtransferFromImageBitmapは実行できない。
 const drawImage = async ({blob, canvas}) => {
-    // SafariTPではcreateImageBitmapにBlobを渡した時点でエラー。
     const bitmapImg = await createImageBitmap(blob);
-    // 「bitmaprenderer」を指定しないとtransferFromImageBitmapメソッドが
-    // 見つからずエラーになる。
-    // canvasがドキュメントに追加済みの場合contextはnullになってしまう。
-    // 現状のtransferFromImageBitmapメソッドはオフスクリーンのcanvasの
-    // コンテキストに対してしか実行できないようである。
-    // WebGLのCanvasで使用されることを想定されたAPIなのかもしれない。
     const context = canvas.getContext("bitmaprenderer");
     context.transferFromImageBitmap(bitmapImg);
 };
