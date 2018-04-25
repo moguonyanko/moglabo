@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+:host {
+    display: block;
+    contain: content;
+}
+
+.base {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.param {
+    flex: 1;
+}

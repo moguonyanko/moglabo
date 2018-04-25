@@ -1,5 +1,6 @@
 /**
  * @fileOverview 触接成功率計算用モジュール
+ * ライブラリ側ECMAScript層
  */
 
 const AirState = {
@@ -31,19 +32,27 @@ class Slot {
         Object.assign(this, {aircraft, carry});
     }
 
-    getStartingProbability(airState) {
+    /**
+     * @private
+     */
+    requireValidAirState(airState) {
         if (!(airState in AirStateStartingRate)) {
             throw new TypeError(`${airState} is unsupported air state`);
         }
+    }
+
+    getStartingProbability(airState = AirState.secure) {
+        this.requireValidAirState(airState);
         const rate = AirStateStartingRate[airState];
         const value = 0.04 * this.aircraft.search * Math.sqrt(this.carry);
         return value * rate;
     }
 
-    getSelectingProbability(airState) {
-        if (!(airState in AirStateStartingRate)) {
-            throw new TypeError(`${airState} is unsupported air state`);
+    getSelectingProbability(airState = AirState.secure) {
+        if (this.carry === 0) {
+            return 0;
         }
+        this.requireValidAirState(airState);
         const rate = AirStateSelectingRate[airState];
         const value = rate * this.aircraft.search;
         return value;
@@ -183,6 +192,19 @@ const getProbabilityOnHit = ({slots, airState, hit}) => {
     return startProb * selectProb;
 };
 
+const getProbabilityMapOnHit = ({slots, airState}) => {
+    const hitValues = new Set(slots.map(slot => slot.aircraft.hit));
+    const pMap = Array.from(hitValues).map(hit => {
+        const startProb = getRevisedStartingProbability({slots, airState});
+        const selectProb = getSelectingProbabilityOnHit({slots, airState, hit});
+        return {hit, prob: startProb * selectProb};
+    }).reduce((acc, current) => {
+        acc.set(current.hit, current.prob);
+        return acc;
+    }, new Map());
+    return pMap;
+};
+
 const testGetStartingProbability = () => {
     const expected = 1.671;
     const ac1 = new Aircraft({
@@ -247,11 +269,7 @@ const shokusetu = {
     AirState,
     Aircraft,
     Slot,
-    getStartingProbability,
-    getRevisedStartingProbability,
-    getSelectingProbabilityOnHit,
-    getProbability,
-    getProbabilityOnHit,
+    getProbabilityMapOnHit,
     test: {
         runTest
     }

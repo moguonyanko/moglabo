@@ -4,13 +4,22 @@
     <meta charset="UTF-8" />
     <title>成功率算出</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="main.css" />
   </head>
   <body>
     <header>
       <h1>成功率算出</h1>
     </header>
     <main>
-      <p>実装中</p>
+      <h2>スロット</h2>
+      <button class="addslot">スロット追加</button>
+      <!--
+      <air-state />と記述してしまうと後続の要素がair-stateの中に含まれてしまい
+      表示されなくなる。
+      -->
+      <air-state></air-state>
+      <div class="slotcontainer"></div>
+      <div class="resultarea"></div>
     </main>
     <script type="module" src="main.js"></script>
   </body>
