@@ -53,37 +53,40 @@ const updateProbs = () => {
     displayProbMap(pMap);
 };
 
+const appendSlot = () => {
+    if (getSlotSize() >= MAX_SLOT_SIZE) {
+        return;
+    }
+    const container = document.querySelector(".slotcontainer");
+    const acSlot = document.createElement("ac-slot");
+    acSlot.setAttribute("class", "inputtarget");
+    const removeButton = document.createElement("button");
+    removeButton.appendChild(document.createTextNode("削除"));
+    removeButton.onclick = () => {
+        acSlot.parentNode.removeChild(acSlot);
+        updateProbs();
+    };
+    removeButton.setAttribute("slot", "option");
+    acSlot.appendChild(removeButton);
+    container.appendChild(acSlot);
+    updateProbs();
+};
+
 const addListener = () => {
     document.querySelector(".addslot").addEventListener("click", event => {
-        if (getSlotSize() >= MAX_SLOT_SIZE) {
-            return;
-        }
-        const container = document.querySelector(".slotcontainer");
-        const acSlot = document.createElement("ac-slot");
-        const removeButton = document.createElement("button");
-        removeButton.appendChild(document.createTextNode("削除"));
-        removeButton.onclick = () => {
-            acSlot.parentNode.removeChild(acSlot);
-            updateProbs();
-        };
-        removeButton.setAttribute("slot", "option");
-        acSlot.appendChild(removeButton);
-        container.appendChild(acSlot);
-    });
+        // preventDefaultしないとiOS Safariでは連続で追加ボタンを押した時に拡大されてしまう。
+        // preventDefaultが効くように第3引数でpassive=falseを指定している。
+        event.preventDefault();
+        appendSlot();
+    }, {passive: false});
 
-    const slotContainer = document.querySelector(".slotcontainer");
-    slotContainer.addEventListener("change", event => {
-        if (event.target.tagName.toLowerCase() === "ac-slot") {
+    const main = document.querySelector("main");
+    main.addEventListener("change", event => {
+        if (event.target.classList.contains("inputtarget")) {
             event.stopPropagation();
             updateProbs();
         }
     });
-
-    document.querySelector("air-state").addEventListener("change", event => {
-        event.stopPropagation();
-        const pMap = getProbMap();
-        updateProbs();
-    })
 };
 
 const init = () => {

@@ -15,12 +15,15 @@ class SlotElement extends HTMLElement {
 
         const shadow = this.attachShadow({mode: "open"});
 
+        // input要素(number)でmax属性が指定されていない場合は入力欄の幅が自動設定される。
+        // この時大抵大きめに設定されてしまう。CSSで調整できるがmaxを指定しておく方が
+        // 意図しないスタイル崩れを回避しやすい。
         const content = `
         <link rel="stylesheet" href="element.css" />
         <div class="base">
-          <label>索敵<input class="param" name="search" type="number" min="0" value="0" /></label>
-          <label>命中<input class="param" name="hit" type="number" min="0" value="0" /></label>
-          <label>搭載数<input class="param" name="carry" type="number" min="0" max="99" value="0" /></label>
+          <label>索敵<input class="param" name="search" type="number" min="0" max="999" value="0" /></label>
+          <label>命中<input class="param" name="hit" type="number" min="0" max="999" value="0" /></label>
+          <label>搭載<input class="param" name="carry" type="number" min="0" max="999" value="0" /></label>
           <slot name="option"></slot>
         </div>
 `;

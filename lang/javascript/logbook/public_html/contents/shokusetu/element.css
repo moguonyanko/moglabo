@@ -6,10 +6,10 @@
 }
 
 .base {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 0.5fr; /* これを指定しないと要素が縦に並ぶ。 */
 }
 
 .param {
-    flex: 1;
+    min-width: 3rem;
 }
