@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>四則演算+α</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../common.css" />
+    <link rel="stylesheet" href="app.css" />
+    <link rel="shortcut icon" href="favicon.ico" />
+  </head>
+  <body>
+    <header>
+      <a href="../">home</a>
+      <h1>四則演算+α</h1>
+    </header>
+    <main>
+      <!-- HTML importsはChromeのみサポート -->
+      <!--<link id="operationtemplateframe" class="templateframe" rel="import" href="../template/operation.html" />-->
+      <four-operarion templateid="operationtemplateframe" max="999" min="-999" background></four-operarion>
+    </main>
+    <!-- allow-same-originを指定しないとcross-originということにされてしまいエラーになる。 -->
+    <iframe sandbox="allow-same-origin" 
+            id="operationtemplateframe" 
+            class="templateframe" src="../template/operation.html"></iframe>
+    <script src="app.js" type="module"></script>
+  </body>
+</html>

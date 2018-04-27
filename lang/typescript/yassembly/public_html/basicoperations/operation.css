@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+/* ユーザー側で用意されたグリッドの合わせて変化することを想定したスタイル指定を行う。 */
+/* つまりmax-widthやmax-heightを安易に決めるべきではない。 */
+
+:host([background]) {
+    --result-bg-color: var(--user-result-bg-color, beige);
+}
+
+.result {
+    background-color: var(--result-bg-color);
+}

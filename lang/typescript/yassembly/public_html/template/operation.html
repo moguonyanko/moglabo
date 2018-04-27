@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Operation</title>
+  </head>
+  <body>
+    <template class="operationstemplate">
+      <link rel="stylesheet" href="../component.css" />
+      <link rel="stylesheet" href="operation.css" />
+      <main>
+        <section class="params">
+          <h3>パラメータ</h3>
+          <label>左辺=<input class="evtarget lhs param" type="number" value="0" /></label>
+          <label>右辺=<input class="evtarget rhs param" type="number" value="0" /></label>
+        </section>
+        <section class="optypes">
+          <h3>計算種別</h3>
+          <label><input class="evtarget operation" name="operation" type="radio" value="add" checked />加算</label>
+          <label><input class="evtarget operation" name="operation" type="radio" value="sub" />減算</label>
+          <label><input class="evtarget operation" name="operation" type="radio" value="mul" />乗算</label>
+          <label><input class="evtarget operation" name="operation" type="radio" value="div" />除算</label>
+          <label><input class="evtarget operation" name="operation" type="radio" value="rem" />剰余</label>
+        </section>
+        <section class="resultarea">
+          <h3>計算結果</h3>
+          <span class="result"></span>
+        </section>
+      </main>
+    </template>
+  </body>
+</html>

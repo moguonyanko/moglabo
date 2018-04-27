@@ -1,0 +1,22 @@
+{
+    "name": "yassembly",
+    "version": "1.0.0",
+    "keywords": [
+        "util",
+        "functional",
+        "server",
+        "client",
+        "browser"
+    ],
+    "author": "moguonyanko",
+    "contributors": [],
+    "dependencies": {},
+    "scripts": {
+        "build": "npm run build:untouched && npm run build:optimized",
+        "build:untouched": "asc assembly/module.ts -t public_html/bin/module.untouched.wat -b public_html/bin/module.untouched.wasm --validate --sourceMap --measure",
+        "build:optimized": "asc assembly/module.ts -t public_html/bin/module.optimized.wat -b public_html/bin/module.optimized.wasm --validate --sourceMap --measure --optimize"
+    },
+    "devDependencies": {
+        "assemblyscript": "github:AssemblyScript/assemblyscript"
+    }
+}
