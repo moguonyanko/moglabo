@@ -4,6 +4,8 @@
 
 package practicekotlin.kotlininaction.chapter5
 
+private fun alphabet() = ('A'..'Z').asSequence().toList()
+
 fun main(args: Array<String>) {
-    //TODO: implement
+    println(alphabet().toString())
 }
