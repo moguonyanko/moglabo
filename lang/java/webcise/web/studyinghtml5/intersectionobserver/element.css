@@ -10,8 +10,20 @@
 :host {
     display: block;
     contain: content;
+    /* custom element自体にサイズ制限を設ける必要がどうしてもある場合は:hostに指定する。 */
+    /*max-width: 600px;*/
+}
+
+.title {
+    font-weight: bold;
 }
 
 .base {
+    max-height: 50vh;
     overflow-y: scroll;
+}
+
+.content {
+    height: 5rem;
+    background-color: beige;
 }

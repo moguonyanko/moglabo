@@ -3,6 +3,7 @@ class InfiniteScrolling extends HTMLElement {
         super();
 
         this.targetClassName = "content";
+        this.contentNumber = 0;
 
         const shadow = this.attachShadow({mode: "open"});
         const template = document.querySelector(".infinite-scrolling");
@@ -14,14 +15,20 @@ class InfiniteScrolling extends HTMLElement {
         return this.shadowRoot.querySelector(".base");
     }
 
-    async appendJSON() {
-        const res = await fetch("sample.json");
+    get targets() {
+        return this.base.querySelectorAll(`.${this.targetClassName}`);
+    }
+
+    async createJSON() {
+        const res = await fetch(`sample.json?${++this.contentNumber}`);
         const json = await res.json();
+        json.code = this.contentNumber;
         const jsonText = JSON.stringify(json);
         const node = document.createTextNode(jsonText);
-        const p = this.base.querySelector(`.${this.targetClassName}`);
-        p.appendChild(node);
-        this.base.appendChild(p);
+        const content = document.createElement("p");
+        content.setAttribute("class", this.targetClassName);
+        content.appendChild(node);
+        return content;
     }
 
     removeJSON() {
@@ -29,24 +36,51 @@ class InfiniteScrolling extends HTMLElement {
         target.parentNode.removeChild(target);
     }
 
-    // こういうメソッドはprivateにしたい。
-    notify(entries, observer) {
-        // TODO: sample.jsonのダウンロードとページへの追加
-        console.log(entries);
+    createContent(text) {
+        const node = document.createTextNode(text);
+        const content = document.createElement("p");
+        content.setAttribute("class", this.targetClassName);
+        content.appendChild(node);
+        return content;
     }
 
+    // TODO: 1つでも非表示になっている要素があるとnotifyが呼び出され続けてしまう。
+    notify(entries, observer) {
+        console.log(entries, observer);
+        entries.forEach(async entry => {
+            if (!entry.isIntersecting) {
+                const target = entry.target;
+                target.parentNode.removeChild(target);
+                const newContent = await this.createJSON();
+                this.base.appendChild(newContent);
+                observer.observe(newContent);
+            }
+        });
+    }
+
+    createThreshold(stepSize) {
+        const gen = function* () {
+            let n = 0;
+            while (n <= stepSize) {
+                yield n / stepSize;
+                n++;
+            }
+        };
+
+        return Array.from(gen());
+    }
+
+    // IntersectionObserverコンストラクタの第1引数にthis.notifyのみを指定すると
+    // notify内のthisがroot(ここではthis.base)になる。
     connectedCallback() {
         const options = {
             root: this.base,
-            rootMargin: "0%",
-            threshold: [0.1, 0.9]
+            threshold: this.createThreshold(10),
+            rootMargin: "0%"
         };
-        const observer = new IntersectionObserver(this.notify, options);
-        const targets = this.base.querySelectorAll(`.${this.targetClassName}`);
-        /**
-         * TODO: 無限スクロールが行えるようにobserve対象を適切に設定する。
-         */
-        Array.from(targets).forEach(el => observer.observe(el));
+        const observer =
+            new IntersectionObserver((ens, obv) => this.notify(ens, obv), options);
+        Array.from(this.targets).forEach(el => observer.observe(el));
     }
 }
 
