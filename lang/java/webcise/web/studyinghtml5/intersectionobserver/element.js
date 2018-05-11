@@ -4,6 +4,9 @@ class InfiniteScrolling extends HTMLElement {
 
         this.targetClassName = "content";
         this.contentNumber = 0;
+        this.prevRatio = 0.0;
+        // TODO: baseの高さとcontentの高さから計算して得られるはず。
+        this.minContentsSize = 5;
 
         const shadow = this.attachShadow({mode: "open"});
         const template = document.querySelector(".infinite-scrolling");
@@ -20,9 +23,10 @@ class InfiniteScrolling extends HTMLElement {
     }
 
     async createJSON() {
-        const res = await fetch(`sample.json?${++this.contentNumber}`);
+        const src = this.getAttribute("src");
+        const res = await fetch(src);
         const json = await res.json();
-        json.code = this.contentNumber;
+        json.code = this.contentNumber++;
         const jsonText = JSON.stringify(json);
         const node = document.createTextNode(jsonText);
         const content = document.createElement("p");
@@ -44,18 +48,22 @@ class InfiniteScrolling extends HTMLElement {
         return content;
     }
 
-    // TODO: 1つでも非表示になっている要素があるとnotifyが呼び出され続けてしまう。
-    notify(entries, observer) {
+    // TODO: スクロール操作が行われていない時は呼び出されないようにしたい。
+    async notify(entries, observer) {
         console.log(entries, observer);
-        entries.forEach(async entry => {
+
+        entries.forEach(entry => {
             if (!entry.isIntersecting) {
                 const target = entry.target;
                 target.parentNode.removeChild(target);
-                const newContent = await this.createJSON();
-                this.base.appendChild(newContent);
-                observer.observe(newContent);
             }
         });
+
+        if (this.targets.length < this.minContentsSize) {
+            const newContent = await this.createJSON();
+            this.base.appendChild(newContent);
+            observer.observe(newContent);
+        }
     }
 
     createThreshold(stepSize) {
@@ -75,12 +83,24 @@ class InfiniteScrolling extends HTMLElement {
     connectedCallback() {
         const options = {
             root: this.base,
-            threshold: this.createThreshold(10),
+            threshold: this.createThreshold(2),
             rootMargin: "0%"
         };
+
         const observer =
             new IntersectionObserver((ens, obv) => this.notify(ens, obv), options);
+
         Array.from(this.targets).forEach(el => observer.observe(el));
+
+        // slotで挿入された要素も無限スクロールの観察対象にする。
+        const slot = this.base.querySelector("slot");
+        slot.addEventListener("slotchange", event => {
+            const nodes = slot.assignedNodes();
+            Array.from(nodes).forEach(node => {
+                Array.from(node.querySelectorAll(`.${this.targetClassName}`))
+                    .forEach(el => observer.observe(el));
+            });
+        });
     }
 }
 

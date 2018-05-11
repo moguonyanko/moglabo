@@ -10,3 +10,8 @@ infinity-scroller {
     border: solid darkblue 1px;
     background-color: floralwhite;
 }
+
+.content {
+    height: 5rem;
+    background-color: beige;
+}

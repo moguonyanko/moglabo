@@ -13,17 +13,22 @@
       <h1>Intersection Observer API</h1>
     </header>
     <main>
-      <infinity-scroller></infinity-scroller>
-      <!-- templateが対応するcustom elementより後に記述されていても問題ない。 -->
-      <template class="infinite-scrolling">
-        <link rel="stylesheet" href="element.css" />
-        <p class="title">読み込み結果一覧</p>
-        <div class="base">
+      <infinity-scroller src="sample.json">
+        <div slot="contentblock">
           <p class="content">Hello</p>
           <p class="content">HTML</p>
           <p class="content">CSS</p>
           <p class="content">JavaScript</p>
           <p class="content">World</p>
+        </div>
+      </infinity-scroller>
+      <!-- templateが対応するcustom elementより後に記述されていても問題ない。 -->
+      <template class="infinite-scrolling">
+        <link rel="stylesheet" href="element.css" />
+        <p class="title">読み込み結果一覧</p>
+        <div class="base">
+          <slot name="contentblock"></slot>
+          <p class="content">...</p>
         </div>
       </template>
     </main>
