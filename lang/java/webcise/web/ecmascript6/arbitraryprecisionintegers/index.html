@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Arbitrary Precision Integers</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <header>
+      <a href="../">home</a>
+      <h1>Arbitrary Precision Integers</h1>
+    </header>
+    <main>
+      <section>
+        <h2>BigInt</h2>
+        <bigint-example></bigint-example>
+        <template class="bigint-practice-template">
+          <link rel="stylesheet" href="template.css" />
+          <p>BigInt Practice</p>
+          <div class="control">
+            <label>Input:<input class="target" type="number" value="9223372036854775807" /></label>
+          </div>
+          <div class="resultarea"></div>
+        </template>
+      </section>
+    </main>
+    <aside>
+      <h3>Reference</h3>
+      <ul>
+        <li><a href="https://developers.google.com/web/updates/2018/05/bigint">BigInt: arbitrary-precision integers in JavaScript</a></li>
+      </ul>
+    </aside>
+    <script src="main.js" type="module"></script>
+  </body>
+</html>
