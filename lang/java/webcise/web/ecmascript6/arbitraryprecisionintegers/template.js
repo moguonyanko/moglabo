@@ -1,5 +1,31 @@
 import bi from "./bigint.js";
 
+const eventListeners = {
+    toBigInt: ({resArea, value}) => {
+        const result = bi.toBigInt(value);
+        resArea.innerHTML += `${result} typeof ${typeof result}<br >`;
+    },
+    asBigInt: ({resArea, bit, value}) => {
+        const result = bi.asBigInt({bit, value});
+        resArea.innerHTML += `${result} by ${bit} bit<br >`;
+        const unsigned = true;
+        const unsignedResult = bi.asBigInt({bit, value, unsigned});
+        resArea.innerHTML += `Unsigned: ${unsignedResult} by ${bit} bit<br >`;
+    },
+    toBigIntArray: ({resArea, size, value}) => {
+        const array = new Array(size).fill(value);
+        const result = bi.toBigInt64Array({array});
+        resArea.innerHTML += `${result}<br >`;
+        const unsigned = true;
+        const unsignedResult = bi.toBigInt64Array({array, unsigned});
+        resArea.innerHTML += `Unsigned Array: ${unsignedResult}<br >`;
+    }
+};
+
+const targetClassNames = [
+    "bigintvalue", "bit", "bigintarraysize"
+];
+
 class BigIntPractice extends HTMLElement {
     constructor() {
         super();
@@ -9,7 +35,6 @@ class BigIntPractice extends HTMLElement {
         shadow.appendChild(template.content.cloneNode(true));
     }
 
-    // TODO: bigint.jsの他のAPIを扱うサンプルを追加する。
     connectedCallback() {
         const root = this.shadowRoot;
         const resArea = root.querySelector(".resultarea");
@@ -17,9 +42,22 @@ class BigIntPractice extends HTMLElement {
         ctrl.addEventListener("change", event => {
             if (event.target.classList.contains("target")) {
                 event.stopPropagation();
-                const val = event.target.value;
-                const result = bi.toBigInt(val);
-                resArea.innerHTML += `${result} typeof ${typeof result}<br >`;
+                if (targetClassNames.some(cls => event.target.classList.contains(cls))) {
+                    // BigInt型として扱う予定の値にparseIntを適用するべきでない。精度が落ちる。
+                    const value = ctrl.querySelector(".bigintvalue").value;
+                    eventListeners.toBigInt({resArea, value});
+                    const bit = parseInt(ctrl.querySelector(".bit").value);
+                    eventListeners.asBigInt({resArea, bit, value});
+                    const size = parseInt(ctrl.querySelector(".bigintarraysize").value);
+                    eventListeners.toBigIntArray({resArea, size, value});
+                }
+            }
+        });
+        ctrl.addEventListener("click", event => {
+            if (event.target.classList.contains("target")) {
+                if (event.target.classList.contains("clear")) {
+                    resArea.innerHTML = "";
+                }
             }
         });
     }
