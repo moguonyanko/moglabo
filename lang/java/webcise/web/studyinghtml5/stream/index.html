@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Stream API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="../../favicon.ico" />
+  </head>
+  <body>
+    <header>
+      <a href="../">home</a>
+      <h1>Stream API</h1>
+    </header>
+    <main>
+      <section>
+        <h2>Simple Image Stream</h2>
+        <p slot="title">ReadableStreamから得た画像</p>
+        <simple-image-stream src="../../images/star.png"
+                             width="30" height="30" count="10">
+        </simple-image-stream>
+        <template class="simple-image-stream-template">
+          <link rel="stylesheet" href="template.css" />
+          <div class="base"></div>
+        </template>
+      </section>
+    </main>
+    <aside>
+      <h3>Reference</h3>
+      <ul>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Streams_API">Streams API(MDN)</a></li>
+      </ul>
+    </aside>
+    <script src="main.js" type="module"></script>
+  </body>
+</html>
