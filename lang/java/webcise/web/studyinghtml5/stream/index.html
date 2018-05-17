@@ -14,22 +14,34 @@
     <main>
       <section>
         <h2>Simple Image Stream</h2>
-        <p slot="title">ReadableStreamから得た画像</p>
         <simple-image-stream src="../../images/star.png"
                              width="30" height="30" count="10">
         </simple-image-stream>
-        <template class="simple-image-stream-template">
-          <link rel="stylesheet" href="template.css" />
-          <div class="base"></div>
-        </template>
+      </section>
+      <section>
+        <h2>Custom Number Stream</h2>
+        <custom-number-stream initial="0" limit="5" interval="500"></custom-number-stream>
       </section>
     </main>
     <aside>
       <h3>Reference</h3>
+      <p>MDN</p>
       <ul>
-        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Streams_API">Streams API(MDN)</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Streams_API">Streams API</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams">Using readable streams</a></li>
       </ul>
     </aside>
+    <template class="simple-image-stream-template">
+      <link rel="stylesheet" href="template.css" />
+      <div class="base"></div>
+    </template>
+    <template class="custom-number-stream-template">
+      <link rel="stylesheet" href="template.css" />
+      <div class="base">
+        <button class="read">Start reading stream</button>
+        <div class="output"></div>
+      </div>
+    </template>
     <script src="main.js" type="module"></script>
   </body>
 </html>
