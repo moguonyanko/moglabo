@@ -275,6 +275,22 @@
 		"name": "多摩改二",
 		"slotComposition": [1, 1, 1]
 	},
+	"aganok": {
+		"name": "阿賀野改",
+		"slotComposition": [2, 2, 2]
+	},
+	"noshirok": {
+		"name": "能代改",
+		"slotComposition": [2, 2, 2]
+	},
+	"yahagik": {
+		"name": "矢矧改",
+		"slotComposition": [2, 2, 2]
+	},
+	"sakawak": {
+		"name": "酒匂改",
+		"slotComposition": [2, 2, 2]
+	},
 	"itla": {
 		"name": "Italia",
 		"slotComposition": [3, 3, 3, 3]
