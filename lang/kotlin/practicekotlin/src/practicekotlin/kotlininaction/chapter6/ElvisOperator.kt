@@ -16,7 +16,7 @@ private fun isNullOrEmptyString(s: String?): Boolean {
 private fun isEmptyString2(s: String?): Boolean {
     // ?:演算子(ElvisOperator)を用いた以下のコードは
     // JavaScriptにおける次のコードと同じと考えられる。
-    // var len = (s && s.length) || 0
+    // const len = (s && s.length) || 0
     // ?:の右辺はデフォルト値とみなせる。
     val len = s?.length ?: 0
     return len == 0
