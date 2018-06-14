@@ -62,7 +62,8 @@
           <pre class="sample-code">
 &lt;Location /webcise/esproposal/fetch/&gt;
 	ProxyPass ajp://127.0.0.1:28009/webcise/esproposal/fetch/ ttl=30
-	Header set Access-Control-Allow-Origin https://gfdev
+#Access-Control-Allow-Originにはリクエスト元のオリジンを指定する。
+	Header set Access-Control-Allow-Origin https://localhost
 	Header set Access-Control-Allow-Credentials true
 &lt;/Location&gt;</pre>
         </div>
