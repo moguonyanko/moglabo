@@ -215,6 +215,10 @@
 		"name": "伊勢改",
 		"slotComposition": [11, 11, 11, 14]
 	},
+	"ise2": {
+		"name": "伊勢改二",
+		"slotComposition": [2, 2, 22, 22, 9]
+	},
 	"hyga": {
 		"name": "日向改",
 		"slotComposition": [11, 11, 11, 14]
