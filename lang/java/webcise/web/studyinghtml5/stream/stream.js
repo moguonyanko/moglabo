@@ -137,16 +137,27 @@ class CustomNumberStream extends HTMLElement {
             // releaseLockをclose内部で呼び出しているのかもしれない。
             controller.close();
         };
+        
+        const resetNumber = () => {
+            number = this.initialNumber;
+        };
 
         const stream = new ReadableStream({
             start(controller) {
-                intervalId = window.setInterval(() => {
-                    output.innerHTML = `${number}<br />`;
-                    controller.enqueue(number++);
-                }, interval);
-
+                base.addEventListener("click", event => {
+                    if (event.target.classList.contains("start")) {
+                        resetNumber();
+                        this.counting = true;
+                        intervalId = window.setInterval(() => {
+                            output.innerHTML = `${number}<br />`;
+                            controller.enqueue(number++);
+                        }, interval);
+                    }
+                });
+                
                 base.addEventListener("click", async event => {
-                    if (event.target.classList.contains("read")) {
+                    if (event.target.classList.contains("read") && this.counting) {
+                        this.counting = false;
                         event.stopPropagation();
                         await doRead({stream, controller});
                     }
@@ -164,10 +175,108 @@ class CustomNumberStream extends HTMLElement {
     }
 }
 
+class TeeStream extends HTMLElement {
+    constructor() {
+        super();
+        
+        this.number = 0;
+        this.interval = 500;
+        this.teedSize = 0;
+        
+        const shadow = this.attachShadow({mode: "open"});
+        const template = document.querySelector(".tee-stream-template");
+        shadow.appendChild(template.content.cloneNode(true));
+    }
+    
+    get incrementNumber() {
+        return this.number++;
+    }
+    
+    appendNumber(number, selector) {
+        let element = this.shadowRoot.querySelector(selector);
+        if (!element) {
+            element = document.createElement("div");
+            element.setAttribute("class", `result-line ${selector}`);
+            this.shadowRoot.appendChild(element);
+        }
+        element.innerHTML += `<span class="number">${number}</span>`;
+    }
+    
+    start(stream, controller) {
+        this.intervalId = setInterval(() => {
+            const number = this.incrementNumber;
+            controller.enqueue(number);
+            this.appendNumber(number, ".result-main");
+        }, this.interval);
+    }
+    
+    async readStream(stream, selector) {
+        const reader = stream.getReader();
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                return `${selector} is done`;
+            }
+            this.appendNumber(value, selector);
+        }
+    }
+    
+    tee(stream, controller) {
+        clearInterval(this.intervalId);
+        // teeされたstream全てにcontrollerは紐づいている。従ってteeされた後の
+        // controller.enqueueは元のstreamとteeされたstream全てに影響を与える。
+        // 2回目以降のteeではstreamがlockされているためエラーになる。
+        const teedStreams = stream.tee();
+        // teeされたstreamはどれも元のstreamと同じ値を含んでいる。
+        // 配列を半分にしたような結果になるわけではない。
+        const promises = teedStreams.map((stm, idx) => {
+            return this.readStream(stm, `.result-tee${this.teedSize + idx}`);
+        });
+        this.teedSize += teedStreams.length;
+        // teeされて生じたstream群を並列して読み込む。
+        Promise.all(promises).then(results => {
+            // controller.closeが呼び出された時にこのブロックは評価される。
+            console.log("Results:", results);
+        }).catch(() => {
+            controller.close();
+        });
+    }
+    
+    stop(stream, controller) {
+        clearInterval(this.intervalId);
+        controller.close();
+    }
+    
+    connectedCallback() {
+        const that = this;
+        const root = that.shadowRoot;
+        const stream = new ReadableStream({
+            start(controller) {
+                root.addEventListener("click", event => {
+                    if (!event.target.classList.contains("target")) {
+                        return;
+                    }
+                    event.stopPropagation();
+                    if (typeof that[event.target.value] === "function") {
+                        that[event.target.value](stream, controller);
+                    }
+                });
+            },
+            pull(controller) {
+                // Does nothing.
+            },
+            cancel() {
+                clearInterval(that.intervalId);
+            }
+        });
+    }
+}
+
 const streamLib = {
     element: {
         SimpleImageStream,
-        CustomNumberStream
+        CustomNumberStream,
+        TeeStream
     }
 };
 

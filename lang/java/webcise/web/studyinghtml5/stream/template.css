@@ -8,3 +8,14 @@
 .output {
     background-color: snow;
 }
+
+.result-line {
+    width: 100%;
+    height: 1.5em;
+    margin: 0.25em;
+    background-color: floralwhite;
+}
+
+.number {
+    margin: 0.1em;
+}

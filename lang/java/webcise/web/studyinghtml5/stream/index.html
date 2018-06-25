@@ -24,7 +24,7 @@
       </section>
       <section>
         <h2>Teeing a stream</h2>
-        <p>作業中</p>
+        <tee-stream></tee-stream>
       </section>
     </main>
     <aside>
@@ -43,9 +43,25 @@
     <template class="custom-number-stream-template">
       <link rel="stylesheet" href="template.css" />
       <div class="base">
-        <button class="read">Start reading stream</button>
+        <button class="start">Start Counting</button>
+        <button class="read">Read Stream</button>
         <div class="output"></div>
       </div>
+    </template>
+    <template class="tee-stream-template">
+      <link rel="stylesheet" href="template.css" />
+      <button class="target" value="start">start</button>
+      <button class="target" value="tee">tee</button>
+      <button class="target" value="stop">stop</button>
+      <div class="result-line result-main"></div>
+      <div class="result-line result-tee0"></div>
+      <div class="result-line result-tee1"></div>
+      <!--
+      <div class="result-line result-tee2"></div>
+      <div class="result-line result-tee3"></div>
+      <div class="result-line result-tee4"></div>
+      <div class="result-line result-tee5"></div>
+      -->
     </template>
     <script src="main.js" type="module"></script>
   </body>
