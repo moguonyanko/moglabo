@@ -272,11 +272,75 @@ class TeeStream extends HTMLElement {
     }
 }
 
+const getTeedBlobs = async src => {
+    const response = await fetch(src);
+    if (!response.ok) {
+        throw new Error(`Loading is failed: ${response.status}`);
+    }
+    // streamを使う練習なのでbodyを参照している。blobが欲しいだけなら
+    // response.blob()を呼び出せばよい。
+    const stream = await response.body;
+    // teeされた元のstreamはロックされる。
+    const promises = stream.tee().map(async (stream, index) => {
+        const reader = stream.getReader();
+        const buf = [];
+        while (true) {
+            // readを呼び出すと画像データを「全て」読んでしまう。
+            // もっと大きな画像なら分割して読み込まれるのだろうか。
+            // readメソッドに読み込むサイズを指定するような引数は存在しない。
+            const {done, value} = await reader.read();
+            if (done) {
+                // Blobコンストラクタを使いArrayBufferをBlobに変換する。
+                // 引数のArrayBufferが配列でないと正常なBlobが生成されない。
+                return new Blob(buf);
+            }
+            if (index === 1) {
+                // TODO: 何らかの画像変更処理
+            }
+            buf.push(value);
+        }
+    });
+    return Promise.all(promises);
+};
+
+// DOMへのアクセスはCustom Elementまでで抑えたい。
+class TeeImageStream extends HTMLElement {
+    constructor() {
+        super();
+        
+        const shadow = this.attachShadow({mode: "open"});
+        const template = document.querySelector(".tee-image-template");
+        shadow.appendChild(template.content.cloneNode(true));
+    }
+    
+    connectedCallback() {
+        const root = this.shadowRoot;
+        root.addEventListener("click", async event => {
+            if (!event.target.classList.contains("target")) {
+                return;
+            }
+            event.stopPropagation();
+            const blobs = await getTeedBlobs(this.getAttribute("src"));
+            blobs.forEach(blob => {
+                const url = URL.createObjectURL(blob);
+                const img = new Image();
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+                    const container = root.querySelector(".result-container");
+                    container.appendChild(img);
+                };
+                img.src = url;
+            });
+        });
+    }
+}
+
 const streamLib = {
     element: {
         SimpleImageStream,
         CustomNumberStream,
-        TeeStream
+        TeeStream,
+        TeeImageStream
     }
 };
 

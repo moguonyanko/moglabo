@@ -19,3 +19,12 @@
 .number {
     margin: 0.1em;
 }
+
+.result-container {
+    background-color: ivory;
+}
+
+.result-container img {
+    width: 300px;
+    height: 300px;
+}

@@ -26,6 +26,10 @@
         <h2>Teeing a stream</h2>
         <tee-stream></tee-stream>
       </section>
+      <section>
+        <h2>Tee image stream</h2>
+        <tee-image-stream src="sample.png"></tee-image-stream>
+      </section>
     </main>
     <aside>
       <h3>Reference</h3>
@@ -62,6 +66,11 @@
       <div class="result-line result-tee4"></div>
       <div class="result-line result-tee5"></div>
       -->
+    </template>
+    <template class="tee-image-template">
+      <link rel="stylesheet" href="template.css" />
+      <button class="download target">download</button>
+      <div class="result-container"></div>
     </template>
     <script src="main.js" type="module"></script>
   </body>
