@@ -193,6 +193,18 @@ class MyMenuList extends HTMLElement {
     }
 }
 
+class LoadStyleTest extends HTMLElement {
+    constructor() {
+        super();
+        
+        const shadow = this.attachShadow({mode: "open"});
+        shadow.innerHTML = `
+        <link rel="stylesheet" href="./loadsample.css" />
+        <div class="samplecontainer">成功なら赤い文字が大きく表示される</div>
+`;
+    }
+}
+
 const runTest = () => {
     /*
      const listEle = new AutoList();
@@ -217,6 +229,7 @@ const myCustomElements = {
     ProgrammingList,
     MyUserData,
     MyMenuList,
+    LoadStyleTest,
     test: {
         runTest
     }

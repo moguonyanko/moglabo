@@ -121,6 +121,16 @@
           <span slot="my-menu-item-2">ポテト</span>
         </my-menulist>
       </section>
+      <section>
+        <h2>innerHTMLで書き込んだlink要素でCSSは読み込めるのか</h2>
+        <load-css-test></load-css-test>
+        <section>
+          <h3>Firefoxについて</h3>
+          <p>Firefox61では読み込めない。Firefox63では読み込める。</p>
+          <p>さらにFirefox61ではShadowDOMでCSSを読むこと自体ができない。</p>
+          <p>ShadowDOMに含まれるtemplate要素内のlink要素からでもCSSを読み込むことができない。</p>
+        </section>
+      </section>
     </main>
     <aside>
       <h3>参考</h3>

@@ -15,6 +15,7 @@ const defineElements = () => {
     
     customElements.define("my-userdata", mce.MyUserData);
     customElements.define("my-menulist", mce.MyMenuList);
+    customElements.define("load-css-test", mce.LoadStyleTest);
 };
 
 const addListener = () => {
