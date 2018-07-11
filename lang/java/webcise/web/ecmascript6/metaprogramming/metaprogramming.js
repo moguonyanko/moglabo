@@ -218,7 +218,101 @@
 			runner.addEventListener("click", runTest);
 			
 			clearer.addEventListener("click", () => g.clear(output));
-		}
+		},
+        g => {
+            const Person = class {
+                // Reflect.constructで生成した場合もnewを使って生成したのと同じように
+                // new.targetでコンストラクタを参照できる。
+                // なおclassはnewでインスタンス生成されないとエラーになる。
+                // 即ちnew.targetによるnewでインスタンス生成されたかどうかのチェックは
+                // classには不要ということである。classのnew.targetは決してundefinedには
+                // ならないということでもある。
+                constructor({name, age}) {
+                    this.name = name;
+                    this.age = age;
+                    console.log(`new.target: ` + new.target);
+                }
+                
+                toString() {
+                    return `${this.name},${this.age}`;
+                }
+            };
+            
+            const Student = class extends Person {
+                constructor({name, age, score}) {
+                    super({name, age});
+                    this.score = score;
+                }
+                
+                toString() {
+                    return `${super.toString()},${this.score}`;
+                }
+            };
+            
+            const DummySubElement = class extends HTMLElement {
+                constructor() {
+                    super();
+                }
+                
+                toString() {
+                    return `TagName: ${super.tagName}`;
+                }
+            }
+            
+            const ReflectConstructor = class extends HTMLElement {
+                constructor() {
+                    super();
+                    
+                    const template = document.querySelector(".reflect-constructor");
+                    const shadow = this.attachShadow({mode: "open"});
+                    shadow.appendChild(template.content.cloneNode(true));
+                }
+                
+                dumpPrototype(objects) {
+                    objects.map(o => Reflect.getPrototypeOf(o))
+                        .forEach(console.log);
+                }
+                
+                createObjects() {
+                    const p1 = Reflect.construct(Person, 
+                        [{ name: "Taro", age: 58 }]);
+                    // 第1引数のPersonコンストラクタが使われてインスタンス生成される。
+                    // 第3引数のStudentは無視される。つまりscoreはundefinedになる。
+                    const s1 = Reflect.construct(Person, 
+                        [{ name: "Jiro", age: 22, score: 100 }], Student);
+                    // Studentのコンストラクタが利用されるのでscoreの値も反映される。
+                    const s2 = Reflect.construct(Student, 
+                        [{ name: "Jiro", age: 22, score: 100 }]);
+                    // DummySubElementがcustomElements.defineされていないとエラー。
+                    // custom elementとして実際に使われているかどうかは関係無い。
+                    const e1 = Reflect.construct(HTMLElement, [], DummySubElement);
+                    console.log(`e1 instanceof HTMLElement?: ${e1 instanceof HTMLElement}`);
+                    console.log(`e1 instanceof DummySubElement?: ${e1 instanceof DummySubElement}`);
+                    
+                    const results = [p1, s1, s2, e1];
+                    
+                    this.dumpPrototype(results);
+                    
+                    return results;
+                }
+                
+                connectedCallback() {
+                    const root = this.shadowRoot;
+                    root.addEventListener("click", event => {
+                        if (!event.target.classList.contains("target")) {
+                            return;
+                        }
+                        event.stopPropagation();
+                        const objs = this.createObjects();
+                        root.querySelector(".output").innerHTML = 
+                            objs.map(r => r.toString()).join("<br />");
+                    });
+                }
+            };
+            
+            customElements.define("reflect-constructor", ReflectConstructor);
+            customElements.define("dummy-sub-element", DummySubElement);
+        }
     ];
     
     g.run(funcs);
