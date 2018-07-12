@@ -10,6 +10,10 @@
           --common-result-color: rgba(204, 204, 204, 0.2);
       }
 
+      main {
+          font-family: "IBM Plex Mono", 'Menlo';
+      }
+
       footer {
           border-top: 1px solid black;
       }
@@ -33,7 +37,7 @@
         ProxyやReflectを介してオブジェクトの情報を調べることができる。
       </p>
     </header>        
-    <div role="main">
+    <main>
       <section class="proxy-container">
         <h2>Proxyによるgetメソッドの挙動変更</h2>
         <p>
@@ -87,7 +91,7 @@
         <p>new.targetもundefinedにならない。Object.createではundefinedになる。</p>
         <reflect-constructor></reflect-constructor>
       </section>
-    </div>
+    </main>
     <template class="reflect-constructor">
       <link rel="stylesheet" href="template.css" />
       <button class="target">run</button>
