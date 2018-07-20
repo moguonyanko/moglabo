@@ -13,6 +13,7 @@ module exercise.base {
     requires mysql.connector.java;
     requires mongo.java.driver;
     requires checker;
+    requires java.json.bind;
 
     exports exercise.function.util;
 }
