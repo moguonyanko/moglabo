@@ -26,7 +26,7 @@ public class WrapperPractice {
 				Connection myCon = con.unwrap(Connection.class);
 				
 				myCon.changeUser(newUser, newPassword);
-				System.out.println("RichUser changed " + newUser + " from " + user);
+				System.out.println("User changed " + newUser + " from " + user);
 				
 				Statement statement = myCon.createStatement();
 				/* Next query is denied */
