@@ -1,16 +1,27 @@
 package test.exercise.util.json;
 
 import javax.json.bind.JsonbBuilder;
+import javax.json.bind.JsonbConfig;
+import javax.json.bind.config.BinaryDataStrategy;
+import javax.json.bind.config.PropertyOrderStrategy;
 
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import exercise.util.json.*;
 
+import java.time.LocalDate;
+
 /**
+ * JSON-P(javax.json, javax.json.api)のjarはバージョン1.1以上であることが必須である。
+ *
  * 参考:
  * https://www.ibm.com/developerworks/library/j-javaee8-json-binding-1/index.html
+ * https://www.ibm.com/developerworks/library/j-javaee8-json-binding-2/index.html
+ * https://www.ibm.com/developerworks/library/j-javaee8-json-binding-3/index.html
+ * https://www.ibm.com/developerworks/library/j-javaee8-json-binding-4/index.html
  * https://www.ibm.com/developerworks/jp/java/library/j-whats-new-in-javaee-8/index.html
  * http://www.baeldung.com/java-json-binding-api
  */
@@ -36,12 +47,9 @@ public class TestJson {
     @Test
     public void convertToJson() {
         var student = getStudent();
-        var actual = JsonbBuilder.create().toJson(student);
         // デフォルトでは生成されるJSONのプロパティはアルファベット順で並んでいる。
-        System.out.println(actual);
-
+        var actual = JsonbBuilder.create().toJson(student);
         var expected = getStudentJson();
-
         assertThat(actual, is(expected));
     }
 
@@ -50,9 +58,61 @@ public class TestJson {
     public void convertFromJson() {
         var actual = JsonbBuilder.create()
             .fromJson(getStudentJson(), Student.class);
-        System.out.println(actual);
-
         var expected = getStudent();
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void customizePropertyName() {
+        var ship = new Ship("A001", "My First Ship");
+        var actual = JsonbBuilder.create().toJson(ship);
+        assertTrue(actual.contains("shipName"));
+    }
+
+    @Test
+    public void customizeRuntimeConfig() {
+        var car = new Car("My Car");
+
+        var config = new JsonbConfig()
+            // プロパティの並び順をアルファベット順の逆にしている。
+            .withPropertyOrderStrategy(PropertyOrderStrategy.REVERSE)
+            // falseにするとnullのプロパティはJSONから除外される。
+            // JsonbPropertyアノテーションでnillableが指定されていた場合は
+            // そちらの設定が優先される。
+            .withNullValues(true);
+
+        var jsonb = JsonbBuilder.create(config);
+
+        var actual = jsonb.toJson(car);
+        String expected = "{\"driverName\":null,\"carName\":\"My Car\"}";
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void includeNullPropertyByAnnotation() {
+        var car = new Car2("My New Car");
+        var actual = JsonbBuilder.create().toJson(car);
+        String expected = "{\"carName\":\"My New Car\",\"carOwner\":null}";
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void customizePropertyFormat() {
+        var ship = new Ship("A002", "My new ship");
+        var richUser = new RichUser("ABC00001", "Mike",
+            LocalDate.of(1967, 12, 24), ship);
+
+        var config = new JsonbConfig()
+            // バイナリデータのフォーマットを指定しているが、この例では
+            // toJsonが各フィールドに対して適用された結果が返される。
+            .withBinaryDataStrategy(BinaryDataStrategy.BASE_64_URL)
+            // 生成されるJSONがRFC7493に厳密に従うように指定している。
+            .withStrictIJSON(true);
+
+        var expected = "{\"birth\":\"1967/12/24\",\"card\":{\"code\":\"*****\"}," +
+            "\"name\":\"Mike\",\"ship\":{\"id\":\"A002\",\"shipName\":\"My new ship\"}}";
+
+        var actual = JsonbBuilder.create(config).toJson(richUser);
 
         assertThat(actual, is(expected));
     }

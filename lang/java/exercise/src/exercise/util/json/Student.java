@@ -26,6 +26,9 @@ public class Student {
         this.age = age;
     }
 
+    // getterが定義されているフィールドだけがtoJsonによる
+    // シリアライズ(JavaオブジェクトからJSONへの変換)の対象となる。
+
     public int getId() {
         return id;
     }
