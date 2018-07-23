@@ -9,11 +9,12 @@ module exercise.base {
     requires java.logging;
     requires java.sql;
     requires java.sql.rowset;
+    requires java.json.bind;
     requires jdk.incubator.httpclient;
     requires mysql.connector.java;
     requires mongo.java.driver;
     requires checker;
-    requires java.json.bind;
 
+    // exportsの練習
     exports exercise.function.util;
 }
