@@ -9,6 +9,7 @@ module exercise.base {
     requires java.logging;
     requires java.sql;
     requires java.sql.rowset;
+    requires java.json;
     requires java.json.bind;
     requires jdk.incubator.httpclient;
     requires mysql.connector.java;
