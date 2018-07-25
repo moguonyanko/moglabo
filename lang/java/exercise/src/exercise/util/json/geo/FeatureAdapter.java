@@ -40,7 +40,7 @@ public class FeatureAdapter implements JsonbAdapter<Feature, JsonObject> {
     private JsonObjectBuilder getGeometryBuilder(Feature feature) {
         var geom = feature.getGeometry();
         return Json.createObjectBuilder()
-            .add("type", geom.getType().getTypeName())
+            .add("type", geom.getType())
             .add("coordinates", getCoordinatesBuilder(geom));
     }
 
@@ -49,8 +49,7 @@ public class FeatureAdapter implements JsonbAdapter<Feature, JsonObject> {
         var props = feature.getProperties();
         BiFunction<JsonObjectBuilder, Property, JsonObjectBuilder> accumulator =
             (acc, property) -> {
-                var keyValue = property.getKeyValue();
-                var builder = Json.createObjectBuilder(keyValue);
+                var builder = Json.createObjectBuilder(property.getKeyValue());
                 return acc.addAll(builder);
             };
         return (JsonObjectBuilder)props.toList().stream()

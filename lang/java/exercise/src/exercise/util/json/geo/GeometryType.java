@@ -12,4 +12,5 @@ public enum GeometryType {
     public String getTypeName() {
         return typeName;
     }
+
 }
