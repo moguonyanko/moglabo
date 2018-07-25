@@ -1,12 +1,14 @@
 package exercise.util.json.geo;
 
-import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 
 import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.bind.adapter.JsonbAdapter;
-import javax.json.bind.annotation.JsonbPropertyOrder;
-import javax.json.bind.config.PropertyOrderStrategy;
 
 /**
  * 参考:
@@ -17,41 +19,70 @@ import javax.json.bind.config.PropertyOrderStrategy;
  * TODO:
  * JsonbConfig.withAdaptersで登録しても利用されていない。
  */
-@JsonbPropertyOrder(PropertyOrderStrategy.REVERSE)
 public class FeatureAdapter implements JsonbAdapter<Feature, JsonObject> {
 
+    // reduce版
+    private JsonArrayBuilder getCoordinatesBuilderV0(Geometry geom) {
+        BinaryOperator<JsonArrayBuilder> combiner = (acc, ignored) -> acc;
+        return geom.getCoordinates().stream()
+            .reduce(Json.createArrayBuilder(), JsonArrayBuilder::add,
+                (acc, ignored) -> acc);
+    }
+
+    // collect版
+    // ラムダ式の左辺にはvarを使用することができない。
+    private JsonArrayBuilder getCoordinatesBuilder(Geometry geom) {
+        return geom.getCoordinates().stream()
+            .collect(Json::createArrayBuilder, JsonArrayBuilder::add,
+                JsonArrayBuilder::addAll);
+    }
+
+    private JsonObjectBuilder getGeometryBuilder(Feature feature) {
+        var geom = feature.getGeometry();
+        return Json.createObjectBuilder()
+            .add("type", geom.getType().getTypeName())
+            .add("coordinates", getCoordinatesBuilder(geom));
+    }
+
+    // reduce版
+    private JsonObjectBuilder getPropertiesBuilderV0(Feature feature) {
+        var props = feature.getProperties();
+        BiFunction<JsonObjectBuilder, Property, JsonObjectBuilder> accumulator =
+            (acc, property) -> {
+                var keyValue = property.getKeyValue();
+                var builder = Json.createObjectBuilder(keyValue);
+                return acc.addAll(builder);
+            };
+        return (JsonObjectBuilder)props.toList().stream()
+            .reduce(Json.createObjectBuilder(), accumulator, (acc, ignored) -> acc);
+    }
+
+    // collect版
+    // 以下のコードではattrsがObjectのCollectionだと見なされてしまう。
+    //var attrs = props.getAttributes();
+    // またIterator<Attribute>ではなくvarと書いてしまうと
+    // next()の戻り値の型がObjectになってしまう。(Iterator<Object>になる)
+    //var iterator = props.getAttributeIterator();
+    private JsonObjectBuilder getPropertiesBuilder(Feature feature) {
+        BiConsumer<JsonObjectBuilder, Property> consumer =
+            (acc, property) -> {
+                var kv = Json.createObjectBuilder(property.getKeyValue());
+                acc.addAll(kv);
+            };
+
+        // TODO:
+        //JsonObjectBuilderにキャストしなければならない理由が不明である。
+        return (JsonObjectBuilder)feature.getProperties().toList().stream()
+            .collect(Json::createObjectBuilder, consumer, consumer);
+    }
+
+    // 以下のようなコードで安易に配列や数値のプロパティを文字列にしてはいけない。
+    // 適切な型の値に注意深くパースすることをクライアント側に強いることになる。
+    //Json.createObjectBuilder().add("numbers", Arrays.toString(geom.getNumbers()))
     @Override
     public JsonObject adaptToJson(Feature feature) {
-        var geom = feature.getGeometry();
-        var props = feature.getProperties();
-
-        var geomJson = Json.createObjectBuilder()
-            .add("type", geom.getType().getTypeName())
-            .add("coordinates", geom.getCoordinates().toString())
-            .build();
-
-        List<Attribute> attrs = props.getAttributes();
-        // 以下のコードではattrsがObjectのCollectionだと見なされてしまう。
-        //var attrs = props.getAttributes();
-
-        // 参考:
-        // Iterator<Attribute>ではなくvarと書いてしまうと
-        // next()の戻り値の型がObjectになってしまう。(Iterator<Object>になる)
-        //var iterator = props.getAttributeIterator();
-
-        var propsJsonBuilder = Json.createObjectBuilder();
-        for (int i = 0; i < attrs.size(); i++) {
-            var attr = attrs.get(i);
-            var entry = attr.getEntry();
-            propsJsonBuilder = propsJsonBuilder.add(entry[0], entry[1]);
-        }
-//        attrs.stream()
-//            .map(Attribute::getEntry)
-//            .forEach(entry -> {
-//                propsJsonBuilder.add(entry[0], entry[1]);
-//            });
-
-        var propsJson = propsJsonBuilder.build();
+        var geomJson = getGeometryBuilder(feature).build();
+        var propsJson = getPropertiesBuilder(feature).build();
 
         return Json.createObjectBuilder()
             .add("type", feature.getType().getTypeName())

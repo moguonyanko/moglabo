@@ -1,5 +1,6 @@
 package exercise.util.json.geo.feature;
 
+import java.util.*;
 import java.awt.geom.PathIterator;
 
 import exercise.util.json.geo.Geometry;
@@ -10,9 +11,9 @@ public class PointGeometry implements Geometry {
     // staticにするとJSONに出力されない。
     private final GeometryType type = GeometryType.POINT;
 
-    private final double[] coordinates;
+    private final List<Double> coordinates;
 
-    public PointGeometry(double[] coordinates) {
+    public PointGeometry(List<Double> coordinates) {
         this.coordinates = coordinates;
     }
 
@@ -28,7 +29,7 @@ public class PointGeometry implements Geometry {
     }
 
     @Override
-    public double[] getCoordinates() {
-        return coordinates;
+    public List<Double> getCoordinates() {
+        return List.copyOf(coordinates);
     }
 }

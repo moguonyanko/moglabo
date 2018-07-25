@@ -2,11 +2,9 @@ package test.exercise.util.json;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.config.BinaryDataStrategy;
-import javax.json.bind.config.PropertyNamingStrategy;
 import javax.json.bind.config.PropertyOrderStrategy;
 
 import org.junit.Test;
@@ -122,26 +120,32 @@ public class TestJson {
     }
 
     private Feature getSampleFeature() {
-        var point = new PointGeometry(new double[]{1.0, 1.0});
-        var attrs = Arrays.asList(
-            new DefaultAttribute("name", "Mike"),
-            new DefaultAttribute("age", 24)
+        var point = new PointGeometry(Arrays.asList(1.0, 1.0));
+        var propList = Arrays.asList(
+            new DefaultProperty("name", "Mike"),
+            new DefaultProperty("age", 24),
+            // Collectionの値はJSONへシリアライズされるとき配列に変換される。
+            new DefaultProperty("score", Arrays.asList(100, 90, 95, 88, 98))
         );
-        var props = new DefaultProperties(attrs);
+        var props = new DefaultProperties(propList);
         return new DefaultFeature(point, props);
     }
 
     @Test
     public void toJsonWithAdapter() {
         var feature = getSampleFeature();
-        var config = new JsonbConfig()
+        JsonbConfig config = new JsonbConfig()
+            // プロパティ名に対する設定でありプロパティ値には効果無し。
             //.withPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE)
             .withAdapters(new FeatureAdapter());
         var actual = JsonbBuilder.create(config).toJson(feature);
 
+        // JSON-Pをそのまま使う場合
+        //var actual = new FeatureAdapter().adaptToJson(feature).toString();
+
         System.out.println(actual);
 
-        String expected = "{\"geometry\":{\"coordinates\":[1.0,1.0],\"type\":\"Point\"},\"properties\":{\"name\":\"Mike\",\"age\":24},\"type\":\"Feature\"}";
+        var expected = "{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"coordinates\":[1.0,1.0]},\"properties\":{\"name\":\"Mike\",\"age\":24,\"score\":[100,90,95,88,98]}}";
 
         assertThat(actual, is(expected));
     }

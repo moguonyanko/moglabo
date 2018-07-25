@@ -1,14 +1,14 @@
 package exercise.util.json.geo.feature;
 
-import exercise.util.json.geo.Attribute;
+import exercise.util.json.geo.Property;
 
-public class DefaultAttribute<T> implements Attribute<T> {
+public class DefaultProperty<T> implements Property<T> {
 
     private final String key;
 
     private final T value;
 
-    public DefaultAttribute(String key, T value) {
+    public DefaultProperty(String key, T value) {
         this.key = key;
         this.value = value;
     }

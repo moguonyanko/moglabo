@@ -1,9 +1,6 @@
 package exercise.util.json.geo.feature;
 
-import exercise.util.json.geo.Feature;
-import exercise.util.json.geo.FeatureType;
-import exercise.util.json.geo.Geometry;
-import exercise.util.json.geo.Properties;
+import exercise.util.json.geo.*;
 
 public class DefaultFeature implements Feature {
 

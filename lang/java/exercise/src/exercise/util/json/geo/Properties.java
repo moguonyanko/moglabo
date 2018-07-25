@@ -4,8 +4,8 @@ import java.util.*;
 
 public interface Properties<T> {
 
-    Iterator<Attribute<T>> getAttributeIterator();
+    Iterator<Property<T>> getAttributeIterator();
 
-    List<Attribute<T>> getAttributes();
+    List<Property<T>> toList();
 
 }

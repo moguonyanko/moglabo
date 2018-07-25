@@ -1,5 +1,6 @@
 package exercise.util.json.geo;
 
+import java.util.*;
 import java.awt.geom.PathIterator;
 
 public interface Geometry {
@@ -8,6 +9,6 @@ public interface Geometry {
 
     PathIterator getPathIterator();
 
-    double[] getCoordinates();
+    List<Double> getCoordinates();
 
 }
