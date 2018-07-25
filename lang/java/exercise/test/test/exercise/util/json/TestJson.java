@@ -123,10 +123,10 @@ public class TestJson {
     private Feature getSampleFeature() {
         var point = new PointGeometry(Arrays.asList(1.0, 1.0));
         var propList = Arrays.asList(
-            new DefaultProperty("name", "Mike"),
-            new DefaultProperty("age", 24),
+            new DefaultProperty<>("name", "Mike"),
+            new DefaultProperty<>("age", 24),
             // Collectionの値はJSONへシリアライズされるとき配列に変換される。
-            new DefaultProperty("score", Arrays.asList(100, 90, 95, 88, 98))
+            new DefaultProperty<>("score", Arrays.asList(100, 90, 95, 88, 98))
         );
         var props = new DefaultProperties(propList);
         return new DefaultFeature(point, props);
@@ -140,7 +140,7 @@ public class TestJson {
             // プロパティ名に対する設定でありプロパティ値には効果無し。
             //.withPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE)
             .withAdapters(new FeatureAdapter());
-        var actual = JsonbBuilder.create().toJson(feature);
+        var actual = JsonbBuilder.create(config).toJson(feature);
 
         // JSON-Pをそのまま使う場合
         //var actual = new FeatureAdapter().adaptToJson(feature).toString();
