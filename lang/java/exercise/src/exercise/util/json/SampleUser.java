@@ -1,5 +1,6 @@
 package exercise.util.json;
 
+import java.util.Objects;
 import javax.json.bind.annotation.JsonbProperty;
 
 /**
@@ -66,5 +67,10 @@ public class SampleUser {
                 Double.compare(dummyCode, that.dummyCode) == 0;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age, dummyCode);
     }
 }

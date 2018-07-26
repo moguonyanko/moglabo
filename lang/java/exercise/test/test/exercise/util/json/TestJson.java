@@ -1,6 +1,8 @@
 package test.exercise.util.json;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Arrays;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
@@ -113,7 +115,7 @@ public class TestJson {
             // 生成されるJSONがRFC7493に厳密に従うように指定している。
             .withStrictIJSON(true);
 
-        var expected = "{\"birth\":\"1967/12/24\",\"card\":{\"code\":\"*****\"}," +
+        var expected = "{\"birth\":\"1967/12/24\",\"card\":{\"code\":\"********\"}," +
             "\"name\":\"Mike\",\"ship\":{\"id\":\"A002\",\"shipName\":\"My new ship\"}}";
 
         var actual = JsonbBuilder.create(config).toJson(richUser);
@@ -196,6 +198,61 @@ public class TestJson {
         var expected = "{\"driverName\":\"Taro Tokyo\",\"carName\":\"My car\"}";
         var actual = JsonbBuilder.create().toJson(car);
         assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void customizePropertyVisibility() {
+        var user = new SampleUser2("Taro");
+        var vs = new UserPropertyVisibilityStrategy();
+        var config = new JsonbConfig().withPropertyVisibilityStrategy(vs);
+        var actual = JsonbBuilder.create(config).toJson(user);
+        var expected = "{\"userName\":\"Taro\"}";
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void createObjectFromJsonWithoutSetter() {
+        var expected = new Ship("B001", "New Ship");
+        var json = "{\"shipId\":\"B001\",\"shipName\":\"New Ship\"}";
+        var actual = JsonbBuilder.create().fromJson(json, Ship.class);
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void customNumberFormat() {
+        var time = LocalDateTime.of(2018, Month.JULY, 26, 16, 30);
+        var price = 99800000L;
+        var clock = new Clock(time, price);
+        // デシリアライズ時は以下のように適切な日付のフォーマットでJSONが構成されていないと
+        // パースに失敗してしまいJavaオブジェクトへ変換することができない。
+        //var json = "{\"clockTime\":\"2018-07-26T16:30:00\",\"clockPrice\":99800000}";
+        //var clock = JsonbBuilder.create().fromJson(json, Clock.class);
+        var expected = "{\"clockTime\":\"2018/07/26 16:00\",\"clickPrice\":\"99,800,000\"}";
+        var actual = JsonbBuilder.create().toJson(clock);
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void adaptFieldAdapter() {
+        var card = new Card("MY CODE");
+        var expected = "{\"code\":\"*******\"}";
+        var actual = JsonbBuilder.create().toJson(card);
+        assertThat(actual, is(expected));
+    }
+
+    //@Ignore("JsonbDeserializerが使用されない理由が分かるまで無視")
+    @Test
+    public void generateJsonWithLowLevelApi() {
+        var user = new RegisteredUser(12345, "Tokyo Jiro");
+        var config = new JsonbConfig()
+            .withSerializers(new RegisteredUserSerializer())
+            .withDeserializers(new RegisteredUserDeserializer());
+        var builder = JsonbBuilder.create(config);
+        var json = builder.toJson(user);
+        System.out.println(json);
+        var actual = builder.fromJson(json, RegisteredUser.class);
+        System.out.println(actual);
+        assertTrue(actual.getName().isEmpty());
     }
 
 }

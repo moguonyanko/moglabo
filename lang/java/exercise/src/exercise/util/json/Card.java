@@ -1,9 +1,13 @@
 package exercise.util.json;
 
 import java.util.Objects;
+import javax.json.bind.annotation.JsonbTypeAdapter;
 
 public class Card {
 
+    // Adapterを指定していてもgetterは必要。getterが定義されていないと
+    // JSONシリアライズの対象外となる。
+    @JsonbTypeAdapter(CardCordAdapter.class)
     private final String code;
 
     public Card(String code) {
@@ -11,7 +15,7 @@ public class Card {
     }
 
     public String getCode() {
-        return "*****";
+        return code;
     }
 
     @Override

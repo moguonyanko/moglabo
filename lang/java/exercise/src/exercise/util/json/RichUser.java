@@ -12,7 +12,7 @@ public class RichUser {
 
     private Ship ship;
 
-    private Card card = new Card("ABC-DEF-123-456");
+    private Card card;
 
     @JsonbDateFormat(value = "yyyy/MM/dd")
     private LocalDate birth;
@@ -30,6 +30,7 @@ public class RichUser {
 
     public RichUser(String code, String name, LocalDate birth, Ship ship) {
         this.code = code;
+        this.card = new Card(code);
         this.name = name;
         this.ship = ship;
         this.birth = birth;

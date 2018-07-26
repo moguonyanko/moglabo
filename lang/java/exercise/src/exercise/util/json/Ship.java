@@ -2,6 +2,7 @@ package exercise.util.json;
 
 import java.util.Objects;
 
+import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 public class Ship {
@@ -11,11 +12,13 @@ public class Ship {
     @JsonbProperty("shipName")
     private final String name;
 
-    public Ship() {
-        this("DEFAULT", "NO NAME");
-    }
-
-    public Ship(String id, String name) {
+    // 引数無しコンストラクタが存在しなくてもJsonbCreatorが指定されたコンストラクタが
+    // 定義されていればそちらを使ってJSONからのデシリアライズが行われる。このとき
+    // コンストラクタにJsonbPropertyで指定したプロパティ名がJSONに存在しなければ
+    // JsonbExceptionがスローされる。
+    @JsonbCreator
+    public Ship(@JsonbProperty("shipId") String id,
+                @JsonbProperty("shipName") String name) {
         this.id = id;
         this.name = name;
     }
@@ -45,5 +48,10 @@ public class Ship {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "id=" + id + ",name=" + name;
     }
 }
