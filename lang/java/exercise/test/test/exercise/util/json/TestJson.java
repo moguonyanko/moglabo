@@ -5,6 +5,7 @@ import java.util.Arrays;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.config.BinaryDataStrategy;
+import javax.json.bind.config.PropertyNamingStrategy;
 import javax.json.bind.config.PropertyOrderStrategy;
 
 import org.junit.Ignore;
@@ -165,6 +166,27 @@ public class TestJson {
         var timeRecord = new TimeRecord();
         var actual = JsonbBuilder.create().toJson(timeRecord);
         var expected = "{\"recordDuration\":\"PT10H30M59S\",\"recordTime\":\"2018-07-25 05:20\"}";
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void changePropertyNameOnRuntime() {
+        var book = new Book("A001", "My Java", "Hoge Foo");
+        var config = new JsonbConfig()
+            .withPropertyNamingStrategy(
+                PropertyNamingStrategy.UPPER_CAMEL_CASE);
+
+        var actual = JsonbBuilder.create(config).toJson(book);
+        var expected = "{\"Author\":\"Hoge Foo\",\"BookKey\":\"A001-My Java\",\"Name\":\"My Java\",\"bookid\":\"A001\"}";
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void customizePropertyNames() {
+        String inputJson = "{\"userComment\":\"Hello\",\"age\":46,\"userName\":\"Bar\"}";
+        var actual = JsonbBuilder.create().fromJson(inputJson, SampleUser.class);
+        var expected = new SampleUser("Bar", 46, "Hello");
         assertThat(actual, is(expected));
     }
 
