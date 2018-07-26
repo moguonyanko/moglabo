@@ -190,4 +190,12 @@ public class TestJson {
         assertThat(actual, is(expected));
     }
 
+    @Test
+    public void customizePropertyOrder() {
+        var car = new Car("My car", "Taro Tokyo");
+        var expected = "{\"driverName\":\"Taro Tokyo\",\"carName\":\"My car\"}";
+        var actual = JsonbBuilder.create().toJson(car);
+        assertThat(actual, is(expected));
+    }
+
 }

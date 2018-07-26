@@ -1,7 +1,10 @@
 package exercise.util.json;
 
 import java.util.Objects;
+import javax.json.bind.annotation.JsonbPropertyOrder;
 
+// この例ではPropertyOrderStrategy.REVERSEを指定するのと同じ結果になる。
+@JsonbPropertyOrder({"driverName", "carName"})
 public class Car {
     private final String carName;
 
