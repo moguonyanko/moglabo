@@ -240,7 +240,7 @@ public class TestJson {
         assertThat(actual, is(expected));
     }
 
-    //@Ignore("JsonbDeserializerが使用されない理由が分かるまで無視")
+    @Ignore("JsonbDeserializerが使用されない理由が分かるまで無視")
     @Test
     public void generateJsonWithLowLevelApi() {
         var user = new RegisteredUser(12345, "Tokyo Jiro");
