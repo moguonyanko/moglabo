@@ -1,8 +1,9 @@
 package exercise.util.json.geo;
 
-import javax.json.bind.annotation.JsonbTransient;
-import java.util.*;
+import java.awt.geom.Point2D;
 import java.awt.geom.PathIterator;
+import java.util.List;
+import javax.json.bind.annotation.JsonbTransient;
 
 public interface Geometry {
 
@@ -10,12 +11,16 @@ public interface Geometry {
     @JsonbTransient
     GeometryType getGeometryType();
 
+    // JsonbPropertyアノテーションは継承されない。
+    // インターフェースに指定しても実装クラスでは無視される。
+    // @JsonbProperty("type")
     default String getType() {
         return getGeometryType().getTypeName();
     }
 
+    @JsonbTransient
     PathIterator getPathIterator();
 
-    List<Double> getCoordinates();
+    List<Point2D> getCoordinates();
 
 }

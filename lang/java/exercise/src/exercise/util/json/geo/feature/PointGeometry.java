@@ -1,22 +1,24 @@
 package exercise.util.json.geo.feature;
 
-import java.util.*;
+import java.awt.geom.Point2D;
 import java.awt.geom.PathIterator;
+import java.util.List;
+import javax.json.bind.annotation.JsonbTypeAdapter;
 
+import exercise.util.json.geo.CoordinatesAdapter;
 import exercise.util.json.geo.Geometry;
 import exercise.util.json.geo.GeometryType;
-
-import javax.json.bind.annotation.JsonbTransient;
 
 public class PointGeometry implements Geometry {
 
     // staticにするとJSONに出力されない。
     private static final GeometryType geometryType = GeometryType.POINT;
 
-    private final List<Double> coordinates;
+    @JsonbTypeAdapter(CoordinatesAdapter.class)
+    private final List<Point2D> coordinates;
 
-    public PointGeometry(List<Double> coordinates) {
-        this.coordinates = coordinates;
+    public PointGeometry(Point2D coordinates) {
+        this.coordinates = List.of(coordinates);
     }
 
     // インターフェースでJsonbTransientアノテーションを指定しているので
@@ -33,11 +35,11 @@ public class PointGeometry implements Geometry {
     }
 
     @Override
-    public List<Double> getCoordinates() {
+    public List<Point2D> getCoordinates() {
         return List.copyOf(coordinates);
     }
 
-    // インターフェースのdefaultメソッドを参照してJSONシリアライズは行われることはない。
+    // インターフェースのdefaultメソッドを参照してJSONシリアライズが行われることはない。
     // JSONに出力したいプロパティには必ず対応するgetterが必要である。
     // getXXXが返す値の型とXXXの型が一致していなければシリアライズの際に実行時例外が発生する。
     @Override

@@ -1,9 +1,12 @@
 package test.exercise.util.json;
 
+import java.awt.geom.Point2D;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.json.bind.JsonbBuilder;
 import javax.json.bind.JsonbConfig;
 import javax.json.bind.config.BinaryDataStrategy;
@@ -12,6 +15,7 @@ import javax.json.bind.config.PropertyOrderStrategy;
 
 import org.junit.Ignore;
 import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -22,7 +26,7 @@ import exercise.util.json.geo.feature.*;
 
 /**
  * JSON-P(javax.json, javax.json.api)のjarはバージョン1.1以上であることが必須である。
- *
+ * <p>
  * 参考:
  * https://www.ibm.com/developerworks/library/j-javaee8-json-binding-1/index.html
  * https://www.ibm.com/developerworks/library/j-javaee8-json-binding-2/index.html
@@ -124,7 +128,7 @@ public class TestJson {
     }
 
     private Feature getSampleFeature() {
-        var point = new PointGeometry(Arrays.asList(1.0, 1.0));
+        var point = new PointGeometry(new Point2D.Double(1.0, 1.0));
         var propList = Arrays.asList(
             new DefaultProperty<>("name", "Mike"),
             new DefaultProperty<>("age", 24),
@@ -157,7 +161,7 @@ public class TestJson {
 
     @Test
     public void getEnumJson() {
-        var geom = new PointGeometry(Arrays.asList(2.0, 4.0));
+        var geom = new PointGeometry(new Point2D.Double(2.0, 4.0));
         var actual = JsonbBuilder.create().toJson(geom);
         var expected = "{\"coordinates\":[2.0,4.0],\"type\":\"Point\"}";
         assertThat(actual, is(expected));
@@ -253,6 +257,30 @@ public class TestJson {
         var actual = builder.fromJson(json, RegisteredUser.class);
         System.out.println(actual);
         assertTrue(actual.getName().isEmpty());
+    }
+
+    @Test
+    public void toJsonWithFieldAdapter() {
+        // 参考: 以下のようなリストの生成方法もある。
+        //var example = new ArrayList<>() {{
+        //    add(new Point2D.Double(0.0, 0.0));
+        //    add(new Point2D.Double(1.0, 0.0));
+        //    add(new Point2D.Double(0.0, 1.0));
+        //    add(new Point2D.Double(0.0, 0.0));
+        //}};
+        List<Point2D> list =
+            Arrays.asList(
+                new Point2D.Double(0.0, 0.0),
+                new Point2D.Double(1.0, 0.0),
+                new Point2D.Double(1.0, 1.0),
+                new Point2D.Double(1.5, 1.5),
+                new Point2D.Double(0.0, 1.0),
+                new Point2D.Double(0.0, 0.0)
+            );
+        var polygon = new PolygonGeometry(list);
+        var expected = "{\"coordinates\":[[0.0,0.0],[1.0,0.0],[1.0,1.0],[1.5,1.5],[0.0,1.0],[0.0,0.0]],\"type\":\"Polygon\"}";
+        var actual = JsonbBuilder.create().toJson(polygon);
+        assertThat(actual, is(expected));
     }
 
 }

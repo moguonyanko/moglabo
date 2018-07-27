@@ -2,10 +2,8 @@ package exercise.util.json.geo;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.BinaryOperator;
 
 import javax.json.Json;
-import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.bind.adapter.JsonbAdapter;
@@ -21,27 +19,26 @@ import javax.json.bind.adapter.JsonbAdapter;
  */
 public class FeatureAdapter implements JsonbAdapter<Feature, JsonObject> {
 
-    // reduce版
-    private JsonArrayBuilder getCoordinatesBuilderV0(Geometry geom) {
-        BinaryOperator<JsonArrayBuilder> combiner = (acc, ignored) -> acc;
-        return geom.getCoordinates().stream()
-            .reduce(Json.createArrayBuilder(), JsonArrayBuilder::add,
-                (acc, ignored) -> acc);
-    }
-
-    // collect版
-    // ラムダ式の左辺にはvarを使用することができない。
-    private JsonArrayBuilder getCoordinatesBuilder(Geometry geom) {
-        return geom.getCoordinates().stream()
-            .collect(Json::createArrayBuilder, JsonArrayBuilder::add,
-                JsonArrayBuilder::addAll);
-    }
-
     private JsonObjectBuilder getGeometryBuilder(Feature feature) {
         var geom = feature.getGeometry();
+        var arrayBuilder = Json.createArrayBuilder();
+        var coordinates = geom.getCoordinates();
+
+        if (geom.getGeometryType() == GeometryType.POINT) {
+            var p = coordinates.get(0);
+            arrayBuilder.add(p.getX()).add(p.getY());
+        } else {
+            for (int i = 0; i < coordinates.size(); i++) {
+                var subArray = Json.createArrayBuilder();
+                var p = coordinates.get(i);
+                subArray.add(p.getX()).add(p.getY());
+                arrayBuilder.add(subArray);
+            }
+        }
+
         return Json.createObjectBuilder()
             .add("type", geom.getType())
-            .add("coordinates", getCoordinatesBuilder(geom));
+            .add("coordinates", arrayBuilder);
     }
 
     // reduce版
