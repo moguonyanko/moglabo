@@ -11,7 +11,7 @@ module exercise.base {
     requires java.sql.rowset;
     requires java.json;
     requires java.json.bind;
-    requires jdk.incubator.httpclient;
+    requires java.net.http;
     requires mysql.connector.java;
     requires mongo.java.driver;
     requires checker;

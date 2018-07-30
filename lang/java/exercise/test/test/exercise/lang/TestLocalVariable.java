@@ -53,17 +53,15 @@ public class TestLocalVariable {
      * https://medium.com/@afinlay/java-11-sneak-peek-local-variable-type-inference-var-extended-to-lambda-expression-parameters-e31e3338f1fe
      */
     @Test
-    public void calcWithLocalVariables() {
-        Adder f1 = (x, y) -> x + y;
-        Adder f2 = (int x, int y) -> x + y;
+    public void calcWithLocalVariablesInLambda() {
+        Adder f1 = (final var x, final var y) -> x + y;
+
+        //Adder f2 = (int x, int y) -> x + y;
         // f2をvarを使って書き換えたコードが以下になる。
-        // ただしIDEが対応していないためエラーとなる。
         // Java11のコンパイラでは問題の無いコードである。
         //Adder f2 = (var x, var y) -> x + y;
-
         // varを指定する場合その前にfinalを指定することもできる。
         //Adder f2_1 = (final var x, final var y) -> x + y;
-
         // 片方のパラメータにだけvarを指定するような記述はコンパイルエラーとなる。
         //Adder f2_2 = (var x, int y) -> x + y;
         //Adder f2_3 = (var x, y) -> x + y;

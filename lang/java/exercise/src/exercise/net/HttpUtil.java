@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
@@ -18,15 +17,13 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import static java.net.http.HttpClient.Version;
+import static java.net.http.HttpResponse.BodyHandlers;
 import javax.net.ssl.*;
-
-import jdk.incubator.http.HttpClient;
-import jdk.incubator.http.HttpHeaders;
-import jdk.incubator.http.HttpRequest;
-//import jdk.incubator.http.HttpRequest.BodyPublisher;
-import jdk.incubator.http.HttpResponse;
-import static jdk.incubator.http.HttpClient.Version;
-import static jdk.incubator.http.HttpResponse.*;
 
 /**
  * 参考:
@@ -63,7 +60,7 @@ public class HttpUtil {
             .build();
 
         HttpResponse<String> response = client.send(request,
-            BodyHandler.asString());
+            BodyHandlers.ofString());
 
         return response.body();
     }
@@ -80,7 +77,7 @@ public class HttpUtil {
 
         // asFileに指定されたPathにダウンロードされたコンテンツが保存される。
         HttpResponse<Path> res = client.send(req,
-            BodyHandler.asFile(filePath));
+            BodyHandlers.ofFile(filePath));
 
         return res.body();
     }
@@ -110,7 +107,7 @@ public class HttpUtil {
 //            .POST(BodyPublisher.fromString(boundary + "¥r¥n"))
             .build();
 
-        HttpResponse<String> res = client.send(req, BodyHandler.asString());
+        HttpResponse<String> res = client.send(req, BodyHandlers.ofString());
 
         System.out.println(res.body());
 
@@ -126,7 +123,7 @@ public class HttpUtil {
             .build();
 
         CompletableFuture<HttpResponse<String>> f1 =
-            client.sendAsync(req, BodyHandler.asString());
+            client.sendAsync(req, BodyHandlers.ofString());
 
         Executor executor = CompletableFuture.delayedExecutor(100L,
             TimeUnit.MILLISECONDS);
@@ -164,14 +161,19 @@ public class HttpUtil {
             }
         };
 
-        HostnameVerifier ignoreVerifier = (hostname, session) -> true;
-
         SSLContext context = SSLContext.getInstance("TLS");
         context.init(null, ignoreManager, new SecureRandom());
         // ここでcontextやverifierの設定を行うのは不適当に思えるが
         // メソッド呼び出し側にやらせるのも面倒である。
         HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-        HttpsURLConnection.setDefaultHostnameVerifier(ignoreVerifier);
+        HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> {
+            if (hostname.equals("localhost")) {
+                return true;
+            } else {
+                return HttpsURLConnection.getDefaultHostnameVerifier()
+                    .verify(hostname, session);
+            }
+        });
 
         return context;
     }
@@ -185,7 +187,7 @@ public class HttpUtil {
         HttpRequest req = HttpRequest.newBuilder(uri)
             .build();
 
-        HttpResponse<String> res = client.send(req, BodyHandler.asString());
+        HttpResponse<String> res = client.send(req, BodyHandlers.ofString());
 
         //dumpResponseHeaders(res);
         System.out.println("Used HTTP version: " + res.version());
@@ -203,7 +205,7 @@ public class HttpUtil {
             .build();
 
         CompletableFuture<HttpResponse<String>> future =
-            client.sendAsync(request, BodyHandler.asString());
+            client.sendAsync(request, BodyHandlers.ofString());
 
         CompletableFuture<HttpResponse<String>> f1 =
             future.whenComplete((response, exception) -> {
@@ -236,7 +238,7 @@ public class HttpUtil {
         HttpRequest req = HttpRequest.newBuilder(uri)
             .build();
 
-        HttpResponse<String> res = client.send(req, BodyHandler.asString());
+        HttpResponse<String> res = client.send(req, BodyHandlers.ofString());
 
         return res.body();
     }
@@ -268,7 +270,7 @@ public class HttpUtil {
             .build();
 
         CompletableFuture<HttpResponse<String>> f1 =
-            client.sendAsync(request, BodyHandler.asString());
+            client.sendAsync(request, BodyHandlers.ofString());
 
         // クライアントにエラーメッセージを返してもクライアント側では
         // メッセージの内容を解析しない限り成功か失敗かを判断できない。
