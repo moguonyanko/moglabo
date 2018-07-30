@@ -286,7 +286,7 @@ public class HttpUtil {
         f1.get();
     }
 
-    public static void main(String[] args) {
+    public static void main(String ...args) {
         String url = "https://localhost/";
 
         try {

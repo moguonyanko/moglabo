@@ -334,4 +334,39 @@ public class TestLambdaPractice {
 		assertThat(actual, not(notExpected));
 	}
 
+	/**
+	 * 参考:
+	 * JavaMagazine Vol.38
+	 */
+	//@FunctionalInterface
+	private interface MyInterface {
+		void execute();
+		default void greet() {
+			System.out.println("Hello");
+		}
+	}
+
+	private static class MyStudent {
+		void greet() {
+			System.out.println("こんにちは");
+		}
+
+		void mainFunc() {
+			// このラムダ式はMyInterfaceのexecuteを実装したものになる。
+			// FunctionalInterfaceアノテーションをMyInterfaceに指定しても、
+			// thisがMyStudentオブジェクトを指すためMyInterfaceのgreetが
+			// 呼び出されることはない。
+			MyInterface f1 = () -> this.greet();
+			f1.execute();
+			// クラス名経由でthisを参照しても結果は同じ。
+			MyInterface f2 = () -> MyStudent.this.greet();
+			f2.execute();
+		}
+	}
+
+	@Test
+	public void checkLambdaScope() {
+		var myStudent = new MyStudent();
+		myStudent.mainFunc();
+	}
 }

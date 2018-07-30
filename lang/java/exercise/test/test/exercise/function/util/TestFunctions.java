@@ -4138,5 +4138,5 @@ public class TestFunctions {
 		 */
 		assertTrue(afterUsedMemory > beforeUsedMemory);
 	}
-	
+
 }
