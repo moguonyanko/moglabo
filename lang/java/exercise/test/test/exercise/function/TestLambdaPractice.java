@@ -365,7 +365,7 @@ public class TestLambdaPractice {
 	}
 
 	@Test
-	public void checkLambdaScope() {
+	public void checkNotCreateScopeByLambda() {
 		var myStudent = new MyStudent();
 		myStudent.mainFunc();
 	}

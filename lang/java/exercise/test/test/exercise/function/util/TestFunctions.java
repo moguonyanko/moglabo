@@ -4139,4 +4139,34 @@ public class TestFunctions {
 		assertTrue(afterUsedMemory > beforeUsedMemory);
 	}
 
+	/**
+	 * 参考: JavaMagazine Vol.38
+	 */
+	@Test
+	public void collectWithThreeParam() {
+		// ラムダ式の引数名に分かりやすい名前をつけることで誤用を防ぐ。
+		BiConsumer<StringBuilder, StringBuilder> appender =
+			(builder, value) -> builder.append(value);
+
+		var resultBuilder = IntStream.iterate(0, x -> (x + 1) % 26)
+			// 並列ストリームを指定しても最後のcollectで得られる文字列の順序が
+			// 不規則になることはない。collectに渡される文字列の順序が不規則になる。
+			.parallel()
+			.mapToObj(x -> new StringBuilder(Character.toString(x + 'A')))
+			.limit(52)
+			.peek(System.out::print)
+			.collect(
+				StringBuilder::new,
+				appender,
+				appender
+				// appendの呼び出し元と引数が逆になっているため結果が空文字になってしまう。
+				//(x, y) -> y.append(x),
+				//(x, y) -> y.append(x)
+			);
+
+		var expected = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		var actual = resultBuilder.toString();
+		assertThat(actual, is(expected));
+	}
+
 }
