@@ -4,7 +4,6 @@ import java.awt.geom.Point2D;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.json.bind.JsonbBuilder;
@@ -13,6 +12,7 @@ import javax.json.bind.config.BinaryDataStrategy;
 import javax.json.bind.config.PropertyNamingStrategy;
 import javax.json.bind.config.PropertyOrderStrategy;
 
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -41,12 +41,15 @@ public class TestJson {
     private static String studentName = "Taro";
     private static int studentAge = 19;
 
-    private String getStudentJson() {
-        var json = new StringBuilder();
-        json.append("{\"age\":").append(studentAge);
-        json.append(",\"id\":").append(studentId);
-        json.append(",\"name\":\"").append(studentName).append("\"}");
-        return json.toString();
+    private static final String studentJson;
+
+    static {
+        var builder = new StringBuilder();
+        builder.append("{\"age\":").append(studentAge)
+            .append(",\"id\":").append(studentId)
+            .append(",\"name\":\"").append(studentName)
+            .append("\"}");
+        studentJson = builder.toString();
     }
 
     private Student getStudent() {
@@ -59,15 +62,14 @@ public class TestJson {
         var student = getStudent();
         // デフォルトでは生成されるJSONのプロパティはアルファベット順で並んでいる。
         var actual = JsonbBuilder.create().toJson(student);
-        var expected = getStudentJson();
-        assertThat(actual, is(expected));
+        assertThat(actual, is(studentJson));
     }
 
     // デシリアライズ(JSON -> Java Object)
     @Test
     public void convertFromJson() {
         var actual = JsonbBuilder.create()
-            .fromJson(getStudentJson(), Student.class);
+            .fromJson(studentJson, Student.class);
         var expected = getStudent();
         assertThat(actual, is(expected));
     }
@@ -143,7 +145,7 @@ public class TestJson {
     @Test
     public void toJsonWithAdapter() {
         var feature = getSampleFeature();
-        JsonbConfig config = new JsonbConfig()
+        var config = new JsonbConfig()
             // プロパティ名に対する設定でありプロパティ値には効果無し。
             //.withPropertyNamingStrategy(PropertyNamingStrategy.UPPER_CAMEL_CASE)
             .withAdapters(new FeatureAdapter());
