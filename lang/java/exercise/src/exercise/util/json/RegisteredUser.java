@@ -2,8 +2,7 @@ package exercise.util.json;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
-import javax.json.bind.annotation.JsonbTypeDeserializer;
-import javax.json.bind.annotation.JsonbTypeSerializer;
+import java.util.Objects;
 
 // ここにシリアライズ関連のアノテーションを指定しても使われない。
 //@JsonbTypeSerializer(RegisteredUserSerializer.class)
@@ -13,9 +12,9 @@ public class RegisteredUser {
     private final long code;
 
     @JsonbProperty(nillable = true)
-    private String name = "";
+    private String name;
 
-    private String initialName = "";
+    private String initialName;
 
     public RegisteredUser(int code, String name) {
         this(code, name, "");
@@ -25,7 +24,7 @@ public class RegisteredUser {
     // JsonbCreatorは1つのクラスに1つだけ指定できる。
     // 2つ以上指定すると実行時例外がスローされる。
     @JsonbCreator
-    public RegisteredUser(@JsonbProperty("code") int code,
+    public RegisteredUser(@JsonbProperty("code") long code,
                           @JsonbProperty("name") String name,
                           @JsonbProperty("initialName") String initialName) {
         this.code = code;
@@ -48,5 +47,21 @@ public class RegisteredUser {
     @Override
     public String toString() {
         return "code=" + code + ",name=" + name + ",initialName=" + initialName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof RegisteredUser) {
+            var that = (RegisteredUser)obj;
+            return code == that.code &&
+                name.equals(that.name) &&
+                initialName.equals(that.initialName);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, name, initialName);
     }
 }

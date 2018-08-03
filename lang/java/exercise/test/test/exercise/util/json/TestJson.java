@@ -244,19 +244,22 @@ public class TestJson {
         assertThat(actual, is(expected));
     }
 
-    @Ignore("JsonbDeserializerが使用されない理由が分かるまで無視")
     @Test
     public void generateJsonWithLowLevelApi() {
-        var user = new RegisteredUser(12345, "Tokyo Jiro");
+        var orgUser = new RegisteredUser(12345, "Tokyo Jiro");
+
         var config = new JsonbConfig()
             .withSerializers(new RegisteredUserSerializer())
             .withDeserializers(new RegisteredUserDeserializer());
         var builder = JsonbBuilder.create(config);
-        var json = builder.toJson(user);
-        System.out.println(json);
+
+        // Serializer適用
+        var json = builder.toJson(orgUser);
+        // Deserializer適用
         var actual = builder.fromJson(json, RegisteredUser.class);
-        System.out.println(actual);
-        assertTrue(actual.getName().isEmpty());
+
+        var expected = new RegisteredUser(12345, "", "J.T");
+        assertThat(actual, is(expected));
     }
 
     @Test
