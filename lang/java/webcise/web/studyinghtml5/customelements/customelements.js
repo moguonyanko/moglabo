@@ -205,6 +205,38 @@ class LoadStyleTest extends HTMLElement {
     }
 }
 
+class MyCustomForm extends HTMLElement {
+    constructor() {
+        super();
+        
+        console.log("My Custom Form is initialized!");
+        
+        const legend = this.getAttribute("legend"),
+              action = this.getAttribute("action");
+        
+        const shadow = this.attachShadow({mode: "open"});
+        shadow.innerHTML = `
+            <form class="myform" action="${action || location.href}">
+                <fieldset>
+                    <legend>${legend || "Profile"}</legend>
+                    <label>NAME<input type="text" name="name" /></label>
+                    <label>TEL<input type="tel" name="tel" /></label>
+                    <label>BIRTH<input type="date" name="birth" /></label>
+                </fieldset>
+            </form>
+`;
+    }
+    
+    connectedCallback() {
+        const shadow = this.shadowRoot;
+        const myForm = shadow.querySelector(".myform");
+        const button = document.createElement("input");
+        button.setAttribute("type", "submit");
+        myForm.appendChild(button);
+        console.log("My Custom Form is prepared!");
+    }
+}
+
 const runTest = () => {
     /*
      const listEle = new AutoList();
@@ -230,6 +262,7 @@ const myCustomElements = {
     MyUserData,
     MyMenuList,
     LoadStyleTest,
+    MyCustomForm,
     test: {
         runTest
     }

@@ -18,6 +18,38 @@ const defineElements = () => {
     customElements.define("load-css-test", mce.LoadStyleTest);
 };
 
+let myForm;
+
+// 参考:
+// https://html.spec.whatwg.org/multipage/custom-elements.html#dom-customelementregistry-upgrade
+const addCustomFormListener = () => {
+    const base = document.querySelector(".customelement-upgrade-example");
+    base.addEventListener("click", event => {
+        if (event.target.classList.contains("my-form")) {
+            event.stopPropagation();
+            if (event.target.classList.contains("appender")) {
+                if (typeof customElements.upgrade !== "function") {
+                    return;
+                }
+                if (!myForm) {
+                    myForm = document.createElement("my-custom-form");
+                    customElements.define("my-custom-form", mce.MyCustomForm);
+                }
+                console.log(`Instanceof mce.MyCustomForm = ${myForm instanceof mce.MyCustomForm}`);
+                customElements.upgrade(myForm);
+                // upgradeを呼び出すことでcustomElements.defineを呼び出す前に生成された
+                // 要素であってもCustome Elementのインスタンスとして認識させることができる。
+                // ただしupgradeを呼び出さなくてもappendChildすれば正常にCustom Elementとして
+                // 使用することができる。
+                console.log(`Instanceof mce.MyCustomForm = ${myForm instanceof mce.MyCustomForm}`);
+                if (!base.querySelector("my-custom-form")) {
+                    base.appendChild(myForm);
+                }
+            }
+        }
+    });
+};
+
 const addListener = () => {
     const ctrl = document.querySelector(".control");
     const options = {
@@ -61,6 +93,8 @@ const addListener = () => {
             operatorEle.value = "+";
         }
     }, options);
+    
+    addCustomFormListener();
 };
 
 const init = () => {
