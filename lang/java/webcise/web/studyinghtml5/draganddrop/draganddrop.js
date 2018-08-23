@@ -200,19 +200,31 @@
             console.warn(`${dropType}には未対応です。`);
         }
 	}
+    
+    const eventOptions = {
+        capture: false,
+        passive: false
+    };
 
-	const addListener = () => {
-		m.addListener(dragContainer, "dragstart", dragStart, false);
-		m.addListener(dragContainer, "dragover", preventDefault, false);
-		m.addListener(dragContainer, "drop", preventDefault, false);
-		m.addListener(dragContainer, "dragend", dragEnd, false);
-		m.addListener(dropContainer, "drop", drop, false);
-		m.addListener(dropContainer, "dragover", preventDefault, false);
-		m.addListener(dropContainer, "dragenter", preventDefault, false);
+	const addListeners = () => {
+        // TODO: iOS Safariでdragができない。
+        // モバイル端末でdragするためのイベントリスナ設定
+		dragContainer.addEventListener("touchmove", preventDefault, eventOptions);
+
+        // dragイベントリスナ設定
+		dragContainer.addEventListener("dragstart", dragStart, eventOptions);
+		dragContainer.addEventListener("dragover", preventDefault, eventOptions);
+		dragContainer.addEventListener("drop", preventDefault, eventOptions);
+		dragContainer.addEventListener("dragend", dragEnd, eventOptions);
+        
+        // dropイベントリスナ設定
+		dropContainer.addEventListener("drop", drop, eventOptions);
+		dropContainer.addEventListener("dragover", preventDefault, eventOptions);
+		dropContainer.addEventListener("dragenter", preventDefault, eventOptions);
 	};
     
     const init = () => {
-        addListener();
+        addListeners();
     };
     
     win.addEventListener("DOMContentLoaded", init);
