@@ -21,7 +21,7 @@
 	},
 	"水上爆撃機": {
 		"scalefactor": 1.1,
-		"reinforcement": 0
+		"reinforcement": 1.15
 	},
 	"水上戦闘機": {
 		"scalefactor": 0.6,
