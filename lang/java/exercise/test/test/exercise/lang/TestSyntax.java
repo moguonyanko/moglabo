@@ -49,4 +49,29 @@ public class TestSyntax {
 		// いればコンパイルに成功する。
 		//obj.runTest();
 	}
+
+	// 参考:
+	// JavaMagazine Vol.40
+	private static class Calc {
+		public static void execute() {
+			int i = 0;
+			Calc c = new Calc();
+			// incを呼び出す前にi++が評価されてその結果がincに渡される。
+			// しかしこの行での加算は後置インクリメントであるため「評価前」の
+			// 値が用いられる。すなわち 0 + 2 となる。
+			System.out.print(i++ + c.inc(i));
+			System.out.print(i);
+		}
+		private int inc(int i) {
+			// 引数のiをインクリメントしているが値渡しであるため
+			// 呼び出し元のiには影響がない。
+			System.out.print(i++);
+			return i;
+		}
+	}
+
+	@Test
+	public void checkIncrementSequence() {
+		Calc.execute();
+	}
 }
