@@ -1,12 +1,10 @@
 package test.exercise.stream;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import static java.util.stream.Collectors.*;
 
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
@@ -103,5 +101,34 @@ public class TestStream {
             .collect(Collectors.joining(""));
 
         assertThat(actual, is(expected));
+    }
+
+    private static boolean isMultiple(long x, long n) {
+        return x % n == 0;
+    }
+
+    @Test
+    public void countMultipleNumbersFromSplittableRandom() {
+        var random = new SplittableRandom();
+        var n = 3;
+        var start = 1;
+        var end = (long)Math.pow(2, 21);
+        var size = end - start;
+        // 以下の書き方はコンパイルエラーになる。
+        //var start = 1,
+        //    end = 10,
+        //    size = end - start;
+
+        // longsの第1引数が指定されないと無限ストリームになるのでメソッドが完了しない。
+        var valueSize = random.longs(size, start, end)
+            .parallel()
+            .filter(i -> isMultiple(i, n))
+            // boxed()はmapToObj(i -> i)と同じ。
+            .boxed()
+            .collect(toSet())
+            .size();
+
+        // テストされる数列がランダムで構築されるため結果も毎回変わる。
+        System.out.println(valueSize);
     }
 }
