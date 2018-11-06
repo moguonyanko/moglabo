@@ -289,6 +289,11 @@
 		"type": "大型電探",
 		"value": 12
 	},
+	"gfcsmk7": {
+		"name": "GFCS Mk.7",
+		"type": "小型電探",
+		"value": 6
+	},
 	"sl": {
 		"name": "探照灯",
 		"type": "探照灯",
