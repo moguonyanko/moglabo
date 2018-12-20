@@ -1,6 +1,7 @@
 package test.exercise.collection;
 
 import java.util.*;
+
 import static java.util.stream.Collectors.*;
 
 import org.junit.*;
@@ -292,7 +293,7 @@ public class TestCollection {
         LinkedList<Integer> llst = new LinkedList<>(Arrays.asList(1, 2, 3));
         HashSet<Integer> hset = new HashSet<>(Arrays.asList(1, 2, 3));
         // ListとSetの比較は構成要素が同じでもfalseになる。
-        assertFalse(llst.equals(hset));
+        assertNotEquals(llst, hset);
 
         // lstとalstの型は実行時の型も含めて異なるがequalsはtrueを返す。
         ArrayList<Integer> alst = new ArrayList<>(Arrays.asList(1, 2, 3));
@@ -301,6 +302,85 @@ public class TestCollection {
         // List同様、Set同士の型が異なっても構成要素が等しければequalsはtrueを返す。
         TreeSet<Integer> tset = new TreeSet<>(Arrays.asList(1, 2, 3));
         assertEquals(tset, hset);
+    }
+
+    // Comparableを実装すればthrowExceptionWhenAddIncomparableElementは例外を
+    // スローしない。
+    private static class SampleStudent /* implements Comparable<SampleStudent> */ {
+        private int no;
+        private String name;
+
+        SampleStudent(int no, String name) {
+            this.no = no;
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return no + ":" + name;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof SampleStudent) {
+                var other = (SampleStudent)obj;
+                return no == other.no &&
+                    name.equals(other.name);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(no, name);
+        }
+
+//        @Override
+//        public int compareTo(@NotNull SampleStudent o) {
+//            return no - o.no;
+//        }
+    }
+
+    // 参考: JavaMagazine Vol.41
+    @Test(expected = ClassCastException.class)
+    public void throwExceptionWhenAddIncomparableElement() {
+        var s1 = new SampleStudent(2, "Bar");
+        var s2 = new SampleStudent(3, "Baz");
+        var s3 = new SampleStudent(1, "Foo");
+
+        var ts = new TreeSet<>();
+        // 要素がaddされた後API内部で要素の比較を行われるので要素がComparableでないと
+        // ClassCastExceptionが発生してしまう。
+        ts.add(s2);
+        ts.add(s1);
+        ts.add(s3);
+        System.out.println(ts);
+    }
+
+    // 既存の変更不可能クラスがComparableでないがそれらを特定の順序で並び替えたい時に
+    // Comparatorを併用する方法は有効である。
+    // 新規クラスで順序を意識する必要がある場合はComparableを実装するべきだが、
+    // 複数のクラスで共通に使われる並び替え方法が存在するなら、それをComparatorとして
+    // 記述するのは妥当である。
+    @Test
+    public void testTreeSetWithComparatorIsNotThrowException() {
+        var s1 = new SampleStudent(2, "Bar");
+        var s2 = new SampleStudent(3, "Baz");
+        var s3 = new SampleStudent(1, "Foo");
+
+        // ラムダの引数の変数名はラムダの外側の変数名と衝突する。
+        // 例えば (s1, s2) -> { return s1.no - s2.no; } とした場合など。
+        // ここでは右辺の<>で型を明示することは必須である。そうしなければ変数stの型を解決できない。
+        var ts = new TreeSet<SampleStudent>(Comparator.comparingInt(st -> st.no));
+        // TreeSetをComparatorと共に生成したのでComparableでない要素をaddしても
+        // 実行時例外は発生しない。
+        ts.add(s2);
+        ts.add(s1);
+        ts.add(s3);
+
+        var expected = Arrays.asList(s3, s1, s2);
+        var actual = new ArrayList<>(ts);
+        assertThat(actual, is(expected));
     }
 
 }
