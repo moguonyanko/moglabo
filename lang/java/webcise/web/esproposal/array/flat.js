@@ -1,4 +1,5 @@
 /**
+ * @name flat.js
  * @fileOverview flat系関数の練習用スクリプト
  */
 
@@ -39,33 +40,10 @@ const doFlat = ({array, depth = 1}) => {
   return array.flat(depth);
 };
 
-// DOM
-
-const funcs = {
-  flat() {
-    const array = [1, 2, 3, [4, 5], ['6,7,8', [9, [0]]]];
-    const depth = parseInt(document.querySelector('.depth').value);
-    const value = doFlat({array, depth});
-    return value;
-  }
-};
-
-const addListener = () => {
-  const ctl = document.querySelector('.control');
-  ctl.addEventListener('click', event => {
-    const t = event.target;
-    if (t.classList.contains('target')) {
-      event.stopPropagation();
-      const res = document.querySelector('.result');
-      if (t.classList.contains('run')) {
-        const value = funcs.flat();
-        // 配列をtoStringするとフラットにされてしまう。
-        res.innerHTML += JSON.stringify(value);
-      } else if (t.classList.contains('clear')) {
-        res.innerHTML = '';
-      }
-    }
-  });
+// flatMapでは1段階のみflatにされる。2段階以上の入れ子になっている配列の全ての要素に対して
+// 処理を行いたい場合はflatを使う必要がある。あるいはflatMapを再帰的に使う。
+const doFlatMap = ({array, func}) => {
+  return array.flatMap(func);
 };
 
 const runTest = () => {
@@ -75,6 +53,58 @@ const runTest = () => {
   const actual = doFlat({array, depth});
   console.log(`arrayEquals(actual, expected): ${arrayEquals(actual, expected)}`);
   console.log(expected, actual);
+
+  const func = x => [x];
+  const actual2 = doFlatMap({array, func});
+  console.log(`arrayEquals(actual2, array): ${arrayEquals(actual2, array)}`);
+  console.log(actual2);
+};
+
+// DOM
+
+const funcs = {
+  flat(array) {
+    const depth = parseInt(document.querySelector('.depth').value);
+    const value = doFlat({array, depth});
+    return value;
+  },
+  flatMap(array, func) {
+    const value = doFlatMap({array, func});
+    return value;
+  }
+};
+
+const flatMapper = n => {
+  if (Number.isInteger(n)) {
+    return n * 100;
+  } else {
+    return n;
+  }
+};
+
+const addListener = () => {
+  const ctl = document.querySelector('.control');
+  ctl.addEventListener('click', event => {
+    const t = event.target;
+    if (t.classList.contains('target')) {
+      event.stopPropagation();
+
+      const res = document.querySelector('.result');
+      const array = [1, 2, 3, [4, 5], ['6,7,8', [9, [0]]]];
+
+      let value = '';
+      if (t.classList.contains('flat')) {
+        value = funcs.flat(array);
+      } else if (t.classList.contains('flatmap')) {
+        value = funcs.flatMap(array, flatMapper);
+      } else if (t.classList.contains('clear')) {
+        res.innerHTML = '';
+        return;
+      }
+      // 配列をtoStringするとフラットにされてしまう。
+      res.innerHTML += `${JSON.stringify(value)}<br />`;
+    }
+  });
 };
 
 const main = () => {

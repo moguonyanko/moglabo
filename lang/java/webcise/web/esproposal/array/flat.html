@@ -9,18 +9,24 @@
   <body>
     <header>
       <h1>Flat Functions</h1>
+      <a href="../">home</a>
     </header>
     <main>
-      <section>
-        <h3>flat</h3>
-        <div class="control">
-          <button class="target run">run</button>
-          <input class="depth" type="number" value="1" min="1" max="10" />
+      <h2>配列の入れ子を操作する関数のサンプル</h2>
+      <div class="control">
+        <div>
+          <button class="target flat">flat</button>
+          <input class="depth inputparam" type="number" value="1" min="1" max="10" />
+        </div>
+        <div>
+          <button class="target flatmap">flatMap</button>
+        </div>
+        <div>
           <button class="target clear">clear</button>
         </div>
-        <p>[1, 2, 3, [4, 5], ['6,7,8', [9, [0]]]]</p>
-        <div class="result"></div>
-      </section>
+      </div>
+      <p>[1, 2, 3, [4, 5], ['6,7,8', [9, [0]]]]</p>
+      <div class="result"></div>
     </main>
     <script type="module" src="flat.js"></script>
   </body>
