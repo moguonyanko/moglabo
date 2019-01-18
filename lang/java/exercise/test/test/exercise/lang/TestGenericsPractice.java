@@ -222,5 +222,51 @@ public class TestGenericsPractice {
 		
 		assertThat(actual, is(expected));
 	}
-	
+
+	private abstract class AbstractBase<T> {
+
+		abstract List<T> getFunc();
+
+		abstract void setFunc(List<T> src);
+
+		abstract <E> List<E> getFunc2();
+
+		abstract <E> void setFunc2(List<E> src);
+
+		abstract void setFunc3(List<?> src);
+	}
+
+	private class SampleChild extends AbstractBase<Double> {
+
+		@Override
+		List<Double> getFunc() {
+			return null;
+		}
+
+		@Override
+		void setFunc(List<Double> src) {
+
+		}
+
+		@Override
+		List<Double> getFunc2(){
+			return null;
+		}
+
+		// コンパイルエラーになってしまう。
+//		@Override
+//		void setFunc2(List<Double> src) {
+//
+//		}
+
+		@Override
+		<E> void setFunc2(List<E> src) {
+
+		}
+
+		@Override
+		void setFunc3(List<?> src) {
+
+		}
+	}
 }
