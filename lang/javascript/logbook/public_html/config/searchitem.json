@@ -289,10 +289,20 @@
 		"type": "大型電探",
 		"value": 12
 	},
+	"sgfirst": {
+		"name": "SGレーダー(初期型)",
+		"type": "小型電探",
+		"value": 8
+	},
 	"gfcsmk7": {
 		"name": "GFCS Mk.7",
 		"type": "小型電探",
 		"value": 6
+	},
+	"5inchmk30gfcs": {
+		"name": "5inch単装砲 Mk.30改+GFCS Mk.37",
+		"type": "小口径主砲",
+		"value": 3
 	},
 	"sl": {
 		"name": "探照灯",
