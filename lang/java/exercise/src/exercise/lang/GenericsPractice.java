@@ -71,3 +71,14 @@ class Parent2<T1> {
 		return c2;
 	}
 }
+
+/**
+ * 参考:
+ * JavaMagazine Vol.42
+ */
+class Parent3<T extends Runnable, String> {
+	// 「String」が型変数として宣言されてしまっているので以下の代入文は
+	// java.lang.StringではないStringを参照してしまう。その変数にStringの
+	// リテラルを代入しようとしているためコンパイルエラーになる。
+//	private static final String CODE = "SAMPLE";
+}
