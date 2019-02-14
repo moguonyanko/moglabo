@@ -383,4 +383,32 @@ public class TestCollection {
         assertThat(actual, is(expected));
     }
 
+    /**
+     * 参考:
+     * JavaMagazine Vol.42
+     */
+    @Test
+    public void checkOrderedCollection() {
+        var s0 = Set.of("My", "name", "is", "Bar", "Fuga");
+        var s1 = new HashSet<>(s0);
+        var s2 = new TreeSet<>(s0);
+
+        // 左辺は順序付けされているコレクションであれば0にならない。
+        var actual1 = s1.spliterator().characteristics() & Spliterator.ORDERED;
+        assertFalse(actual1 != 0);
+
+        var actual2 = s2.spliterator().characteristics() & Spliterator.ORDERED;
+        assertTrue(actual2 != 0);
+
+        // 順序付けされるコレクションとして生成し直せばtrueになる。
+        var s3 = new LinkedHashSet<>(s1);
+        var actual3 = s3.spliterator().characteristics() & Spliterator.ORDERED;
+        assertTrue(actual3 != 0);
+
+        // ストリームに対しても同じように順序付けされているかどうかのチェックを行える。
+        var actual4 = s2.stream().spliterator().characteristics() &
+            Spliterator.ORDERED;
+        assertTrue(actual4 != 0);
+    }
+
 }
