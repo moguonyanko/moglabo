@@ -8,3 +8,10 @@ button {
 aside {
     border-top: 1px solid lightgray;
 }
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 5px;
+    border: solid red 1px;
+}
