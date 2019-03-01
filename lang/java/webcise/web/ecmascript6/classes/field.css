@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+button {
+    width: 10em;
+    height: 3em;
+}
+
+aside {
+    border-top: 1px solid lightgray;
+}
