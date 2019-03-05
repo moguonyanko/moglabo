@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../../gomakit.css" />
     <link rel="stylesheet" href="string.css">
+    <link rel="stylesheet" href="matchall.css" />
   </head>
   <body>
     <header>
@@ -43,9 +44,20 @@
           <button class="trim trim-end">trimEnd</button>
         </div>
       </section>
+      <section class="matcher example">
+        <h2>String.matchAll</h2>
+        <label>Input<input class="eventtarget" type="text" is="matcher-input"
+                           data-pattern="[(\w)(\W)]+(?=\:)" data-ignorecase /></label>
+        <label>Matched<input class="matched" type="text" readonly /></label>
+      </section>
     </main>
+    <aside>
+      <h3>参考サイト</h3>
+      <li><a href="http://kangax.github.io/compat-table/esnext/">ECMAScript Next compatibility table</a></li>
+    </aside>
     <script src="../../gomakit.js"></script>
     <script src="main.js"></script>
     <script src="trimuser.js" type="module"></script>
+    <script src="matchall.js" type="module"></script>
   </body>
 </html>
