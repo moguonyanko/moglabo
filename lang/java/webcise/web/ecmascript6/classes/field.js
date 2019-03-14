@@ -90,6 +90,47 @@ class UserInfo extends HTMLFormElement {
   // #myMethod() {}
 }
 
+class Car {
+  #speed = 0; // km
+  
+  // デフォルト引数を指定していなくてもサブクラスからコンストラクタが呼び出される。
+  // コンストラクタのオーバーロードが許可されないのでどのコンストラクタが呼び出されるか
+  // 考えさせられることはない。
+  constructor(speed = 0) { 
+    this.#speed = speed;
+    console.log(`Car initialized received speed = ${speed}`);
+  }
+  
+  speedUp(speed) {
+    this.#speed += speed;
+  }
+  
+  get speedAnMinute() {
+    return this.#speed / 60;
+  }
+}
+
+class Truck extends Car {
+  #baggage = [];
+
+  // サブクラスのコンストラクタを記述しなくてもスーパークラスのコンストラクタが呼ばれる。
+//  constructor(speed){
+//    super(speed);
+//  }
+  
+  hasBaggage() {
+    return this.#baggage.length > 0;
+  }
+  
+  addBaggage(name, item) {
+    this.#baggage.push([name, item]);
+  }
+  
+  get baggageEntries() {
+    return Object.fromEntries(this.#baggage);
+  }
+}
+
 const appendGreetingButton = () => {
   // createElementの引数にisを指定したオブジェクトを渡せばcustom elementの
   // コンストラクタが呼び出される。
@@ -103,7 +144,6 @@ const appendGreetingButton = () => {
   const container = document.querySelector('.public-field .container');
   container.appendChild(btn);
 }
-
 
 const addListener = () => {
   const publicEx = document.querySelector('.public-field.example');
@@ -143,11 +183,31 @@ const addListener = () => {
   });
 };
 
+const dumpSubclassingInfo = () => {
+  const resultArea = document.querySelector('.resultarea');
+  
+  const truck = new Truck();
+  const info = [];
+  info.push(`Has baggage? : ${truck.hasBaggage()}`);
+  info.push(`Truck speed ${truck.speedAnMinute} (km/minute)`);
+  truck.addBaggage('My Choco', {price: 100});
+  truck.addBaggage('Your orange', {price: 200});
+  truck.addBaggage('My pen', {price: 120});
+  info.push(Object.keys(truck.baggageEntries));
+  info.push(`Has baggage? : ${truck.hasBaggage()}`);
+  truck.speedUp(100);
+  info.push(`Truck speed ${truck.speedAnMinute} (km/minute)`);
+  
+  resultArea.value = info.join('\n');
+};
+
 const init = () => {
   customElements.define('greeting-button', Greeting, {extends: 'button'});
   customElements.define('user-info', UserInfo, {extends: 'form'});
   
   addListener();
+  
+  dumpSubclassingInfo();
 };
 
 window.addEventListener('DOMContentLoaded', init);
