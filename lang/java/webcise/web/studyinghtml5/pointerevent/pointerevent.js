@@ -18,7 +18,18 @@ export default class extends HTMLDivElement {
     const text = document.createElement('span');
     text.classList.add('infomation');
     text.appendChild(document.createTextNode('Not found event'));
-    this.appendChild(text);
+    
+    const result = document.createElement('div');
+    result.classList.add('result');
+    result.appendChild(text);
+    this.appendChild(result);
+    
+    // built-in形式のcustom elementではslotを使用しても要素は挿入されない。
+    // そもそもslotはShadowDOM側にLightDOM側の要素を反映させるための要素だったので
+    // LightDOM側にcustom elementを展開するならslotを使う必要がない。
+    const slot = document.createElement('slot');
+    slot.setAttribute('name', 'appender');
+    this.appendChild(slot);
   }
   
   // XXXpointercaptureのPointerEventは事前にsetPpointerCaptureで
@@ -36,7 +47,16 @@ export default class extends HTMLDivElement {
     return this.constructor.#CAPTURE_EVENTS.includes(type.toLowerCase());
   }
   
+  isAssignedSlot() {
+    const slots = this.querySelectorAll('slot');
+    return Array.from(slots).some(slot => slot.assignedNodes().length > 0);
+  }
+  
   connectedCallback() {
+    if (this.isAssignedSlot()) {
+      console.info('Slot is used');
+    }
+    
     const option = { 
       passive: false
     };
@@ -63,7 +83,7 @@ export default class extends HTMLDivElement {
         `PointerEvent.isPrimary=${pe.isPrimary}`
       ];
         
-      this.innerHTML = info.join('<br />');
+      this.querySelector('.result').innerHTML = info.join('<br />');
     }, option);
   }
 }
