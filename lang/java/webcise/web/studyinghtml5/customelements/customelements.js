@@ -237,6 +237,32 @@ class MyCustomForm extends HTMLElement {
     }
 }
 
+/**
+ * ShadowDOMを使わなくてもAutonomous custom elementsを
+ * 定義できるかどうか確認するためのクラス
+ */
+class LightSample extends HTMLElement {
+  static get observedAttributes() {
+      return ['value'];
+  }
+  
+  constructor() {
+    super();
+    
+    this.innerHTML = '<p class="infomation">Light DOM!</p>';
+  }
+  
+  connectedCallback() {
+    this.addEventListener('click', event => {
+      this.setAttribute('value', (Math.random() * 10).toFixed(2));
+    });
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    alert(`${name} is changed: ${oldValue} -> ${newValue}`);
+  }
+}
+
 const runTest = () => {
     /*
      const listEle = new AutoList();
@@ -265,7 +291,8 @@ const myCustomElements = {
     MyCustomForm,
     test: {
         runTest
-    }
+    },
+    LightSample
 };
 
 export default myCustomElements;

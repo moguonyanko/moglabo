@@ -34,6 +34,10 @@ my-menulist {
     --my-custom-bg: whitesmoke;
 }
 
+light-sample {
+    cursor: pointer;
+}
+
 /* グリッドレイアウトの練習 */
 
 .note {
@@ -74,3 +78,8 @@ my-menulist {
     grid-row-start: 2;
 }
 
+
+.infomation {
+    color: blue;
+    font-size: 120%;
+}
