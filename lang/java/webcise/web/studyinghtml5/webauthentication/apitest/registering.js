@@ -1,3 +1,8 @@
+/**
+ * private fieldやbuilt-in形式のCustom ElementsはChrome以外のブラウザでの実装が
+ * 進むまでは使用を控える。PointerEventもSafariでは最新の開発版でないと使用できない。
+ */
+
 const createRandomString = async () => {
   const response = await fetch('/webcise/RandomString');
   if (!response.ok) {
@@ -7,68 +12,73 @@ const createRandomString = async () => {
   return json.value;
 };
 
-class PublicKeyCreator extends HTMLFormElement {
-  static #CREATOR_CLASS = 'create-publickey';
-  
-  #formString = `<label>name<input class="user-name" type="text" value="taro@example.com" /></label>
-<label>display name<input class="user-display-name" type="text" value="Taro" /></label>
-    <button type="button" class="${PublicKeyCreator.#CREATOR_CLASS}">Create</button>`;
-  
-  #createCredencial = async () => {
-    const serverRandomValue = await createRandomString();
-    // userのidをどのように生成するのが好ましいのかが分かっていない。
-    const userRandomValue = await createRandomString();
-    
-    const publicKey = {
-      challenge: Uint8Array.from(serverRandomValue, c => c.charCodeAt(0)),
-      rp: {
-        name: "My WebAutn Example",
-        id: location.host // idが現在のページのドメインに含まれていなければDOMExceptionになる。
-      },
-      user: {
-        id: Uint8Array.from(userRandomValue, c => c.charCodeAt(0)),
-        name: this.querySelector('.user-name').value,
-        displayName: this.querySelector('.user-display-name').value
-      },
-      pubKeyCredParams: [{
-          alg: -7, // ECDSA w/ SHA-256
-          type: "public-key"
-        }],
-      authenticatorSelection: {
-        authenticatorAttachment: "platform",
-        //authenticatorAttachment: "cross-platform",
-      },
-      timeout: 60000,
-      attestation: "direct"    
-    };
-    
-    return await navigator.credentials.create({ publicKey });
+const createCredencial = async ({userName, userDisplayName, authenticatorAttachment}) => {
+  const serverRandomValue = await createRandomString();
+  // userのidをどのように生成するのが好ましいのかが分かっていない。
+  // ここではchallengeに渡す文字列と同じ方法で生成することにしている。
+  const userRandomValue = await createRandomString();
+
+  const publicKey = {
+    challenge: Uint8Array.from(serverRandomValue, c => c.charCodeAt(0)),
+    rp: {
+      name: "My WebAuthn Example",
+      id: location.host // idが現在のページのドメインに含まれていなければDOMExceptionになる。
+    },
+    user: {
+      id: Uint8Array.from(userRandomValue, c => c.charCodeAt(0)),
+      name: userName,
+      displayName: userDisplayName
+    },
+    pubKeyCredParams: [{
+        alg: -7, // ECDSA w/ SHA-256
+        type: "public-key"
+      }],
+    authenticatorSelection: {authenticatorAttachment},
+    timeout: 60000,
+    attestation: "direct" // directでは匿名化するかどうか確認される。
   };
-  
+
+  return await navigator.credentials.create({publicKey});
+};
+
+class PublicKeyCreator extends HTMLElement {
+
   constructor() {
     super();
-    
-    this.innerHTML = this.#formString.trim();
-    // templateを経由することで文字列をHTML要素(content)に変換できる。
-    //const t = document.createElement('template');
-    //t.innerHTML = this.#formString.trim(); 
-    //this.appendChild(t.content);
+
+    const template = document.querySelector('template.register');
+    const shadow = this.attachShadow({mode: 'open'});
+    shadow.appendChild(template.content.cloneNode(true));
   }
-  
+
   connectedCallback() {
-    this.addEventListener('submit', event => {
+    const root = this.shadowRoot;
+
+    root.addEventListener('submit', event => {
       event.preventDefault();
-    }, { passive: false });
-    
-    this.addEventListener('pointerup', async event => {
-      if (event.target.classList.contains(PublicKeyCreator.#CREATOR_CLASS)) {
+    }, {passive: false});
+
+    root.addEventListener('click', async event => {
+      if (event.target.classList.contains('create-publickey')) {
         event.stopPropagation();
-        
+
+        const userName = root.querySelector('.user-name').value,
+            userDisplayName = root.querySelector('.user-display-name').value;
+
+        const selectedAttachment = Array.from(root.querySelectorAll('.attachment'))
+            .filter(el => el.checked)[0];
+        const authenticatorAttachment = selectedAttachment.value;
+
         try {
-          const credencial = await this.#createCredencial();
-          console.log(credencial);
-        } catch(err) {
-          console.error(err);
+          const credencial = await createCredencial({
+            userName,
+            userDisplayName,
+            authenticatorAttachment
+          });
+          const area = root.querySelector('.credencials-info');
+          area.value = credencial.toString();
+        } catch (err) {
+          alert(err);
         }
       }
     });
@@ -76,7 +86,7 @@ class PublicKeyCreator extends HTMLFormElement {
 }
 
 const init = () => {
-  customElements.define("pubkey-creator", PublicKeyCreator, { extends: "form" });
+  customElements.define("pubkey-creator", PublicKeyCreator);
 };
 
 window.addEventListener('DOMContentLoaded', init);
