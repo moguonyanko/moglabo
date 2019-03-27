@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>WebAuthn API Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="apitest.css" />
+  </head>
+  <body>
+    <header>
+      <h1>WebAuthn API Test</h1>
+      <a href="../../">home</a>
+    </header>
+    <main>
+      <section>
+        <h2>アカウント登録</h2>
+        <form is="pubkey-creator"></form>
+      </section>
+    </main>
+    <aside>
+      <h3>参考サイト</h3>
+      <ul>
+        <li><a href="https://webauthn.guide/">Guide to Web Authentication</a></li>
+        <li><a href="https://www.iana.org/assignments/cose/cose.xhtml">CBOR Object Signing and Encryption (COSE)</a></li>
+      </ul>
+    </aside>
+    <script type="module" src="registering.js"></script>
+  </body>
+</html>

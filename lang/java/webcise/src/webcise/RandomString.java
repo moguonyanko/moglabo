@@ -1,8 +1,10 @@
 package webcise;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import javax.json.Json;
+import javax.json.JsonException;
+import javax.json.stream.JsonGenerator;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,7 +27,7 @@ public class RandomString extends HttpServlet {
             throws ServletException, IOException {
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.setHeader("Cache-Control", "no-store");
-        
+
         int count = DEFAULT_COUNT;
         String countParam = request.getServletContext().getInitParameter("count");
         if (countParam != null && !countParam.isEmpty()) {
@@ -33,8 +35,18 @@ public class RandomString extends HttpServlet {
         }
 
         String value = RandomStringUtils.randomAlphanumeric(count);
-        PrintWriter out = response.getWriter();
-        out.print(value);
+
+        try (JsonGenerator generator
+                = Json.createGeneratorFactory(null).createGenerator(response.getWriter())) {
+            generator.writeStartObject();
+            generator.write("value", value);
+            generator.writeEnd();
+        } catch (JsonException exception) {
+            exception.printStackTrace(System.err);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    exception.getMessage());
+        }
+
     }
 
 }

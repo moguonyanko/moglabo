@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+main {
+    width: 100%;
+}
+
+form {
+    contain: content;
+    margin: 1em;
+    background-color: powderblue;
+}
+
+aside {
+    padding: 1em;
+    background-color: beige;
+}
