@@ -34,7 +34,7 @@ const createCredencial = async ({userName, userDisplayName, authenticatorAttachm
         type: "public-key"
       }],
     authenticatorSelection: {authenticatorAttachment},
-    timeout: 60000,
+    timeout: 10000,
     attestation: "direct" // directでは匿名化するかどうか確認される。
   };
 
@@ -45,7 +45,7 @@ class PublicKeyCreator extends HTMLElement {
 
   constructor() {
     super();
-
+    
     const template = document.querySelector('template.register');
     const shadow = this.attachShadow({mode: 'open'});
     shadow.appendChild(template.content.cloneNode(true));
@@ -57,7 +57,9 @@ class PublicKeyCreator extends HTMLElement {
     root.addEventListener('submit', event => {
       event.preventDefault();
     }, {passive: false});
-
+    
+    // pointerupなどPointerEventsはiOS Safari(ver12.1)では設定で有効化していても動作しない。
+    // ShadowDOMでは振る舞いが異なるのかもしれない。
     root.addEventListener('click', async event => {
       if (event.target.classList.contains('create-publickey')) {
         event.stopPropagation();
@@ -79,6 +81,7 @@ class PublicKeyCreator extends HTMLElement {
           area.value = credencial.toString();
         } catch (err) {
           alert(err);
+          throw err;
         }
       }
     });

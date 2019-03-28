@@ -27,7 +27,8 @@
     </aside>
     <script type="module">
       if ("paintWorklet" in CSS) {
-        CSS.paintWorklet.addModule("simplebg.js");
+        // Safariは相対パスだとスクリプトが読み込まれない。
+        CSS.paintWorklet.addModule(`${location.pathname}simplebg.js`);
       } else {
         const ele = document.querySelector(".sample-target");
         const txt = document.createTextNode("CSS Paint APIは使用できません。");
