@@ -1,10 +1,11 @@
-class Foo {}
+class Foo {
+}
 
 Foo.prototype.getThis = () => {
   return this;
 };
 
-Foo.prototype.getThisFunc = function() {
+Foo.prototype.getThisFunc = function () {
   return this;
 };
 
@@ -28,11 +29,58 @@ const tests = {
   }
 };
 
+const tasks = {
+  runWorker() {
+    return new Promise((resolve, reject) => {
+      const worker = new Worker('worker.js');
+      worker.onmessage = event => {
+        resolve(event.data);
+      };
+      worker.onerror = reject;
+      worker.postMessage(['Hello', 'My', 'Worker']);
+    });
+  },
+  runSharedWorker() {
+    return new Promise((resolve, reject) => {
+      if (typeof SharedWorker !== 'function') {
+        reject(new Error('SharedWorker is undefined'));
+        return;
+      }
+      const worker = new SharedWorker('sharedworker.js');
+      worker.port.onmessage = event => {
+        resolve(event.data);
+      };
+      worker.port.onerror = reject;
+      worker.port.postMessage([10, 20, 30, 40, 50]);
+    });
+  }
+};
+
 const runTest = () => {
   console.log(globalThis);
 };
 
 // DOM
+
+const initWorkerExample = () => {
+  const bases = document.querySelectorAll('.worker.example');
+  bases.forEach(base => {
+    base.addEventListener('pointerup', async event => {
+      const resultArea = base.querySelector('.resultarea');
+      if (event.target.classList.contains('target')) {
+        event.stopPropagation();
+        if (typeof tasks[event.target.value] === 'function') {
+          try {
+            const result = await tasks[event.target.value]();
+            resultArea.value = result;
+          } catch (err) {
+            resultArea.value = err.message;
+          }
+        }
+      }
+    });
+  });
+};
 
 const dumpThisInfo = () => {
   let resultArea = document.querySelector('.resultarea');
@@ -44,6 +92,8 @@ const dumpThisInfo = () => {
 const init = () => {
   runTest();
   dumpThisInfo();
+  initWorkerExample();
 };
 
-window.addEventListener('DOMContentLoaded', init);
+console.log(`window === globalThis: ${window === globalThis}`);
+globalThis.addEventListener('DOMContentLoaded', init);
