@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Feature Policy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Feature Policy</h1>
+      <a href="../">home</a>
+    </header>
+    <main>
+      <section>
+        <h2>Feature-Policyレスポンスヘッダ</h2>
+        <button data-event-target="syncxhr">Sync XHR</button>
+        <div class="result syncxhr"></div>
+      </section>
+      <section>
+        <h2>サポートしているFeature</h2>
+        <div class="result features"></div>
+      </section>
+    </main>
+    <footer>
+      <h3>参考サイト</h3>
+      <ul>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Feature_Policy">Feature Policy(MDN)</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy">Feature-Policy Header(MDN)</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Feature_Policy/Using_Feature_Policy">Using Feature Policy(MDN)</a></li>
+        <li><a href="https://developers.google.com/web/updates/2018/06/feature-policy">Introduction to Feature Policy</a></li>
+      </ul>
+    </footer>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
