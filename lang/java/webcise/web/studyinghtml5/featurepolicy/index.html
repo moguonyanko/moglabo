@@ -14,8 +14,18 @@
     <main>
       <section>
         <h2>Feature-Policyレスポンスヘッダ</h2>
-        <button data-event-target="syncxhr">Sync XHR</button>
-        <div class="result syncxhr"></div>
+        <p>ブラウザが未対応なFeaturePolicyがヘッダに設定されているとブラウザにエラーが通知される。</p>
+        <section class="sample syncxhr">
+          <h3>Sync XHR</h3>
+          <button data-event-target="syncxhr">run</button>
+          <div class="result syncxhr"></div>
+        </section>
+        <section class="sample geolocation">
+          <h3>Geolocation</h3>
+          <button data-event-target="geolocation">run</button>
+          <label><input class="permission geolocation" type="checkbox" />Permission</label>
+          <div class="result geolocation"></div>
+        </section>
       </section>
       <section>
         <h2>サポートしているFeature</h2>
@@ -29,6 +39,7 @@
         <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy">Feature-Policy Header(MDN)</a></li>
         <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Feature_Policy/Using_Feature_Policy">Using Feature Policy(MDN)</a></li>
         <li><a href="https://developers.google.com/web/updates/2018/06/feature-policy">Introduction to Feature Policy</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API/Using_the_Permissions_API">Using the Permissions API(MDN)</a></li>
       </ul>
     </footer>
     <script type="module" src="main.js"></script>
