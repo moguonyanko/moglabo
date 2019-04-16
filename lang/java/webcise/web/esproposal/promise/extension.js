@@ -38,9 +38,10 @@ const listeners = {
   async loadImage(base) {
     const imgs = await loadSampleImage();
 
-    const w = 200, h = 200;
     const bitPromises = imgs.map(img => createImageBitmap(img));
     const bitmaps = await Promise.all(bitPromises);
+    
+    // 本来ならここでImageBitMapを加工したりする。
 
     const targetCanvas = base.querySelector('.outputimage');
     // 同一Canvasに対して一度でも先ににgetContextされているとtransferControlToOffscreenでエラーになる。
