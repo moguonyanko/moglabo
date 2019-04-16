@@ -50,12 +50,24 @@
           <button class="runner">run</button>
         </div>
       </section>
+      <section class="extension allsettled">
+        <h2>Promise.allSetteled</h2>
+        <button data-event-target="loadImage" class="loader">load image</button>
+        <div class="canvascontainer">
+          <canvas class="outputimage" width="500" height="500"></canvas>
+        </div>
+      </section>
     </main>
     <aside>
       <p>参考サイト</p>
-      <a href="http://2ality.com/2017/07/promise-prototype-finally.html">ES proposal: Promise.prototype.finally()</a>
+      <ul>
+        <li><a href="http://2ality.com/2017/07/promise-prototype-finally.html">ES proposal: Promise.prototype.finally()</a></li>
+        <li><a href="https://github.com/tc39/proposal-promise-allSettled">tc39/proposal-promise-allSettled</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas">Offscreen​Canvas(MDN)</a></li>
+      </ul>
     </aside>
     <script src="promise.js"></script>
     <script src="handle.js" type="module"></script>
+    <script src="extension.js" type="module"></script>
   </body>
 </html>

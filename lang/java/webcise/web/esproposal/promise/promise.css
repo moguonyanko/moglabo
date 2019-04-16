@@ -13,3 +13,15 @@ main {
     background-color: whitesmoke;
     overflow-y: scroll;
 }
+
+.canvascontainer {
+    width: max-content;
+    height: max-content;
+    border: solid 1px lightgray;
+}
+
+button.loader {
+    width: 10em;
+    height: 2em;
+    font-size: 16px;
+}
