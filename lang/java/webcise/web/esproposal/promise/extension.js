@@ -10,7 +10,7 @@ const allSetteled = async ({promises, allResults}) => {
       // https://tc39.github.io/proposal-promise-allSettled/
       if (result.status === 'fulfilled') {
         const response = result.value;
-        return response.status < 400;
+        return response.ok;
       } else {
         return false;
       }
