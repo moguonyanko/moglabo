@@ -1,31 +1,19 @@
 /**
- * 参考:
- * https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/
+ * @fileOverview WebXam調査用メインサーバ
+ * 参考: https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction/
+ * @todo
+ * JSON以外のレスポンス対応
  */
 
 const http = require('http');
-
-// Servlet的な関数群
-const service = {
-  hello() {
-    return {
-      value: 'Hello Node!'
-    };
-  }
-};
+const service = require('./service');
 
 const handleError = err => console.error(err);
 
 http.createServer((request, response) => {
-  const {headers, method, url} = request;
-  
-  let body = {};
-  
-  const paths = url.split('/service/');
-  if (paths.length > 1 && typeof service[paths[1]] === 'function') {
-    body = service[paths[1]]();
-  }
-  
+  const srv = service.getService(request);
+  const body = srv();
+
   request.on('error', handleError).on('data', chunk => {
     // このブロックがないとレスポンスが返されずブロックされたままになる。
     // バイナリを返す時以外は何もしなくてよい？
