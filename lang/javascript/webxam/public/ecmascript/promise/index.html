@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>Promise</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="exam.css" />
   </head>
   <body>
     <header>
@@ -12,8 +13,11 @@
     </header>
     <main>
       <h2>Promise Examination</h2>
-      <section>
-        <h3>Promise functions</h3>
+      <section class="example">
+        <h3>Promise.resolve & Promise.all</h3>
+        <label>value<input class="resolve-value" type="text" value="Hello" /></label>
+        <button data-event-target="resolvePromise">run test</button>
+        <div class="output"></div>
       </section>
     </main>
     <script type="module" src="exam.js"></script>

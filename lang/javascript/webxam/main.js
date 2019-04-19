@@ -5,40 +5,41 @@
 
 const http = require('http');
 
-const hostname = '127.0.0.1';
-const port = 9292;
-
 // Servlet的な関数群
 const service = {
   hello() {
     return {
-      greeting: 'Hello World'
+      value: 'Hello Node!'
     };
   }
 };
 
-const server = http.createServer((request, response) => {
+const handleError = err => console.error(err);
+
+http.createServer((request, response) => {
   const {headers, method, url} = request;
   
-  let body = [];
+  let body = {};
   
-  request.on('error', (err) => {
-    console.error(err);
-  }).on('data', (chunk) => {
-    body.push(chunk);
+  const paths = url.split('/service/');
+  if (paths.length > 1 && typeof service[paths[1]] === 'function') {
+    body = service[paths[1]]();
+  }
+  
+  request.on('error', handleError).on('data', chunk => {
+    // このブロックがないとレスポンスが返されずブロックされたままになる。
+    // バイナリを返す時以外は何もしなくてよい？
+    //body.push(chunk);
   }).on('end', () => {
-    body = Buffer.concat(body).toString();
+    // バイナリを返す時に使う？
+    //body = Buffer.concat(body).toString();
 
-    response.on('error', (err) => {
-      console.error(err);
-    });
+    response.on('error', handleError);
 
     response.statusCode = 200;
     response.setHeader('Content-Type', 'application/json');
-
-    const responseBody = {headers, method, url, body};
-    response.write(JSON.stringify(responseBody));
+    response.write(JSON.stringify(body));
     response.end();
   });
 
-}).listen(port);
+}).listen(3000);
