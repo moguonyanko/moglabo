@@ -11,6 +11,15 @@ const doService = async url => {
   return json;
 };
 
+const loadImage = async path => {
+  const res = await fetch(path);
+  if (res.ok) {
+    return await res.blob();
+  } else {
+    throw new Error(`Failed loading image: ${res.statusText}`);
+  }
+};
+
 // DOM
 
 const funcs = {
@@ -25,6 +34,28 @@ const funcs = {
     const results = await Promise.all(ps);
     const output = root.querySelector('.output');
     output.innerHTML += results.join('<br />');
+  },
+  // 成功時も失敗時も同じ関数を呼び出す必要がある場合にfinallyは有効。
+  loadImageSuccess(root) {
+    const output = root.querySelector('.output');
+    loadImage('test.png').then(b => {
+      const img = new Image();
+      img.onload = () => {
+        output.appendChild(img);
+        URL.revokeObjectURL(img.src);
+      };
+      img.src = URL.createObjectURL(b);
+    }).finally(() => {
+      output.appendChild(document.createTextNode('SUCCESS!'));
+    });
+  },
+  loadImageFail(root) {
+    const output = root.querySelector('.output');
+    loadImage('notfound.png').catch(err => {
+      output.appendChild(document.createTextNode(err.message));
+    }).finally(() => {
+      output.appendChild(document.createTextNode('FAILED!'));
+    });
   }
 };
 
