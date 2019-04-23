@@ -11,8 +11,8 @@ const service = require('./service');
 const handleError = err => console.error(err);
 
 http.createServer((request, response) => {
-  const srv = service.getService(request);
-  const body = srv();
+  const srv = service.getService(request)();
+  const body = srv.result;
 
   request.on('error', handleError).on('data', chunk => {
     // このブロックがないとレスポンスが返されずブロックされたままになる。
@@ -25,8 +25,12 @@ http.createServer((request, response) => {
     response.on('error', handleError);
 
     response.statusCode = 200;
-    response.setHeader('Content-Type', 'application/json');
-    response.write(JSON.stringify(body));
+    response.setHeader('Content-Type', srv.contentType);
+    if (srv.contentType.includes('json')) {
+      response.write(JSON.stringify(body));
+    } else {
+      response.write(body);
+    }
     response.end();
   });
 

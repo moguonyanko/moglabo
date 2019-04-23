@@ -4,6 +4,13 @@
 
 exports.hello = () => {
   return {
-    value: 'Hello Node!'
+    get result() {
+      return {
+        value: 'Hello Node!'
+      }
+    },
+    get contentType() {
+      return 'application/json';
+    }
   };
 };
