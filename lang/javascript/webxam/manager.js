@@ -1,5 +1,5 @@
 /**
- * @fileOverview サーブレット的な関数群を提供するスクリプト
+ * @fileOverview サーブレット的な関数群を管理するスクリプト
  */
 
 class NotFoundServiceError extends Error {
@@ -12,10 +12,10 @@ exports.getService = ({url}) => {
   const basePath = '/service/';
   const paths = url.split(basePath);
   if (paths.length > 1) {
-    const serviceName = [paths[1]],
-        service = require(`.${basePath}${serviceName}`)[serviceName];
-    if (typeof service === 'function') {
-      return service();
+    const name = [paths[1]];
+    const service = require(`.${basePath}${name}`);
+    if (typeof service[name] === 'object') {
+      return service[name];
     } else {
       throw new NotFoundServiceError(url);
     }
