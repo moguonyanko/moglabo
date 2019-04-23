@@ -6,12 +6,12 @@
  */
 
 const http = require('http');
-const service = require('./service');
+const manager = require('./manager');
 
 const handleError = err => console.error(err);
 
 http.createServer((request, response) => {
-  const srv = service.getService(request)();
+  const srv = manager.getService(request);
   const body = srv.result;
 
   request.on('error', handleError).on('data', chunk => {

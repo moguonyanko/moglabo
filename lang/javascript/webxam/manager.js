@@ -2,7 +2,7 @@
  * @fileOverview サーブレット的な関数群を提供するスクリプト
  */
 
-const greeting = require('./hello');
+const greeting = require('./service/hello');
 
 const service = {
   hello: greeting.hello
@@ -21,7 +21,7 @@ class NotFoundServiceError extends Error {
 exports.getService = ({url}) => {
   const paths = url.split('/service/');
   if (paths.length > 1 && typeof service[paths[1]] === 'function') {
-    return service[paths[1]];
+    return service[paths[1]]();
   } else {
     throw new NotFoundServiceError(url);
   }
