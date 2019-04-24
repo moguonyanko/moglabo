@@ -4,8 +4,16 @@
 const fs = require('fs');
 
 exports.loadTestImage = {
-  async getResult() {
-    return await fs.readFileSync('./image/testimage.png');
+  getResult() {
+    return new Promise((resolve, reject) => {
+      fs.readFile('./image/testimage.png', (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
   },
   getContentType() {
     return 'image/png';
