@@ -1,5 +1,5 @@
 /**
- * Promise調査用スクリプト
+ * @fileOverview Promise調査用スクリプト
  */
 
 const doService = async url => {

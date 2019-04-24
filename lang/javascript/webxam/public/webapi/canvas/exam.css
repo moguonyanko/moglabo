@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+h1 {
+    text-align: center;
+}
+
+canvas {
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+    border: solid 1px lightgray;
+    background-color: mintcream;
+}

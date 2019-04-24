@@ -3,12 +3,12 @@
  */
 
 exports.hello = {
-  get result() {
+  getResult() {
     return {
       value: 'Hello Node!'
     }
   },
-  get contentType() {
+  getContentType() {
     return 'application/json';
   }
 };
