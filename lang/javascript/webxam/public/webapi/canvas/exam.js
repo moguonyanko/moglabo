@@ -33,7 +33,7 @@ const listeners = {
       image.onload = () => {
         URL.revokeObjectURL(url);
         const bitmap = toBitmapImage(image);
-        const canvas = root.querySelector('canvas.output');
+        const canvas = root.querySelector('.output');
         canvas.getContext('bitmaprenderer').transferFromImageBitmap(bitmap);
       };
       image.src = url;
@@ -41,11 +41,30 @@ const listeners = {
       alert(err.message);
       throw err;
     }
+  },
+  async convertToBlob(root) {
+    const canvas = new OffscreenCanvas(300, 300);
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'red';
+    ctx.fillRect(canvas.width / 2, canvas.height / 2, 100, 80);
+    const blob = await canvas.convertToBlob();
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const output = root.querySelector('.output');
+      output.innerHTML = '';
+      output.appendChild(img);
+    };
+    img.src = url;
   }
 };
 
+const inits = {
+};
+
 const addListener = () => {
-  Array.from(document.querySelectorAll('section.example')).forEach(el => {
+  Array.from(document.querySelectorAll('.example')).forEach(el => {
     el.addEventListener('pointerup', async event => {
       const root = event.target.dataset.eventTarget;
       if (root) {
@@ -58,4 +77,5 @@ const addListener = () => {
 
 window.addEventListener('DOMContentLoaded', () => {
   addListener();
+  Object.values(inits).forEach(f => f());
 });
