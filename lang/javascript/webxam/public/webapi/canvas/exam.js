@@ -21,16 +21,27 @@ const toBitmapImage = image => {
 
 const getRandomRGB = () => {
   return [
-    parseInt(Math.random() * 255), 
-    parseInt(Math.random() * 255), 
+    parseInt(Math.random() * 255),
+    parseInt(Math.random() * 255),
     parseInt(Math.random() * 255)
   ];
 };
 
 const getRandomRGBA = () => {
   const values = getRandomRGB();
-  values.push(Math.random());
+  values.push(Math.random().toFixed(1));
   return values;
+};
+
+// BlobURLを引数に取ることでもWorkerを生成することはできる。
+const createDrawWorkerURL = async () => {
+  const response = await fetch(`drawworker.js`);
+  if (response.ok) {
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
+  } else {
+    throw new Error(`Cannot create worker: ${response.statusText}`);
+  }
 };
 
 // DOM
@@ -48,8 +59,14 @@ const blobToImage = blob => {
   });
 };
 
-let drawWorkers = [], 
-    drawingOffscreen;
+const fitCanvasSize = canvas => {
+  const style = getComputedStyle(canvas);
+  // canvas要素のサイズを設定しないと描画された図形が意図したサイズと異なってしまう。
+  canvas.width = parseInt(style.getPropertyValue('width'));
+  canvas.height = parseInt(style.getPropertyValue('height'));
+};
+
+let drawWorkers = [];
 
 const listeners = {
   /**
@@ -88,44 +105,36 @@ const listeners = {
     };
     img.src = url;
   },
-  transferControlToOffscreen(root) {
-    if (!drawingOffscreen) {
-      const canvasElement = root.querySelector('.output');
-      const style = getComputedStyle(canvasElement);
-      // canvas要素のサイズを設定しないと描画された図形が意図したサイズと異なってしまう。
-      canvasElement.width = parseInt(style.getPropertyValue('width'));
-      canvasElement.height = parseInt(style.getPropertyValue('height'));
-      drawingOffscreen = canvasElement.transferControlToOffscreen();
+  async transferControlToOffscreen(root) {
+    if (drawWorkers.length > 0) {
+      this.stopControlToOffscreen(root);
     }
-    if (drawWorkers.length === 0) {
-      const workerSize = parseInt(root.querySelector('.workersize').value);
-      drawWorkers = new Array(workerSize)
-          .fill(new Worker('drawworker.js'))
-          .map(worker => {
-        worker.postMessage({
-          canvas: drawingOffscreen,
-          fillStyle: `rgba(${getRandomRGBA().join(',')})`
-        }, [drawingOffscreen]);
-        return worker;
-      });
-    }
-// messageをWorkerから受け取らなくてもWorkerの変更はcanvasに反映される。    
-//    worker.onmessage = async event => {
-//      // OffscreenCanvasにtoBlobは存在しない。
-//      //const blob = offscreen.toBlob();
-//    };
+    const canvas = root.querySelector('.output');
+    fitCanvasSize(canvas);
+    const array = new Array(parseInt(root.querySelector('.workersize').value));
+    const url = await createDrawWorkerURL();
+    drawWorkers = array.fill(url, 0, array.length).map(url => {
+      // 同じ名前のファイルからはどうしても1つしかWorkerが生成できない？
+      // blobURLでWorkerを生成した場合はたとえどれも同じBlobURLだったとしても
+      // newした数だけWorkerを生成できているようである。
+      const worker = new Worker(url);
+      worker.url = url;
+      const offscreen = canvas.cloneNode(true).transferControlToOffscreen();
+      const fillStyle = `rgba(${getRandomRGBA().join(',')})`;
+      const context = canvas.getContext('bitmaprenderer');
+      // 第2引数でOffscreenCanvasを渡さないとエラーになる。
+      worker.postMessage({canvas: offscreen, fillStyle}, [offscreen]);
+      worker.onmessage = event =>
+        context.transferFromImageBitmap(event.data);
+      return worker;
+    });
   },
   stopControlToOffscreen(root) {
-    if (drawWorkers.length > 0) {
-      drawWorkers.forEach(worker => worker.terminate());
-      drawWorkers = [];
-      drawingOffscreen = null;
-      // 同じcanvasに対しては1回しかtransferControlToOffscreenできないので
-      // 新しいcanvasに差し替える。
-      const oldCanvas = root.querySelector('.output'),
-          newCanvas = oldCanvas.cloneNode(true);
-      oldCanvas.parentNode.replaceChild(newCanvas, oldCanvas);
-    }
+    drawWorkers.forEach(worker => {
+      worker.terminate();
+      URL.revokeObjectURL(worker.url);
+    });
+    drawWorkers = [];
   }
 };
 

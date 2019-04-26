@@ -1,17 +1,25 @@
+const drawCircle = ({context, width, height}) => {
+  context.beginPath();
+  const r = 10 + parseInt(Math.random() * 50);
+  context.arc(Math.random() * width, Math.random() * height, r, 0, 2 * Math.PI);
+  context.fill();
+};
+
 globalThis.onmessage = event => {
   const {canvas, fillStyle} = event.data;
-  const w = canvas.width, h = canvas.height;
+  const width = canvas.width, height = canvas.height;
 
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = fillStyle;
+  const context = canvas.getContext('2d');
+  context.fillStyle = fillStyle;
   const render = time => {
-    ctx.clearRect(0, 0, w, h);
-    ctx.fillRect(Math.random() * w, Math.random() * h, 45, 45);
+    context.clearRect(0, 0, width, height);
+    drawCircle({context, width, height});
+    // WorkerからのpostMessageにOffscreenCanvasを直接渡すことはできない。
+    // 第2引数にOffscreenCanvasを指定してもダメ。ImageBitMapなら渡すことができる。
+    // 参考: https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm
+    globalThis.postMessage(canvas.transferToImageBitmap());
     requestAnimationFrame(render);
   };
-  
-  requestAnimationFrame(render);
 
-  // postMessageしなくてもcanvasへの変更はWorker呼び出し元のドキュメントに反映される。
-  //globalThis.postMessage('finish');
+  requestAnimationFrame(render);
 };
