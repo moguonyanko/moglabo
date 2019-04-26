@@ -16,15 +16,24 @@
         <h2>OffscreenCanvas</h2>
         <section class="example">
           <h3>transferToImageBitmap</h3>
-          <button data-event-target="drawTestImage">Draw Test Image</button>
+          <button data-event-target="transferToImageBitmap">run</button>
           <div>
             <canvas class="output"></canvas>
           </div>
         </section>
         <section class="example">
           <h3>convertToBlob</h3>
-          <button data-event-target="convertToBlob">Convert To Blob</button>
+          <button data-event-target="convertToBlob">run</button>
           <div class="output"></div>
+        </section>
+        <section class="example">
+          <h3>transferControlToOffscreen</h3>
+          <label>worker size<input class="workersize" type="number" min="1" max="20" value="1" /></label>
+          <button data-event-target="transferControlToOffscreen">run</button>
+          <button data-event-target="stopControlToOffscreen">stop</button>
+          <div>
+            <canvas class="output"></canvas>
+          </div>
         </section>
       </section>
     </main>

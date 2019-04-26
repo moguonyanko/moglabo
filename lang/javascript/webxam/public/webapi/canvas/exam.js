@@ -19,13 +19,43 @@ const toBitmapImage = image => {
   return bitmap;
 };
 
+const getRandomRGB = () => {
+  return [
+    parseInt(Math.random() * 255), 
+    parseInt(Math.random() * 255), 
+    parseInt(Math.random() * 255)
+  ];
+};
+
+const getRandomRGBA = () => {
+  const values = getRandomRGB();
+  values.push(Math.random());
+  return values;
+};
+
 // DOM
+
+const blobToImage = blob => {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve(img);
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+};
+
+let drawWorkers = [], 
+    drawingOffscreen;
 
 const listeners = {
   /**
    * OffscreenCanvasやサーバリクエストは全く不要だが振る舞いの調査のため行っている。
    */
-  async drawTestImage(root) {
+  async transferToImageBitmap(root) {
     try {
       const blob = await loadTestBlob();
       const url = URL.createObjectURL(blob);
@@ -57,6 +87,45 @@ const listeners = {
       output.appendChild(img);
     };
     img.src = url;
+  },
+  transferControlToOffscreen(root) {
+    if (!drawingOffscreen) {
+      const canvasElement = root.querySelector('.output');
+      const style = getComputedStyle(canvasElement);
+      // canvas要素のサイズを設定しないと描画された図形が意図したサイズと異なってしまう。
+      canvasElement.width = parseInt(style.getPropertyValue('width'));
+      canvasElement.height = parseInt(style.getPropertyValue('height'));
+      drawingOffscreen = canvasElement.transferControlToOffscreen();
+    }
+    if (drawWorkers.length === 0) {
+      const workerSize = parseInt(root.querySelector('.workersize').value);
+      drawWorkers = new Array(workerSize)
+          .fill(new Worker('drawworker.js'))
+          .map(worker => {
+        worker.postMessage({
+          canvas: drawingOffscreen,
+          fillStyle: `rgba(${getRandomRGBA().join(',')})`
+        }, [drawingOffscreen]);
+        return worker;
+      });
+    }
+// messageをWorkerから受け取らなくてもWorkerの変更はcanvasに反映される。    
+//    worker.onmessage = async event => {
+//      // OffscreenCanvasにtoBlobは存在しない。
+//      //const blob = offscreen.toBlob();
+//    };
+  },
+  stopControlToOffscreen(root) {
+    if (drawWorkers.length > 0) {
+      drawWorkers.forEach(worker => worker.terminate());
+      drawWorkers = [];
+      drawingOffscreen = null;
+      // 同じcanvasに対しては1回しかtransferControlToOffscreenできないので
+      // 新しいcanvasに差し替える。
+      const oldCanvas = root.querySelector('.output'),
+          newCanvas = oldCanvas.cloneNode(true);
+      oldCanvas.parentNode.replaceChild(newCanvas, oldCanvas);
+    }
   }
 };
 
