@@ -56,6 +56,21 @@ const funcs = {
     }).finally(() => {
       output.appendChild(document.createTextNode('FAILED!'));
     });
+  },
+  async allSettledPromises(root) {
+    const output = root.querySelector('.output');
+    const promises = [
+      fetch('notfound_members.json'),
+      fetch('members.json')
+    ];
+    const results = await Promise.allSettled(promises);
+    const successResponses = results.filter(r => r.status === 'fulfilled')
+                                    .map(r => r.value)
+                                    .filter(res => res.ok);
+    successResponses.forEach(async response => {
+      const json = await response.json();
+      output.innerHTML += `${JSON.stringify(json)}<br />`;
+    });                                
   }
 };
 
