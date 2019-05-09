@@ -1,6 +1,10 @@
 /**
  * @fileOverview テスト用画像をダウンロードするシンプルな関数
  */
+
+/*eslint no-undef: "error"*/
+/*eslint-env node*/
+
 const fs = require('fs');
 
 exports.loadTestImage = {

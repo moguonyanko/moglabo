@@ -5,6 +5,9 @@
  * JSON以外のレスポンス対応
  */
 
+/*eslint no-undef: "error"*/
+/*eslint-env node*/
+
 const http = require('http');
 const manager = require('./manager');
 
