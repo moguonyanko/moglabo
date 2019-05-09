@@ -64,6 +64,8 @@ const funcs = {
       fetch('members.json')
     ];
     const results = await Promise.allSettled(promises);
+    // HTTPエラーが発生した場合でもstatusはfulfilledになってしまう。
+    // 従ってResponseのokプロパティの確認は必須である。
     const successResponses = results.filter(r => r.status === 'fulfilled')
                                     .map(r => r.value)
                                     .filter(res => res.ok);
