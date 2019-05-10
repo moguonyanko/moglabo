@@ -15,41 +15,50 @@ const isTextResponse = contentType => {
     contentType.includes('xml');
 };
 
-const createBody = async (service, response) => {
+// request.on('error', () => {}); に該当する処理のつもり
+const handleBodyError = (err, response) => {
+  console.error(err);
+  response.statusMessage = err.message;
+  if (!isNaN(parseInt(err.statusCode))) {
+    response.statusCode = err.statusCode;
+  } else {
+    response.statusCode = 500;
+  }
+  response.end();
+};
+
+const handleNotServiceError = (err, response) => {
+  console.error(err);
+  if (err instanceof manager.NotFoundServiceError) {
+    response.statusCode = 404;
+  } else {
+    response.statusCode = 503;
+  }
+  response.end();
+};
+
+http.createServer(async (request, response) => {
+  let service;
+  try {
+    service = manager.getService(request);
+  } catch (err) {
+    handleNotServiceError(err, response);
+    return;
+  }
+
   let body;
   try {
     body = await service.getResult();
   } catch (err) {
-    // request.on('error', () => {}); に該当する処理のつもり
-    console.error(err);
-    response.statusMessage = err.message;
-    if (!isNaN(parseInt(err.statusCode))) {
-      response.statusCode = err.statusCode;
-    } else {
-      response.statusCode = 502;
-    }
-    throw err;
-  }
-  return body;
-};
-
-http.createServer(async (request, response) => {
-  const service = manager.getService(request);
-  let body;
-  try {
-    body = await createBody(service, response);
-  } catch (err) {
-    response.end();
-    // returnしないとエラー時にサーバが終了する。
+    handleBodyError(err, response);
     return;
   }
-  const contentType = service.getContentType();
 
   response.on('error', err => console.error(err));
 
-  request.on('data', chunk => {
-    // このブロックがないとレスポンスが返されずブロックされたままになる。
-  }).on('end', () => {
+  // dataイベントの処理が記述されていないとレスポンスが返されずブロックされたままになる。
+  request.on('data', chunk => chunk).on('end', () => {
+    const contentType = service.getContentType();
     response.statusCode = 200;
     response.setHeader('Content-Type', contentType);
     if (isTextResponse(contentType)) {

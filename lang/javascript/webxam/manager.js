@@ -26,3 +26,5 @@ exports.getService = ({ url }) => {
     throw new NotFoundServiceError(url);
   }
 };
+
+exports.NotFoundServiceError = NotFoundServiceError;
