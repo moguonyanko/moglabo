@@ -27,7 +27,7 @@ const handleBodyError = (err, response) => {
   response.end();
 };
 
-const handleNotServiceError = (err, response) => {
+const handleServiceError = (err, response) => {
   console.error(err);
   if (err instanceof manager.NotFoundServiceError) {
     response.statusCode = 404;
@@ -42,7 +42,7 @@ http.createServer(async (request, response) => {
   try {
     service = manager.getService(request);
   } catch (err) {
-    handleNotServiceError(err, response);
+    handleServiceError(err, response);
     return;
   }
 
