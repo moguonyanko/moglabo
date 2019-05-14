@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Lazy Loading</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../common.css" />
+    <link rel="stylesheet" href="exam.css" />
+</head>
+
+<body>
+    <header>
+        <a href="../../">home</a>
+        <h1>Lazy Loading</h1>
+    </header>
+    <main>
+        <section class="lazyloadingimage">
+            <h2>Lazy Loading Image</h2>
+            <p>img要素のloading属性</p>
+            <div class="container">
+                <div class="subcontainer">
+                    <p>lazy</p>
+                    <img src="../../image/sampleblock.png" loading="lazy" alt="sample lazy image" />
+                </div>
+                <div class="subcontainer">
+                    <p>eager</p>
+                    <img src="../../image/sampleblock.png" loading="eager" alt="sample lazy image" />
+                </div>
+                <div class="subcontainer">
+                    <p>auto</p>
+                    <img src="../../image/sampleblock.png" loading="auto" alt="sample lazy image" />
+                </div>
+            </div>
+        </section>
+        <section>
+            <h2>Lazy Loading IFrame</h2>
+            <iframe src="." loading="lazy"></iframe>
+        </section>
+    </main>
+    <footer>
+        <p>参考サイト</p>
+        <ul>
+            <li><a href="https://blog.chromium.org/">Chromium Blog</a></li>
+            <li><a href="https://addyosmani.com/blog/lazy-loading/">Native image lazy-loading for the web!</a></li>
+        </ul>
+    </footer>
+    <script src="exam.js" type="module"></script>
+</body>
+
+</html>
