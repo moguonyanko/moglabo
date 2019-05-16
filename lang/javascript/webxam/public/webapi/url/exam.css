@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+button {
+    width: 20em;
+}
+
+.example {
+    display: flex;
+    flex-direction: column;
+}

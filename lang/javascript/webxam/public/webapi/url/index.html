@@ -6,6 +6,7 @@
     <title>URL</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../../common.css" />
+    <link rel="stylesheet" href="exam.css" />
 </head>
 
 <body>
@@ -14,15 +15,24 @@
         <h1>URL</h1>
     </header>
     <main>
-        <section class="example echo-query">
-            <h2>Reading Query by Node</h2>
+        <section class="example">
+            <h2>Reading Query by Node.js</h2>
             <button data-event-target="echoQuery">echo query</button>
+            <div class="output"></div>
+        </section>
+        <section class="example">
+            <h2>URLコンストラクタ</h2>
+            <p>相対パスを使ってURLコンストラクタを呼び出した場合の動作を調査する。</p>
+            <label>相対パス<input class="param" data-param-name="url" type="text" value="/webxam/index.html" /></label>
+            <label>基点(オリジン)<input class="param" data-param-name="base" type="text" value="https://localhost" /></label>
+            <button data-event-target="constructUrl">run</button>
             <div class="output"></div>
         </section>
     </main>
     <footer>
         <p>参考サイト</p>
         <ul>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/URL">URL(MDN)</a></li>
             <li><a href="https://nodejs.org/dist/latest-v12.x/docs/api/">Node.js v12.2.0 Documentation</a></li>
             <li><a href="https://www.w3schools.com/nodejs/nodejs_http.asp">w3schools</a></li>
         </ul>
