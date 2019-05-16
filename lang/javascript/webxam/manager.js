@@ -5,6 +5,11 @@
 /*eslint no-undef: "error"*/
 /*eslint-env node*/
 
+// URLコンストラクタ呼び出しでエラーを発生させないためだけのオリジン
+// スキームやホストがURLに含まれていないとエラーになる。ブラウザ側のURLでも同様。
+// リクエストからオリジンを取得する方法があれば要らないはずである。
+const dummyOrigin = 'http://localhost';
+
 class NotFoundServiceError extends Error {
   constructor(url) {
     super(`Not Found Service: ${url}`);
@@ -13,7 +18,8 @@ class NotFoundServiceError extends Error {
 
 exports.getService = ({ url }) => {
   const basePath = '/service/';
-  const paths = url.split(basePath);
+  const u = new URL(url, dummyOrigin);
+  const paths = u.pathname.split(basePath);
   if (paths.length > 1) {
     const name = [paths[1]];
     const service = require(`.${basePath}${name}`);

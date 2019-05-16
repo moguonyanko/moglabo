@@ -48,7 +48,7 @@ http.createServer(async (request, response) => {
 
   let body;
   try {
-    body = await service.getResult();
+    body = await service.getResult(request);
   } catch (err) {
     handleBodyError(err, response);
     return;
