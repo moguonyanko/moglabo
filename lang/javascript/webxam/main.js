@@ -40,7 +40,7 @@ const handleServiceError = (err, response) => {
 http.createServer(async (request, response) => {
   let service;
   try {
-    service = manager.getService(request);
+    service = manager.loadService(request);
   } catch (err) {
     handleServiceError(err, response);
     return;
@@ -48,7 +48,7 @@ http.createServer(async (request, response) => {
 
   let body;
   try {
-    body = await service.getResult(request);
+    body = await service.result;
   } catch (err) {
     handleBodyError(err, response);
     return;
@@ -58,7 +58,7 @@ http.createServer(async (request, response) => {
 
   // dataイベントの処理が記述されていないとレスポンスが返されずブロックされたままになる。
   request.on('data', chunk => chunk).on('end', () => {
-    const contentType = service.getContentType();
+    const contentType = service.contentType;
     response.statusCode = 200;
     response.setHeader('Content-Type', contentType);
     if (isTextResponse(contentType)) {

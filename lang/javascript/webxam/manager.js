@@ -16,20 +16,20 @@ class NotFoundServiceError extends Error {
   }
 }
 
-exports.getService = ({ url }) => {
+exports.loadService = request => {
   const basePath = '/service/';
-  const u = new URL(url, dummyOrigin);
+  const u = new URL(request.url, dummyOrigin);
   const paths = u.pathname.split(basePath);
   if (paths.length > 1) {
     const name = [paths[1]];
-    const service = require(`.${basePath}${name}`);
-    if (typeof service[name] === 'object') {
-      return service[name];
+    const Service = require(`.${basePath}${name}`);
+    if (typeof Service === 'function') {
+      return new Service(request);
     } else {
-      throw new NotFoundServiceError(url);
+      throw new NotFoundServiceError(request.url);
     }
   } else {
-    throw new NotFoundServiceError(url);
+    throw new NotFoundServiceError(request.url);
   }
 };
 

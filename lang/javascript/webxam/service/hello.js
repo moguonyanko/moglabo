@@ -5,13 +5,20 @@
 /*eslint no-undef: "error"*/
 /*eslint-env node*/
 
-exports.hello = {
-  getResult() {
+class Hello {
+  constructor(request) {
+    this.request = request;
+  }
+
+  get result() {
     return {
       value: 'Hello Node!'
     }
-  },
-  getContentType() {
+  }
+
+  get contentType() {
     return 'application/json';
   }
-};
+}
+
+module.exports = Hello;

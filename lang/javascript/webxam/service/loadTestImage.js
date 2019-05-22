@@ -7,8 +7,12 @@
 
 const fs = require('fs');
 
-exports.loadTestImage = {
-  getResult() {
+class TestImageLoader {
+  constructor(request) {
+    this.request = request;
+  }
+
+  get result() {
     return new Promise((resolve, reject) => {
       fs.readFile('./image/testimage.png', (err, data) => {
         if (err) {
@@ -18,8 +22,11 @@ exports.loadTestImage = {
         }
       });
     });
-  },
-  getContentType() {
+  }
+
+  get contentType() {
     return 'image/png';
   }
-};
+}
+
+module.exports = TestImageLoader;
