@@ -14,9 +14,13 @@ class NotFoundServiceError extends Error {
   constructor(url) {
     super(`Not Found Service: ${url}`);
   }
+
+  get statusCode() {
+    return 404;
+  }
 }
 
-exports.loadService = request => {
+module.exports = request => {
   const basePath = '/service/';
   const u = new URL(request.url, dummyOrigin);
   const paths = u.pathname.split(basePath);
@@ -32,5 +36,3 @@ exports.loadService = request => {
     throw new NotFoundServiceError(request.url);
   }
 };
-
-exports.NotFoundServiceError = NotFoundServiceError;

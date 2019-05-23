@@ -10,7 +10,9 @@
   ],
   "author": "moguonyanko",
   "contributors": [],
-  "dependencies": {},
+  "dependencies": {
+    "chance": "^1.0.18"
+  },
   "scripts": {
     "start": "node main.js"
   },

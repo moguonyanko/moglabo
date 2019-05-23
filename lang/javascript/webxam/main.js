@@ -7,66 +7,31 @@
 /*eslint-env node*/
 
 const http = require('http');
-const manager = require('./manager');
-
-const isTextResponse = contentType => {
-  return contentType.includes('text') ||
-    contentType.includes('json') ||
-    contentType.includes('xml');
-};
+const serviceLoader = require('./serviceLoader');
 
 // request.on('error', () => {}); に該当する処理のつもり
-const handleBodyError = (err, response) => {
-  console.error(err);
-  response.statusMessage = err.message;
-  if (!isNaN(parseInt(err.statusCode))) {
-    response.statusCode = err.statusCode;
+const handleError = ({error, response}) => {
+  console.error(error);
+  response.statusMessage = error.message;
+  if (!isNaN(parseInt(error.statusCode))) {
+    response.statusCode = error.statusCode;
   } else {
     response.statusCode = 500;
   }
-  response.end();
-};
-
-const handleServiceError = (err, response) => {
-  console.error(err);
-  if (err instanceof manager.NotFoundServiceError) {
-    response.statusCode = 404;
-  } else {
-    response.statusCode = 503;
-  }
-  response.end();
 };
 
 http.createServer(async (request, response) => {
-  let service;
-  try {
-    service = manager.loadService(request);
-  } catch (err) {
-    handleServiceError(err, response);
-    return;
-  }
-
-  let body;
-  try {
-    body = await service.result;
-  } catch (err) {
-    handleBodyError(err, response);
-    return;
-  }
-
   response.on('error', err => console.error(err));
 
-  // dataイベントの処理が記述されていないとレスポンスが返されずブロックされたままになる。
-  request.on('data', chunk => chunk).on('end', () => {
-    const contentType = service.contentType;
+  try {
+    const service = serviceLoader(request);
+    response.setHeader('Content-Type', service.contentType);
+    await service.execute({ request, response });
     response.statusCode = 200;
-    response.setHeader('Content-Type', contentType);
-    if (isTextResponse(contentType)) {
-      response.write(JSON.stringify(body));
-    } else {
-      response.write(body);
-    }
+  } catch (error) {
+    handleError({error, response});
+  } finally {
     response.end();
-  });
+  }
 
 }).listen(3000);

@@ -5,22 +5,21 @@
 /*eslint no-undef: "error"*/
 /*eslint-env node*/
 
+const url = require('url');
+
 class EchoQuery {
-    constructor(request) {
-        this.request = request;
+    constructor() {
+        this.contentType = 'application/json';
     }
 
-    get result() {
-        return {
+    execute({ request, response }) {
+        const result = {
             // url.parseは古いAPIのようである。
             // しかし同等の結果を同等の手順で得られるAPIが見つからない。
             // https://nodejs.org/dist/latest-v12.x/docs/api/url.html
-            value: require('url').parse(this.request.url, true).search
-        }
-    }
-
-    get contentType() {
-        return 'application/json';
+            value: url.parse(request.url, true).search
+        };
+        response.write(JSON.stringify(result));
     }
 }
 

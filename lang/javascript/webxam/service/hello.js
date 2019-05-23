@@ -6,18 +6,15 @@
 /*eslint-env node*/
 
 class Hello {
-  constructor(request) {
-    this.request = request;
+  constructor() {
+    this.contentType = 'application/json';
   }
 
-  get result() {
-    return {
+  execute({ response }) {
+    const json = {
       value: 'Hello Node!'
-    }
-  }
-
-  get contentType() {
-    return 'application/json';
+    };
+    response.write(JSON.stringify(json));
   }
 }
 

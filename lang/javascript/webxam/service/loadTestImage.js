@@ -8,12 +8,12 @@
 const fs = require('fs');
 
 class TestImageLoader {
-  constructor(request) {
-    this.request = request;
+  constructor() {
+    this.contentType = 'image/png';
   }
 
-  get result() {
-    return new Promise((resolve, reject) => {
+  async execute({ response }) {
+    const promise = new Promise((resolve, reject) => {
       fs.readFile('./image/testimage.png', (err, data) => {
         if (err) {
           reject(err);
@@ -22,10 +22,8 @@ class TestImageLoader {
         }
       });
     });
-  }
-
-  get contentType() {
-    return 'image/png';
+    const img = await promise;
+    response.write(img);
   }
 }
 
