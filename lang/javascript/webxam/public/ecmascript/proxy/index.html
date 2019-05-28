@@ -15,11 +15,20 @@
     </header>
     <main>
         <section class="example">
-            <h2>仮想的な配列</h2>
+            <h2>hasによる要素チェック</h2>
             <button data-event-target="createArray">create</button>
             <label>base<input type="number" class="base" value="1" min="1" max="20" /></label>
             <label>test value<input type="number" data-event-target="testValue" value="1" min="1" max="100"></label>
             <div class="output"></div>
+        </section>
+        <section class=example>
+            <h2>constructによるインスタンス生成調査</h2>
+            <div class="container">
+                <label><input type="radio" data-event-target="checkConstruction" name="creationType" value="reflect" checked />Reflect.construct</label>
+                <label><input type="radio" data-event-target="checkConstruction" name="creationType" value="object" />Object.create</label>
+                <label><input type="radio" data-event-target="checkConstruction" name="creationType" value="normal" />Normal</label>
+            </div>
+            <div class=output></div>
         </section>
     </main>
     <footer>
