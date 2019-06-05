@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Geolocation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../common.css" />
+    <link rel="stylesheet" href="exam.css" />
+  </head>
+  <body>
+    <header>
+        <a href="../../">home</a>
+        <h1>Geolocation</h1>
+    </header>
+    <main>
+        <section class="example">
+            <h2>現在位置取得</h2>
+            <div class="container">
+                <label><input class="param" data-param-type="enableHighAccuracy" type="checkbox" checked />高精度</label>
+                <label>タイムアウト(秒)<input class="param" data-param-type="timeout" type="number" value="5" min="1" max="20" /></label>
+                <label>キャッシュ有効時間(秒)<input class="param" data-param-type="maximumAge" type="number" value="0" min="0" max="60" /></label>
+            </div>
+            <button data-event-listener="getCurrentPosition">get</button>
+            <div class="output"></div>
+        </section>
+        <section>
+            <h2>移動のエミュレート</h2>
+            <p>作業中…</p>
+        </section>
+    </main>
+    <footer>
+      <p>参考サイト</p>
+      <ul>
+          <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API">Geolocation API(MDN)          </a></li>
+      </ul>
+    </footer>
+    <script src="exam.js" type="module"></script>
+  </body>
+</html>
