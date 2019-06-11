@@ -2,7 +2,7 @@
  * @fileoverview Proxy調査用スクリプト
  */
 
-const traceNewInstance = ({klass, onTrace}) => {
+const traceNewInstance = ({ klass, onTrace }) => {
     const handler = {
         construct(target, args, newTarget) {
             if (typeof onTrace === 'function') {
@@ -16,17 +16,17 @@ const traceNewInstance = ({klass, onTrace}) => {
     return new Proxy(klass, handler);
 };
 
-function Sample() {}
+function Sample() { }
 
 // classで宣言するとSample.applyがエラーになる。
 Sample.prototype.toString = () => 'This is Sample class';
 
-function Other() {}
+function Other() { }
 
 Other.prototype.toString = () => 'This is Other class';
 
-const createInstance = ({type, onTrace}) => {
-    const P = traceNewInstance({klass: Sample, onTrace});
+const createInstance = ({ type, onTrace }) => {
+    const P = traceNewInstance({ klass: Sample, onTrace });
     const sampleArgs = ['Hello', 123, true];
     if (type === 'reflect') {
         return Reflect.construct(P, sampleArgs, Other);
@@ -54,6 +54,25 @@ const createVirtualMultipleArray = n => {
         }
     };
     return new Proxy([], handler);
+};
+
+const overrideOwnKeys = (obj, keys = []) => {
+    const proxy = new Proxy(obj, {
+        ownKeys(target) {
+            // 配列あるいは配列のようなオブジェクトを戻り値にしないと実行時エラーとなる。
+            return Reflect.ownKeys(target).concat(keys);
+        }
+    });
+    return proxy;
+};
+
+const runTest = () => {
+    const obj = {
+        name: 'Taro',
+        age: 65
+    };
+    const p = overrideOwnKeys(obj, ['favorites']);
+    console.log(`${Object.keys(p)}`);
 };
 
 // DOM 
@@ -84,8 +103,29 @@ const listeners = {
             const log = `Trapped: ${target.name}, ${args.join(',')}, ${newTarget.name}<br />`;
             output.innerHTML += log;
         };
-        const instance = createInstance({type, onTrace});
+        const instance = createInstance({ type, onTrace });
         output.innerHTML += `${instance.toString()}<br />`;
+    },
+    trapKeys(root) {
+        const output = root.querySelector('.output');
+        const exProps = root.querySelector('.extends-property').value
+            .split(',')
+            .map(p => p.trim());
+        const sampleObj = {
+            originalName: 'My Object',
+            originalFunc: () => { return 1; },
+            [Symbol('password')]: 'secret'
+        };
+        const obj = overrideOwnKeys(sampleObj, exProps);
+        // Object.keysはProxy.ownKeysでトラップされるが実際の戻り値には反映されない。
+        output.innerHTML =
+            `Object.keys -> ${Object.keys(obj).join(',')}<br />`;
+        output.innerHTML +=
+            `Object.getOwnPropertyNames -> ${Object.getOwnPropertyNames(obj).join(',')}<br />`;
+        output.innerHTML +=
+            `Object.getOwnPropertySymbols -> ${Object.getOwnPropertySymbols(obj).map(s => s.toString()).join(',')}<br />`;
+        output.innerHTML +=
+            `Reflect.ownKeys -> ${Reflect.ownKeys(obj).map(s => s.toString()).join(',')}<br />`;
     }
 };
 
@@ -111,5 +151,7 @@ const addListener = () => {
 };
 
 window.addEventListener('DOMContentLoaded', () => {
+    runTest();
+
     addListener();
 });

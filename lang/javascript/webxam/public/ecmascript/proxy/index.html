@@ -6,6 +6,7 @@
     <title>Proxy</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../../common.css" />
+    <link rel="stylesheet" href="exam.css" />
 </head>
 
 <body>
@@ -29,6 +30,18 @@
                 <label><input type="radio" data-event-target="checkConstruction" name="creationType" value="normal" />Normal</label>
             </div>
             <div class=output></div>
+        </section>
+        <section class="example">
+            <h2>ownKeysによるプロパティ列挙と拡張</h2>
+            <p>
+                Proxy.ownKeysによって拡張されたプロパティも取得したい場合は
+                Object.keysではなくObject.getOwnPropertyNamesを使用する。
+            </p>
+            <div class="container">
+                <label>追加プロパティ名<input class="extends-property" type="text" value="favorites,score" /></label>
+                <button data-event-target="trapKeys">run</button>
+            </div>
+            <div class="output"></div>
         </section>
     </main>
     <footer>
