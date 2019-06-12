@@ -89,20 +89,37 @@ const createRevocable = () => {
 };
 
 // Normal
-// const fibonacci = n => {
-//     if (n <= 1) return n;
-//     return fibonacci(n - 1) + fibonacci(n - 2);
-// };
+const fibonacci = n => {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+};
 
 // Memo
-const memo = {};
-const fibMemo = n => {
+const fibMemo = (n, memo = {}) => {
     if (n <= 1) return n;
     if (n in memo) {
         return memo[n];
     }
-    memo[n] = fibMemo(n - 1) + fibMemo(n - 2);
+    memo[n] = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
     return memo[n];
+};
+
+const fib = {
+    getValue(n) {
+        return fibonacci(n);
+    }
+};
+
+const memoizeFib = () => {
+    return new Proxy(fib, {
+        get(target, name) {
+            if (name === 'getValue') {
+                return n => fibMemo(n);
+            } else {
+                return target[name];
+            }
+        }
+    });
 };
 
 // Memo with Proxy
@@ -212,6 +229,18 @@ const listeners = {
         const proxy = createFibonacciProxy();
         const result = proxy[n];
         output.innerHTML = `n = ${n}, fibonacci = ${result}`;
+    },
+    getFibonacciValue(root) {
+        const output = root.querySelector('.output'),
+            n = parseInt(root.querySelector('.fibnumber').value),
+            useProxy = root.querySelector('.use-proxy').checked;
+        if (isNaN(n)) {
+            output.innerHTML = `n is not number`;
+            return;
+        }
+        const f = useProxy ? memoizeFib() : fib;
+        const result = f.getValue(n);
+        output.innerHTML += `n = ${n}, fibonacci = ${result}<br />`;
     }
 };
 
