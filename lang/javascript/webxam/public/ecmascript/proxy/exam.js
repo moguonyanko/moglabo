@@ -66,16 +66,44 @@ const overrideOwnKeys = (obj, keys = []) => {
     return proxy;
 };
 
-const runTest = () => {
-    const obj = {
-        name: 'Taro',
-        age: 65
+const createRevocable = () => {
+    const target = {
+        greeting() {
+            return 'Hello';
+        }
     };
-    const p = overrideOwnKeys(obj, ['favorites']);
-    console.log(`${Object.keys(p)}`);
+    const handler = {
+        get(target, name) {
+            if (name === 'greeting') {
+                return () => 'こんにちは';
+            } else {
+                if (typeof target[name] === 'function') {
+                    return target[name]();
+                } else {
+                    return target[name];
+                }
+            }
+        }
+    };
+    return Proxy.revocable(target, handler);
+};
+
+const runTest = () => {
+    const rev = createRevocable();
+    console.log(rev);
+    const p = rev.proxy;
+    console.log(p.greeting());
+    rev.revoke();
+    try {
+        console.log(p.greeting());
+    } catch (err) {
+        console.info(err);
+    }
 };
 
 // DOM 
+
+let revokable;
 
 const listeners = {
     createArray(root) {
@@ -126,6 +154,24 @@ const listeners = {
             `Object.getOwnPropertySymbols -> ${Object.getOwnPropertySymbols(obj).map(s => s.toString()).join(',')}<br />`;
         output.innerHTML +=
             `Reflect.ownKeys -> ${Reflect.ownKeys(obj).map(s => s.toString()).join(',')}<br />`;
+    },
+    runRevocableProxy(root, target) {
+        const output = root.querySelector('.output');
+        if (target.hasAttribute('data-create-proxy')) {
+            if (!revokable) {
+                output.innerHTML = '';
+                revokable = createRevocable();
+            }
+            const p = revokable.proxy;
+            try {
+                output.innerHTML += `${p.greeting()}<br />`; 
+            } catch (err) {
+                output.innerHTML += `${err.message}<br />`; 
+                revokable = null;
+            }
+        } else if (target.hasAttribute('data-revoke-proxy') && revokable) {
+            revokable.revoke();
+        }
     }
 };
 

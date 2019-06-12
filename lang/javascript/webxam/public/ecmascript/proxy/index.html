@@ -25,9 +25,12 @@
         <section class=example>
             <h2>constructによるインスタンス生成調査</h2>
             <div class="container">
-                <label><input type="radio" data-event-target="checkConstruction" name="creationType" value="reflect" checked />Reflect.construct</label>
-                <label><input type="radio" data-event-target="checkConstruction" name="creationType" value="object" />Object.create</label>
-                <label><input type="radio" data-event-target="checkConstruction" name="creationType" value="normal" />Normal</label>
+                <label><input type="radio" data-event-target="checkConstruction" name="creationType" value="reflect"
+                        checked />Reflect.construct</label>
+                <label><input type="radio" data-event-target="checkConstruction" name="creationType"
+                        value="object" />Object.create</label>
+                <label><input type="radio" data-event-target="checkConstruction" name="creationType"
+                        value="normal" />Normal</label>
             </div>
             <div class=output></div>
         </section>
@@ -43,11 +46,24 @@
             </div>
             <div class="output"></div>
         </section>
+        <section class="example">
+            <h2>Revocable Proxy</h2>
+            <div class="container">
+                <button data-event-target="runRevocableProxy" data-create-proxy>run</button>
+                <button data-event-target="runRevocableProxy" data-revoke-proxy>revoke</button>
+            </div>
+            <div class="output"></div>
+        </section>
     </main>
     <footer>
         <p>参考</p>
-        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy">Proxy(MDN)</a>
-        <a href="https://www.oreilly.co.jp/books/9784873118734/">Node.jsデザインパターン 第2版</a>
+        <ul>
+            <li><a
+                    href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy">Proxy(MDN)</a>
+            </li>
+            <li><a href="https://www.oreilly.co.jp/books/9784873118734/">Node.jsデザインパターン 第2版</a></li>
+            <li><a href="http://www.zsoltnagy.eu/es6-proxies-in-practice/">ES6 Proxies in Practice</a></li>
+        </ul>
     </footer>
     <script type="module" src="exam.js"></script>
 </body>
