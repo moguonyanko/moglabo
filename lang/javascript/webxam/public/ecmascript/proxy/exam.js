@@ -88,17 +88,46 @@ const createRevocable = () => {
     return Proxy.revocable(target, handler);
 };
 
-const runTest = () => {
-    const rev = createRevocable();
-    console.log(rev);
-    const p = rev.proxy;
-    console.log(p.greeting());
-    rev.revoke();
-    try {
-        console.log(p.greeting());
-    } catch (err) {
-        console.info(err);
+// Normal
+// const fibonacci = n => {
+//     if (n <= 1) return n;
+//     return fibonacci(n - 1) + fibonacci(n - 2);
+// };
+
+// Memo
+const memo = {};
+const fibMemo = n => {
+    if (n <= 1) return n;
+    if (n in memo) {
+        return memo[n];
     }
+    memo[n] = fibMemo(n - 1) + fibMemo(n - 2);
+    return memo[n];
+};
+
+// Memo with Proxy
+const createFibonacciProxy = () => {
+    return new Proxy({}, {
+        get(target, n) {
+            if (n <= 1) {
+                return n;
+            }
+            if (n in target) {
+                return target[n];
+            }
+            target[n] = this.get(target, n - 1) + this.get(target, n - 2);
+            return target[n];
+        }
+    });
+};
+
+const runTest = () => {
+    const n = 70;
+    console.log(`fibonacci with memo n = ${n}: ${fibMemo(n)}`);
+    const proxy = createFibonacciProxy();
+    console.log(`fibonacci with memo and proxy n = ${n}: ${proxy[n]}`);
+    // Normal version is too slowly
+    //console.log(`fibonacci without memo n = ${n}: ${fibonacci(n)}`);
 };
 
 // DOM 
@@ -164,14 +193,25 @@ const listeners = {
             }
             const p = revokable.proxy;
             try {
-                output.innerHTML += `${p.greeting()}<br />`; 
+                output.innerHTML += `${p.greeting()}<br />`;
             } catch (err) {
-                output.innerHTML += `${err.message}<br />`; 
+                output.innerHTML += `${err.message}<br />`;
                 revokable = null;
             }
         } else if (target.hasAttribute('data-revoke-proxy') && revokable) {
             revokable.revoke();
         }
+    },
+    calcFib(root) {
+        const output = root.querySelector('.output'),
+            n = parseInt(root.querySelector('.fibnumber').value);
+        if (isNaN(n)) {
+            output.innerHTML = `n is not number`;
+            return;
+        }
+        const proxy = createFibonacciProxy();
+        const result = proxy[n];
+        output.innerHTML = `n = ${n}, fibonacci = ${result}`;
     }
 };
 
