@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Web Authentication API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../common.css" />
+    <link rel="stylesheet" href="exam.css" />
+</head>
+
+<body>
+    <header>
+        <a href="../../">home</a>
+        <h1>Web Authentication API</h1>
+    </header>
+    <main>
+        <section class="example">
+            <h2>WebAuthnによる認証</h2>
+            <div class="container">
+                <label><input type="radio" name="attachment" value="platform" checked />platform</label>
+                <label><input type="radio" name="attachment" value="cross-platform" />cross-platform</label>
+            </div>
+            <button data-event-target="executeAuth">Try Auth</button>
+            <button data-event-target="clearOutput">Clear</button>
+            <div class="output"></div>
+        </section>
+    </main>
+    <footer>
+        <p>参考サイト</p>
+        <ul>
+            <li><a href="https://webauthn.guide/">WebAuthn Guide</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API">Web Authentication
+                    API(MDN)</a></li>
+        </ul>
+    </footer>
+    <script type="module" src="exam.js"></script>
+</body>
+
+</html>
