@@ -21,3 +21,8 @@ footer {
     background: whitesmoke;
     border: solid 1px darkgrey;
 }
+
+.error {
+    color: red;
+    font-style: italic;
+}
