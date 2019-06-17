@@ -85,6 +85,9 @@ const clipImageListeners = {
         try {
             const image = root.querySelector('.sample-image');
             const blob = await imageToBlob({ image, type: 'image/png' });
+            // for Test
+            //const img = await createImage(blob);
+            //output.appendChild(img);
             await navigator.clipboard.write(blob);
         } catch (error) {
             outputError({ output, error });
