@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+/* 
+ダークモードのスタイル指定が無ければダークモードに変更されてもページのスタイルは変化しない。
+デフォルトのダークモード用スタイルが適用されたりはしない。
+*/
+@media (prefers-color-scheme: dark) {
+    main {
+        color: gainsboro;
+        background-color: midnightblue;
+    }
+}
+
+/*
+ライトモードは通常のモードと同じ。以下のスタイルはダークモードでなければ常に適用される。
+*/
+@media (prefers-color-scheme: light) {
+    main {
+        color: green;
+        background-color: beige;
+    }
+}
