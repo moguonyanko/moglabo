@@ -20,8 +20,9 @@ const permit = async name => {
     }
 };
 
-const outputError = ({ output, error }) => {
-    output.innerHTML += `<span class="error">${error.message}<span><br />`;
+const outputError = ({ root, error }) => {
+    root.querySelector('.output').innerHTML +=
+        `<span class="error">${error.message}<span><br />`;
 };
 
 const clearOutput = root => {
@@ -50,9 +51,11 @@ const clipTextListeners = {
     clearOutput
 };
 
-const imageToBlob = async ({ image, type, quality }) => {
-    const canvas = new OffscreenCanvas(image.width, image.height);
-    canvas.getContext('2d').drawImage(image, 0, 0);
+const imageToBlob = async ({ image, type, quality, size }) => {
+    const {width, height} = size;
+    // OffscreenCanvasコンストラクタの引数は必須。
+    const canvas = new OffscreenCanvas(width, height);
+    canvas.getContext('2d').drawImage(image, 0, 0, width, height);
     return await canvas.convertToBlob({ type, quality });
 };
 
@@ -87,21 +90,27 @@ const clipImageListeners = {
             const img = await createImage(blob);
             output.appendChild(img);
         } catch (error) {
-            outputError({ output, error });
+            outputError({ root, error });
         }
     },
     async [clipboard.write](root) {
-        const output = root.querySelector('.output'),
-            type = getSelectedImageType(root);
+        const type = getSelectedImageType(root);
         try {
             const image = root.querySelector('.sample-image');
-            const blob = await imageToBlob({ image, type });
+            const blob = await imageToBlob({ 
+                image, 
+                type, 
+                quality: 1,
+                size: image 
+            });
+            // ClipboardItemがESLintで認識されるようになったら以下の行は削除する。
+            // eslint-disable-next-line no-undef
             const item = new ClipboardItem({
                 [type]: blob
             });
             await navigator.clipboard.write([item]);
         } catch (error) {
-            outputError({ output, error });
+            outputError({ root, error });
         }
     },
     clearOutput
@@ -119,14 +128,17 @@ const init = () => {
             if (!ct) {
                 return;
             }
-            const listener = listeners[ct];
-            const et = event.target.dataset.eventTarget;
+            const et = event.target.dataset.eventTarget,
+                listener = listeners[ct];
             if (typeof listener[et] !== 'function') {
+                // outputError({ root, error: new Error(`Undefined function: ${et}`) });
                 return;
             }
             if (et in clipboard && !(await permit(et))) {
-                throw new Error('Not permitted');
+                outputError({ root, error: new Error(`Not permitted: ${et}`) });
+                return;
             }
+            event.stopPropagation();
             await listener[et](root);
         });
     });
