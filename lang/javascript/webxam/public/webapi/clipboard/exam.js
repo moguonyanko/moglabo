@@ -121,10 +121,13 @@ const init = () => {
             }
             const listener = listeners[ct];
             const et = event.target.dataset.eventTarget;
-            if (typeof listener[et] === 'function' &&
-                await permit(et)) {
-                await listener[et](root);
+            if (typeof listener[et] !== 'function') {
+                return;
             }
+            if (et in clipboard && !(await permit(et))) {
+                throw new Error('Not permitted');
+            }
+            await listener[et](root);
         });
     });
 };
