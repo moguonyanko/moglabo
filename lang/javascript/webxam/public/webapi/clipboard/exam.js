@@ -1,5 +1,6 @@
 /**
  * @fileoverview Clipboard API調査用スクリプト
+ * ここで扱うAPIは主にAsynchronous Clipboard APIの方である。
  */
 
 // DOM
@@ -131,7 +132,6 @@ const init = () => {
             const et = event.target.dataset.eventTarget,
                 listener = listeners[ct];
             if (typeof listener[et] !== 'function') {
-                // outputError({ root, error: new Error(`Undefined function: ${et}`) });
                 return;
             }
             if (et in clipboard && !(await permit(et))) {
