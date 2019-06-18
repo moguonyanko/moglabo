@@ -24,6 +24,10 @@ const outputError = ({ output, error }) => {
     output.innerHTML += `<span class="error">${error.message}<span><br />`;
 };
 
+const clearOutput = root => {
+    root.querySelector('.output').innerHTML = '';
+};
+
 const clipTextListeners = {
     async [clipboard.read](root) {
         const output = root.querySelector('.output');
@@ -42,7 +46,8 @@ const clipTextListeners = {
         } catch (error) {
             outputError({ output, error });
         }
-    }
+    },
+    clearOutput
 };
 
 const imageToBlob = async ({ image, type, quality }) => {
@@ -67,13 +72,18 @@ const createImage = blob => {
     });
 };
 
-// TODO: Blobのコピーが行えていない。
+const getSelectedImageType = root => {
+    const selectableTypes = root.querySelectorAll(`input[name='imagetype']`);
+    const eles = Array.from(selectableTypes).filter(el => el.checked);
+    return eles[0] ? eles[0].value : 'image/png';
+};
+
 const clipImageListeners = {
     async [clipboard.read](root) {
         const output = root.querySelector('.output');
         try {
             const items = await navigator.clipboard.read();
-            const blob = await items[0].getType('image/png');
+            const blob = await items[0].getType(getSelectedImageType(root));
             const img = await createImage(blob);
             output.appendChild(img);
         } catch (error) {
@@ -81,18 +91,20 @@ const clipImageListeners = {
         }
     },
     async [clipboard.write](root) {
-        const output = root.querySelector('.output');
+        const output = root.querySelector('.output'),
+            type = getSelectedImageType(root);
         try {
             const image = root.querySelector('.sample-image');
-            const blob = await imageToBlob({ image, type: 'image/png' });
-            // for Test
-            //const img = await createImage(blob);
-            //output.appendChild(img);
-            await navigator.clipboard.write(blob);
+            const blob = await imageToBlob({ image, type });
+            const item = new ClipboardItem({
+                [type]: blob
+            });
+            await navigator.clipboard.write([item]);
         } catch (error) {
             outputError({ output, error });
         }
-    }
+    },
+    clearOutput
 };
 
 const listeners = {

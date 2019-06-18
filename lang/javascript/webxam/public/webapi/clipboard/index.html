@@ -20,6 +20,7 @@
             <div>
                 <button data-event-target="clipboard-write">Copy</button>
                 <button data-event-target="clipboard-read">Paste</button>
+                <button data-event-target="clearOutput">Clear</button>
             </div>
             <textarea class="sample-text">sample</textarea>
             <div class="output"></div>
@@ -27,8 +28,14 @@
         <section class="example" data-event-target="clipImage">
             <h2>Copy & Paste(Image)</h2>
             <div>
+                <label><input type="radio" name="imagetype" value="image/png" checked />PNG</label>
+                <label><input type="radio" name="imagetype" value="image/jpeg" />JPEG</label>
+                <label><input type="radio" name="imagetype" value="image/gif" />GIF</label>
+            </div>
+            <div>
                 <button data-event-target="clipboard-write">Copy</button>
                 <button data-event-target="clipboard-read">Paste</button>
+                <button data-event-target="clearOutput">Clear</button>
             </div>
             <img class="sample-image" src="../../image/sampleblock.png" />
             <div class="output"></div>
