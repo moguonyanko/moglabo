@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Forms</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../common.css" />
+    <link rel="stylesheet" href="exam.css" />
+</head>
+
+<body>
+    <header>
+        <a href="../../">home</a>
+        <h1>Forms</h1>
+    </header>
+    <main>
+        <section class="example">
+            <h2>form.requestSubmit()</h2>
+            <form id="dispatchform">
+                <label><strong>*名前</strong><input type="text" value="Taro" required /></label>
+                <div>
+                    <label><input type="checkbox" name="favorite" value="apple" checked />りんご</label>
+                    <label><input type="checkbox" name="favorite" value="banana" />バナナ</label>
+                    <label><input type="checkbox" name="favorite" value="orange" />みかん</label>
+                </div>
+                <button type="button" data-event-target="dispatchSubmit" value="dispatchform">run</button>
+            </form>
+            <output form="dispatchform" class="output"></output>
+        </section>
+    </main>
+    <footer>
+        <p>参考サイト</p>
+        <ul>
+            <li><a href="https://blog.chromium.org/">Chromium Blog</a></li>
+        </ul>
+    </footer>
+    <script src="exam.js" type="module"></script>
+</body>
+
+</html>
