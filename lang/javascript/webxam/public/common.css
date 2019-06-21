@@ -1,5 +1,10 @@
 @charset "UTF-8";
 
+/*
+ * 参考:
+ * https://css-tricks.com/
+ */
+
 h1 {
     text-align: center;
 }
@@ -20,6 +25,7 @@ footer {
     overflow-y: scroll;
     background: whitesmoke;
     border: solid 1px darkgrey;
+    overflow-wrap: break-word;
 }
 
 .error {

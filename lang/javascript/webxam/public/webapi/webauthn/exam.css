@@ -1,6 +1,10 @@
 @charset "UTF-8";
 
+input[type='text'] {
+  width: 20em;
+}
+
 .error {
-    font-style: italic;
-    color: red;
+  font-style: italic;
+  color: red;
 }
