@@ -1,14 +1,11 @@
 /**
- * @fileOverview サーブレット的な関数群を管理するスクリプト
+ * @fileOverview リクエストされたサービスを読み込むモジュール
  */
 
-/*eslint no-undef: "error"*/
-/*eslint-env node*/
+/* eslint no-undef: "error" */
+/* eslint-env node */
 
-// URLコンストラクタ呼び出しでエラーを発生させないためだけのオリジン
-// スキームやホストがURLに含まれていないとエラーになる。ブラウザ側のURLでも同様。
-// リクエストからオリジンを取得する方法があれば要らないはずである。
-const dummyOrigin = 'http://localhost';
+const URLs = require('./function/urls');
 
 class NotFoundServiceError extends Error {
   constructor(url) {
@@ -22,8 +19,8 @@ class NotFoundServiceError extends Error {
 
 module.exports = request => {
   const basePath = '/service/';
-  const u = new URL(request.url, dummyOrigin);
-  const paths = u.pathname.split(basePath);
+  const urls = new URLs(request.url);
+  const paths = urls.pathname.split(basePath);
   if (paths.length > 1) {
     const name = [paths[1]];
     const Service = require(`.${basePath}${name}`);

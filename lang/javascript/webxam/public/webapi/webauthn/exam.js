@@ -5,16 +5,18 @@
 const defaultTimeout = 10000;
 
 const getChallenge = async () => {
-  const response = await fetch('/webxam/service/randomnumber');
+  const response = await fetch('/webxam/service/webauthnregister');
   if (!response.ok) {
     throw new Error(`Cannot create challenge: ${response.status}`);
   }
-  return await response.json();
+  const json = await response.json();
+  return json.challenge;
 };
 
 /**
  * テスト用のユーザーIDをランダムな文字列として生成する。
  */
+// eslint-disable-next-line no-unused-vars
 const createUserId = async () => {
   const response = await fetch('/webxam/service/randomstring?linelimit=1');
   if (!response.ok) {
@@ -24,7 +26,9 @@ const createUserId = async () => {
 };
 
 const createCredentialArgs = async ({ authenticatorAttachment, extensions }) => {
+  const challenge = await getChallenge();
   const args = {
+    challenge,
     publicKey: {
       rp: {
         name: 'My Auth Sample App'
@@ -32,7 +36,7 @@ const createCredentialArgs = async ({ authenticatorAttachment, extensions }) => 
         //,id: 'sample.com'
       },
       user: {
-        id: Uint8Array.from(await createUserId(), c => c.charCodeAt(0)),
+        id: Uint8Array.from('SampleUserId', c => c.charCodeAt(0)),
         name: 'sampleuser@example.org',
         displayName: 'Sample User'
       },
@@ -43,7 +47,7 @@ const createCredentialArgs = async ({ authenticatorAttachment, extensions }) => 
       attestation: 'direct',
       authenticatorSelection: { authenticatorAttachment },
       timeout: defaultTimeout,
-      challenge: new Uint8Array(await getChallenge()).buffer,
+      challenge: new Uint8Array(challenge).buffer,
       extensions
     }
   };
@@ -74,7 +78,39 @@ const getCredential = async rawId => {
 const createCredential = async ({ authenticatorAttachment, extensions }) => {
   const createArgs =
     await createCredentialArgs({ authenticatorAttachment, extensions });
-  return await navigator.credentials.create(createArgs);
+  return {
+    credential: await navigator.credentials.create(createArgs),
+    challenge: createArgs.challenge
+  };
+};
+
+/**
+ * TODO:
+ * clientDataJSONしか検証していない。attestationObjectも検証する。
+ */
+const verifyCredential = async ({ credential, challenge }) => {
+  const data = new TextDecoder('UTF-8').decode(credential.response.clientDataJSON);
+  const clientData = JSON.parse(data);
+  clientData.challenge = challenge;
+  const res = await fetch('/webxam/service/webauthnverify', {
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-store',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    redirect: 'follow',
+    referrer: 'no-referrer',
+    body: JSON.stringify({ clientData })
+  });
+  if (!res.ok) {
+    throw new Error(`Verify error: ${res.status}`);
+  }
+  const json = await res.json();
+  if (json.status !== 200) {
+    throw new Error(`Invalid credential!`);
+  }
 };
 
 // DOM
@@ -84,8 +120,6 @@ const getAttachment = el => {
     .filter(el => el.checked)[0].value;
 };
 
-// TODO: 
-// rawIdを保持している。idからrawIdを得る方法が分かればidを保持するようにしたい。
 let lastCredentialId;
 
 const listeners = {
@@ -99,10 +133,13 @@ const listeners = {
           uvi: true
         }
       };
-      const cred = await createCredential(args);
-      console.log(cred);
-      lastCredentialId = cred.rawId;
-      o.innerHTML = `${cred.id}<br />`;
+      const result = await createCredential(args);
+      console.log(result);
+      // 登録内容の検証
+      verifyCredential(result);
+      // TODO: 本来はrawIdではなくidを何らかのストレージに保存するはず。
+      lastCredentialId = result.credential.rawId;
+      o.innerHTML = `${result.credential.id}<br />`;
     } catch (err) {
       o.innerHTML = `<span class="error">${err.message}</span><br />`;
     }
@@ -113,9 +150,11 @@ const listeners = {
   async getLastClientData(el) {
     const o = el.querySelector('.output');
     try {
-      //const targetId = el.querySelector('.credentialid').value;
-      const cred = await getCredential(lastCredentialId);
-      const data = new TextDecoder('UTF-8').decode(cred.response.clientDataJSON);
+      const credential = await getCredential(lastCredentialId);
+
+      // TODO: 認証内容の検証を追加する。
+
+      const data = new TextDecoder('UTF-8').decode(credential.response.clientDataJSON);
       const json = JSON.parse(data);
       o.innerHTML = `${JSON.stringify(json)}<br />`;
     } catch (err) {

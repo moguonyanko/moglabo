@@ -20,13 +20,34 @@ const handleError = ({ error, response }) => {
   }
 };
 
+const getBody = ({ request }) => {
+  const promise = new Promise((resolve, reject) => {
+    const body = [];
+    request.on('data', chunk => {
+      body.push(chunk);
+    });
+    request.on('error', error => {
+      reject(error);
+    });
+    request.on('end', () => {
+      resolve(Buffer.concat(body).toString());
+    });
+  });
+  return promise;
+};
+
 http.createServer(async (request, response) => {
   response.on('error', err => console.error(err));
 
   try {
     const service = serviceLoader(request);
     response.setHeader('Content-Type', service.contentType);
-    await service.execute({ request, response });
+    if (request.method === 'POST') {
+      const body = await getBody({ request });
+      await service.execute({ request, response, body });
+    } else {
+      await service.execute({ request, response });
+    }
     response.statusCode = 200;
   } catch (error) {
     handleError({ error, response });
