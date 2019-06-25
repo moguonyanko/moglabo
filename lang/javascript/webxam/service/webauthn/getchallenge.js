@@ -1,12 +1,12 @@
 /**
- * @fileoverview WebAuthn用ユーザー登録モジュール
+ * @fileoverview WebAuthn用Challengeモジュール
  */
 
 /* eslint no-undef: "error" */
 /* eslint-env node */
 
-const Challenge = require('../function/challenge');
-const URLs = require('../function/urls');
+const Challenge = require('../../function/challenge');
+const URLs = require('../../function/urls');
 
 const defaultLength = 16;
 
@@ -21,7 +21,18 @@ const saveRegisterProperty = ({ challenge, origin }) => {
   global.registeredType = 'webauthn.create';
 };
 
-class WebAuthnRegister {
+const saveAuthenticationProperty = ({ challenge, origin }) => {
+  global.authenticatedChallenge = challenge;
+  global.authenticatedOrigin = origin;
+  global.authenticatedType = 'webauthn.get';
+};
+
+const saveProperty = {
+  register: saveRegisterProperty,
+  authentication: saveAuthenticationProperty
+};
+
+class GetChallenge {
   constructor() {
     this.contentType = 'application/json';
     this.challenge = new Challenge();
@@ -29,14 +40,21 @@ class WebAuthnRegister {
 
   execute({ request, response }) {
     const urls = new URLs(request.url);
-    const length = urls.getParameter('length', defaultLength);
+    const length = urls.getParameter('length', defaultLength),
+      type = urls.getParameter('type', 'register');
+
     const challenge = this.challenge.getValue({ length });
 
-    saveRegisterProperty({ challenge, origin: urls.origin });
+    if (!(type in saveProperty)) {
+      throw new Error(`${type} is unsupported`);
+    }
+
+    const save = saveProperty[type];
+    save({ challenge, origin: urls.origin });
 
     const result = { challenge };
     response.write(JSON.stringify(result));
   }
 }
 
-module.exports = WebAuthnRegister;
+module.exports = GetChallenge;

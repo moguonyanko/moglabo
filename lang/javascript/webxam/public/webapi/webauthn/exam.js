@@ -4,8 +4,14 @@
 
 const defaultTimeout = 10000;
 
-const getChallenge = async () => {
-  const response = await fetch('/webxam/service/webauthnregister');
+const getChallenge = async target => {
+  const url = `/webxam/service/webauthn/getchallenge?type=${target.toLowerCase()}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    mode: 'cors',
+    cache: 'no-store',
+    credentials: 'same-origin'
+  });
   if (!response.ok) {
     throw new Error(`Cannot create challenge: ${response.status}`);
   }
@@ -26,7 +32,7 @@ const createUserId = async () => {
 };
 
 const createCredentialArgs = async ({ authenticatorAttachment, extensions }) => {
-  const challenge = await getChallenge();
+  const challenge = await getChallenge('register');
   const args = {
     challenge,
     publicKey: {
@@ -55,11 +61,13 @@ const createCredentialArgs = async ({ authenticatorAttachment, extensions }) => 
 };
 
 const getCredentialArgs = async allowCredentials => {
+  const challenge = await getChallenge('authentication');
   const args = {
+    challenge,
     publicKey: {
       timeout: defaultTimeout,
       allowCredentials,
-      challenge: new Uint8Array(await getChallenge()).buffer
+      challenge: new Uint8Array(challenge).buffer
     }
   };
   return args;
@@ -72,7 +80,10 @@ const getCredential = async rawId => {
     type: 'public-key'
   }];
   const getArgs = await getCredentialArgs(allowCredentials);
-  return navigator.credentials.get(getArgs);
+  return {
+    credential: await navigator.credentials.get(getArgs),
+    challenge: getArgs.challenge
+  };
 };
 
 const createCredential = async ({ authenticatorAttachment, extensions }) => {
@@ -92,7 +103,7 @@ const verifyCredential = async ({ credential, challenge }) => {
   const data = new TextDecoder('UTF-8').decode(credential.response.clientDataJSON);
   const clientData = JSON.parse(data);
   clientData.challenge = challenge;
-  const res = await fetch('/webxam/service/webauthnverify', {
+  const res = await fetch('/webxam/service/webauthn/verify', {
     method: 'POST',
     mode: 'cors',
     cache: 'no-store',
@@ -135,7 +146,6 @@ const listeners = {
       };
       const result = await createCredential(args);
       console.log(result);
-      // 登録内容の検証
       verifyCredential(result);
       // TODO: 本来はrawIdではなくidを何らかのストレージに保存するはず。
       lastCredentialId = result.credential.rawId;
@@ -150,11 +160,10 @@ const listeners = {
   async getLastClientData(el) {
     const o = el.querySelector('.output');
     try {
-      const credential = await getCredential(lastCredentialId);
-
-      // TODO: 認証内容の検証を追加する。
-
-      const data = new TextDecoder('UTF-8').decode(credential.response.clientDataJSON);
+      const result = await getCredential(lastCredentialId);
+      verifyCredential(result);
+      const data = new TextDecoder('UTF-8')
+        .decode(result.credential.response.clientDataJSON);
       const json = JSON.parse(data);
       o.innerHTML = `${JSON.stringify(json)}<br />`;
     } catch (err) {

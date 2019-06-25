@@ -5,7 +5,7 @@
 /* eslint no-undef: "error" */
 /* eslint-env node */
 
-class WebAuthnVerify {
+class Verify {
   constructor() {
     this.contentType = 'application/json';
   }
@@ -41,4 +41,4 @@ class WebAuthnVerify {
   }
 }
 
-module.exports = WebAuthnVerify;
+module.exports = Verify;
