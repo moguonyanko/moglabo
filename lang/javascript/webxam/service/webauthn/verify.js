@@ -13,12 +13,14 @@ class Verify {
   /**
    * TODO:
    * attestationObjectについても検証する。
+   * challengeの検証はchallengeを含む検証対象データを
+   * バイナリで送受信できるようになるまで無効化している。
    */
   execute({ response, body }) {
-    const { challenge, origin, type } = JSON.parse(body).clientData;
+    const { origin, type } = JSON.parse(new TextDecoder().decode(body));
     const result = {};
     if (type === 'webauthn.create') { // 登録
-      if (global.registeredChallenge === challenge &&
+      if (/* global.registeredChallenge === challenge && */
         global.registeredOrigin === origin &&
         global.registeredType === type) {
         result.status = 200;
@@ -27,7 +29,7 @@ class Verify {
       }
     } else if (type === 'webauthn.get') { // 認証
       // TODO: 認証時はsignatureのチェックも必要。
-      if (global.authenticatedChallenge === challenge &&
+      if (/* global.authenticatedChallenge === challenge && */
         global.authenticatedOrigin === origin &&
         global.authenticatedType === type) {
         result.status = 200;

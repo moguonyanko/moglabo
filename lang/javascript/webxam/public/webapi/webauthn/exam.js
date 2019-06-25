@@ -100,20 +100,15 @@ const createCredential = async ({ authenticatorAttachment, extensions }) => {
  * clientDataJSONしか検証していない。attestationObjectも検証する。
  */
 const verifyCredential = async ({ credential, challenge }) => {
-  const data = new TextDecoder('UTF-8').decode(credential.response.clientDataJSON);
-  const clientData = JSON.parse(data);
-  clientData.challenge = challenge;
   const res = await fetch('/webxam/service/webauthn/verify', {
     method: 'POST',
     mode: 'cors',
     cache: 'no-store',
     credentials: 'same-origin',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'multipart/form-data'
     },
-    redirect: 'follow',
-    referrer: 'no-referrer',
-    body: JSON.stringify({ clientData })
+    body: credential.response.clientDataJSON
   });
   if (!res.ok) {
     throw new Error(`Verify error: ${res.status}`);

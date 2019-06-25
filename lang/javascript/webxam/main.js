@@ -30,7 +30,7 @@ const getBody = ({ request }) => {
       reject(error);
     });
     request.on('end', () => {
-      resolve(Buffer.concat(body).toString());
+      resolve(Buffer.concat(body));
     });
   });
   return promise;
