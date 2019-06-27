@@ -2,58 +2,58 @@
 <html lang="ja">
 
 <head>
-    <meta charset="UTF-8" />
-    <title>Clipboard API</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../../common.css" />
-    <link rel="stylesheet" href="exam.css" />
+  <meta charset="UTF-8" />
+  <title>Clipboard API</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="exam.css" />
 </head>
 
 <body>
-    <header>
-        <a href="../../">home</a>
-        <h1>Clipboard API</h1>
-    </header>
-    <main>
-        <p>Asynchronous Clipboard APIを調査するサイトです。</p>
-        <section class="example" data-event-target="clipText">
-            <h2>Copy & Paste(Text)</h2>
-            <div>
-                <button data-event-target="clipboard-write">Copy</button>
-                <button data-event-target="clipboard-read">Paste</button>
-                <button data-event-target="clearOutput">Clear</button>
-            </div>
-            <textarea class="sample-text">sample</textarea>
-            <div class="output"></div>
-        </section>
-        <section class="example" data-event-target="clipImage">
-            <h2>Copy & Paste(Image)</h2>
-            <div>
-                <label><input type="radio" name="imagetype" value="image/png" checked />PNG</label>
-                <label><input type="radio" name="imagetype" value="image/jpeg" />JPEG</label>
-                <label><input type="radio" name="imagetype" value="image/gif" />GIF</label>
-            </div>
-            <div>
-                <button data-event-target="clipboard-write">Copy</button>
-                <button data-event-target="clipboard-read">Paste</button>
-                <button data-event-target="clearOutput">Clear</button>
-            </div>
-            <img class="sample-image" src="../../image/sampleblock.png" />
-            <div class="output"></div>
-        </section>
-    </main>
-    <footer>
-        <p>参考サイト</p>
-        <ul>
-            <li><a href="https://www.w3.org/TR/clipboard-apis/">Clipboard API and events(W3C)</a></li>
-            <li><a href="https://googlechrome.github.io/samples/async-clipboard/">Asynchronous Clipboard API Sample</a>
-            </li>
-            <li><a
-                    href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Interact_with_the_clipboard">Interact
-                    with the clipboard(MDN)</a></li>
-        </ul>
-    </footer>
-    <script src="exam.js" type="module"></script>
+  <header>
+    <a href="../../">home</a>
+    <h1>Clipboard API</h1>
+  </header>
+  <main>
+    <p>Asynchronous Clipboard APIを調査するサイトです。</p>
+    <section class="example" data-event-target="clipText">
+      <h2>Copy & Paste(Text)</h2>
+      <div>
+        <button data-event-target="clipboard-write">Copy</button>
+        <button data-event-target="clipboard-read">Paste</button>
+        <button data-event-target="clearOutput">Clear</button>
+      </div>
+      <textarea class="sample-text">sample</textarea>
+      <div class="output"></div>
+    </section>
+    <section class="example" data-event-target="clipImage">
+      <h2>Copy & Paste(Image)</h2>
+      <div>
+        <label><input type="radio" name="imagetype" value="image/png" checked />PNG</label>
+        <label><input type="radio" name="imagetype" value="image/jpeg" />JPEG</label>
+        <label><input type="radio" name="imagetype" value="image/gif" />GIF</label>
+      </div>
+      <div>
+        <button data-event-target="clipboard-write">Copy</button>
+        <button data-event-target="clipboard-read">Paste</button>
+        <button data-event-target="clearOutput">Clear</button>
+      </div>
+      <img class="sample-image" src="../../image/sampleblock.png" />
+      <div class="output"></div>
+    </section>
+  </main>
+  <footer>
+    <p>参考サイト</p>
+    <ul>
+      <li><a href="https://www.w3.org/TR/clipboard-apis/">Clipboard API and events(W3C)</a></li>
+      <li><a href="https://googlechrome.github.io/samples/async-clipboard/">Asynchronous Clipboard API Sample</a>
+      </li>
+      <li><a
+          href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Interact_with_the_clipboard">Interact
+          with the clipboard(MDN)</a></li>
+    </ul>
+  </footer>
+  <script src="exam.js" type="module"></script>
 </body>
 
 </html>
