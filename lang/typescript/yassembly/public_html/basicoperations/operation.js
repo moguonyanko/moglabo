@@ -6,7 +6,7 @@
 let operations = null;
 
 const initOperations = async () => {
-    const response = await fetch("../bin/module.optimized.wasm");
+    const response = await fetch("../bin/operation.optimized.wasm");
     // レスポンスをArrayBufferに変換
     const bytes = await response.arrayBuffer();
     // ArrayBufferからインスタンスを生成

@@ -12,9 +12,9 @@
     "contributors": [],
     "dependencies": {},
     "scripts": {
-        "build": "npm run build:untouched && npm run build:optimized",
-        "build:untouched": "asc assembly/module.ts -t public_html/bin/module.untouched.wat -b public_html/bin/module.untouched.wasm --validate --sourceMap --measure",
-        "build:optimized": "asc assembly/module.ts -t public_html/bin/module.optimized.wat -b public_html/bin/module.optimized.wasm --validate --sourceMap --measure --optimize"
+        "build_operation": "npm run build_operation:untouched && npm run build_operation:optimized",
+        "build_operation:untouched": "asc assembly/operation.ts -t public_html/bin/operation.untouched.wat -b public_html/bin/operation.untouched.wasm --validate --sourceMap --measure",
+        "build_operation:optimized": "asc assembly/operation.ts -t public_html/bin/operation.optimized.wat -b public_html/bin/operation.optimized.wasm --validate --sourceMap --measure --optimize"
     },
     "devDependencies": {
         "assemblyscript": "github:AssemblyScript/assemblyscript"
