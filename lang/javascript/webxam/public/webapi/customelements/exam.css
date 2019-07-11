@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+my-autocomplete-form {
+  max-width: min-content;
+  flex-wrap: wrap;
+  display: flex;
+  flex-direction: column;
+  background: beige;
+}

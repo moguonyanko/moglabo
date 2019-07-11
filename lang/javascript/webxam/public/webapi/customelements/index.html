@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Custom Elements</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="exam.css" />
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Custom Elements</h1>
+  </header>
+  <main>
+    <section class="example">
+      <h2>自動入力とCustomElements</h2>
+      <my-autocomplete-form></my-autocomplete-form>
+      <div class="output"></div>
+    </section>
+  </main>
+  <footer>
+    <p>参考サイト</p>
+    <ul>
+      <li><a href="https://developers.google.com/web/fundamentals/web-components/customelements">カスタム要素 v1: 再利用可能なウェブ
+          コンポーネント</a></li>
+    </ul>
+  </footer>
+  <script type="module" src="exam.js"></script>
+</body>
+
+<template id="auto-complete-form">
+  <form method="POST" action="/webxam/service/reload" autocomplete="on">
+    <label for="userid">USERID</label>
+    <input id="userid" type="text" name="loginuserid" required />
+    <label for="password">PASSWORD</label>
+    <input id="password" type="password" name="loginpassword" required />
+    <button type="submit">login</button>
+  </form>
+</template>
+
+</html>
