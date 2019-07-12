@@ -36,12 +36,21 @@ const getBody = ({ request }) => {
   return promise;
 };
 
+const setContentType = ({ response, service }) => {
+  const types = [...service.contentType.matchAll(/(image)|(pdf)/g)];
+  if (types.length > 0) {
+    response.setHeader('Content-Type', `${service.contentType}`);
+  } else {
+    response.setHeader('Content-Type', `${service.contentType}; charset=UTF-8`);
+  }
+};
+
 http.createServer(async (request, response) => {
   response.on('error', err => console.error(err));
 
   try {
     const service = serviceLoader(request);
-    response.setHeader('Content-Type', service.contentType);
+    setContentType({ response, service });
     if (request.method === 'POST') {
       const body = await getBody({ request });
       await service.execute({ request, response, body });
