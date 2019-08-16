@@ -1,0 +1,6 @@
+@charset "UTF-8";
+
+main a:hover {
+  font-size: 200%;
+  transition: font-size .1s linear;
+}

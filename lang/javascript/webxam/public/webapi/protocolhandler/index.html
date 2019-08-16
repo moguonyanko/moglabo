@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Protocol Handler</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="exam.css" />
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Protocol Handler</h1>
+  </header>
+  <main>
+    <section>
+      <h2>カスタムスキームの登録</h2>
+      <p>アプリケーション選択ダイアログが表示されるのはFirefoxのみ。</p>
+      <p>Firefoxでもリンクのハンドリングは行ってくれない。</p>
+      <p><a data-event-target="hello" href="web+webxamservice:hello">サンプルリクエスト</a></p>
+    </section>
+  </main>
+  <footer>
+    <p>参考サイト</p>
+    <ul>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler/Web-based_protocol_handlers">Web-based protocol handlers(MDN)</a></li>
+      <li><a href="https://developers.google.com/web/updates/2011/06/Registering-a-custom-protocol-handler">Registering a custom protocol handler</a></li>
+    </ul>
+  </footer>
+  <script type="module" src="exam.js"></script>
+</body>
+
+</html>
