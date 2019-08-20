@@ -1,5 +1,5 @@
 /**
- * @fileoverview Node.jsの練習をするためのスクリプト
+ * @fileoverview process.nextTick()を調べるためのスクリプト
  * 参考:
  * https://nodejs.org/en/docs/guides/
  */

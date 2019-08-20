@@ -13,6 +13,7 @@
   "dependencies": {
     "cbor": "^4.1.5",
     "chance": "^1.0.18",
+    "express": "^4.17.1",
     "semistandard": "^13.0.1",
     "websocket": "^1.0.29"
   },
