@@ -16,6 +16,12 @@
   <main>
     <section>
       <h2>REDOS</h2>
+      <p class="description">
+        一度EventLoopのブロックが発生するリクエストを送ってしまうと、そのリクエストを
+        abortして改めてブロックされないリクエストを送ってもレスポンスは得られない。
+      </p>
+      <label for="withnewline">改行あり(ブロックされる)</label>
+      <input id="withnewline" type="checkbox" checked />
       <button class="runner" data-event-target="redos">run</button>
       <div class="output"></div>
     </section>
