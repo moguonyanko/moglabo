@@ -21,10 +21,9 @@ app.get(`${contextRoot}hello`, (request, response) => {
   response.send('Hello Node World');
 });
 
-app.get(`${contextRoot}eventloop`, (request, response) => {
-  console.log(`Query: ${Object.values(request.query)}`);
+app.get(`${contextRoot}eventloop/redos`, (request, response) => {
   const el = new MyEventLoop;
-  response.send(el.execute());
+  response.send(el.redos(request));
 });
 
 app.listen(port, () => {

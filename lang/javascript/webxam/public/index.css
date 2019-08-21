@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+main {
+  display: flex;
+  margin: auto;
+  width: 95%;
+  flex-direction: column;
+}
+
+section.latest {
+  order: -1;
+}
+
+section.latest .latest::after {
+  content: 'NEW';
+  color: red;
+  font-size: 50%;
+  padding: 0.25em;
+}
