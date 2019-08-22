@@ -40,15 +40,30 @@ const funcs = {
       throw new Error(`Redos example error: ${response.status}`);
     }
     return await response.json();
+  },
+  async partitioning({ max, start }) {
+    let url = '/webxam/apps/practicenode/eventloop/average?';
+    url += `max=${max}&start=${start}`;
+    const response = await fetchWithTimeout({ url });
+    if (!response.ok) {
+      throw new Error(`Partitioning example error: ${response.status}`);
+    }
+    return await response.json();
   }
 };
 
 // DOM
 
 const getArgs = {
-  redos () {
+  redos() {
     return {
       withNewLine: document.getElementById('withnewline').checked
+    };
+  },
+  partitioning() {
+    return {
+      max: document.getElementById('maxsumvalue').value,
+      start: document.getElementById('startvalue').value
     };
   }
 };

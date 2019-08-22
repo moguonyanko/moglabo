@@ -6,6 +6,7 @@
   <title>Event Loop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="eventloop.css" />
 </head>
 
 <body>
@@ -22,14 +23,33 @@
       </p>
       <label for="withnewline">改行あり(ブロックされる)</label>
       <input id="withnewline" type="checkbox" checked />
-      <button class="runner" data-event-target="redos">run</button>
+      <button data-event-target="redos">run</button>
+      <div class="output"></div>
+    </section>
+    <section>
+      <h2>Partitioning</h2>
+      <p class="description">
+        複雑な計算は分割することでEventLoopのブロックを回避できる。
+      </p>
+      <div class="paramcontainer">
+        <span>
+          <label for="startvalue">start</label>
+          <input id="startvalue" type="number" value="1" />
+        </span>
+        <span>
+          <label for="maxsumvalue">max</label>
+          <input id="maxsumvalue" type="number" value="10" />
+        </span>
+      </div>
+      <button data-event-target="partitioning">sum</button>
       <div class="output"></div>
     </section>
   </main>
   <footer>
     <h3>参考サイト</h3>
     <ul>
-      <li><a href="https://nodejs.org/en/docs/guides/dont-block-the-event-loop/">Don't Block the Event Loop (or the Worker Pool)</a></li>
+      <li><a href="https://nodejs.org/en/docs/guides/dont-block-the-event-loop/">Don't Block the Event Loop (or the
+          Worker Pool)</a></li>
     </ul>
   </footer>
   <script type="module" src="main.js"></script>

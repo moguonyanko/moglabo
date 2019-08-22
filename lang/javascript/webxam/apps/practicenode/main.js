@@ -26,6 +26,11 @@ app.get(`${contextRoot}eventloop/redos`, (request, response) => {
   response.send(el.redos(request));
 });
 
+app.get(`${contextRoot}eventloop/average`, async (request, response) => {
+  const el = new MyEventLoop;
+  response.send(await el.average(request));
+});
+
 app.listen(port, () => {
   console.log(`My Practice Node Application On Port ${port}`);
 });

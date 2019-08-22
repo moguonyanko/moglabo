@@ -1,0 +1,6 @@
+@charset "UTF-8";
+
+.paramcontainer {
+  display: flex;
+  flex-direction: column;
+}
