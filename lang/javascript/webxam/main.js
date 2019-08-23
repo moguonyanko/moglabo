@@ -6,8 +6,11 @@
 /* eslint no-undef: "error" */
 /* eslint-env node */
 
-const http = require('http');
+const http2 = require('http2');
 const serviceLoader = require('./serviceLoader');
+const Inouts = require('./function/inouts');
+
+const port = 3443;
 
 // request.on('error', () => {}); に該当する処理のつもり
 const handleError = ({ error, response }) => {
@@ -45,22 +48,41 @@ const setContentType = ({ response, service }) => {
   }
 };
 
-http.createServer(async (request, response) => {
-  response.on('error', err => console.error(err));
+const startWebXamServer = options => {
+  http2.createSecureServer(options, async (request, response) => {
+    response.on('error', err => console.error(err));
 
-  try {
-    const service = serviceLoader(request);
-    setContentType({ response, service });
-    if (request.method === 'POST') {
-      const body = await getBody({ request });
-      await service.execute({ request, response, body });
-    } else {
-      await service.execute({ request, response });
+    try {
+      const service = serviceLoader(request);
+      setContentType({ response, service });
+      if (request.method === 'POST') {
+        const body = await getBody({ request });
+        await service.execute({ request, response, body });
+      } else {
+        await service.execute({ request, response });
+      }
+      response.statusCode = 200;
+    } catch (error) {
+      handleError({ error, response });
+    } finally {
+      response.end();
     }
-    response.statusCode = 200;
-  } catch (error) {
-    handleError({ error, response });
-  } finally {
-    response.end();
-  }
-}).listen(3000);
+  }).listen(port);
+};
+
+const main = () => {
+  Promise.all([
+    Inouts.readFile('/usr/local/etc/nginx/cert2.key'),
+    Inouts.readFile('/usr/local/etc/nginx/cert2.crt')
+  ]).then(allData => {
+    const options = {
+      key: allData[0],
+      cert: allData[1],
+      allowHTTP1: true // WebサーバからNodeに転送しつつHTTP/2を利用する際に必要
+    };
+    startWebXamServer(options);
+    console.info(`WebXam server listen by ${port}`);
+  });
+};
+
+main();
