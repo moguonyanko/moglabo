@@ -7,10 +7,12 @@
 /* eslint-env node */
 
 const http2 = require('http2');
+
 const serviceLoader = require('./serviceLoader');
 const Certs = require('./function/certs');
+const config = require('./config');
 
-const port = 3443;
+const port = config.port.webxamplain;
 
 // request.on('error', () => {}); に該当する処理のつもり
 const handleError = ({ error, response }) => {

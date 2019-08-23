@@ -5,13 +5,14 @@
 /* eslint-env node */
 
 const Inouts = require('./inouts');
+const config = require('../config');
 
 class Certs {
   static getOptions() {
     return new Promise((resolve, reject) => {
       Promise.all([
-        Inouts.readFile('/usr/local/etc/nginx/cert2.key'),
-        Inouts.readFile('/usr/local/etc/nginx/cert2.crt')
+        Inouts.readFile(config.path.certificate.key),
+        Inouts.readFile(config.path.certificate.cert)
       ]).then(allData => {
         const options = {
           key: allData[0],

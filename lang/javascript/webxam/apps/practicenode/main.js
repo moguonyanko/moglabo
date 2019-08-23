@@ -6,11 +6,13 @@
 
 const http2 = require('http2');
 const express = require('express');
+
 const MyEventLoop = require('./eventloop');
 const Certs = require('../../function/certs');
+const config = require('../../config');
 
 const app = express();
-const port = 4443;
+const port = config.port.practicenode;
 
 const contextRoot = '/webxam/apps/practicenode/';
 
