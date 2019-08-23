@@ -8,7 +8,7 @@
 
 const http2 = require('http2');
 const serviceLoader = require('./serviceLoader');
-const Inouts = require('./function/inouts');
+const Certs = require('./function/certs');
 
 const port = 3443;
 
@@ -71,15 +71,7 @@ const startWebXamServer = options => {
 };
 
 const main = () => {
-  Promise.all([
-    Inouts.readFile('/usr/local/etc/nginx/cert2.key'),
-    Inouts.readFile('/usr/local/etc/nginx/cert2.crt')
-  ]).then(allData => {
-    const options = {
-      key: allData[0],
-      cert: allData[1],
-      allowHTTP1: true // WebサーバからNodeに転送しつつHTTP/2を利用する際に必要
-    };
+  Certs.getOptions().then(options => {
     startWebXamServer(options);
     console.info(`WebXam server listen by ${port}`);
   });
