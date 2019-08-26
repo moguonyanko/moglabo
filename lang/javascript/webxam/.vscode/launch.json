@@ -15,6 +15,12 @@
             "request": "launch",
             "name": "Practice Node",
             "program": "${workspaceFolder}/apps/practicenode/main.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "My WebSocket App",
+            "program": "${workspaceFolder}/apps/mysocket/main.js"
         }
     ]
 }

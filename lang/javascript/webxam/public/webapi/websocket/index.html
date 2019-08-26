@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>WebSocket</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>WebSocket</h1>
+  </header>
+  <main>
+    <section class="example messageevent">
+      <h2>Messageイベント(text)</h2>
+      <div>
+        <label>メッセージ<input class="message" type="text" value="Hello" /></label>
+        <button data-event-target="sendMessage">send</button>
+        <button data-event-target="closeConnection">close</button>
+      </div>
+      <div class="output"></div>
+    </section>
+  </main>
+  <footer>
+    <h3>参考サイト</h3>
+    <ul>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/WebSocket">WebSocket(MDN)</a></li>
+    </ul>
+  </footer>
+  <script type="module" src="exam.js"></script>
+</body>
+
+</html>

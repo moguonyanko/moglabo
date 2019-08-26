@@ -2,12 +2,17 @@
 
 main {
   display: flex;
+  flex-direction: column;
   margin: auto;
   width: 95%;
+}
+
+section ul {
+  display: flex;
   flex-direction: column;
 }
 
-section.latest {
+.latest {
   order: -1;
 }
 
