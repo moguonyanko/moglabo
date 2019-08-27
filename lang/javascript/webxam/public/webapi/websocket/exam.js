@@ -26,7 +26,8 @@ const closeConnection = ({ socket }) => {
 
 const openConnection = () => {
   return new Promise((resolve, reject) => {
-    const socket = new WebSocket('wss://localhost:5443');
+    const appProtocol = 'my-ws';
+    const socket = new WebSocket('wss://localhost:5443', appProtocol);
     socket.addEventListener('open', () => {
       resolve(socket);
     });

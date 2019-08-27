@@ -50,8 +50,9 @@ const accept = wsServer => {
   wsServer.on('request', request => {
     // TODO: Origin check
 
-    // wssを使ってリクエストしているなら第1引数はnullにする。
-    const connection = request.accept(null, request.origin);
+    // クライアント側でプロトコル(WebSocketコンストラクタ第2引数など)を
+    // 指定していない場合はacceptの第1引数はnullを指定する。
+    const connection = request.accept('my-ws', request.origin);
 
     connection.on('message', message => {
       if (typeof handlers[message.type] === 'function') {
