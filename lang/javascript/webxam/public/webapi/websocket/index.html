@@ -14,14 +14,25 @@
     <h1>WebSocket</h1>
   </header>
   <main>
-    <section class="example messageevent">
-      <h2>Messageイベント(text)</h2>
-      <div>
-        <label>メッセージ<input class="message" type="text" value="Hello" /></label>
-        <button data-event-target="sendMessage">send</button>
-        <button data-event-target="closeConnection">close</button>
-      </div>
-      <div class="output"></div>
+    <section>
+      <h2>サーバレスポンス</h2>
+      <div id="resultoutput" class="output"></div>
+      <section class="example messageeventtext">
+        <h3>Messageイベント(text)</h3>
+        <div>
+          <label>メッセージ<input class="message" type="text" value="Hello" /></label>
+          <button data-event-target="sendMessage">send</button>
+          <button data-event-target="closeConnection">close</button>
+        </div>
+      </section>
+      <section class="example messageeventblob">
+        <h3>Messageイベント(blob)</h3>
+        <div>
+          <img src="../../image/sampleblock.png" width="100" height="100" />
+          <button data-event-target="sendImage">send</button>
+          <button data-event-target="closeConnection">close</button>
+        </div>
+      </section>
     </section>
   </main>
   <footer>

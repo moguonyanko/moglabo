@@ -42,15 +42,48 @@ const isClose = socket => {
 
 // DOM
 
+const callbacks = {
+  sendMessage(event) {
+    const output = document.querySelector('.output');
+    if (typeof event.data === 'string') {
+      output.innerHTML += `${event.data}<br />`;
+    } else if (typeof event.data === 'object') {
+      const url = URL.createObjectURL(event.data);
+      const img = new Image(20, 20);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        output.appendChild(img);
+      };
+      img.src = url;
+    } else {
+      throw new Error(`Unsupported message type ${typeof event.data}`);
+    }
+  },
+  closeConnection() {
+    const output = document.querySelector('.output');
+    output.textContent = '';
+  }
+};
+
 const handlers = {
-  sendMessage({ socket, element, onMessage }) {
+  sendMessage({ socket, element }) {
     const message = element.querySelector('.message').value;
     sendMessage({ socket, message });
-    socket.addEventListener('message', onMessage);
+    socket.addEventListener('message', callbacks.sendMessage);
   },
-  closeConnection({ socket, onClose }) {
+  closeConnection({ socket }) {
     closeConnection({ socket });
-    socket.addEventListener('close', onClose);
+    socket.addEventListener('close', callbacks.closeConnection);
+  },
+  async sendImage({ socket, element }) {
+    const img = element.querySelector('img'),
+      { width, height } = img;
+    const canvas = new OffscreenCanvas(width, height);
+    const context = canvas.getContext('2d');
+    context.drawImage(img, 0, 0);
+    const blob = await canvas.convertToBlob();
+    sendMessage({ socket, message: blob });
+    socket.addEventListener('message', callbacks.sendMessage);
   }
 };
 
@@ -59,23 +92,17 @@ let socket;
 const addListener = () => {
   const exams = document.querySelectorAll('.example');
   exams.forEach(element => {
-    const output = element.querySelector('.output');
-    const onMessage = ({ data }) => {
-      output.innerHTML += `${data}<br />`;
-    };
-    const onClose = () => {
-      output.innerHTML += `My WebSocket closed<br />`;
-    };
     element.addEventListener('pointerup', async event => {
       const handleType = event.target.dataset.eventTarget;
       if (typeof handlers[handleType] !== 'function') {
         return;
       }
       event.stopPropagation();
-      if (!socket || (isClose(socket) && handleType !== 'closeConnection')) {
+      if (!socket || (isClose(socket) &&
+        handleType !== 'closeConnection')) {
         socket = await openConnection();
       }
-      handlers[handleType]({ socket, element, onMessage, onClose });
+      handlers[handleType]({ socket, element });
     });
   });
 };
