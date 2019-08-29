@@ -15,6 +15,12 @@ const config = {
     webxamplain: 3443,
     practicenode: 4443,
     mysocket: 5443
+  },
+  db: {
+    host: 'localhost',
+    user: 'sampleuser',
+    password: 'samplepass',
+    connectionLimit: 5
   }
 };
 
