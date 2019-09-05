@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Stream API</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="exam.css" />
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Stream API</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>ReadableStream</h2>
+      <readable-stream class="example"></readable-stream>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考サイト</h3>
+    <ul>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams">Using readable streams</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream">ReadableStream</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamDefaultReader/read">ReadableStreamDefaultReader.read()</a></li>
+    </ul>
+  </footer>
+
+  <script type="module" src="exam.js"></script>
+</body>
+
+<template id="readable-stream-examle">
+  <link rel="stylesheet" href="template.css" />
+  <button data-event-target="loadImage">load</button>
+  <canvas></canvas>
+</template>
+
+</html>

@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+:host {
+  all: initial;
+  contain: content;
+  display: flex;
+  flex-direction: column;
+}
+
+input, button {
+  font-size: 16px;
+}
+
+canvas {
+  order: -1;
+  height: 100%;
+  border: 1px grey solid;
+  background: ivory;
+}
