@@ -20,23 +20,41 @@
       <h2>ReadableStream</h2>
       <readable-stream class="example"></readable-stream>
     </section>
+    <section>
+      <h2>WritableStream</h2>
+      <writable-stream class="example"></writable-stream>
+    </section>
   </main>
 
   <footer>
     <h3>参考サイト</h3>
     <ul>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams">Using readable streams</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams">Using readable
+          streams</a></li>
       <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream">ReadableStream</a></li>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamDefaultReader/read">ReadableStreamDefaultReader.read()</a></li>
+      <li><a
+          href="https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamDefaultReader/read">ReadableStreamDefaultReader.read()</a>
+      </li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_writable_streams">Using writable
+          streams</a></li>
     </ul>
   </footer>
 
   <script type="module" src="exam.js"></script>
 </body>
 
-<template id="readable-stream-examle">
+<template id="readable-stream-example">
   <link rel="stylesheet" href="template.css" />
   <button data-event-target="loadImage">load</button>
+  <canvas></canvas>
+</template>
+
+<template id="writable-stream-example">
+  <link rel="stylesheet" href="template.css" />
+  <span>
+    <label for="image">画像選択</label>
+    <input id="image" type="file" accept="image/*" />
+  </span>
   <canvas></canvas>
 </template>
 
