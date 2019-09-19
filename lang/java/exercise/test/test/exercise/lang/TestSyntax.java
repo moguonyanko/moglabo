@@ -134,4 +134,17 @@ public class TestSyntax {
         var expected = "Web";
         assertThat(actual, is(expected));
     }
+
+    /**
+     * 参考:
+     * https://blog.codefx.org/java/text-blocks/https://blog.codefx.org/java/text-blocks/
+     */
+    @Test
+    public void canCreateTextBlocks() {
+        var s = "test";
+        var s2 = """
+        This is test
+        """;
+        System.out.println(s2);
+    }
 }
