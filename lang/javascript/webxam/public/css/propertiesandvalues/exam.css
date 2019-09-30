@@ -1,9 +1,5 @@
 @charset "UTF-8";
 
-:is(header, footer) p:hover {
-  color: blue;
-}
-
 .samplerect {
   display: flex;
   align-items: center;
@@ -13,15 +9,15 @@
   text-decoration: none;
   width: 250px;
   height: 250px;
-  --sample-color: blue;
+  --sample-color: url('exam.js'); /* わざと色として不正な値を指定 */
+  /* --sample-color: blue; */
   background: radial-gradient(var(--sample-color), #00FF33);
-  /* TODO: Custom Propertyがtransitionの値に従って変化しない。 */
   transition: --sample-color 1s, transform 1s, color 1s; 
 }
 
 /* モバイルデバイスでhoverをエミュレートするためのactive */
 .samplerect:is(:hover, :active) {
   --sample-color: yellow;
-  transform: rotate(45deg);
+  transform: rotate(360deg);
   color: orange;
 }

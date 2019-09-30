@@ -1,14 +1,18 @@
 /**
  * @fileoverview CSS Properties and Values API関連調査用スクリプト
+ * 参考:
+ * https://web.dev/css-props-and-vals/
  */
 
 class CSSRegisterProperties {
   constructor() {
     const props = {
       name: '--sample-color',
-      syntax: '<color>', // syntaxを指定していなくても結果は変わらない。
+      // 参考:
+      // https://drafts.csswg.org/css-values-3/#value-examples
+      syntax: '<color>',
       inherits: false,
-      initialValue: 'red'
+      initialValue: 'red' // 不正なプロパティが指定された時に使われる値
     };
 
     CSS.registerProperty(props);
@@ -20,7 +24,7 @@ const samples = {
 };
 
 const init = () => {
-  samples.forEach(Sample => new Sample);
+  Object.values(samples).forEach(Sample => new Sample);
 };
 
-window.addEventListener('DOMConetntLoaded', init);
+init();
