@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+canvas.saveImage {
+  width: 100%;
+  max-width: 400px;
+  max-height: 300px;
+  border: solid 1px darkgrey;
+  background: oldlace;
+}

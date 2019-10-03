@@ -35,6 +35,18 @@ const decoders = {
   }
 };
 
+const createNewFileHandle = async ({ extension, mimeType }) => {
+  const options = {
+    type: 'saveFile',
+    accepts: [{
+      description: 'sample new file',
+      extensions: [extension],
+      mimeTypes: [mimeType]
+    }]
+  };
+  return await window.chooseFileSystemEntries(options);
+};
+
 const funcs = {
   async chooseFile() {
     // ユーザーの操作を経由して呼び出されなければエラーになる。
@@ -56,10 +68,51 @@ const funcs = {
     } else {
       return [];
     }
+  },
+  async saveImage({ extension, mimeType, image }) {
+    const fileHandle = await createNewFileHandle({
+      extension, mimeType
+    });
+    const writer = await fileHandle.createWriter();
+    await writer.truncate(0);
+    // 新規作成時は読み取り権限が設定されていないため
+    // 作成後にブラウザからアクセスした際に403エラーとなる。
+    await writer.write(0, image);
+    await writer.close();
   }
 };
 
 // DOM
+
+const inits = {
+  saveImage() {
+    const canvas = document.querySelector('canvas.saveImage');
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'red';
+    const [x, y, w, h] = [
+      canvas.width / 4,
+      canvas.height / 4,
+      canvas.width / 2,
+      canvas.height / 2
+    ];
+    ctx.fillRect(x, y, w, h);
+  }
+};
+
+const getArgs = {
+  saveImage() {
+    const canvas = document.querySelector('canvas.saveImage');
+    return new Promise(resolve => {
+      canvas.toBlob(blob => {
+        resolve({
+          extension: 'png',
+          mimeType: 'image/png',
+          image: blob
+        });
+      });
+    });
+  }
+};
 
 const outputs = {
   chooseFile(result) {
@@ -91,6 +144,19 @@ const outputs = {
       ctx.textBaseline = 'middle';
       ctx.fillText(result, 0, h / 2);
     }
+  },
+  saveImage(result) {
+    const output = document.querySelector('.output.saveImage');
+    if (result instanceof Error) {
+      output.textContent = result.message;
+      return;
+    }
+    const img = new Image();
+    img.onload = () => {
+      output.querySelector('img') && output.querySelector('img').remove();
+      output.appendChild(img);
+    };
+    img.src = 'sample.png';
   }
 };
 
@@ -101,13 +167,24 @@ const addListener = () => {
     if (!t) return;
     if (typeof funcs[t] === 'function') {
       event.stopPropagation();
-      const result = await funcs[t]();
-      await outputs[t](result);
+      try {
+        const args = typeof getArgs[t] === 'function' && 
+          await getArgs[t]();
+        const result = await funcs[t](args);
+        await outputs[t](result);
+      } catch (err) {
+        await outputs[t](err);
+      }
     }
   });
 };
 
+const initAll = () => {
+  Object.values(inits).forEach(init => init());
+};
+
 const init = () => {
+  initAll();
   addListener();
 };
 

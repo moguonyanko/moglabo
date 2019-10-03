@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Native File System API</title>
   <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="exam.css" />
 </head>
 
 <body>
@@ -25,11 +26,18 @@
       <button data-event-target="readFile">選択</button>
       <canvas class="output readFile"></canvas>
     </section>
+    <section>
+      <h2>ファイルの書き込み</h2>
+      <button data-event-target="saveImage">保存</button>
+      <canvas class="saveImage" width="400" height="300"></canvas>
+      <div class="output saveImage"></div>
+    </section>
   </main>
 
   <footer>
     <p>参考サイト</p>
     <ul>
+      <li><a href="https://wicg.github.io/native-file-system/">Native File System</a></li>
       <li><a href="https://developers.google.com/web/updates/2019/08/native-file-system">The Native File System API:
           Simplifying access to local files</a></li>
       <li><a href="https://wicg.github.io/native-file-system/">Native File System(W3C)</a></li>
