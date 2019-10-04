@@ -79,6 +79,27 @@ const funcs = {
     // 作成後にブラウザからアクセスした際に403エラーとなる。
     await writer.write(0, image);
     await writer.close();
+  },
+  async getFileList() {
+    const handle = await window.chooseFileSystemEntries({
+      type: 'openDirectory'
+    });
+    const rootEntries = await handle.getEntries();
+    const f = async (entries, acc) => {
+      for await (const entry of entries) {
+        const name = entry.name;
+        if (entry.isFile) {
+          acc[name] = name;
+        } else {
+          acc[name] = {};
+          const ents = await entry.getEntries();
+          await f(ents, acc[name]);
+        }
+      }
+    };
+    const result = {};
+    await f(rootEntries, result);
+    return result;
   }
 };
 
@@ -157,6 +178,10 @@ const outputs = {
       output.appendChild(img);
     };
     img.src = 'sample.png';
+  },
+  getFileList(result) {
+    const output = document.querySelector('.output.getFileList');
+    output.textContent = JSON.stringify(result);
   }
 };
 
@@ -168,7 +193,7 @@ const addListener = () => {
     if (typeof funcs[t] === 'function') {
       event.stopPropagation();
       try {
-        const args = typeof getArgs[t] === 'function' && 
+        const args = typeof getArgs[t] === 'function' &&
           await getArgs[t]();
         const result = await funcs[t](args);
         await outputs[t](result);
