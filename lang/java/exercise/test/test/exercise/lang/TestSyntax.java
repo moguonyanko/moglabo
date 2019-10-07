@@ -101,7 +101,7 @@ public class TestSyntax {
             //case 3 < v && v < 10 -> "3 < v < 10";
             default -> {
                 System.out.println("Unsupported Value");
-                break "Any";
+                yield "Any";
             }
         };
         var expected = "Zero or One";
@@ -115,24 +115,45 @@ public class TestSyntax {
     @Test
     public void getValueWithSwitchStatement() {
         var lang = ProgramLang.RUST;
-        // case x -> y と case x: break y の書式を混ぜるとコンパイルエラー
+        // case x -> y と case x: yield y の書式を混ぜるとコンパイルエラー
         var actual = switch(lang) {
             case JAVA:
-                break "Java";
+                // breakではなくyieldでなければコンパイルエラー
+                yield "Java";
             case CSHARP:
-                break "C#";
+                yield "C#";
             case JAVASCRIPT, RUST:
                 System.out.println("Web lang");
-                break "Web";
+                yield "Web";
             case CPP:
                 System.out.println("Complex lang");
-                break "C++";
+                yield "C++";
             default:
                 System.out.println("Unsupported lang");
-                break "Unsupported";
+                yield "Unsupported";
         };
         var expected = "Web";
         assertThat(actual, is(expected));
+    }
+
+    /**
+     * 参考：
+     * https://www.vojtechruzicka.com/java-enhanced-switch/
+     */
+    @Test(expected = NullPointerException.class)
+    public void throwNullPointerExceptionWhenGotNullValue() {
+        var value = (Integer)null;
+
+        // valueがnullな時点で即例外がスローされる。
+        var result = switch (value) {
+            case 50 -> "OK";
+            case 70 -> "Good";
+            case 90 -> "Excellent";
+            // defaultが無いとコンパイルエラー
+            default -> throw new IllegalArgumentException("Not null");
+        };
+
+        System.out.println(result);
     }
 
     /**
