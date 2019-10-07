@@ -20,4 +20,9 @@
 **/tfjs.js
 **/node_modules
 **/package-lock.json
-
+**/*.toml
+**/*.lock
+**/*.cargo-lock
+**/*.bin
+**/*.timestamp
+**/target/rls
