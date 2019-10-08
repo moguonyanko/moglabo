@@ -26,3 +26,7 @@
 **/*.bin
 **/*.timestamp
 **/target/rls
+**/*.class
+**/*.jar
+**/*-runtime
+
