@@ -21,6 +21,10 @@ public class SampleLogger {
 		LOGGER.info("SampleLogger logInfo() called");
 	}
 
+	public static Logger getLogger() {
+		return LOGGER;
+	}
+
 }
 	
 

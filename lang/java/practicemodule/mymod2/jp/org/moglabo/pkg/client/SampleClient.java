@@ -6,6 +6,9 @@ public class SampleClient {
 
   public static void main(String[] args) {
     SampleLogger.logInfo();
+    // Loggerクラスを含むモジュールがrequires transitiveでなければコンパイルエラーになる。
+    var logger = SampleLogger.getLogger();
+    logger.info("Logger: requires transitive");
   }
 
 }
