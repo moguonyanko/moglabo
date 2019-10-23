@@ -29,7 +29,10 @@ javac -p ../mymod1/ module-info.java jp/org/moglabo/pkg/client/SampleClient.java
 #パスを通すこと。たとえモジュールがカレントディレクトリにあってもパスを通す必要がある。
 # -m オプションを指定しないとClassNotFoundExceptionとなる。
 java -p mymod1:mymod2 -m jp.org.moglabo.mod.client/jp.org.moglabo.pkg.client.SampleClient
+
 #複数のjarを参照している場合
+javac -p sampleservice.jar sampleapp/module-info.java sampleapp/myapp/MyAppMain.java
+cd sampleapp
 java -p ../sampleservice.jar:../sampleprovider.jar:. -m app/myapp.MyAppMain
 
 #相互に依存している場合のコンパイルの例
@@ -37,3 +40,23 @@ javac -p mymod2 mymod1/module-info.java mymod1/jp/org/moglabo/pkg/sample/SampleL
 javac -p mymod1:mymod2 mymod2/module-info.java mymod2/jp/org/moglabo/pkg/client/AccessLog.java
 cd sampleprovider
 javac -p ../sampleservice.jar module-info.java pkg1/Greeter.java
+
+#jarファイルのモジュール依存関係出力
+#Service
+jar --describe-module --file=sampleservice.jar
+#Provider
+jar --describe-module --file=sampleprovider.jar
+#Client
+#ここでProviderの情報が出力されない(＝コンパイル時にProviderに依存しない)ことが肝要。
+#Providerの実装を直接使うのではなくインターフェース(サービス)を通して機能を使わせる。
+jar --describe-module --file=sampleapp.jar
+
+-----
+
+#以下コンパイル及び実行コマンド例
+cd myprovider
+javac -p ../sampleservice.jar module-info.java p3/MyProvider.java 
+cd ../
+jar --create --file myprovider.jar -C myprovider .                     
+cd sampleapp
+java -p ../sampleservice.jar:../myprovider.jar:. -m app/myapp.MyAppMain
