@@ -1,15 +1,17 @@
 package test.exercise.concurrent;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.IntStream;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
+import java.util.Set;
+import java.util.stream.Stream;
+
 import static java.util.stream.Collectors.*;
 
 import org.junit.After;
@@ -21,9 +23,6 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import exercise.concurrent.Concurrents;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class TestSynchronizer {
 
@@ -218,5 +217,73 @@ public class TestSynchronizer {
 		
 		assertThat(actual, is(expected));
 	}
-	
+
+	/**
+	 * 参考:
+	 * JavaMagazine Vol.45
+	 */
+
+//	private static final List<Integer> results =
+//		Collections.synchronizedList(new ArrayList<>());
+	private static final List<Integer> results = new ArrayList<>();
+
+	private static class Cup implements Runnable {
+		private final CyclicBarrier barrier;
+		private final int ball;
+
+		private Cup(CyclicBarrier barrier, int ball) {
+			this.barrier = barrier;
+			this.ball = ball;
+		}
+
+		@Override
+		public void run() {
+			results.add(ball * ball);
+			try {
+				barrier.await();
+			} catch (InterruptedException | BrokenBarrierException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Test
+	public void awaitThreadsByCyclicBarrier() throws ExecutionException,
+		InterruptedException {
+		var parties = 2;
+		var v1 = 5;
+		var v2 = 11;
+		Function<List<Integer>, Integer> func =
+			balls -> balls.stream().mapToInt(Integer::intValue).sum();
+		Runnable action = () -> {
+			var actual = func.apply(results);
+			var expected = 146;
+			assertThat(actual, is(expected));
+			System.out.println("Sum: " + actual);
+		};
+		// barrierがawaitされないとactionは実行されない。
+		var barrier = new CyclicBarrier(parties, action);
+		var c1 = new Cup(barrier, v1);
+		var c2 = new Cup(barrier, v2);
+		var service = Executors.newFixedThreadPool(parties);
+
+		System.out.println(func.apply(results));
+
+		// 以下のコードでは稀に正しくない計算結果がaction内で観測されてエラーを引き起こす。
+//		var fa = service.submit(c1);
+//		var fb = service.submit(c2);
+//		fa.get();
+//		fb.get();
+
+		var f1 = CompletableFuture.runAsync(c1, service);
+		var f2 = CompletableFuture.runAsync(c2, service);
+		var cf = CompletableFuture.allOf(f1, f2).thenAcceptAsync(v -> {
+			// 最後に処理されることが保証される。
+			System.out.println("All tasks finished");
+		});
+		// getを呼び出さないとCyclicBarrierのactionが実行されないことがある。
+		// (メインスレッドが先に完了してしまう)
+		cf.get();
+	}
+
 }
