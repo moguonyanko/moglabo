@@ -9,6 +9,7 @@ jar --create --file samplelog.jar --main-class jp.org.moglabo.sample.SampleLogge
 jar --create --file sampleservice.jar -C sampleservice .
 
 #Check structure of module
+# -d == --describe-module, -f == --file
 jar -d -f samplelog.jar
 
 #Execute main class via jar
@@ -51,9 +52,47 @@ jar --describe-module --file=sampleprovider.jar
 #Providerの実装を直接使うのではなくインターフェース(サービス)を通して機能を使わせる。
 jar --describe-module --file=sampleapp.jar
 
+#コンパイル対象にモジュール・ディスクリプタ(module-info.java)が含まれない場合のコンパイル
+#参照するjarは  -p ではなく -cp で指定する。
+javac -cp ../mylogger/mylogger.jar app/MyApp.java
+
+#モジュール・ディスクリプタが存在しないアプリケーションとライブラリを指定した
+#アプリケーション実行(myloggerが参照されるライブラリ、myappがアプリケーション)
+java -cp mylogger/mylogger.jar:myapp/myapp.jar app.MyApp
+
+##モジュールアプリケーションへのマイグレーション(top down)
+##アプリケーション側(myapp)をモジュールアプリケーションにする。
+
+#モジュール依存関係の出力
+#最後のjarが依存関係出力対象となる。 -s を除けば詳細な出力になる。
+jdeps --module-path mylogger/mylogger.jar -s myapp/myapp.jar
+
+#コンパイル対象にモジュール・ディスクリプタが存在する場合のコンパイル
+javac -p ../mylogger/mylogger.jar module-info.java app/MyApp.java 
+
+#モジュールアプリケーションとそうでないものが混在する場合の実行
+#myloggerはモジュールアプリケーション「ではない」
+#myappは実行対象のMyAppを含むモジュールアプリケーション「である」
+# --module-path は -p と同じ。 --module は -m と同じ。
+java --module-path mylogger/mylogger.jar:myapp_module/myapp.jar --module app/app.MyApp
+
+##モジュールアプリケーションへのマイグレーション(bottom up)
+##ライブラリ側(mylogger)をモジュールアプリケーションにする。
+
+#モジュール・ディスクリプタの生成
+jdeps --generate-module-info . mylogger.jar
+
+#生成したモジュールディスクリプタを含めてコンパイル
+javac module-info.java logging/MyLogger.java
+#モジュールになったjarの生成
+jar --create --verbose --file mylogger.jar .
+
+#モジュールになったmyloggerを参照する非モジュールアプリケーションmyapp実行
+java --add-modules mylogger --module-path mylogger_module/mylogger.jar --class-path myapp/myapp.jar app.MyApp
+
 -----
 
-#以下コンパイル及び実行コマンド例
+#モジュールアプリケーションのコンパイル及び実行コマンド例
 cd myprovider
 javac -p ../sampleservice.jar module-info.java p3/MyProvider.java 
 cd ../
