@@ -1,0 +1,5 @@
+digraph "my-service.jar" {
+    // Path: my-service.jar
+   "logging"                                          -> "java.lang (java.base)";
+   "logging"                                          -> "java.util.logging (java.logging)";
+}

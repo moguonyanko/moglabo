@@ -1,0 +1,7 @@
+digraph "summary" {
+  "my-service.jar"                                   -> "java.base (java.base)";
+  "my-service.jar"                                   -> "java.logging (java.logging)";
+  "my-client.jar"                                    -> "java.base (java.base)";
+  "my-client.jar"                                    -> "java.logging (java.logging)";
+  "my-client.jar"                                    -> "my-service.jar";
+}

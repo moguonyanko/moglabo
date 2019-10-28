@@ -6,7 +6,11 @@ java -p ./mymod1 -m jp.org.moglabo.sample/jp.org.moglabo.sample.SampleLogger
 #Create Jar
 jar --create --file samplelog.jar --main-class jp.org.moglabo.sample.SampleLogger --module-version 1.0.0 -C mymod1 .
 #Create Jar(not main class)
+# -C の後には圧縮対象のディレクトリ名を指定する。
 jar --create --file sampleservice.jar -C sampleservice .
+
+#jarの内容確認
+jar tvf my-service.jar
 
 #Check structure of module
 # -d == --describe-module, -f == --file
@@ -16,6 +20,10 @@ jar -d -f samplelog.jar
 java -p mymod1/ -jar samplelog.jar
 #Execute main class via jar(main class not defined in jar)
 java -p samplelog.jar -m jp.org.moglabo.sample/jp.org.moglabo.sample.SampleLogger
+#jarが複数の場合(my-serviceがライブラリでmy-clientがそれを利用するアプリ)
+#my-service.jarが指定されないとjava.lang.ClassNotFoundExceptionとなり
+#my-client.jarが指定されないとjava.lang.module.FindExceptionとなる。
+java -p my-service.jar:my-client.jar -m my.client/app.App
 
 #モジュールパスとメインクラスを指定してプログラムを実行
 java -p ./mymod1 -m jp.org.moglabo.sample/jp.org.moglabo.sample.SampleLogger
@@ -63,9 +71,19 @@ java -cp mylogger/mylogger.jar:myapp/myapp.jar app.MyApp
 ##モジュールアプリケーションへのマイグレーション(top down)
 ##アプリケーション側(myapp)をモジュールアプリケーションにする。
 
-#モジュール依存関係の出力
+##モジュール依存関係の出力
 #最後のjarが依存関係出力対象となる。 -s を除けば詳細な出力になる。
 jdeps --module-path mylogger/mylogger.jar -s myapp/myapp.jar
+#モジュールアプリケーションを含まない場合
+jdeps -cp service.jar -s client.jar 
+jdeps -s service.jar
+# -s と -summary は同じ。
+jdeps --module-path my-service.jar:my-client.jar -summary --module my.client
+jdeps --module-path my-service.jar:my-client.jar -summary --module my.service
+
+#dotファイルに依存関係出力
+#my-service.jar.dotとmy-client.jar.dotが出力される。
+jdeps --module-path my-service.jar:my-client.jar --dot-output . *.jar
 
 #コンパイル対象にモジュール・ディスクリプタが存在する場合のコンパイル
 javac -p ../mylogger/mylogger.jar module-info.java app/MyApp.java 
@@ -79,8 +97,17 @@ java --module-path mylogger/mylogger.jar:myapp_module/myapp.jar --module app/app
 ##モジュールアプリケーションへのマイグレーション(bottom up)
 ##ライブラリ側(mylogger)をモジュールアプリケーションにする。
 
-#モジュール・ディスクリプタの生成
+#モジュール・ディスクリプタ(module-info.java)の生成
 jdeps --generate-module-info . mylogger.jar
+#複数のjarに対してまとめて生成
+jdeps --generate-module-info . *.jar
+#対象のjarの名前にハイフンが含まれている場合はハイフンがドットに
+#置換されそれがモジュール名とされる。この時module-info.javaは
+#新規生成されたディレクトリ内に出力される。
+#以下はmy-client.jarとmy-service.jarに対してmodule-info.javaを
+#生成した際の出力である。
+#writing to ./my.client/module-info.java
+#writing to ./my.service/module-info.java
 
 #生成したモジュールディスクリプタを含めてコンパイル
 javac module-info.java logging/MyLogger.java

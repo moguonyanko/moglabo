@@ -1,0 +1,7 @@
+digraph "my-client.jar" {
+    // Path: my-client.jar
+   "app"                                              -> "java.lang (java.base)";
+   "app"                                              -> "java.util (java.base)";
+   "app"                                              -> "java.util.logging (java.logging)";
+   "app"                                              -> "logging (my-service.jar)";
+}
