@@ -1,0 +1,7 @@
+digraph "summary" {
+  "modB"                                             -> "java.base (java.base)";
+  "modB"                                             -> "modC";
+  "modC"                                             -> "java.base (java.base)";
+  "modA"                                             -> "java.base (java.base)";
+  "modA"                                             -> "modC";
+}

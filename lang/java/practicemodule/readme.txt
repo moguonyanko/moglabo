@@ -32,6 +32,12 @@ java -p ./mymod1 -m jp.org.moglabo.sample/jp.org.moglabo.sample.SampleLogger
 javac mymod1/module-info.java mymod1/jp/org/moglabo/pkg/sample/SampleLogger.java 
 cd mymod2
 javac -p ../mymod1/ module-info.java jp/org/moglabo/pkg/client/SampleClient.java
+#複数のモジュールのパスを指定してコンパイル
+# module-source-path の後ろに . を指定してカレントディレクトリもパスに含めないと
+#自身のモジュールを見つけられずにコンパイルエラーになる。
+javac --module-source-path . modA/module-info.java modA/pkg1/SampleA.java -d .
+javac --module-source-path . modB/module-info.java modB/pkg2/SampleB.java -d .
+javac --module-source-path . modC/module-info.java modC/pkg3/InterfaceA.java modC/pkg3/InterfaceB.java -d .
 
 #他のモジュールをパスで指定してプログラムを実行
 #実行対象クラスのモジュールがあるディレクトリ(ここではmymod2)にも -p オプションで
@@ -84,6 +90,8 @@ jdeps --module-path my-service.jar:my-client.jar -summary --module my.service
 #dotファイルに依存関係出力
 #my-service.jar.dotとmy-client.jar.dotが出力される。
 jdeps --module-path my-service.jar:my-client.jar --dot-output . *.jar
+#最後のjarを明示すればそのjarのdotファイルだけ出力できる。
+jdeps --module-path modA.jar:modB.jar:modC.jar --dot-output . modC.jar
 
 #コンパイル対象にモジュール・ディスクリプタが存在する場合のコンパイル
 javac -p ../mylogger/mylogger.jar module-info.java app/MyApp.java 

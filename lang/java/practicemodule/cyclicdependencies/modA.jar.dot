@@ -1,0 +1,5 @@
+digraph "modA" {
+    // Path: /Users/kouichi/src/moglabo/lang/java/practicemodule/cyclicdependencies/modA.jar
+   "pkg1"                                             -> "java.lang (java.base)";
+   "pkg1"                                             -> "pkg3 (modC)";
+}
