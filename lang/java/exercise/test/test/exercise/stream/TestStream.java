@@ -1,6 +1,7 @@
 package test.exercise.stream;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -131,4 +132,74 @@ public class TestStream {
         // テストされる数列がランダムで構築されるため結果も毎回変わる。
         System.out.println(valueSize);
     }
+
+    private static class Student {
+
+        private final String name;
+        private final int age;
+
+        private Student(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        private String getName() {
+            return name;
+        }
+
+        private int getAge() {
+            return age;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Student) {
+                var other = (Student)obj;
+                return name.equals(other.name) &&
+                    age == other.age;
+            }
+
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, age);
+        }
+
+    }
+
+    @Test
+    public void calcStreamElementsAverage() {
+        var actual = Stream.of(new Student("Mike", 19), new Student("Hoge", 20),
+            new Student("Poko", 33))
+            .mapToInt(Student::getAge)
+            .average()
+            .getAsDouble();
+
+        var expected = 24d;
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void filterWithFlatMap() {
+        Predicate<Student> adult = s -> s.getAge() >= 20;
+
+        var groupA = List.of(new Student("Mike", 17), new Student("Foo", 23));
+        var groupB = List.of(new Student("Bar", 59), new Student("Baz", 16));
+        var groupC = List.of(new Student("Poko", 19), new Student("Peko", 18));
+
+        var stream = Stream.of(groupA, groupB, groupC);
+
+        var expected = List.of("Foo", "Bar");
+
+        // flatMapでList<Student>のStreamをStudentのStreamに変換している。
+        var actual = stream.flatMap(groups -> groups.stream().filter(adult))
+            .map(Student::getName)
+            .collect(toList());
+
+        assertThat(actual, is(expected));
+    }
+
 }

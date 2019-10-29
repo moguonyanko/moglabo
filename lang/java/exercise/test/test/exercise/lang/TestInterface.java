@@ -130,4 +130,24 @@ public class TestInterface {
         System.out.println(CCSample.helloo());
     }
 
+    // 暗黙でstatic
+    @FunctionalInterface
+    private interface ISampleB {
+
+        String getS();
+
+        //int getI();
+
+        // Objectのpublicメソッドは宣言してもFunctionalInterfaceとしては
+        // 有効なままである。逆にこれらしか宣言されていないとエラーになる。
+        boolean equals(Object o);
+
+        int hashCode();
+
+        // cloneはprotectedメソッドなので宣言するとFunctionalInterfaceとして
+        // 無効になりコンパイルエラーとなる。
+        //Object clone();
+
+    }
+
 }
