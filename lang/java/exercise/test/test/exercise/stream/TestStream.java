@@ -9,7 +9,7 @@ import static java.util.stream.Collectors.*;
 
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import exercise.stream.StreamUtil;
 
@@ -175,7 +175,7 @@ public class TestStream {
             new Student("Poko", 33))
             .mapToInt(Student::getAge)
             .average()
-            .getAsDouble();
+            .orElseThrow(IllegalStateException::new);
 
         var expected = 24d;
 
@@ -200,6 +200,38 @@ public class TestStream {
             .collect(toList());
 
         assertThat(actual, is(expected));
+    }
+
+    /**
+     * 参考:
+     * http://java.boot.by/ocpjd11-upgrade-guide/ch04s02.html
+     */
+    @Test
+    public void checkOrderedStreamBySpliterator() {
+        var list = List.of(1, 2, 3, 4, 5);
+
+        var sp1 = list.spliterator();
+        assertTrue(sp1.hasCharacteristics(Spliterator.ORDERED));
+
+        // 並列ストリームにしても順序あり
+        var sp1a = list.stream().parallel().spliterator();
+        assertTrue(sp1a.hasCharacteristics(Spliterator.ORDERED));
+
+        // unorderedにすれば順序なし
+        var sp1b = list.stream().unordered().spliterator();
+        assertFalse(sp1b.hasCharacteristics(Spliterator.ORDERED));
+
+        var set = Set.of(1, 2, 3, 4, 5);
+
+        var sp2 = set.spliterator();
+        assertFalse(sp2.hasCharacteristics(Spliterator.ORDERED));
+
+        // 順序づけされたSetを経由してストリームを生成すれば順序あり
+        var sp2a = new TreeSet<>(set).spliterator();
+        assertTrue(sp2a.hasCharacteristics(Spliterator.ORDERED));
+
+        var sp2b = new TreeSet<>(set).stream().unordered().spliterator();
+        assertFalse(sp2b.hasCharacteristics(Spliterator.ORDERED));
     }
 
 }

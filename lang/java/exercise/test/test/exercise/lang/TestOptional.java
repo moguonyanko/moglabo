@@ -2,6 +2,7 @@ package test.exercise.lang;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -105,11 +106,7 @@ public class TestOptional {
                 // nullをラップしたOptionalに対してflatMap及びmapは何も行わない。
                 // したがって以下のコードが実行されることはない。
                 System.out.println("flatMap");
-                if (value != null) {
-                    return Optional.of(value);
-                } else {
-                    return Optional.of("not null");
-                }
+                return Optional.of(Objects.requireNonNullElse(value, "not null"));
             })
             .map(String::toUpperCase)
             .or(() -> Optional.of("NULL"))
@@ -121,4 +118,64 @@ public class TestOptional {
         // nullを含むOptionalに対してはOptional.mapもOptional.flatMapも
         // 何も行わないのである。
     }
+
+    @Test
+    public void compareEmptyOptionals() {
+        var o1 = Optional.empty();
+
+        var v = (String)null;
+        var o2 = Optional.ofNullable(v);
+
+        assertEquals(o1, o2);
+    }
+
+    /**
+     * 参考:
+     * http://java.boot.by/ocpjd11-upgrade-guide/ch04s03.html
+     */
+    @Test
+    public void makeOptionalStreamWithFlatMap() {
+        var src = List.of(
+            Optional.empty(),
+            Optional.of("Hello"),
+            Optional.empty(),
+            Optional.of("Hey"),
+            Optional.of("Java Stream")
+        );
+
+        // emptyなOptionalを除外するためのflatMap
+        // mapでは除外されない。
+        var actual = src.stream()
+            .flatMap(o -> o.isPresent() ? Stream.of(o) : Stream.empty())
+            .collect(Collectors.toList());
+
+        assertEquals(actual.size(), 3);
+
+        // 終端処理を行ってcloseされたStreamに対しmapなどを呼び出すと
+        // IllegalStateExceptionがスローされる。Streamは都度生成すること。
+
+        var actual2 = src.stream()
+            // 三項演算子を用いた上の記述方法と同じ意味を示す。
+            .flatMap(Optional::stream)
+            .collect(Collectors.toList());
+
+        assertEquals(actual2.size(), 3);
+    }
+
+    @Test
+    public void getValueByOptionalMaps() {
+        var s = Optional.of("Java");
+
+        // Optional.mapの引数のFunctionにはStringが渡される。そしてFunctionは
+        // Tを返すことを要求される。Optional.mapの戻り値はOptional<T>である。
+        var actual = s.map(String::length).get();
+        assertThat(actual, is(4));
+
+        // Optional.flatMapの引数のFunctionにもStringが渡されるが
+        // FunctionはOptional<T>を返すことを要求される。
+        // Optional.flatMapもOptional<T>を返す。
+        var actual2 = s.flatMap(v -> Optional.of(v.length())).get();
+        assertThat(actual2, is(4));
+    }
+
 }
