@@ -1,12 +1,15 @@
 package test.exercise.stream;
 
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import static java.util.stream.Collectors.*;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -232,6 +235,60 @@ public class TestStream {
 
         var sp2b = new TreeSet<>(set).stream().unordered().spliterator();
         assertFalse(sp2b.hasCharacteristics(Spliterator.ORDERED));
+    }
+
+    private static class NotComparableClass {}
+
+    private static class MyItem implements Comparable<MyItem> {
+        private final int id;
+
+        private MyItem() {
+            var random = new SecureRandom();
+            id = random.nextInt();
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        @Override
+        public int compareTo(@NotNull MyItem o) {
+            return id - o.id;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(id);
+        }
+    }
+
+    @Test(expected = ClassCastException.class)
+    public void throwExceptionWhenSortedNotComparableObjects() {
+        Supplier<NotComparableClass> sp = NotComparableClass::new;
+        Stream.generate(sp)
+            .limit(10)
+            .sorted()
+            .collect(toList());
+    }
+
+    @Test
+    public void canSortStream() {
+        Supplier<MyItem> sp = MyItem::new;
+
+        var results = Stream.generate(sp)
+            .limit(10)
+            .sorted()
+            .collect(toList());
+
+        System.out.println(results);
+
+        // 上と同じ振る舞いになる。
+        var results2 = Stream.generate(sp)
+            .limit(10)
+            .sorted(Comparator.comparing(MyItem::getId))
+            .collect(toList());
+
+        System.out.println(results2);
     }
 
 }
