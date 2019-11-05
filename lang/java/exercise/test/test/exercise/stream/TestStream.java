@@ -7,11 +7,14 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
 import static java.util.stream.Collectors.*;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.*;
 
 import exercise.stream.StreamUtil;
@@ -116,7 +119,7 @@ public class TestStream {
         var random = new SplittableRandom();
         var n = 3;
         var start = 1;
-        var end = (long)Math.pow(2, 21);
+        var end = (long) Math.pow(2, 21);
         var size = end - start;
         // 以下の書き方はコンパイルエラーになる。
         //var start = 1,
@@ -157,7 +160,7 @@ public class TestStream {
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof Student) {
-                var other = (Student)obj;
+                var other = (Student) obj;
                 return name.equals(other.name) &&
                     age == other.age;
             }
@@ -237,7 +240,8 @@ public class TestStream {
         assertFalse(sp2b.hasCharacteristics(Spliterator.ORDERED));
     }
 
-    private static class NotComparableClass {}
+    private static class NotComparableClass {
+    }
 
     private static class MyItem implements Comparable<MyItem> {
         private final int id;
@@ -289,6 +293,58 @@ public class TestStream {
             .collect(toList());
 
         System.out.println(results2);
+    }
+
+    @Test
+    public void calcAverage() {
+        var is = IntStream.rangeClosed(1, 10);
+        // averageは終端処理なので返すのはStreamではなくOptionalDouble
+        var actual = is.average().getAsDouble();
+        var expected = 5.5;
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void collectSortedSet() {
+        var src = Set.of(5, 2, 4, 3, 1);
+        var expected = new TreeSet<>(src);
+        var actual = src.stream().collect(toCollection(TreeSet::new));
+        assertThat(actual, is(expected));
+
+        // 最後のtoSetの振る舞い次第では途中のsortedによるソートは壊されてしまう。
+        // 終端処理で壊してしまう可能性を考慮するとソートはできるだけ終端処理で行うのが
+        // 好ましいのではないか。
+        // var actual2 = src.stream().sorted().collect(toSet());
+        // assertThat(actual2, is(expected));
+    }
+
+    @Test
+    public void calcByAveragingDouble() {
+        var students = List.of(new Student("Mike", 19),
+            new Student("Pony", 21),
+            new Student("Boo", 23));
+
+        var actual = students.stream().collect(averagingDouble(Student::getAge));
+        var expected = 21.0;
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void canPartTwoGroup() {
+        var students = List.of(new Student("Mike", 19),
+            new Student("Pony", 21),
+            new Student("Boo", 23),
+            new Student("Bar", 18),
+            new Student("Foo", 30),
+            new Student("Peter", 13));
+
+        Predicate<Student> isAdult = student -> student.getAge() >= 20;
+
+        var map = students.stream()
+            .collect(partitioningBy(isAdult, counting()));
+        var expected = 3L; // countingがLongを扱うためintではエラーになる
+        assertThat(map.get(Boolean.TRUE), is(expected));
     }
 
 }
