@@ -19,9 +19,7 @@ const sampleNullFunc = null;
 
 const sampleSize = 5;
 class SampeValue {
-  /* eslint-disable */
   value = parseInt(Math.random() * 100);
-  /* eslint-enable */
  
   constructor() {
     this.properties = {
@@ -54,9 +52,7 @@ const execute = () => {
   const p = Object.assign({}, position);
   const q = null;
 
-  /* eslint-disable */
   println(`x = ${p?.x}, z = ${p?.z}`);
-  /* eslint-enable */
   println(`address.code = ${p?.address?.['code']}, address.lv = ${p?.address?.['lv']}`);
   // qやsampleNullFuncの定義自体が存在しないとエラーになってしまう。
   println(p?.description(), q?.description());
@@ -76,23 +72,75 @@ const execute = () => {
   // 削除できた時とプロパティが存在せず削除が発生しなかった時
   // どちらもtrueが返される。
   println(delete p?.x, delete p?.notExistProperty);
+  // Optional Chaining operatorにより評価が打ち切られた時もtrueが返る。
+  println(delete q?.x);
   try {
+    // 以下はシンタックスエラー
+    //println(delete new SampeValue?.properties)
     // sealやfreezeされているプロパティにdeleteを適用すると
     // falseが返るのではなく例外がスローされる。
     println(delete new SampeValue()?.properties)
   } catch(err) {
     println(err.message);
   }
+
+  // Grouping
+  println((p?.address).name);
+  println(p?.nodata?.name); // 空文字
+  // 以下はシンタックスエラー
+  //println((p?.nodata?).name);
+  println((p?.description()).toUpperCase());
+  println(q?.address.name); // 空文字
+  // 以下はTypeError。Groupingされた最後のプロパティが定義されていない、
+  // 即ちundefinedだとエラーになる。
+  //println((q?.address).name);
 };
 
-const adjustStyle = () => {
-  // CSSで要素表示順序を逆にしてもスクロールバーは元の方向にスクロールされてしまう。
-  // そこでscrollToで出力要素の最上部にスクロールバーを移動させている。
+const adjustScroll = ({ direction = 'top' }) => {
   const o = document.querySelector('.output');
-  o.scroll({top: -parseInt(getComputedStyle(o).getPropertyValue('height'))});  
+
+  switch (direction.toLowerCase()) {
+    case 'top': {
+      // {}がなければletで宣言してもブロックスコープが形成されない。
+      // その場合後続のdegreeで宣言が重複することによるエラーが発生する。
+      let degree = -parseInt(getComputedStyle(o).getPropertyValue('height'));
+      o.scroll({top: degree});  
+      break;
+    }
+    case 'down': 
+      let degree = 0;
+      o.scroll({top: degree});  
+      break;
+    default:
+      // Does nothing
+  }
+};
+
+const listener = {
+  upOutput() {
+    adjustScroll({ direction: 'top' });
+  },
+  downOutput() {
+    adjustScroll({ direction: 'down' });
+  }
+};
+
+const addListener = () => {
+  const main = document.querySelector('main');
+  main.addEventListener('pointerup', event => {
+    const et = event.target.dataset.eventTarget;
+    if (typeof listener[et] === 'function') {
+      event.stopPropagation();
+      listener[et]();
+    }
+  });
 };
 
 window.addEventListener('DOMContentLoaded', () => {
+  addListener();
   execute();
-  adjustStyle();
+
+  // CSSで要素表示順序を逆にしてもスクロールバーは元の方向にスクロールされてしまう。
+  // そこで最初にスクロールバーを出力要素の最上部に移動させている。
+  adjustScroll({ direction: 'top' });
 });

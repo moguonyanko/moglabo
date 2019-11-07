@@ -4,4 +4,12 @@
   display: flex;
   /* 逆にすることで新しい出力をより上部に表示する。 */
   flex-direction: column-reverse;
+  max-width: 100vw;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .output {
+    scroll-behavior: auto;
+  }
 }
