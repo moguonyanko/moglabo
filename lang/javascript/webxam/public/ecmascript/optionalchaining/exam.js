@@ -19,7 +19,9 @@ const sampleNullFunc = null;
 
 const sampleSize = 5;
 class SampeValue {
+  /* eslint-disable */
   value = parseInt(Math.random() * 100);
+  /* eslint-enable */
  
   constructor() {
     this.properties = {
@@ -31,6 +33,7 @@ class SampeValue {
         return `NAME${this.value * index}`;
       }
     }
+    Object.freeze(this);
   }
 }
 
@@ -40,30 +43,56 @@ const sampleArray = [...function* (size){
   }
 }(sampleSize)];
 
-const runTest = () => {
+// DOM
+
+const println = (...content) => {
+  const output = document.querySelector('.output');
+  output.innerHTML += `<span>${content.join(',')}</span>`;
+};
+
+const execute = () => {
   const p = Object.assign({}, position);
   const q = null;
 
   /* eslint-disable */
-  console.log(`x = ${p?.x}, z = ${p?.z}`);
+  println(`x = ${p?.x}, z = ${p?.z}`);
   /* eslint-enable */
-  console.log(`address.code = ${p?.address?.['code']}, address.lv = ${p?.address?.['lv']}`);
+  println(`address.code = ${p?.address?.['code']}, address.lv = ${p?.address?.['lv']}`);
   // qやsampleNullFuncの定義自体が存在しないとエラーになってしまう。
-  console.log(p?.description(), q?.description());
-  console.log(sampleFunc?.(), sampleNullFunc?.());
+  println(p?.description(), q?.description());
+  println(sampleFunc?.(), sampleNullFunc?.());
 
   // 意図的に添字をオーバーさせる。
   for (let i = 0; i < sampleSize; ) {
-    console.log(i, sampleArray[++i]?.value);
+    println(i, sampleArray[++i]?.value);
   }
   for (let i = 0; i < sampleSize; ) {
     // getNameのiでインクリメントを指定するとOptional Chaining operatorにより
     // その前で処理が打ち切られた時にインクリメントされないため無限ループになる。
-    //console.log(i, sampleArray[i]?.properties.getName(++i).toLowerCase());
-    console.log(i, sampleArray[++i]?.properties.getName(i).toLowerCase());
+    //display(i, sampleArray[i]?.properties.getName(++i).toLowerCase());
+    println(i, sampleArray[++i]?.properties.getName(i).toLowerCase());
+  }
+
+  // 削除できた時とプロパティが存在せず削除が発生しなかった時
+  // どちらもtrueが返される。
+  println(delete p?.x, delete p?.notExistProperty);
+  try {
+    // sealやfreezeされているプロパティにdeleteを適用すると
+    // falseが返るのではなく例外がスローされる。
+    println(delete new SampeValue()?.properties)
+  } catch(err) {
+    println(err.message);
   }
 };
- 
+
+const adjustStyle = () => {
+  // CSSで要素表示順序を逆にしてもスクロールバーは元の方向にスクロールされてしまう。
+  // そこでscrollToで出力要素の最上部にスクロールバーを移動させている。
+  const o = document.querySelector('.output');
+  o.scroll({top: -parseInt(getComputedStyle(o).getPropertyValue('height'))});  
+};
+
 window.addEventListener('DOMContentLoaded', () => {
-  runTest();
+  execute();
+  adjustStyle();
 });

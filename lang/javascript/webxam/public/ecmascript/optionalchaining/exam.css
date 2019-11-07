@@ -1,0 +1,7 @@
+@charset "UTF-8";
+
+.output {
+  display: flex;
+  /* 逆にすることで新しい出力をより上部に表示する。 */
+  flex-direction: column-reverse;
+}
