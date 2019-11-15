@@ -1,11 +1,11 @@
 package test.exercise.io;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -92,6 +92,27 @@ public class TestFileOperation {
 		var uri = URI.create("file:///usr/local/var");
 		var p2 = Path.of(uri);
 		assertTrue(Files.exists(p2));
+	}
+
+	@Test
+	public void canReadString() throws IOException {
+		var path = Paths.get("sample/foo/bar/baz/filessample.txt");
+		// Charsetを指定しない場合はUTF-8
+		var content = Files.readString(path, StandardCharsets.UTF_8);
+		assertNotNull(content);
+	}
+
+	@Test
+	public void canWriteString() throws IOException {
+		var path = Files.createTempFile("test", ".mytest");
+		var resultPath = Files.writeString(path, "HelloJavaNewIO",
+			StandardCharsets.UTF_8,
+			// OpenOptionを指定しない時は以下を指定したのと同じになる。
+			StandardOpenOption.CREATE,
+			StandardOpenOption.TRUNCATE_EXISTING,
+			StandardOpenOption.WRITE);
+		var lines = Files.readAllLines(resultPath, StandardCharsets.UTF_8);
+		assertTrue(lines.size() > 0);
 	}
 
 }
