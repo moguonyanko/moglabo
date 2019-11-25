@@ -2,6 +2,7 @@ package test.exercise.lang;
 
 import java.util.Arrays;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
@@ -71,6 +72,60 @@ public class TestLocalVariable {
         assertThat(actual1, is(expected));
         int actual2 = f1.calc(1, 9);
         assertThat(actual2, is(expected));
+    }
+
+    // varは予約された型名であるためインターフェース名前には使用できない。
+    // 予約後ではないので変数名などに使用することはできる。
+    //private interface var {}
+
+    private static class SampleA {
+
+        private static int ID;
+        private String name;
+
+        static {
+            var x = 0;
+            ID = x;
+        }
+
+        {
+            var x = this.getClass().getSimpleName();
+            this.name = x;
+        }
+
+    }
+
+    @Test
+    public void getLocalVariablesFromInitBlocks() {
+        var s = new SampleA();
+        //var s = (SampleA)null; // コンパイルは通るがやるべきでない。
+        // varを使う場合は一度に複数の変数を宣言できない(同時に初期化してもダメ)。
+        //var t = new SampleA(), u = new SampleA();
+
+        //var a1 = { new SampleA(), new SampleA() }; // NG
+        //var a2 = new SampleA[]{ new SampleA(), new SampleA() }; // OK
+
+        assertThat(s.name, is("SampleA"));
+        assertThat(SampleA.ID, is(0));
+    }
+
+    @Test
+    public void canUseVarWithLambdaParameter() {
+        // ラムダのパラメータにvarを指定できるようになったことで
+        // finalやアノテーションが指定できる。しかし以下の例では
+        // 実行時例外になってしまう。
+        //Predicate<Integer> even = (@NotNull var i) -> i % 2 == 0;
+        // NotNullアノテーションでコンパイルエラーにしたいがエラーにならない。
+        //Integer sample = null;
+        //even.test(sample);
+
+        // 以下は全部コンパイルエラー
+        //Predicate<Integer> even = var i -> i % 2 == 0;
+        //Predicate<Integer> even = (var i, j) -> i % 2 == 0;
+        //Predicate<Integer> even = (var i, int j) -> i % 2 == 0;
+
+        Predicate<Integer> even = (final var i) -> i % 2 == 0;
+        assertFalse(even.test(101));
     }
 
 }

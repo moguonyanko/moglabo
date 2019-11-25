@@ -115,4 +115,15 @@ public class TestFileOperation {
 		assertTrue(lines.size() > 0);
 	}
 
+	@Test
+	public void getLinesFromTextFile() throws Exception {
+		Path path = Paths.get("sample/foo/bar/baz/filessample.txt");
+		// Files.linesは内部でストリームをcloseしない。
+		// closeが行われるコードを呼び出し側で明示的に記述しないと
+		// リソースの解放漏れが発生する。
+		try (var stream = Files.lines(path)) {
+			stream.map(String::toUpperCase).forEach(System.out::println);
+		}
+	}
+
 }
