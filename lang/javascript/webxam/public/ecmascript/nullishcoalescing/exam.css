@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+.samplecontainer {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.sampleview {
+  flex: 1;
+  min-width: 400px;
+  max-width: 600px;
+}
+
+.sampledata {
+  border: solid 1px black;
+}

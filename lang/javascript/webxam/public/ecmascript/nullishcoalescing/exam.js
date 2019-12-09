@@ -2,28 +2,46 @@
  * @fileoverview Nullish Coalescing調査用スクリプト
  */
 
-const runTest = () => {
-  const sample = {
-    x: 0,
-    y: 1,
-    z: null,
-    a: false,
-    b: undefined,
-    c: ''
-  };
+const sample = {
+  x: 0,
+  y: 1,
+  z: null,
+  a: false,
+  b: undefined,
+  c: ''
+};
 
-  const noVal = 'NO VALUE';
+const noVal = 'NO VALUE';
 
+const getResult = () => {
   const result = Object.keys(sample)
     .map(key => `${key}=${sample[key] ?? noVal}`); // eslint-disable-line
 
+  return result;
+};
+
+const runTest = () => {
+  const result = getResult();
   // null, undefinedの時だけ??の右辺値が利用される。
   result.forEach(r => console.log(r));
   console.log(sample.noValue ?? noVal);
 };
 
+// DOM
+
+const displayResult = () => {
+  const output = document.querySelector('.output');
+  const result = getResult();
+  const text = result.map(r => `<p>${r}</p>`).join('');
+  output.innerHTML = text;
+};
+
 const init = () => {
-  console.log(document.querySelector('footer').classList);
+  const sampleEle = document.querySelector('.sampledata');
+  sampleEle.innerHTML = Object.keys(sample).map(key => {
+    return `<p>${key}:${sample[key]}</p>`;
+  }).join('');
+  displayResult();
 };
 
 // async属性を指定したscript要素はDOMContentLoadedイベントで解析されない。
