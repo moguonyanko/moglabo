@@ -20,7 +20,9 @@ import exercise.function.FunctionalFactory;
 import exercise.function.FunctionalShop;
 import exercise.function.ShopItem;
 import exercise.function.ShopItemType;
-import java.util.function.Consumer;
+
+import java.util.function.*;
+import java.util.stream.Collectors;
 
 public class TestLambdaPractice {
 
@@ -369,4 +371,125 @@ public class TestLambdaPractice {
 		var myStudent = new MyStudent();
 		myStudent.mainFunc();
 	}
+
+	@Test
+	public void checkSyntaxStaticMethodReference() {
+		IntFunction<String> f1 = i -> String.valueOf(i);
+		IntFunction<String> f2 = String::valueOf;
+
+		assertThat(f1.apply(1), is(f2.apply(1)));
+	}
+
+	private static class SampleA {
+		private final String[] values;
+
+		private SampleA(String[] values) {
+			this.values = values;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof SampleA) {
+				var that = (SampleA)obj;
+				return Arrays.equals(values, that.values);
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(values);
+		}
+	}
+
+	@Test
+	public void checkSyntaxConstructorReference() {
+		Function<String[], SampleA> f1 = s -> new SampleA(s);
+		Function<String[], SampleA> f2 = SampleA::new;
+
+		var s = new String[]{"A", "B", "C"};
+		assertThat(f1.apply(s), is(f2.apply(s)));
+	}
+
+	private static class SampleB {
+
+		private final String name;
+
+		private SampleB(String name) {
+			this.name = name;
+		}
+
+		private <T extends CharSequence> String getSampleName(T o) {
+			return "Sample Instance Method by " + name +
+				" and " + o.toString();
+		}
+
+		private static String getSampleName(String v) {
+			return "Sample Static Method";
+		}
+
+		private String getMembers(String ...m1) {
+			return name + "," +
+				Arrays.stream(m1).collect(Collectors.joining(","));
+		}
+	}
+
+	private static class MyList<T> {
+		private final List<T> list = new ArrayList<>();
+
+		private MyList(List<T> list) {
+			this.list.addAll(list);
+		}
+
+		private MyList<T> concat(MyList<T> that) {
+			var l = new ArrayList<>(list);
+			l.addAll(that.list);
+			return new MyList<>(l);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof MyList) {
+				var that = (MyList)obj;
+				return list.equals(that.list);
+			}
+			return false;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(list);
+		}
+	}
+
+	@Test
+	public void checkSyntaxInstanceMethodReference() {
+		var v = "Peter";
+		var m1 = "Foo";
+		var m2 = "Bar";
+		var sb = new SampleB(v);
+
+		// sb::getSampleNameと記述してもより型が適合する方を参照する。
+		// すなわちここではstaticメソッドを参照しコンパイルエラーとなる。
+		//UnaryOperator<String> f1a = s -> sb.getSampleName(s);
+		//UnaryOperator<String> f1b = sb::getSampleName;
+		//UnaryOperator<String> f2a = s -> SampleB.getSampleName(s);
+		// SampleB::getSampleNameではインスタンスメソッドとstaticメソッドの
+		// どちらを参照するのかが決定できずコンパイルエラーとなる。
+		//UnaryOperator<String> f2b = SampleB::getSampleName;
+
+		BiFunction<MyList, MyList, MyList> bf1 =
+			(l1, l2) -> l1.concat(l2);
+		BiFunction<MyList, MyList, MyList> bf2 =
+			MyList::concat;
+		var ml1 = new MyList<>(List.of("Hoge", "Foo"));
+		var ml2 = new MyList<>(List.of("Hoge", "Foo"));
+		assertEquals(bf1.apply(ml1, ml2), bf2.apply(ml1, ml2));
+
+		BiFunction<String, String, String> f3a = (a, b) ->
+			sb.getMembers(a, b);
+		BiFunction<String, String, String> f3b = sb::getMembers;
+		assertEquals(f3a.apply(m1, m2), f3b.apply(m1, m2));
+	}
+
 }
