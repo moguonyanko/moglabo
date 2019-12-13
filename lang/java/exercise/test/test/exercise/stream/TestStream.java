@@ -4,6 +4,8 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.ToDoubleFunction;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -345,6 +347,33 @@ public class TestStream {
             .collect(partitioningBy(isAdult, counting()));
         var expected = 3L; // countingがLongを扱うためintではエラーになる
         assertThat(map.get(Boolean.TRUE), is(expected));
+    }
+
+    @Test
+    public void canCreateUnorderedStream() {
+        var stream = Stream.of(4, 2, 1, 3, 5);
+
+        //UnaryOperator<Integer> square = i -> (int)Math.pow(i, 2);
+
+        var expected = List.of(16d, 4d, 1d, 9d, 25d);
+        // unorderedしたからといって順序(encounter order(検出順))が
+        // いきなり変更されるわけではない。
+        // parallelの際にunorderedすることでパフォーマンスの向上が
+        // 図れることもあるということ。
+        // https://docs.oracle.com/javase/jp/13/docs/api/java.base/java/util/stream/package-summary.html#Ordering
+        var actual = stream
+            .unordered()
+            .parallel()
+            //.map(square)
+            // DoubleStreamなどを経由する場合boxedしないと
+            // Collectors.toList()のみを引数にとるcollectが使えない。
+            // パフォーマンスの観点ではこれらの基本データ型に特化した
+            // Streamを使用する方が良いのだろうと思われる。
+            .mapToDouble(i -> Math.pow(i, 2))
+            .boxed()
+            .collect(toList());
+
+        assertThat(actual, is(expected));
     }
 
 }
