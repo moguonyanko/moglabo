@@ -2,10 +2,7 @@ package test.exercise.stream;
 
 import java.security.SecureRandom;
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.ToDoubleFunction;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -374,6 +371,25 @@ public class TestStream {
             .collect(toList());
 
         assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void canSumValues() {
+        var values = List.of(1, 2, 3, 4, 5);
+
+        // mapToIntを経由するとreduceの戻り値がintになる。
+        // 経由しない場合Integerとなる。
+        var a = values.parallelStream().mapToInt(i -> i).reduce(0, (x, y) -> x + y);
+        var b = values.parallelStream().mapToInt(i -> i).reduce(0, Integer::sum);
+        var c = values.parallelStream().mapToInt(i -> i).sum();
+        // IntStreamは以下のシグネチャのreduceを利用することができない。
+        // そのためmapToIntを経由しようとするとコンパイルエラーとなる。
+        var d = values.parallelStream().reduce(0,
+            (acc, current) -> acc + current,
+            (p1, p2) -> p1 + p2).intValue();
+
+        assertEquals(a, b, c);
+        assertEquals(c, d);
     }
 
 }
