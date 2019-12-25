@@ -16,11 +16,19 @@
   </header>
   <main>
     <section class="simpleWorker">
-      <h2>標準的な使い方</h2>
+      <h2>従来のWorker</h2>
       <div>
         <button data-event-target="run">開始</button>
         <button data-event-target="terminate">終了</button>
-      </div>      
+      </div>
+      <div class="output"></div>
+    </section>
+    <section class="chainWorker">
+      <h2>Workerをモジュールとして扱う</h2>
+      <div>
+        <button data-event-target="run">開始</button>
+        <button data-event-target="terminate">終了</button>
+      </div>
       <div class="output"></div>
     </section>
   </main>

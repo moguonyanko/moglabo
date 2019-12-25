@@ -1,11 +1,13 @@
 /**
  * @fileoverview シンプルなWorkerサンプル用スクリプト
+ * strict modeにならないのでthisはDedicatedWorkerGlobalScopeになる。
  */
 
+const toDate = time => new Date(time);
+//importScripts('./time.js');
+
 self.addEventListener('message', event => {
-  if (event.data) {
-    self.postMessage(new Date(event.data));
-  } else {
-    self.postMessage('NO TIME');
-  }
+  console.log(`this = ${this}`);
+  self.postMessage(toDate(event.data));
+  //self.postMessage(MyTime.toDate(event.data));
 });
