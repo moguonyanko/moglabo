@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <meta charset="UTF-8" />
+    <title>clamp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../common.css" />
+    <link rel="stylesheet" href="exam.css" />
+    <script type="module" src="exam.js" defer></script>
+  </head>
+
+  <body>
+    <header>
+      <a href="../../">home</a>
+      <h1>clamp()</h1>
+    </header>
+    <main>
+      <section>
+        <h2>基本的な使い方</h2>
+        <p>
+          clamp(最小値, 値, 最大値)
+        </p>
+        <p>
+          3つの値は<em>max(最小値, min(値, 最大値))</em>と評価される。
+        </p>
+        <div class="container">
+          サンプルテキスト
+          Java
+          JavaScript
+          Swift
+          Kotlin
+          Go
+        </div>
+        <p class="samplefont">
+          sample サンプル HTML CSS
+        </p>
+      </section>
+      <section>
+        <h2>動的なclamp</h2>
+        <div class="container dynamic">
+          スクリプトで動的にclampを指定します。
+        </div>
+        <label>value<input data-event-target="changeContainerSize" type="number" value="150" 
+          min="10" max="1000" step="10" /></label>
+      </section>
+    </main>
+    <footer>
+      <p>参考サイト</p>
+      <ul>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/clamp">clamp()</a></li>
+      </ul>
+    </footer>
+  </body>
+
+</html>

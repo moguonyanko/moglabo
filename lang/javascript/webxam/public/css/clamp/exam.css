@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+.container {
+  border: solid 1px darkblue;
+  background: whitesmoke;
+  width: clamp(200px, 100%, 500px);
+}
+
+.samplefont {
+  font-size: clamp(0.8rem, 2vw, 5rem);
+}
