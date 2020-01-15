@@ -396,10 +396,15 @@ public class TestLambdaPractice {
 			return false;
 		}
 
-		@Override
-		public int hashCode() {
-			return Objects.hash(values);
-		}
+        @Override
+        public int hashCode() {
+            // 可変長引数を受け取るメソッドの引数に配列を渡しているので
+            // キャストしていないと可変引数呼び出しなのか非可変引数呼び出しなのか
+            // 決定することができず警告が表示される。
+            // ここではString[]型のフィールド1つを使ってハッシュ値を計算したい、
+            // 即ち非可変引数呼び出しでよいのでObject[]にキャストする。
+            return Objects.hash((Object[])values);
+        }
 	}
 
 	@Test

@@ -15,7 +15,13 @@ module exercise.base {
     requires mysql.connector.java;
     requires mongo.java.driver;
     requires checker;
+    requires junit;
+    requires hamcrest.core;
 
-    // exportsの練習
-    exports exercise.function.util;
+    // テストクラスを含むパッケージはexportsやopensで公開しないとJUnitでテストできない。
+    // module宣言の前にopenを指定することでもテスト実行できるようになるが、不必要に多くの
+    // パッケージをopenすることになってしまう。
+    // アスタリスクでまとめてパッケージをまとめて指定することはできない。
+    exports test.exercise.lang to junit;
+    exports test.exercise.function to junit;
 }
