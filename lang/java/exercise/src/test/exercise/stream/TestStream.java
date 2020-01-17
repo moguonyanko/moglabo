@@ -6,14 +6,11 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
 import static java.util.stream.Collectors.*;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.*;
 
 import exercise.stream.StreamUtil;
@@ -390,6 +387,45 @@ public class TestStream {
 
         assertEquals(a, b, c);
         assertEquals(c, d);
+    }
+    
+    /**
+     * 参考:
+     * https://blogs.oracle.com/otnjp/quiz-advanced-collectors-ja
+     */
+    private static class Student2 {
+        private final String name;
+        private final int age;
+
+        public Student2(String name, int age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getAge() {
+            return age;
+        }
+    }
+    
+    @Test
+    public void canUsePartitioningBy() {
+        var s = Stream.of(new Student2("Mike", 19),
+                new Student2("Joe", 34),
+                new Student2("Peter", 17),
+                new Student2("Anko", 20),
+                new Student2("Taro", 78));
+        
+        Predicate<Student2> adult = student -> student.getAge() >= 20;
+        var actual = s.collect(Collectors.partitioningBy(adult, Collectors.counting()));
+        var expected = Map.of(true, 3L, false, 2L);
+
+        assertThat(actual, is(expected));
+        // 上と同じ結果になる。
+//        assertTrue(actual.entrySet().containsAll(expected.entrySet()));
     }
 
 }

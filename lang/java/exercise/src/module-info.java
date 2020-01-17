@@ -24,4 +24,5 @@ module exercise.base {
     // アスタリスクでまとめてパッケージをまとめて指定することはできない。
     exports test.exercise.lang to junit;
     exports test.exercise.function to junit;
+    exports test.exercise.stream to junit;
 }
