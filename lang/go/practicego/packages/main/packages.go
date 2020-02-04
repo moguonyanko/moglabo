@@ -11,5 +11,6 @@ import (
 )
 
 func main() {
+	rand.Seed(100)
 	fmt.Println("乱数生成:", rand.Intn(100))
 }
