@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import static java.util.stream.Collectors.*;
@@ -426,6 +427,37 @@ public class TestStream {
         assertThat(actual, is(expected));
         // 上と同じ結果になる。
 //        assertTrue(actual.entrySet().containsAll(expected.entrySet()));
+    }
+
+    /**
+     * 参考:
+     * https://blogs.oracle.com/otnjp/quiz-yourself-functional-interfaces-advanced-ja
+     */
+    @Test
+    public void canCalcDoubleUnaryOperator() {
+        var stream = DoubleStream.of(1.0, 3.0, 5.0);
+        DoubleFunction<DoubleUnaryOperator> mapperFactory =
+            exponent -> base -> Math.pow(base, exponent);
+
+        // 上と同じ結果を返せるがexponentを受け取った段階でボクシング操作が発生するため
+        // 上よりも効率は落ちる。
+        //Function<Double, DoubleUnaryOperator> mapperFactory =
+        //    exponent -> base -> Math.pow(base, exponent);
+
+        // DoubleStreamのmapにはDoubleUnaryOperatorしか渡せない。仮に渡せるとしても
+        // Stream<Double>をsumすることはできないのでコンパイルエラーとなる。
+        //DoubleFunction<DoubleFunction<Double>> mapperFactory =
+        //    exponent -> base -> Math.pow(base, exponent);
+
+        // 上と同じ理由によりコンパイルエラーとなる。
+        //Function<Double, DoubleFunction<Double>> mapperFactory =
+        //    exponent -> base -> Math.pow(base, exponent);
+
+        var pow = 2d;
+        var actual = stream.map(mapperFactory.apply(pow)).sum();
+
+        var expected = 35d;
+        assertThat(actual, is(expected));
     }
 
 }
