@@ -1,0 +1,41 @@
+@charset "UTF-8";
+
+header h1 {
+  text-align: center;
+}
+
+main {
+  width: 100%;
+  max-width: 500px;
+}
+
+footer {
+  margin: 0.5em;
+  border-top: 1px solid lightgrey;
+}
+
+.container {
+  height: 350px;
+  background: whitesmoke;
+}
+
+.target {
+  offset-rotate: auto 90deg;
+  animation: move 3s linear infinite;
+  width: 25px;
+  height: 25px;
+  background: blue;
+}
+
+@keyframes move {
+  0% {
+    offset-distance: 0%;
+  }  
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+.samplesvg {
+  border: solid 1px darkblue;
+}
