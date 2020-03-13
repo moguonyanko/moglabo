@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Event Target</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="main.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Event Target</h1>
+  </header>
+
+  <main>
+    <section class="bought example">
+      <h2>EventTargetとEventの分離</h2>
+      <div class="panel user">
+        <p>ユーザー</p>
+        <label><input type="radio" name="user" value="poko" checked>Poko</label>
+        <label><input type="radio" name="user" value="jiro">Jiro</label>
+      </div>
+      <div class="panel item">
+        <p>商品</p>
+        <label><input type="radio" name="item" value="tabaco" checked />たばこ</label>
+        <label><input type="radio" name="item" value="sake" />お酒</label>
+        <label><input type="radio" name="item" value="bat" />バット</label>
+      </div>
+      <button data-event-target="buy">購入</button>
+      <div class="result"></div>
+    </section>
+  </main>
+
+  <aside>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/EventTarget">EventTarget()</a></li>
+    </ul>
+  </aside>
+</body>
+
+</html>

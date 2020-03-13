@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+.result {
+  border: solid 1px darkgrey;
+  background: whitesmoke;
+  width: 100%;
+  max-width: 300px;
+  height: 200px;
+}
