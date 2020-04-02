@@ -6,12 +6,18 @@
 
 const http2 = require('http2');
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
-const MyEventLoop = require('./eventloop');
 const Certs = require('../../function/certs');
 const config = require('../../config');
+const MyEventLoop = require('./eventloop');
+const MyCookie = require('./cookie');
 
 const app = express();
+// signed cookieを使用するにはsecret指定が必須
+app.use(cookieParser('secret'));
+
 const port = config.port.practicenode;
 
 const contextRoot = '/webxam/apps/practicenode/';
@@ -34,6 +40,34 @@ app.get(`${contextRoot}eventloop/average`, async (request, response) => {
   const el = new MyEventLoop;
   response.send(await el.average(request));
 });
+
+app.get(`${contextRoot}cookie/echo`, async (request, response) => {
+  const mc = new MyCookie({ request, response });
+  response.send(JSON.stringify(mc.echo()));
+});
+
+const corsCheck = (request, callback) => {
+  const origin = request.get('Origin');
+  if (config.cors.whitelist.indexOf(origin) >= 0 || !origin) {
+    callback(null, {
+      origin: true,
+      credentials: true,
+      methods: ['GET', 'POST', 'HEAD'],
+      allowedHeaders: ['Content-Type']
+    });
+  } else {
+    callback(new Error('Invalid origin'), {
+      origin: false
+    });
+  }
+};
+
+app.get(`${contextRoot}cookie/sampleuser`, cors(corsCheck),
+  async (request, response) => {
+    const mc = new MyCookie({ request, response });
+    console.log(mc.echo());
+    response.send(JSON.stringify(mc.sampleUser));
+  });
 
 const main = () => {
   Certs.getOptions().then(options => {

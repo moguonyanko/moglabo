@@ -21,7 +21,10 @@ const config = {
     user: 'sampleuser',
     password: 'samplepass',
     connectionLimit: 5
-  }
+  },
+  cors: {
+    whitelist: ['https://localhost']
+  } 
 };
 
 module.exports = config;
