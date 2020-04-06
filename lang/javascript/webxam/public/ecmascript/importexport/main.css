@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+}
+
+.result {
+  min-height: 300px;
+}
