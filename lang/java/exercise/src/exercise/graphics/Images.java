@@ -98,4 +98,33 @@ public class Images {
         return multiImage;
     }
 
+    public static void dumpHints(BufferedImage image) {
+		var sg = (Graphics2D)image.getGraphics();
+		var srcHints = sg.getRenderingHints();
+		srcHints.entrySet()
+			.forEach(entry -> System.out.println(entry.getKey() + ":" + entry.getValue()));
+	}
+
+	/**
+	 * 参考:
+	 * http://www.java2s.com/Tutorials/Java/Graphics_How_to/Image/Reduce_the_size_of_an_image_file.htm
+	 */
+    public static BufferedImage reduceImage(BufferedImage src) {
+		int w = src.getWidth(), h = src.getHeight();
+		var newImage = new BufferedImage(w, h, src.getType());
+		var g = newImage.createGraphics();
+		g.drawImage(src, 0, 0, w, h, null);
+		g.dispose();
+
+//		g.setComposite(AlphaComposite.Src);
+//		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+//			RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+//		g.setRenderingHint(RenderingHints.KEY_RENDERING,
+//			RenderingHints.VALUE_RENDER_QUALITY);
+//		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+//			RenderingHints.VALUE_ANTIALIAS_ON);
+
+		return newImage;
+	}
+
 }

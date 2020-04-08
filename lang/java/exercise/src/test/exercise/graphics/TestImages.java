@@ -97,4 +97,29 @@ public class TestImages {
         assertThat(actual, is(expected));
     }
 
+    @Test
+    public void canReduceImageSize() throws IOException {
+	    var srcPath = Paths.get("./sample/stars.png");
+	    var srcSize = Files.size(srcPath);
+	    var src = ImageIO.read(srcPath.toFile());
+
+	    //Images.dumpHints(src);
+        //System.out.println("----- REDUCING -----");
+
+	    var dst = Images.reduceImage(src);
+        //Images.dumpHints(dst);
+        var dstPath = Paths.get("./sample/stars_reduced.png");
+        var dstFile = dstPath.toFile();
+        ImageIO.write(dst, "png", dstFile);
+	    var dstSize = Files.size(dstPath);
+	    //Files.delete(dstPath);
+
+        System.out.println("SRC:" + srcSize + " byte");
+        System.out.println("DST:" + dstSize + " byte");
+
+        var srcHints = ((Graphics2D)src.getGraphics()).getRenderingHints();
+        var dstHints = ((Graphics2D)dst.getGraphics()).getRenderingHints();
+        assertTrue(srcHints.equals(dstHints));
+	    assertTrue(srcSize > dstSize);
+    }
 }
