@@ -23,6 +23,8 @@ const config = {
     connectionLimit: 5
   },
   cors: {
+    // iOSのSafariでアクセスする場合はSafari上で表示しているページの
+    // オリジンをwhitelistに追加する。
     whitelist: ['https://localhost']
   } 
 };

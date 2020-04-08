@@ -25,6 +25,7 @@ const listeners = {
     display({ json, selector: '.getCookie .resultarea' });
   },
   async getSampleUser() {
+    // myhostには現在のページとは異なるホストを指定してクロスオリジンになるようにする。
     const url = 'https://myhost/webxam/apps/practicenode/cookie/sampleuser';
     const json = await reuqestJson(url);
     display({ json, selector: '.getCookie .resultarea' });
