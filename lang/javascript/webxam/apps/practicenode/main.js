@@ -8,6 +8,7 @@ const http2 = require('http2');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const Certs = require('../../function/certs');
 const config = require('../../config');
@@ -18,9 +19,14 @@ const app = express();
 // signed cookieを使用するにはsecret指定が必須
 app.use(cookieParser('secret'));
 
+// POSTリクエストのBODYを解析するために必要
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 const port = config.port.practicenode;
 
-const contextRoot = '/webxam/apps/practicenode/';
+const contextName = 'webxam';
+const contextRoot = `/${contextName}/apps/practicenode/`;
 
 app.get(contextRoot, (request, response) => {
   response.send('Practice Node');
@@ -68,6 +74,12 @@ app.get(`${contextRoot}cookie/sampleuser`, cors(corsCheck),
     console.log(mc.echo());
     response.send(JSON.stringify(mc.sampleUser));
   });
+
+app.post(`${contextRoot}cspreport`, (request, response) => {
+  // TODO: CSPのレポートがリクエストから得られない。
+  console.log(request.body);
+  response.send(JSON.stringify({ status: 200 }));
+});
 
 const main = () => {
   Certs.getOptions().then(options => {
