@@ -82,7 +82,7 @@ public class TestImages {
     }
 
 	@Test
-    public void canGetMultiResolutionImage() throws Exception {
+    public void canGetMultiResolutionImage() {
 	    List<Path> paths = List.of(
             Paths.get("./sample/star2_1.png"),
             Paths.get("./sample/star2_2.png"),
@@ -119,7 +119,28 @@ public class TestImages {
 
         var srcHints = ((Graphics2D)src.getGraphics()).getRenderingHints();
         var dstHints = ((Graphics2D)dst.getGraphics()).getRenderingHints();
-        assertTrue(srcHints.equals(dstHints));
+        assertEquals(srcHints, dstHints);
 	    assertTrue(srcSize > dstSize);
+    }
+
+    @Test
+    public void canCompressImage() throws IOException {
+        var dstPath = Paths.get("./sample/stars_compressed.png");
+        try (var out = Files.newOutputStream(dstPath)) {
+            var srcPath = Paths.get("./sample/stars.png");
+            var src = ImageIO.read(srcPath.toFile());
+            // 1に近づけると元の画像よりもサイズが大きくなる。
+            // いくら0に近づけても一定のサイズより小さくならない。
+            var quality = 0.01f;
+            Images.outputWithCompression(src, "PNG", quality, out);
+
+            var srcSize = Files.size(srcPath);
+            var dstSize = Files.size(dstPath);
+
+            System.out.println("SRC:" + srcSize + " byte");
+            System.out.println("DST:" + dstSize + " byte");
+
+            assertTrue(srcSize > dstSize);
+        }
     }
 }
