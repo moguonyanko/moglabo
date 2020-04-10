@@ -21,7 +21,8 @@ app.use(cookieParser('secret'));
 
 // POSTリクエストのBODYを解析するために必要
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ type: 'application/json' }));
+app.use(bodyParser.json({ type: 'application/csp-report' }));
 
 const port = config.port.practicenode;
 
@@ -76,8 +77,7 @@ app.get(`${contextRoot}cookie/sampleuser`, cors(corsCheck),
   });
 
 app.post(`${contextRoot}cspreport`, (request, response) => {
-  // TODO: CSPのレポートがリクエストから得られない。
-  console.log(request.body);
+  console.log(request.body['csp-report']);
   response.send(JSON.stringify({ status: 200 }));
 });
 
