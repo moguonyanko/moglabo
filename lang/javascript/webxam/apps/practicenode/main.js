@@ -27,28 +27,29 @@ app.use(bodyParser.json({ type: 'application/csp-report' }));
 const port = config.port.practicenode;
 
 const contextName = 'webxam';
-const contextRoot = `/${contextName}/apps/practicenode/`;
+const contextRoot = `/${contextName}/apps/`;
+const practiceNodeRoot = `${contextRoot}practicenode/`;
 
-app.get(contextRoot, (request, response) => {
+app.get(practiceNodeRoot, (request, response) => {
   response.send('Practice Node');
 });
 
-app.get(`${contextRoot}hello`, (request, response) => {
+app.get(`${practiceNodeRoot}hello`, (request, response) => {
   console.log(`Query: ${request.query}`);
   response.send('Hello Node World');
 });
 
-app.get(`${contextRoot}eventloop/redos`, (request, response) => {
+app.get(`${practiceNodeRoot}eventloop/redos`, (request, response) => {
   const el = new MyEventLoop;
   response.send(el.redos(request));
 });
 
-app.get(`${contextRoot}eventloop/average`, async (request, response) => {
+app.get(`${practiceNodeRoot}eventloop/average`, async (request, response) => {
   const el = new MyEventLoop;
   response.send(await el.average(request));
 });
 
-app.get(`${contextRoot}cookie/echo`, async (request, response) => {
+app.get(`${practiceNodeRoot}cookie/echo`, async (request, response) => {
   const mc = new MyCookie({ request, response });
   response.send(JSON.stringify(mc.echo()));
 });
@@ -69,14 +70,14 @@ const corsCheck = (request, callback) => {
   }
 };
 
-app.get(`${contextRoot}cookie/sampleuser`, cors(corsCheck),
+app.get(`${practiceNodeRoot}cookie/sampleuser`, cors(corsCheck),
   async (request, response) => {
     const mc = new MyCookie({ request, response });
     console.log(mc.echo());
     response.send(JSON.stringify(mc.sampleUser));
   });
 
-app.post(`${contextRoot}cspreport`, (request, response) => {
+app.post(`${practiceNodeRoot}cspreport`, (request, response) => {
   console.log(request.body['csp-report']);
   response.send(JSON.stringify({ status: 200 }));
 });

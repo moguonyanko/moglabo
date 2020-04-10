@@ -13,37 +13,34 @@ const dispatch = (event, listener) => {
   listener[et]();
 };
 
+/**
+ * private fieldはSafariが未対応のため使用していない。
+ */
 class Listener {
-  #worker;
-  #intervalId;
-  #output;
-  #workerPath;
-  #workerType;
-
   constructor({ base, workerPath, workerType = 'classic' }) {
-    this.#output = base.querySelector('.output');
-    this.#workerPath = workerPath;
-    this.#workerType = workerType;
+    this.output = base.querySelector('.output');
+    this.workerPath = workerPath;
+    this.workerType = workerType;
   }
 
   run() {
-    this.#output.innerHTML = '';
-    this.#worker = new Worker(this.#workerPath, { 
-      type: this.#workerType
+    this.output.innerHTML = '';
+    this.worker = new Worker(this.workerPath, { 
+      type: this.workerType
      });
-    this.#worker.addEventListener('message', e => {
-      this.#output.innerHTML += `${e.data}<br />`;
+    this.worker.addEventListener('message', e => {
+      this.output.innerHTML += `${e.data}<br />`;
     });
-    clearInterval(this.#intervalId);
-    this.#intervalId = setInterval(() => {
-      this.#worker?.postMessage(Date.now());
+    clearInterval(this.intervalId);
+    this.intervalId = setInterval(() => {
+      this.worker?.postMessage(Date.now());
     }, 1000);
   }
 
   terminate() {
-    this.#worker?.terminate();
-    this.#worker = null;
-    clearInterval(this.#intervalId);
+    this.worker?.terminate();
+    this.worker = null;
+    clearInterval(this.intervalId);
   }
 }
 
@@ -105,10 +102,28 @@ const shareModuleWorker = () => {
   });
 };
 
+const corsWorker = () => {
+  const base = document.querySelector(".corsWorker"),
+    output = base.querySelector('.output');
+  let worker;
+  base.addEventListener('click', event => {
+      if (event.target.dataset.eventTarget === 'crossOriginRequest') {
+        event.stopPropagation();
+        if(!worker)worker = new Worker('corsworker.js', { type: 'module' });
+        worker.onmessage = ({ data }) => {
+            output.innerText = JSON.stringify(data);
+        };
+        // 引数なしで呼び出すとエラー
+        worker.postMessage([]);
+      }
+  });
+};
+
 const sample = {
   simpleWorker,
   chainWorker,
-  shareModuleWorker
+  shareModuleWorker,
+  corsWorker
 };
 
 Object.values(sample).forEach(init => init());
