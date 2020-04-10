@@ -52,17 +52,16 @@ public class TestImages {
 	@Test
 	public void 画像のサイズを変更する() {
         try {
-            //Path srcPath = Paths.get("./sample/star.png");
-            Path srcPath = Paths.get("./sample/square.jpg");
-            BufferedImage srcImg = ImageIO.read(srcPath.toFile());
+            var srcPath = Paths.get("./sample/stars.png");
+            var srcImg = ImageIO.read(srcPath.toFile());
 
             System.out.println("original width:" + srcImg.getWidth());
             System.out.println("original height:" + srcImg.getHeight());
 
-            int width = 600;
-            int height = 600;
+            var width = srcImg.getWidth() / 2;
+            var height = srcImg.getHeight() / 2;
 
-            BufferedImage dstImg = Images.resize(srcImg, width, height);
+            var dstImg = Images.resize(srcImg, width, height);
 
             assertThat(dstImg.getWidth(), is(width));
             assertThat(dstImg.getHeight(), is(height));
@@ -70,12 +69,11 @@ public class TestImages {
             System.out.println("resized width:" + dstImg.getWidth());
             System.out.println("resized height:" + dstImg.getHeight());
 
-            //Path dstPath = Paths.get("./sample/resize_result.png");
-            Path dstPath = Paths.get("./sample/resize_result.jpg");
-            String format = getFormatName(srcPath);
+            var dstPath = Paths.get("./sample/resize_result.png");
+            var format = getFormatName(srcPath);
             ImageIO.write(dstImg, format, dstPath.toFile());
 
-            Files.delete(dstPath);
+            //Files.delete(dstPath);
         } catch(IOException e) {
             fail(e.getMessage());
         }
