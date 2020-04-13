@@ -2,9 +2,11 @@
  * @fileoverview WebSocket調査用スクリプト
  */
 
+const webSocketOrigin = 'wss://localhost:5443';
+
 // eslint-disable-next-line no-unused-vars
 const runTest = () => {
-  const socket = new WebSocket('wss://localhost:5443');
+  const socket = new WebSocket(webSocketOrigin);
 
   socket.addEventListener('open', () => {
     socket.send(`${new Date}: Hello My WebSocket App`);
@@ -27,7 +29,7 @@ const closeConnection = ({ socket }) => {
 const openConnection = () => {
   return new Promise((resolve, reject) => {
     const appProtocol = 'my-ws';
-    const socket = new WebSocket('wss://localhost:5443', appProtocol);
+    const socket = new WebSocket(webSocketOrigin, appProtocol);
     socket.addEventListener('open', () => {
       resolve(socket);
     });
@@ -92,7 +94,7 @@ let socket;
 const addListener = () => {
   const exams = document.querySelectorAll('.example');
   exams.forEach(element => {
-    element.addEventListener('pointerup', async event => {
+    element.addEventListener('click', async event => {
       const handleType = event.target.dataset.eventTarget;
       if (typeof handlers[handleType] !== 'function') {
         return;

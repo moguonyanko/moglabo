@@ -59,6 +59,23 @@ const validOrigins = [
   'https://localhost'
 ];
 
+// 更新の必要性を検知する関数
+const needUpdate = () => {
+  const n = parseInt(Math.random() * 10);
+  return n % 3 === 0;
+};
+
+// TODO: setIntervalではなく更新を検知してhandlerを呼び出すようにしたい。
+const setupPushData = ({ handler }) => {
+  return setInterval(() => {
+    if (needUpdate()) {
+      handler();
+    }
+  }, 1000);
+};
+
+const connections = new Map;
+
 const accept = wsServer => {
   wsServer.on('request', request => {
     if (!validOrigins.includes(request.origin)) {
@@ -75,7 +92,9 @@ const accept = wsServer => {
       const type = message.type;
       if (typeof handlers[type] === 'function') {
         const data = getData[type](message);
-        handlers[type]({ connection, data });
+        const handler = handlers[type].bind(null, { connection, data });
+        handler();
+        connections.set(connection, setupPushData({ handler }));
       } else {
         request.reject();
         console.error(`Unsupported type: ${message.type}`);
@@ -83,6 +102,8 @@ const accept = wsServer => {
     });
 
     connection.on('close', (code, description) => {
+      clearInterval(connections.get(connection));
+      connections.delete(connection);
       console.info(`WebSocket server closed: ${code}:${description}`);
     });
   });
