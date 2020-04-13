@@ -10,6 +10,7 @@
 
 const WebSocketServer = require('websocket').server;
 const http2 = require('http2');
+const fs = require('fs');
 
 const Certs = require('../../function/certs');
 const config = require('../../config');
@@ -19,6 +20,7 @@ const port = config.port.mysocket;
 const createMySocketServer = options => {
   const httpServer = http2.createSecureServer(options,
     (request, response) => {
+      // WebSocketリクエストが呼び出されてもこの関数は呼び出されない。
       console.info(`${new Date}: ${request.url}`);
       response.writeHead(404);
       response.end();
@@ -41,7 +43,7 @@ const handlers = {
   utf8({ connection, data }) {
     connection.sendUTF(data);
   },
-  binary({connection, data}) {
+  binary({ connection, data }) {
     connection.sendBytes(data);
   }
 };
@@ -59,25 +61,32 @@ const validOrigins = [
   'https://localhost'
 ];
 
-// 更新の必要性を検知する関数
-const needUpdate = () => {
-  const n = parseInt(Math.random() * 10);
-  return n % 3 === 0;
+const setupPushData = ({ handler }) => {
+  return fs.watch('apps/mysocket/mydata.txt', { encoding: 'utf-8' },
+    (type, fileName) => {
+      // ファイルを変更せず上書き保存しただけでもchangeやrenameのイベントが発生する。
+      // renameイベントはここでは無視する。
+      if (type === 'change') {
+        console.log(`${type}: ${fileName}`);
+        handler();
+      }
+    });
 };
 
-// TODO: setIntervalではなく更新を検知してhandlerを呼び出すようにしたい。
-const setupPushData = ({ handler }) => {
-  return setInterval(() => {
-    if (needUpdate()) {
-      handler();
-    }
-  }, 1000);
+const clearPushData = ({ watcher }) => {
+  if (!watcher) {
+    console.warn('Watcher is not exits.');
+    return;
+  }
+  watcher.close();
 };
 
 const connections = new Map;
 
 const accept = wsServer => {
   wsServer.on('request', request => {
+    console.log('Cookie', request.cookies);
+
     if (!validOrigins.includes(request.origin)) {
       console.error(`Invalid origin: ${request.origin}`);
       request.reject();
@@ -102,7 +111,7 @@ const accept = wsServer => {
     });
 
     connection.on('close', (code, description) => {
-      clearInterval(connections.get(connection));
+      clearPushData({ watcher: connections.get(connection) });
       connections.delete(connection);
       console.info(`WebSocket server closed: ${code}:${description}`);
     });

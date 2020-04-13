@@ -2,7 +2,7 @@
  * @fileoverview WebSocket調査用スクリプト
  */
 
-const webSocketOrigin = 'wss://localhost:5443';
+const webSocketOrigin = 'wss://myhost:5443';
 
 // eslint-disable-next-line no-unused-vars
 const runTest = () => {
