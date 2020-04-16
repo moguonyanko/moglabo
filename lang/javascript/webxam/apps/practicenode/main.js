@@ -30,6 +30,22 @@ const contextName = 'webxam';
 const contextRoot = `/${contextName}/apps/`;
 const practiceNodeRoot = `${contextRoot}practicenode/`;
 
+const corsCheck = (request, callback) => {
+  const origin = request.get('Origin');
+  if (config.cors.whitelist.indexOf(origin) >= 0 || !origin) {
+    callback(null, {
+      origin: true,
+      credentials: true,
+      methods: ['GET', 'POST', 'HEAD'],
+      allowedHeaders: ['Content-Type']
+    });
+  } else {
+    callback(new Error('Invalid origin'), {
+      origin: false
+    });
+  }
+};
+
 app.get(practiceNodeRoot, (request, response) => {
   response.send('Practice Node');
 });
@@ -54,22 +70,6 @@ app.get(`${practiceNodeRoot}cookie/echo`, async (request, response) => {
   response.send(JSON.stringify(mc.echo()));
 });
 
-const corsCheck = (request, callback) => {
-  const origin = request.get('Origin');
-  if (config.cors.whitelist.indexOf(origin) >= 0 || !origin) {
-    callback(null, {
-      origin: true,
-      credentials: true,
-      methods: ['GET', 'POST', 'HEAD'],
-      allowedHeaders: ['Content-Type']
-    });
-  } else {
-    callback(new Error('Invalid origin'), {
-      origin: false
-    });
-  }
-};
-
 app.get(`${practiceNodeRoot}cookie/sampleuser`, cors(corsCheck),
   async (request, response) => {
     const mc = new MyCookie({ request, response });
@@ -81,6 +81,16 @@ app.post(`${practiceNodeRoot}cspreport`, (request, response) => {
   console.log(request.body['csp-report']);
   response.send(JSON.stringify({ status: 200 }));
 });
+
+app.get(`${practiceNodeRoot}shorturl`, cors(corsCheck),
+  (request, response) => {
+    // test[2]=1のようなパラメータは自動的に配列として処理されてしまう。
+    // https://expressjs.com/en/api.html#req.query
+    const obj = {
+      param: request.query
+    };
+    response.send(JSON.stringify(obj));
+  });
 
 const main = () => {
   Certs.getOptions().then(options => {
