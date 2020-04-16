@@ -85,6 +85,7 @@ const connections = new Map;
 
 const accept = wsServer => {
   wsServer.on('request', request => {
+    // TODO: WebSocketでCookieを送信する方法が不明である。
     console.log('Cookie', request.cookies);
 
     if (!validOrigins.includes(request.origin)) {
