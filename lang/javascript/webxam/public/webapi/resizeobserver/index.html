@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>ResizeObserver</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" type="module" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>ResizeObserver</h1>
+  </header>
+
+  <main>
+    <section>
+      <input type="checkbox" id="enableObserver" checked />
+      <label for="enableObserver">Observer有効</label>
+      <div class="samplebox"">
+        Observerに連動してサイズ変更
+        Observerはbodyとtextarea
+      </div>
+      <textarea is="my-textarea"></textarea>
+      <div class="output"></div>
+      <label for="resizeRange">textareaの幅</label>
+      <input id="resizeRange" type="range" min="400" max="1200" value="400" />
+    </section>
+  </main>
+
+  <footer>
+    <ul>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver">ResizeObserver(MDN)</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver">MutationObserver(MDN)</a></li>
+      <li><a href="https://webkit.org/blog/9997/resizeobserver-in-webkit/">ResizeObserver in WebKit</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>

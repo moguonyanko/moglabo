@@ -79,6 +79,7 @@ app.get(`${practiceNodeRoot}cookie/sampleuser`, cors(corsCheck),
 
 app.post(`${practiceNodeRoot}cspreport`, (request, response) => {
   console.log(request.body['csp-report']);
+  response.setHeader('Content-Type', 'application/json');
   response.send(JSON.stringify({ status: 200 }));
 });
 
