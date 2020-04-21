@@ -35,7 +35,7 @@ const addListener = () => {
       console.log(event);
       const {sample} = event;
       const output = document.querySelector('.output.report');
-      output.innerText = sample;
+      output.textContent = sample;
     });
 };
 
