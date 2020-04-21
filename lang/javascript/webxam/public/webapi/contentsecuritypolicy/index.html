@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Content Security Policy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script src="main.js" type="module" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Content Security Policy</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>Trusted Types</h2>
+      <button id="checkTrustedTypes">run</button>
+      <div class="output trustedtypes"></div>
+    </section>
+    <p>Report</p>
+    <div class="output report"></div>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://web.dev/trusted-types/">Prevent DOM-based cross-site scripting vulnerabilities with Trusted Types</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>

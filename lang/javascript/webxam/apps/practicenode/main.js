@@ -93,6 +93,14 @@ app.get(`${practiceNodeRoot}shorturl`, cors(corsCheck),
     response.send(JSON.stringify(obj));
   });
 
+app.get(`${practiceNodeRoot}reversestring`, cors(corsCheck),
+  (request, response) => {
+    const string = request.query.string;
+    response.send(JSON.stringify({
+      result: string.split('').reverse().join('')
+    }));
+  });
+
 const main = () => {
   Certs.getOptions().then(options => {
     http2.createSecureServer(options, app).listen(port);
