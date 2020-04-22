@@ -17,10 +17,17 @@
   </header>
 
   <main>
+    <button id="createDefaultPolicy">Create Default Policy</button>
     <section>
-      <h2>Trusted Types</h2>
-      <button id="checkTrustedTypes">run</button>
+      <h2>TrustedHTML</h2>
+      <button id="checkTrustedTypes">Create HTML(TrustedHTML)</button>
       <div class="output trustedtypes"></div>
+    </section>
+    <section>
+      <h2>TrustedScript</h2>
+      <button id="createTextContentScript">Create Script(TrustedScript)</button>   
+      <button id="createExternalScript">Create Script(TrustedScriptURL)</button>
+      <div class="scriptcontainer"></div>   
     </section>
     <p>Report</p>
     <div class="output report"></div>
@@ -30,6 +37,7 @@
     <h3>参考</h3>
     <ul>
       <li><a href="https://web.dev/trusted-types/">Prevent DOM-based cross-site scripting vulnerabilities with Trusted Types</a></li>
+      <li><a href="https://w3c.github.io/webappsec-trusted-types/dist/spec/">Trusted Types(W3C)</a></li>
     </ul>
   </footer>
 </body>
