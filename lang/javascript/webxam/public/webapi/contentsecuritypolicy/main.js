@@ -29,7 +29,15 @@ const funcs = {
     trustedTypes.createPolicy('default', {
       createHTML: identity,
       createScript: identity,
-      createScriptURL: identity
+      createScriptURL: url => {
+        // オリジンチェック
+        // 今回はlocalhostのScriptのみ許可する。
+        if (url.includes('localhost')) {
+          return url;
+        } else {
+          throw new TypeError(`Invalid Script URL: ${url}`);
+        }
+      }
     });
   },
   async checkTrustedTypes() {
@@ -58,7 +66,8 @@ const funcs = {
     const container = document.querySelector('.scriptcontainer');
     const script = document.createElement('script');
     // createPolicyが行われなければクロスオリジンのスクリプトでなくてもエラーになる。
-    script.setAttribute('src', 'sample.js');
+    const url = 'https://localhost/webxam/webapi/contentsecuritypolicy/sample.js';
+    script.setAttribute('src', url);
     container.appendChild(script);
   }
 };
