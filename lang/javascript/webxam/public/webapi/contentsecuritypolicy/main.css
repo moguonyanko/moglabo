@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+main {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+section {
+  flex: 1;
+}
+
+.emphasis {
+  color: red;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.output.report {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+  background: beige;  
+}

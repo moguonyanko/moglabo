@@ -2,4 +2,4 @@
  * @fileoverview TrustedScript調査用スクリプト
  */
 
-alert('Trusted External Script!');
+document.querySelector('main').classList.toggle('emphasis');

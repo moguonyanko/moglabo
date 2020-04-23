@@ -15,6 +15,8 @@ const createHTML = ({ html }) => {
   }
 };
 
+const identity = arg => arg;
+
 const funcs = {
   createDefaultPolicy() {
     if (trustedTypes.defaultPolicy) {
@@ -22,10 +24,12 @@ const funcs = {
       // defaultPolicyは読み取り専用なので一度作成したら削除できない。
       return;
     }
-    // defaultの場合、そのままHTMLを返してinnerHTMLに代入してもエラーが発生しなくなる。
-    // 当然のことながら本来はHTMLのサニタイズを行うべきである。
+    // defaultの場合、そのまま値を返す関数を渡してcreatePolicy1が呼び出されても
+    // エラーが発生しなくなる。無論本来は入力値のサニタイズを行うべきである。
     trustedTypes.createPolicy('default', {
-      createHTML: s => s
+      createHTML: identity,
+      createScript: identity,
+      createScriptURL: identity
     });
   },
   async checkTrustedTypes() {
@@ -47,14 +51,14 @@ const funcs = {
   createTextContentScript() {
     const container = document.querySelector('.scriptcontainer');
     const script = document.createElement('script');
-    script.text = `alert('Text content script')`;
+    script.text = `document.querySelector('main').classList.toggle('emphasis');`;
     container.appendChild(script);
   },
   createExternalScript() {
     const container = document.querySelector('.scriptcontainer');
     const script = document.createElement('script');
-    // クロスオリジンのスクリプトでなくてもエラーになる。
-    script.src = 'sample.js';
+    // createPolicyが行われなければクロスオリジンのスクリプトでなくてもエラーになる。
+    script.setAttribute('src', 'sample.js');
     container.appendChild(script);
   }
 };
@@ -62,7 +66,7 @@ const funcs = {
 const addListener = () => {
   const output = document.querySelector('.output.report');
 
-  document.querySelector('main').addEventListener('click',
+  document.querySelector('body').addEventListener('click',
     event => {
       const { target } = event;
       if (typeof funcs[target.id] !== 'function') {

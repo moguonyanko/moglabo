@@ -7,6 +7,7 @@
   <title>Content Security Policy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
   <script src="main.js" type="module" defer></script>
 </head>
 
@@ -16,22 +17,26 @@
     <h1>Content Security Policy</h1>
   </header>
 
+  <button id="createDefaultPolicy">Create Default Policy</button>
+
+  <h2>Sample</h2>
+
   <main>
-    <button id="createDefaultPolicy">Create Default Policy</button>
     <section>
-      <h2>TrustedHTML</h2>
+      <h3>TrustedHTML</h3>
       <button id="checkTrustedTypes">Create HTML(TrustedHTML)</button>
       <div class="output trustedtypes"></div>
     </section>
     <section>
-      <h2>TrustedScript</h2>
+      <h3>TrustedScript</h3>
       <button id="createTextContentScript">Create Script(TrustedScript)</button>   
       <button id="createExternalScript">Create Script(TrustedScriptURL)</button>
       <div class="scriptcontainer"></div>   
     </section>
-    <p>Report</p>
-    <div class="output report"></div>
   </main>
+  
+  <h2>Report</h2>
+  <div class="output report"></div>
 
   <footer>
     <h3>参考</h3>
