@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Shape Detection API</title>
+  <link rel="stylesheet" href="../../common.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+
+  <header>
+    <a href="../../">home</a>
+    <h1>Shape Detection API</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>TextDetector</h2>
+      <label for="sampleImage">Sample Image</label>
+      <input id="sampleImage" type="file" accept="image/*" />
+      <button data-event-target="detectText">detect</button>
+      <div class="output textdetector"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://web.dev/shape-detection/">The Shape Detection API: a picture is worth a thousand words,
+          faces, and barcodes</a></li>
+    </ul>
+  </footer>
+
+</body>
+
+</html>
