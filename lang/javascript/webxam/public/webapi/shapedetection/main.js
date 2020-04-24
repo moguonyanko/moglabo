@@ -53,7 +53,7 @@ const getImageDataWithArrayBuffer = ({ buffer, width, height }) => {
 };
 
 const detectText = ({ data }) => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     // detect時のパフォーマンスへの影響を軽減するためにWorkerでdetectする。
     const worker = new Worker('worker.js', { type: 'module' });
     worker.onmessage = event => {
@@ -101,14 +101,15 @@ const listeners = {
 };
 
 const addListener = () => {
-  document.querySelector('main').addEventListener('click', event => {
-    const t = event.target.dataset.eventTarget;
-    if (typeof listeners[t] !== 'function') {
-      return;
-    }
-    event.stopPropagation();
-    listeners[t]();
-  });
+  document.querySelector('main').addEventListener('click',
+    async event => {
+      const t = event.target.dataset.eventTarget;
+      if (typeof listeners[t] !== 'function') {
+        return;
+      }
+      event.stopPropagation();
+      await listeners[t]();
+    });
 };
 
 const main = () => {
