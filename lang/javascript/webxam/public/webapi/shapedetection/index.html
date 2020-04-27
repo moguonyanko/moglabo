@@ -30,7 +30,15 @@
       <label for="sampleBarcodeImage">Sample Barcode</label>
       <input id="sampleBarcodeImage" type="file" accept="image/*" />
       <button data-event-target="detectBarcode">detect</button>
+      <button data-event-target="getSupportedBarcodeFormats">supported formats</button>
       <div class="output barcodedetector"></div>
+    </section>
+    <section>
+      <h2>FaceDetector</h2>
+      <label for="sampleFaceImage">Sample Barcode</label>
+      <input id="sampleFaceImage" type="file" accept="image/*" />
+      <button data-event-target="detectFace">detect</button>
+      <div class="output facedetector"></div>
     </section>
   </main>
 
@@ -40,6 +48,7 @@
       <li><a href="https://web.dev/shape-detection/">The Shape Detection API: a picture is worth a thousand words,
           faces, and barcodes</a></li>
       <li><a href="https://shape-detection-demo.glitch.me/">Shape Detection API Demo</a></li>
+      <li><a href="https://wicg.github.io/shape-detection-api/">Accelerated Shape Detection in Images</a></li>
     </ul>
   </footer>
 

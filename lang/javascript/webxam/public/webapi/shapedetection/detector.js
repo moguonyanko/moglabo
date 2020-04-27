@@ -20,17 +20,16 @@ const barcodeDetector = new BarcodeDetector({
     'upc_e'
   ]
 });
+const faceDetector = new FaceDetector({
+  maxDetectedFaces: 3, // 認識する顔の数の上限
+  fastMode: false 
+});
 
 // detectにFileやArrayBufferを渡すとエラー。Blobでラップしてもダメ。
 const detectors = {
-  text: async data => {
-    const detectedTexts = await textDetector.detect(data);
-    return detectedTexts;
-  },
-  barcode: async data => {
-    const results = await barcodeDetector.detect(data);
-    return results;
-  }
+  text: async data => await textDetector.detect(data),
+  barcode: async data => await barcodeDetector.detect(data),
+  face: async data => await faceDetector.detect(data)
 };
 
 // 個々のプロパティの上書きも防ぐにはconstだけでなくfreezeが必要。

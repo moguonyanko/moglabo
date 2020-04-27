@@ -21,6 +21,7 @@ const getImageBitmap = ({ url }) => {
   });
 };
 
+// eslint-disable-next-line no-unused-vars
 const getArrayBuffer = blob => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader(blob);
@@ -32,6 +33,7 @@ const getArrayBuffer = blob => {
   });
 };
 
+// eslint-disable-next-line no-unused-vars
 const getImageDataWithArrayBuffer = ({ buffer, width, height }) => {
   const canvas = new OffscreenCanvas(width, height);
   const context = canvas.getContext('2d');
@@ -56,13 +58,7 @@ const detectData = ({ data, type }) => {
   return new Promise((resolve, reject) => {
     // detect時のパフォーマンスへの影響を軽減するためにWorkerでdetectする。
     const worker = new Worker('worker.js', { type: 'module' });
-    worker.onmessage = event => {
-      if (event.data.length > 0) {
-        resolve(event.data[0]);
-      } else {
-        reject(new TypeError(`Failed detect by ${type} detector`));
-      }
-    };
+    worker.onmessage = event => resolve(event.data);
     worker.onerror = reject;
     const message = { type, target: data };
     try {
@@ -79,45 +75,61 @@ const detectData = ({ data, type }) => {
   });
 };
 
+// eslint-disable-next-line no-unused-vars
 const runTest = async () => {
-  //const data = await getImageBitmap({ url: '../../image/hello.png' });
-  //const result = await detectData({ data, type: 'text' });
-  const data = await getImageBitmap({ url: '../../image/samplecode1.png' });
-  const result = await detectData({ data, type: 'barcode' });
+  const data = await getImageBitmap({ url: '../../image/hello.png' });
+  const result = await detectData({ data, type: 'text' });
+
+  //const data = await getImageBitmap({ url: '../../image/samplecode1.png' });
+  //const result = await detectData({ data, type: 'barcode' });
+
+  //const data = await getImageBitmap({ url: '../../image/samplefaces1.jpeg' });
+  //const result = await detectData({ data, type: 'face' });
+
   console.log(result);
 };
 
 // DOM
 
+const loadData = async ({ selector }) => {
+  const file = document.querySelector(selector).files.item(0);
+  if (!file) {
+    throw new Error('Target file is not selected');
+  }
+  // Canvasへの描画を経由せずにFileに対してdetectしたいが上手くいっていない。
+  // ただしCanvasにImageを描画してImageBitmapを得る方がシンプルである。
+  // const buffer = await file.arrayBuffer();
+  // const data = await getImageDataWithArrayBuffer({
+  //   buffer, width: 600, height: 600
+  // });
+  const url = URL.createObjectURL(file);
+  const data = await getImageBitmap({ url });
+  URL.revokeObjectURL(url);
+  return data;
+};
+
 const listeners = {
   detectText: async () => {
-    const file = document.querySelector('#sampleImage').files.item(0);
-    if (!file) {
-      return;
-    }
-    // Canvasへの描画を経由せずにFileに対してdetectしたいが上手くいっていない。
-    // ただしCanvasにImageを描画してImageBitmapを得る方がシンプルである。
-    // const buffer = await file.arrayBuffer();
-    // const data = await getImageDataWithArrayBuffer({
-    //   buffer, width: 600, height: 600
-    // });
-    const url = URL.createObjectURL(file);
-    const data = await getImageBitmap({ url });
-    URL.revokeObjectURL(url);
+    const data = await loadData({ selector: '#sampleImage' });
     const result = await detectData({ data, type: 'text' });
     const output = document.querySelector('.output.textdetector');
     output.textContent = JSON.stringify(result);
   },
   detectBarcode: async () => {
-    const file = document.querySelector('#sampleBarcodeImage').files.item(0);
-    if (!file) {
-      return;
-    }
-    const url = URL.createObjectURL(file);
-    const data = await getImageBitmap({ url });
-    URL.revokeObjectURL(url);
+    const data = await loadData({ selector: '#sampleBarcodeImage' });
     const result = await detectData({ data, type: 'barcode' });
     const output = document.querySelector('.output.barcodedetector');
+    output.textContent = JSON.stringify(result);
+  },
+  getSupportedBarcodeFormats: async () => {
+    const formats = await BarcodeDetector.getSupportedFormats();
+    const output = document.querySelector('.output.barcodedetector');
+    output.textContent = JSON.stringify(formats);
+  },
+  detectFace: async () => {
+    const data = await loadData({ selector: '#sampleFaceImage' });
+    const result = await detectData({ data, type: 'face' });
+    const output = document.querySelector('.output.facedetector');
     output.textContent = JSON.stringify(result);
   }
 };
@@ -130,13 +142,15 @@ const addListener = () => {
         return;
       }
       event.stopPropagation();
-      await listeners[t]();
+      try {
+        await listeners[t]();
+      } catch (e) {
+        alert(e.message);
+      }
     });
 };
 
-const main = () => {
-  //runTest().then();
+(async () => {
+  await runTest();
   addListener();
-};
-
-main();
+})().then();
