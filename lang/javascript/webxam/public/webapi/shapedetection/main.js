@@ -52,28 +52,38 @@ const getImageDataWithArrayBuffer = ({ buffer, width, height }) => {
   return imageData;
 };
 
-const detectText = ({ data }) => {
+const detectData = ({ data, type }) => {
   return new Promise((resolve, reject) => {
     // detect時のパフォーマンスへの影響を軽減するためにWorkerでdetectする。
     const worker = new Worker('worker.js', { type: 'module' });
     worker.onmessage = event => {
-      resolve(event.data[0]);
+      if (event.data.length > 0) {
+        resolve(event.data[0]);
+      } else {
+        reject(new TypeError(`Failed detect by ${type} detector`));
+      }
     };
     worker.onerror = reject;
+    const message = { type, target: data };
     try {
       // 第2引数にFileやBlob、ImageDataは渡すことができない。ImageBitmapは可。
       // https://developer.mozilla.org/en-US/docs/Web/API/Worker/postMessage
-      worker.postMessage(data, [data]);
+      worker.postMessage(message, [data]);
     } catch (err) {
       console.error(err.message);
-      worker.postMessage(data);
+      worker.postMessage(message);
+    } finally {
+      // terminateするとWorkerの処理が完了する前にWorkerが停止させられてしまう。
+      //worker.terminate();
     }
   });
 };
 
 const runTest = async () => {
-  const data = await getImageBitmap({ url: '../../image/hello.png' });
-  const result = await detectText({ data });
+  //const data = await getImageBitmap({ url: '../../image/hello.png' });
+  //const result = await detectData({ data, type: 'text' });
+  const data = await getImageBitmap({ url: '../../image/samplecode1.png' });
+  const result = await detectData({ data, type: 'barcode' });
   console.log(result);
 };
 
@@ -94,8 +104,20 @@ const listeners = {
     const url = URL.createObjectURL(file);
     const data = await getImageBitmap({ url });
     URL.revokeObjectURL(url);
-    const result = await detectText({ data });
+    const result = await detectData({ data, type: 'text' });
     const output = document.querySelector('.output.textdetector');
+    output.textContent = JSON.stringify(result);
+  },
+  detectBarcode: async () => {
+    const file = document.querySelector('#sampleBarcodeImage').files.item(0);
+    if (!file) {
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    const data = await getImageBitmap({ url });
+    URL.revokeObjectURL(url);
+    const result = await detectData({ data, type: 'barcode' });
+    const output = document.querySelector('.output.barcodedetector');
     output.textContent = JSON.stringify(result);
   }
 };
