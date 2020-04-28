@@ -217,5 +217,29 @@ public class TestInnerClass {
 	public void 内部クラスのフィールドのシャドウイングを調べる(){
 		new InnerClass3().printShadow("メソッドの引数");
 	}
+
+	/**
+	 * 参考
+	 * https://blogs.oracle.com/otnjp/records-come-to-java-ja
+	 */
+	@Test
+	public void 匿名クラスの型名を確認する() {
+		var o1 = new Object() {
+			String getName() {
+				return "Mike";
+			}
+		};
+
+		var o2 = new Object() {
+			String getName() {
+				return "Mery";
+			}
+		};
+
+		// o1とo2は型が異なるため代入はコンパイルエラーとなる。
+		//o1 = o2;
+
+		assertNotEquals(o1.getClass().getTypeName(), o2.getClass().getTypeName());
+	}
 	
 }
