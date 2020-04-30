@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>WeakReferences</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+  
+  <header>
+    <a href="../../">home</a>
+    <h1>WeakReferences</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>WeakRefとFinalizationRegistry</h2>
+      <label for="weakRefSampleImage">Sample Image</label>
+      <input id="weakRefSampleImage" type="file" accept="image/*" />
+      <button data-event-target="getCachedImageArrayBuffer">Get Cache</button>
+      <div class="output weakrefsample"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://github.com/tc39/proposal-weakrefs#weak-references">WeakRefs TC39 proposal</a></li>
+    </ul>
+  </footer>
+
+</body>
+
+</html>
