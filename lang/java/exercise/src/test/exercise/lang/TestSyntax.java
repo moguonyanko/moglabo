@@ -86,31 +86,31 @@ public class TestSyntax {
      */
     @Test
     public void outputValueWithSwitchExpressions() {
-//        var x = 10;
-//        switch (x) {
-//            case 1 -> System.out.println("A");
-//            case 10 -> System.out.println("B");
-//            case 100 -> System.out.println("C");
-//            default ->  System.out.println("Default");
-//        }
+        var x = 10;
+        switch (x) {
+            case 1 -> System.out.println("A");
+            case 10 -> System.out.println("B");
+            case 100 -> System.out.println("C");
+            default ->  System.out.println("Default");
+        }
     }
 
     @Test
     public void getValueFromSwitchExpressions() {
-//        var v = 1;
-//        var actual = switch (v) {
-//            case 0, 1 -> "Zero or One";
-//            case 2 -> "Two";
-//            case 3 -> "Three";
-//            // caseに続く値の型はswitch式の引数の値の型と一致しなければならない。
-//            //case 3 < v && v < 10 -> "3 < v < 10";
-//            default -> {
-//                System.out.println("Unsupported Value");
-//                yield "Any";
-//            }
-//        };
-//        var expected = "Zero or One";
-//        assertThat(actual, is(expected));
+        var v = 1;
+        var actual = switch (v) {
+            case 0, 1 -> "Zero or One";
+            case 2 -> "Two";
+            case 3 -> "Three";
+            // caseに続く値の型はswitch式の引数の値の型と一致しなければならない。
+            //case 3 < v && v < 10 -> "3 < v < 10";
+            default -> {
+                System.out.println("Unsupported Value");
+                yield "Any";
+            }
+        };
+        var expected = "Zero or One";
+        assertThat(actual, is(expected));
     }
 
     private enum ProgramLang {
@@ -119,47 +119,46 @@ public class TestSyntax {
 
     @Test
     public void getValueWithSwitchStatement() {
-//        var lang = ProgramLang.RUST;
-//        // case x -> y と case x: yield y の書式を混ぜるとコンパイルエラー
-//        var actual = switch(lang) {
-//            case JAVA:
-//                // breakではなくyieldでなければコンパイルエラー
-//                yield "Java";
-//            case CSHARP:
-//                yield "C#";
-//            case JAVASCRIPT, RUST:
-//                System.out.println("Web lang");
-//                yield "Web";
-//            case CPP:
-//                System.out.println("Complex lang");
-//                yield "C++";
-//            default:
-//                System.out.println("Unsupported lang");
-//                yield "Unsupported";
-//        };
-//        var expected = "Web";
-//        assertThat(actual, is(expected));
+        var lang = ProgramLang.RUST;
+        // case x -> y と case x: yield y の書式を混ぜるとコンパイルエラー
+        var actual = switch(lang) {
+            case JAVA:
+                // breakではなくyieldでなければコンパイルエラー
+                yield "Java";
+            case CSHARP:
+                yield "C#";
+            case JAVASCRIPT, RUST:
+                System.out.println("Web lang");
+                yield "Web";
+            case CPP:
+                System.out.println("Complex lang");
+                yield "C++";
+            default:
+                System.out.println("Unsupported lang");
+                yield "Unsupported";
+        };
+        var expected = "Web";
+        assertThat(actual, is(expected));
     }
 
     /**
      * 参考：
      * https://www.vojtechruzicka.com/java-enhanced-switch/
      */
-    @Ignore
     @Test(expected = NullPointerException.class)
     public void throwNullPointerExceptionWhenGotNullValue() {
-//        var value = (Integer)null;
-//
-//        // valueがnullな時点で即例外がスローされる。
-//        var result = switch (value) {
-//            case 50 -> "OK";
-//            case 70 -> "Good";
-//            case 90 -> "Excellent";
-//            // defaultが無いとコンパイルエラー
-//            default -> throw new IllegalArgumentException("Not null");
-//        };
-//
-//        System.out.println(result);
+        var value = (Integer)null;
+
+        // valueがnullな時点で即例外がスローされる。
+        var result = switch (value) {
+            case 50 -> "OK";
+            case 70 -> "Good";
+            case 90 -> "Excellent";
+            // defaultが無いとコンパイルエラー
+            default -> throw new IllegalArgumentException("Not null");
+        };
+
+        System.out.println(result);
     }
 
     /**

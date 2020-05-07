@@ -25,4 +25,5 @@ module exercise.base {
     exports test.exercise.lang to junit;
     exports test.exercise.function to junit;
     exports test.exercise.stream to junit;
+    exports test.exercise.graphics to junit;
 }
