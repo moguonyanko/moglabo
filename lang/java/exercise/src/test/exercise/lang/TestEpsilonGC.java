@@ -7,6 +7,8 @@ import static org.junit.Assert.*;
 /**
  * 参考:
  * https://blogs.oracle.com/otnjp/epsilon-the-jdks-do-nothing-garbage-collector-ja
+ * https://www.baeldung.com/jvm-epsilon-gc-garbage-collector
+ * https://dzone.com/articles/java-garbage-collection-3
  */
 
 public class TestEpsilonGC {
@@ -25,7 +27,7 @@ public class TestEpsilonGC {
             var array = new byte[gigabyte];
         }
 
-        fail("Epsilon無効");
+        System.out.println("終了");
     }
 
 }
