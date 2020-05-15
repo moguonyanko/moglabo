@@ -1,0 +1,38 @@
+@charset "UTF-8";
+
+/* hoverされていない要素だけアンダーラインを表示しない。 */
+a:where(:not(:hover)) {
+  text-decoration: none;
+}
+
+/* 後続のfooter aが無視され全てのaに適用されてしまう。 */
+/* 
+a:not(:hover) {
+  text-decoration: none;
+}
+ */
+
+/* footerを削除すると全てのaに適用される。 */
+footer a {
+  text-decoration: underline;
+}
+
+button:where(:not(:disabled)) {
+  background: blue;
+}
+
+div button {
+  background: red;
+}
+
+:is(div, ol) a:hover {
+  font-style: italic;
+}
+
+:is(textarea, div[contenteditable="true"]):read-write {
+  background: beige;
+}
+
+:is(textarea, div):read-only {
+  background: whitesmoke;
+}

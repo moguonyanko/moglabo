@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pseudo Class</title>
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Pseudo Class</h1>
+  </header>
+
+  <main>
+    <section id="wheresample">
+      <h2>:where()</h2>
+      <p>hoverやdisabledなどの擬似クラスの規定のスタイルを記述できる。</p>
+      <button >Enabled</button>
+      <button disabled>Disabled</button>
+      <div>
+        <p>Sub Container</p>
+        <button>Sample Button</button>
+        <span>:where()を使わないとこちらのbuttonも青色になる。</span>
+      </div>
+      <dl>
+        <dt>Sample Link</dt>
+        <dd><a href="#wheresample">Link Target</a></dd>
+      </dl>
+    </section>
+    <section>
+      <h2>:is()</h2>
+      <div>
+        <a href="#">sample</a>
+        <a href="#">sample</a>
+        <a href="#">sample</a>
+      </div>
+      <ol>
+        <li><a href="#">サンプル</a></li>
+        <li><a href="#">サンプル</a></li>
+        <li><a href="#">サンプル</a></li>
+      </ol>
+    </section>
+    <section>
+      <h2>:read-writeと:read-only</h2>
+      <p>読み書き可能・読み取り専用時のスタイル変更用にクラスを定義しなくて良い。</p>
+      <textarea>自由入力</textarea>
+      <textarea readonly>読み取り専用</textarea>
+      <div contenteditable="true">contenteditable=true</div>
+      <div>contenteditableなし</div>
+    </section>
+  </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://drafts.csswg.org/selectors-4/">Selectors Level 4</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:where">:where()</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
