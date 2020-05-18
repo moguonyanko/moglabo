@@ -12,11 +12,14 @@ module exercise.base {
     requires java.json;
     requires java.json.bind;
     requires java.net.http;
+    requires java.rmi;
     requires mysql.connector.java;
     requires mongo.java.driver;
     requires checker;
     requires junit;
     requires hamcrest.core;
+
+    exports exercise.rmi to java.rmi;
 
     // テストクラスを含むパッケージはexportsやopensで公開しないとJUnitでテストできない。
     // module宣言の前にopenを指定することでもテスト実行できるようになるが、不必要に多くの
@@ -27,4 +30,5 @@ module exercise.base {
     exports test.exercise.stream to junit;
     exports test.exercise.graphics to junit;
     exports test.exercise.function.util to junit;
+    exports test.exercise.rmi to junit;
 }
