@@ -1,9 +1,9 @@
 package exercise.rmi;
 
-public class RemoteIntCalculator implements Calculator<Integer> {
+public class RemoteIntCalculator implements IntCalculator {
 
     @Override
-    public int add(Integer a, Integer b) {
+    public Integer add(Integer a, Integer b) {
         return a + b;
     }
 

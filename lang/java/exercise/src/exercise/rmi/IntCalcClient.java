@@ -9,11 +9,17 @@ public class IntCalcClient {
     public int addInt(int a, int b) throws RemoteCalculatorException {
         try {
             var registry = LocateRegistry.getRegistry("localhost", 12345);
-            // Remoteインターフェースをextendsしたインターフェースの型でキャストしないと
-            // ClassCastExceptionとなる。
-            var calculator = (Calculator<Integer>)registry.lookup("ADDINT");
-            return calculator.add(a, b);
-        } catch (RemoteException | NotBoundException e) {
+            // Remoteインターフェースを継承したインターフェースの型でキャストしないと
+            // ClassCastExceptionとなる。ただしキャストされた型のインターフェースを
+            // 継承したインターフェースでリモートメソッドを再宣言していれば問題ない。
+            var obj = registry.lookup("ADDINT");
+            if (obj instanceof Calculator) {
+                var calculator = (Calculator<Integer>)obj;
+                return calculator.add(a, b);
+            } else {
+                throw new RemoteCalculatorException("リモートオブジェクト取得失敗");
+            }
+        } catch (Exception e) {
             throw new RemoteCalculatorException(e);
         }
     }

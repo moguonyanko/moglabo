@@ -1,11 +1,8 @@
 package exercise.rmi;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
+public interface Calculator<T extends Number> {
 
-public interface Calculator<T extends Number> extends Remote {
-
-    int add(T a, T b) throws RemoteException;
+    T add(T a, T b) throws Exception;
 
     // throws RemoteException が記述されていないとサーバ起動時に例外がスローされる。
 //    default int add(T a, T b) throws RemoteException {

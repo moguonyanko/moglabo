@@ -6,4 +6,8 @@ public class RemoteCalculatorException extends Exception {
         super(e);
     }
 
+    RemoteCalculatorException(String message) {
+        super(message);
+    }
+
 }
