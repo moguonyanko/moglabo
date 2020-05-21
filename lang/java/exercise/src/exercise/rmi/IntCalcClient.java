@@ -12,7 +12,7 @@ public class IntCalcClient {
             // Remoteインターフェースを継承したインターフェースの型でキャストしないと
             // ClassCastExceptionとなる。ただしキャストされた型のインターフェースを
             // 継承したインターフェースでリモートメソッドを再宣言していれば問題ない。
-            var obj = registry.lookup("ADDINT");
+            var obj = registry.lookup("AddInt");
             if (obj instanceof Calculator) {
                 var calculator = (Calculator<Integer>)obj;
                 return calculator.add(a, b);

@@ -9,16 +9,12 @@ public class IntCalcServer {
 
     private static final int PORT = 12345;
 
-    private enum MethodNames {
-        ADDINT
-    }
-
     public static void main(String[] args) {
         try {
             var calculator = new RemoteIntCalculator();
             var stub = UnicastRemoteObject.exportObject(calculator, PORT);
             var registry = LocateRegistry.createRegistry(PORT);
-            registry.bind(MethodNames.ADDINT.name(), stub);
+            registry.bind("AddInt", stub);
 
             System.out.println("整数計算サーバ起動完了:" + PORT);
         } catch (RemoteException re) {
