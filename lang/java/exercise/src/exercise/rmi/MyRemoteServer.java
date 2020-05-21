@@ -8,7 +8,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class RemoteServer {
+public class MyRemoteServer {
 
     private static final int PORT = 12345;
 
