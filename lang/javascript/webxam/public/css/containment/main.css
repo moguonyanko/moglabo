@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+img {
+  float: left;
+  max-width: 300px;
+  max-height: 300px;
+  border: 1px solid blue;
+}
+
+article {
+  border: 1px solid black;
+  contain: content;
+}
+
+footer {
+  clear: both;
+}
