@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+p {
+  font-size: 0.9rem;;
+  white-space: pre-line;
+}
+
+.example {
+  contain: content;
+  border: solid whitesmoke 1px;
+}
+
+/* :where()は詳細度が低いため以下のスタイルは適用されない。 */
+:where(.example:read-only) {
+  border: solid red 1px;
+}

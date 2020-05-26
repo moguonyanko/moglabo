@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Idle Detection API</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Idle Detection API</h1>
+  </header>
+
+  <main>
+    <section class="ideledetector example">
+      <h2>IdleDetector</h2>
+      <p>
+        一分間(60000ms)よりも短い時間を指定してstartするとエラーになる。
+        別スクリーンを操作している場合はuserStateはactiveのままである。
+        デバイスを全く操作せずにいるとidleになる。放置し続けてもidleが通知されるのは1回だけである。
+        状態変化なしではchangeイベントが発生しないためである。
+        画面ロックするとscreenStateはlockedになるがuserStateはactiveになる。
+        userStateがidleだった場合はidleからactiveに変わる。
+      </p>
+      <div>
+        <label>threshold<input id="threshold" type="number" min="60000" max="600000" value="60000" /></label>
+        <button data-event-target="start">start</button>
+        <button data-event-target="abort">abort</button>
+      </div>
+      <textarea class="output" readonly></textarea>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://web.dev/idle-detection/">Detect inactive users with the Idle Detection API</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
