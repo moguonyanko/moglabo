@@ -3,10 +3,8 @@
  */
 
 const getCookie = async () => {
-    // FirefoxはrequestStorageAccessを呼び出した時点でエラーとなる。
     await document.requestStorageAccess();
-    const cookie = document.cookie;
-    return cookie;
+    return document.cookie;
 };
 
 const enableStorageAccess = async () => await document.hasStorageAccess();
@@ -19,12 +17,31 @@ const dumpCookie = async () => {
   }
 };
 
+// eslint-disable-next-line no-unused-vars
 const runTest = async () => {
   try {
     await dumpCookie();
   } catch (e) {
     console.error(e);
   }
+};
+
+const setThirdPartyCookie = async () => {
+  if (!(await enableStorageAccess())) {
+    throw new Error('Cannot use Storage Access API');
+  }
+  await document.requestStorageAccess();
+  const values = [
+    'thirdpartycookie=12345',
+    'path=/',
+    `domain=${location.host}`,
+    'secure',
+    // SameSite=Noneでなければ別オリジンのリクエスト時に送信されない。
+    // Safariの場合Prevent cross-site tracking設定が有効だと
+    // SameSite=Noneでも送信されない。
+    'samesite=none' 
+  ];
+  document.cookie = values.join('; ');
 };
 
 // DOM
@@ -42,7 +59,8 @@ const listener = {
     } else {
       output.value = 'No Cookie';
     }
-  }
+  },
+  setThirdPartyCookie
 };
 
 const addListener = () => {
@@ -59,7 +77,6 @@ const addListener = () => {
 
 const init = async () => {
   //await runTest();
-  //document.cookie = 'samplecookie=test';
   addListener();
 };
 
