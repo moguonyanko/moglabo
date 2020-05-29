@@ -5,7 +5,9 @@
 const init = () => {
   navigator.registerProtocolHandler(
     'web+webxamservice',
-    'webxam/service/%s',
+    // クロスオリジンになるとFirefox、Chrome共にエラー。
+    // Chromeでは%sを含まないとエラーになる。
+    'https://localhost/webxam/service/%s',
     'WebXam Service');
 };
 
