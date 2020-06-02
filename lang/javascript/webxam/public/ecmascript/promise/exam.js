@@ -60,9 +60,11 @@ const funcs = {
   async allSettledPromises(root) {
     const output = root.querySelector('.output');
     const promises = [
+      fetch('shops.json'),
       fetch('notfound_members.json'),
       fetch('members.json')
     ];
+    // 成功・失敗関係なく全てのPromiseを実行しその結果をまとめて返す。
     const results = await Promise.allSettled(promises);
     // HTTPエラーが発生した場合でもstatusはfulfilledになってしまう。
     // 従ってResponseのokプロパティの確認は必須である。
@@ -73,12 +75,36 @@ const funcs = {
       const json = await response.json();
       output.innerHTML += `${JSON.stringify(json)}<br />`;
     });                                
+  },
+  executeAnyPromises: async root => {
+    const output = root.querySelector('.output');
+    const promises = [
+      fetch('shops.json'),
+      fetch('notfound_members.json'),
+      fetch('members.json')
+    ];
+    try {
+      // 最初のHTTPリクエストが成功する場合レスポンスは得られる。
+      // 最初が失敗だった場合はエラーになる。
+      // ただし二つ目以降のHTTPリクエストも実行はされる。
+      // 即ちPromise.anyを使ってもリクエスト数を減らすことはできない。
+      // 最初に成功したPromiseの結果だけ得られる。
+      const response = await Promise.any(promises);
+      if (!response.ok) {
+        throw new Error(response.message);
+      }
+      const json = await response.json();
+      output.value = JSON.stringify(json); 
+    } catch(err) {
+      output.value = err.message;
+    }
   }
 };
 
 const addListener = () => {
-  Array.from(document.querySelectorAll('section.example')).forEach(root => {
-    root.addEventListener('pointerup', async event => {
+  const examples = document.querySelectorAll('section.example');
+  Array.from(examples).forEach(root => {
+    root.addEventListener('click', async event => {
       const et = event.target.dataset.eventTarget;
       if (et) {
         event.stopPropagation();
@@ -90,6 +116,4 @@ const addListener = () => {
   });
 };
 
-window.addEventListener('DOMContentLoaded', () => {
-  addListener();
-});
+addListener();

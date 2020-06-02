@@ -1,37 +1,53 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Promise</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../../common.css" />
-    <link rel="stylesheet" href="exam.css" />
-  </head>
-  <body>
-    <header>
-        <a href="../../">home</a>
-        <h1>Promise</h1>
-    </header>
-    <main>
-      <h2>Promise Examination</h2>
-      <section class="example">
-        <h3>Promise.resolve & Promise.all</h3>
-        <label>value<input class="resolve-value" type="text" value="Hello" /></label>
-        <button data-event-target="resolvePromise">run test</button>
-        <div class="output"></div>
-      </section>
-      <section class="example">
-        <h3>Promise.prototype.finally</h3>
-        <button data-event-target="loadImageSuccess">load image(success)</button>
-        <button data-event-target="loadImageFail">load image(fail)</button>
-        <div class="output"></div>
-      </section>
-      <section class="example">
-        <h3>Promise.allSettled</h3>
-        <button data-event-target="allSettledPromises">run</button>
-        <div class="output"></div>
-      </section>
-    </main>
-    <script type="module" src="exam.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Promise</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="exam.css" />
+  <script type="module" src="exam.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Promise</h1>
+  </header>
+
+  <main>
+    <h2>Promise Examination</h2>
+    <section class="example">
+      <h3>Promise.resolve & Promise.all</h3>
+      <label>value<input class="resolve-value" type="text" value="Hello" /></label>
+      <button data-event-target="resolvePromise">run test</button>
+      <div class="output"></div>
+    </section>
+    <section class="example">
+      <h3>Promise.prototype.finally</h3>
+      <button data-event-target="loadImageSuccess">load image(success)</button>
+      <button data-event-target="loadImageFail">load image(fail)</button>
+      <div class="output"></div>
+    </section>
+    <section class="example">
+      <h3>Promise.allSettled</h3>
+      <button data-event-target="allSettledPromises">run</button>
+      <div class="output"></div>
+    </section>
+    <section class="example">
+      <h3>Promise.any</h3>
+      <button data-event-target="executeAnyPromises">run</button>
+      <textarea class="output" readonly></textarea>
+    </section>
+  </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://github.com/tc39/proposal-promise-any">ECMAScript proposal: Promise.any</a></li>
+    </ul>
+  </footer>
+</body>
+
 </html>

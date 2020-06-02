@@ -1,0 +1,13 @@
+{
+  "shops": {
+    "fruit": {
+      "address": "A001"
+    },
+    "fish": {
+      "address": "B001"
+    },
+    "bread": {
+      "address": "C001"
+    }
+  }
+}
