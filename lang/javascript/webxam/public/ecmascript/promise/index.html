@@ -37,6 +37,8 @@
     </section>
     <section class="example">
       <h3>Promise.any</h3>
+      <p>全てのPromiseが失敗しない限りrejectされない。</p>
+      <p>最初に「完了」したPromiseの結果ではなく最初に「成功」したPrpmiseの結果が返される。</p>
       <button data-event-target="executeAnyPromises">run</button>
       <textarea class="output" readonly></textarea>
     </section>
@@ -46,6 +48,7 @@
     <p>参考</p>
     <ul>
       <li><a href="https://github.com/tc39/proposal-promise-any">ECMAScript proposal: Promise.any</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/any">Promise.any()</a></li>
     </ul>
   </footer>
 </body>

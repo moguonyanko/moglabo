@@ -20,6 +20,18 @@ const loadImage = async path => {
   }
 };
 
+const getObjectFromResponse = (response, type = 'json') => {
+  if (response.ok) {
+    if (typeof response[type] === 'function') {
+      return response[type]();
+    } else {
+      return Promise.reject(new Error(`invalid type: ${type}`));
+    }
+  } else {
+    return Promise.reject(new Error(`request error: ${response.status}`));
+  }
+};
+
 // DOM
 
 const funcs = {
@@ -79,24 +91,24 @@ const funcs = {
   executeAnyPromises: async root => {
     const output = root.querySelector('.output');
     const promises = [
-      fetch('shops.json'),
-      fetch('notfound_members.json'),
-      fetch('members.json')
+      fetch('notfound_members.json').then(getObjectFromResponse),
+      fetch('shops.json').then(getObjectFromResponse),
+      fetch('members.json').then(getObjectFromResponse)
     ];
     try {
-      // 最初のHTTPリクエストが成功する場合レスポンスは得られる。
-      // 最初が失敗だった場合はエラーになる。
-      // ただし二つ目以降のHTTPリクエストも実行はされる。
-      // 即ちPromise.anyを使ってもリクエスト数を減らすことはできない。
-      // 最初に成功したPromiseの結果だけ得られる。
-      const response = await Promise.any(promises);
-      if (!response.ok) {
-        throw new Error(response.message);
-      }
-      const json = await response.json();
+      // Promise.anyを使ってもリクエスト数を減らすことはできない。
+      // 全てのPromiseが実行され最初に成功したPromiseの結果だけが返される。
+      const json = await Promise.any(promises);
       output.value = JSON.stringify(json); 
     } catch(err) {
-      output.value = err.message;
+      // Promise.any内でErrorがスローされ全てのPromiseがrejectされた場合、
+      // 内部でAggregateErrorが生成されてスローされる。
+      const message = [
+        `${err.name}`,
+        `${err.message}`,
+        `実際にスローされた例外=${err.errors}`
+      ];
+      output.value = message.join('\n');
     }
   }
 };
