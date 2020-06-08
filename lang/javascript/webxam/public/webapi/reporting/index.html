@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Reporting API</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Reporting API</h1>
+  </header>
+
+  <main>
+    <section>
+      <button data-event-target="loadImage">load via cors</button>
+      <button data-event-target="getReportedRecord">get record</button>
+      <button data-event-target="disconnectObserver">disconnect observer</button>
+      <button data-event-target="getAppCacheStatus">get appCache status</button>
+     <button data-event-target="clear">clear</button>
+      <div class="container"></div>
+      <p>FeaturePolicyで禁止しているautoplay</p>
+      <p>しかし特にReportingAPIで報告はされない。</p>
+      <video controls width="400">
+        <source src="../../movie/samplenote.m4v" type="video/mp4">
+      </video>
+    </section>
+  </main>
+
+  <footer>
+    <ul>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Reporting_API">Reporting API</a></li>
+      <li><a href="https://web.dev/reporting-observer/">Know your code health with the ReportingObserver API</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
