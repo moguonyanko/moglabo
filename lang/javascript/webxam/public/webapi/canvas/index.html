@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../../common.css" />
     <link rel="stylesheet" href="exam.css" />
+    <script src="exam.js" type="module" defer></script>
   </head>
   <body>
     <header>
@@ -36,6 +37,18 @@
             <canvas class="output"></canvas>
           </div>
         </section>
+        <section class="example">
+          <h3>Get Blob From Cross Origin Image</h3>
+          <button data-event-target="toBlobURLFromCrossOriginImage">get blob</button>
+          <div>
+            <label><input type="radio" name="crossOrigin" value="anonymous" />anonymous</label>
+            <label><input type="radio" name="crossOrigin" value="use-credentials" />use-credentials</label>
+            <label><input type="radio" name="crossOrigin" value="" checked />none</label>
+          </div>
+          <div>
+            <canvas class="output"></canvas>
+          </div>
+        </section>
       </section>
     </main>
     <footer>
@@ -43,8 +56,9 @@
       <ul>
         <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas">Offscreen​Canvas(MDN)</a></li>
         <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Worker">Worker(MDN)</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image">Allowing cross-origin use of images and canvas</a></li>
+        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin">HTML attribute: crossorigin</a></li>
       </ul>
     </footer>
-    <script src="exam.js" type="module"></script>
   </body>
 </html>

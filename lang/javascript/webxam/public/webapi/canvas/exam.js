@@ -44,8 +44,34 @@ const createDrawWorkerURL = async () => {
   }
 };
 
-// DOM
+const getBlobByCanvas = ({ url, mimeType, quality, crossOrigin }) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
 
+    if (crossOrigin) {
+      img.crossOrigin = crossOrigin;
+    }
+
+    img.onload = () => {
+      const canvas = new OffscreenCanvas(img.width, img.height);
+      const context = canvas.getContext('2d');
+      context.drawImage(img, 0, 0);
+      // OffscreenCanvasの場合はtoBlobではなくconvertToBlobである。
+      // 後続の処理でImageBitmapにするならtransferToImageBitmapでよいが
+      // ここではBlobに変換した際の挙動を調査したいのでconvertToBlobを呼び出す。
+      canvas.convertToBlob({
+        type: mimeType,
+        quality
+      })
+      .then(resolve)
+      .catch(reject);
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+};
+
+// eslint-disable-next-line no-unused-vars
 const blobToImage = blob => {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(blob);
@@ -58,6 +84,8 @@ const blobToImage = blob => {
     img.src = url;
   });
 };
+
+// DOM
 
 const fitCanvasSize = canvas => {
   const style = getComputedStyle(canvas);
@@ -135,10 +163,24 @@ const listeners = {
       URL.revokeObjectURL(worker.url);
     });
     drawWorkers = [];
+  },
+  toBlobURLFromCrossOriginImage: async root => {
+    // get blob by cross origin resource
+    const url = 'https://myhost/webxam/image/hello.png';
+    //const url = 'https://localhost/webxam/image/hello.png';
+    const crossOrigin = Array.from(root.querySelectorAll(`input[name='crossOrigin']`))
+      .filter(ele => ele.checked)[0].value;
+    const blob = await getBlobByCanvas({ url, mimeType: 'image/png', crossOrigin });
+    
+    // draw blob
+    const bitmap = await createImageBitmap(blob);
+    const output = root.querySelector('.output');
+    output.width = bitmap.width;
+    output.height = bitmap.height;
+    const context = output.getContext('2d');
+    context.drawImage(bitmap, 0, 0);
+    bitmap.close();
   }
-};
-
-const inits = {
 };
 
 const addListener = () => {
@@ -153,7 +195,8 @@ const addListener = () => {
   });
 };
 
-window.addEventListener('DOMContentLoaded', () => {
+const init = () => {
   addListener();
-  Object.values(inits).forEach(f => f());
-});
+};
+
+init();
