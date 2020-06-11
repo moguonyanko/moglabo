@@ -1,64 +1,73 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Canvas</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../../common.css" />
-    <link rel="stylesheet" href="exam.css" />
-    <script src="exam.js" type="module" defer></script>
-  </head>
-  <body>
-    <header>
-        <a href="../../">home</a>
-        <h1>Canvas</h1>
-    </header>
-    <main>
-      <section>
-        <h2>OffscreenCanvas</h2>
-        <section class="example">
-          <h3>transferToImageBitmap</h3>
-          <button data-event-target="transferToImageBitmap">run</button>
-          <div>
-            <canvas class="output"></canvas>
-          </div>
-        </section>
-        <section class="example">
-          <h3>convertToBlob</h3>
-          <button data-event-target="convertToBlob">run</button>
-          <div class="output"></div>
-        </section>
-        <section class="example">
-          <h3>transferControlToOffscreen</h3>
-          <label>worker size<input class="workersize" type="number" min="1" max="20" value="3" /></label>
-          <button data-event-target="transferControlToOffscreen">run</button>
-          <button data-event-target="stopControlToOffscreen">stop</button>
-          <div>
-            <canvas class="output"></canvas>
-          </div>
-        </section>
-        <section class="example">
-          <h3>Get Blob From Cross Origin Image</h3>
-          <button data-event-target="toBlobURLFromCrossOriginImage">get blob</button>
-          <div>
-            <label><input type="radio" name="crossOrigin" value="anonymous" />anonymous</label>
-            <label><input type="radio" name="crossOrigin" value="use-credentials" />use-credentials</label>
-            <label><input type="radio" name="crossOrigin" value="" checked />none</label>
-          </div>
-          <div>
-            <canvas class="output"></canvas>
-          </div>
-        </section>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Canvas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="exam.css" />
+  <script src="exam.js" type="module" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Canvas</h1>
+  </header>
+  <main>
+    <section>
+      <h2>OffscreenCanvas</h2>
+      <section class="example">
+        <h3>transferToImageBitmap</h3>
+        <button data-event-target="transferToImageBitmap">run</button>
+        <div>
+          <canvas class="output"></canvas>
+        </div>
       </section>
-    </main>
-    <footer>
-      <p>参考サイト</p>
-      <ul>
-        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas">Offscreen​Canvas(MDN)</a></li>
-        <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Worker">Worker(MDN)</a></li>
-        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image">Allowing cross-origin use of images and canvas</a></li>
-        <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin">HTML attribute: crossorigin</a></li>
-      </ul>
-    </footer>
-  </body>
+      <section class="example">
+        <h3>convertToBlob</h3>
+        <button data-event-target="convertToBlob">run</button>
+        <div class="output"></div>
+      </section>
+      <section class="example">
+        <h3>transferControlToOffscreen</h3>
+        <label>worker size<input class="workersize" type="number" min="1" max="20" value="3" /></label>
+        <button data-event-target="transferControlToOffscreen">run</button>
+        <button data-event-target="stopControlToOffscreen">stop</button>
+        <div>
+          <canvas class="output"></canvas>
+        </div>
+      </section>
+      <section class="example">
+        <h3>Canvasの汚染</h3>
+        <p>
+          Access-Control-Allow-Originが<strong>*(ワイルドカード)</strong>だと認証情報がサーバに送信できない。<br />
+          この時crossorigin属性がuse-credentialsだとCanvas.toBlobなどはエラーになる。
+        </p>
+        <button data-event-target="toBlobURLFromCrossOriginImage">get blob</button>
+        <div>
+          <label><input type="radio" name="crossOrigin" value="anonymous" />anonymous</label>
+          <label><input type="radio" name="crossOrigin" value="use-credentials" />use-credentials</label>
+          <label><input type="radio" name="crossOrigin" value="" checked />none</label>
+        </div>
+        <div>
+          <canvas class="output"></canvas>
+        </div>
+      </section>
+    </section>
+  </main>
+  <footer>
+    <p>参考サイト</p>
+    <ul>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas">Offscreen​Canvas(MDN)</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Worker">Worker(MDN)</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image">Allowing cross-origin use of
+          images and canvas</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin">HTML attribute:
+          crossorigin</a></li>
+    </ul>
+  </footer>
+</body>
+
 </html>

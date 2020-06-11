@@ -44,7 +44,7 @@ const createDrawWorkerURL = async () => {
   }
 };
 
-const getBlobByCanvas = ({ url, mimeType, quality, crossOrigin }) => {
+const getBlobByCanvas = ({ url, type, quality, crossOrigin }) => {
   return new Promise((resolve, reject) => {
     const img = new Image();
 
@@ -60,11 +60,11 @@ const getBlobByCanvas = ({ url, mimeType, quality, crossOrigin }) => {
       // 後続の処理でImageBitmapにするならtransferToImageBitmapでよいが
       // ここではBlobに変換した際の挙動を調査したいのでconvertToBlobを呼び出す。
       canvas.convertToBlob({
-        type: mimeType,
+        type,
         quality
       })
-      .then(resolve)
-      .catch(reject);
+        .then(resolve)
+        .catch(reject);
     };
     img.onerror = reject;
     img.src = url;
@@ -83,6 +83,19 @@ const blobToImage = blob => {
     img.onerror = reject;
     img.src = url;
   });
+};
+
+const drawBlob = async ({ blob, canvas }) => {
+  const context = canvas.getContext('2d');
+  const bitmap = await createImageBitmap(blob);
+  canvas.width = bitmap.width;
+  canvas.height = bitmap.height;
+  context.drawImage(bitmap, 0, 0);
+  bitmap.close();
+};
+
+const clearCanvas = ({ canvas }) => {
+  canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);  
 };
 
 // DOM
@@ -151,7 +164,7 @@ const listeners = {
       const fillStyle = `rgba(${getRandomRGBA().join(',')})`;
       const context = canvas.getContext('bitmaprenderer');
       // 第2引数でOffscreenCanvasを渡さないとエラーになる。
-      worker.postMessage({canvas: offscreen, fillStyle}, [offscreen]);
+      worker.postMessage({ canvas: offscreen, fillStyle }, [offscreen]);
       worker.onmessage = event =>
         context.transferFromImageBitmap(event.data);
       return worker;
@@ -165,27 +178,25 @@ const listeners = {
     drawWorkers = [];
   },
   toBlobURLFromCrossOriginImage: async root => {
-    // get blob by cross origin resource
     const url = 'https://myhost/webxam/image/hello.png';
     //const url = 'https://localhost/webxam/image/hello.png';
     const crossOrigin = Array.from(root.querySelectorAll(`input[name='crossOrigin']`))
       .filter(ele => ele.checked)[0].value;
-    const blob = await getBlobByCanvas({ url, mimeType: 'image/png', crossOrigin });
-    
-    // draw blob
-    const bitmap = await createImageBitmap(blob);
-    const output = root.querySelector('.output');
-    output.width = bitmap.width;
-    output.height = bitmap.height;
-    const context = output.getContext('2d');
-    context.drawImage(bitmap, 0, 0);
-    bitmap.close();
+    const canvas = root.querySelector('.output');
+    clearCanvas({ canvas });
+    try {
+      const blob = await getBlobByCanvas({ url, type: 'image/png', crossOrigin });
+      await drawBlob({ blob, canvas });
+    } catch (e) {
+      console.error(e);
+      alert(e.message);
+    }
   }
 };
 
 const addListener = () => {
-  Array.from(document.querySelectorAll('.example')).forEach(el => {
-    el.addEventListener('pointerup', async event => {
+  document.querySelectorAll('.example').forEach(el => {
+    el.addEventListener('click', async event => {
       const root = event.target.dataset.eventTarget;
       if (root) {
         event.stopPropagation();
