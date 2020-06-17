@@ -1,0 +1,10 @@
+<div *ngIf="hero">
+  <h2>{{hero.name | uppercase}}の詳細情報</h2>
+  <div><label>ID:</label>{{hero.id}}</div>
+  <div>
+    <!-- placeholderのnameは変数 -->
+    <label>名前:
+      <input [(ngModel)]="hero.name" placeholder="name" />
+    </label>
+  </div>
+</div>
