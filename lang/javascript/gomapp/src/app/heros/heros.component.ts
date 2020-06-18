@@ -17,11 +17,6 @@ import { MessageService } from '../message.service';
 
 export class HerosComponent implements OnInit {
 
-  hero = {
-    id: 1,
-    name: 'Usao'
-  };
-
   heros: Hero[];
 
   constructor(private heroService: HeroService, 
@@ -31,21 +26,9 @@ export class HerosComponent implements OnInit {
     this.loadHeros();
   }
 
-  selectedHero: Hero;
-
-  onSelect(hero: Hero): void {
-    this.selectedHero = hero;
-    this.messageService.add(`${hero.name} selected: ${new Date().toString()}`);
-  }
-
-  setHeros(heros: Hero[]): void {
-    this.heros = heros;
-  }
-
   loadHeros(): void {
-    const f = this.setHeros.bind(this);
-    this.heroService.getHeros().subscribe(f);
+    const func = heros => this.heros = heros;
+    this.heroService.getHeros().subscribe(func.bind(this));
   }
-
 }
 
