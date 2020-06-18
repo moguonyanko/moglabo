@@ -1,6 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+
 import { Hero } from '../hero';
-import { HEROS } from '../mock_heros';
+import { HeroService } from '../hero.service';
+import { MessageService } from '../message.service';
+
+/**
+ * 参考:
+ * https://angular.jp/tutorial/
+ */
 
 @Component({
   selector: 'app-heros',
@@ -15,17 +22,29 @@ export class HerosComponent implements OnInit {
     name: 'Usao'
   };
 
-  heros = HEROS;
+  heros: Hero[];
 
-  constructor() { }
+  constructor(private heroService: HeroService, 
+    private messageService: MessageService) { }
 
   ngOnInit(): void {
+    this.loadHeros();
   }
 
   selectedHero: Hero;
 
   onSelect(hero: Hero): void {
     this.selectedHero = hero;
+    this.messageService.add(`${hero.name} selected: ${new Date().toString()}`);
+  }
+
+  setHeros(heros: Hero[]): void {
+    this.heros = heros;
+  }
+
+  loadHeros(): void {
+    const f = this.setHeros.bind(this);
+    this.heroService.getHeros().subscribe(f);
   }
 
 }
