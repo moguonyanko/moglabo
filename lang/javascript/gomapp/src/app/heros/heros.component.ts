@@ -20,7 +20,7 @@ export class HerosComponent implements OnInit {
 
   heros: Hero[];
 
-  constructor(private heroService: HeroService, 
+  constructor(private heroService: HeroService,
     private messageService: MessageService) { }
 
   ngOnInit(): void {
@@ -44,11 +44,19 @@ export class HerosComponent implements OnInit {
     this.heroService.addHero(hero).subscribe(pushHero);
   }
 
+  // 削除処理に成功した時だけherosプロパティの更新を行う。
+  // 参考: 
+  // https://github.com/Reactive-Extensions/RxJS/blob/master/doc/api/core/operators/subscribe.md
   delete(hero: Hero): void {
-    // TODO: 削除リクエストが成功した時だけherosの更新を行いたい。
-    this.heros = this.heros.filter(h => h !== hero);
     this.heroService.deleteHero(hero)
-      .subscribe();
+      .subscribe(
+        _ => {
+          console.log(`Hero delete success: id=${hero.id}`);
+          this.heros = this.heros.filter(h => h !== hero);
+        },
+        error => console.error(`Hero delete error: ${error.message}`),
+        () => console.log('Hero delete request completed')
+      );
   }
 }
 
