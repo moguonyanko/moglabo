@@ -8,8 +8,11 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
+  // templateUrlが指定されている場合は無視される。
+  template: `<h2>お気に入りは{{myHero}}です</h2>`,
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'Go My Application';
+  myHero = 'Momotaro';
 }
