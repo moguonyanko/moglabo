@@ -25,7 +25,9 @@ export class InMemoryDataService implements InMemoryDbService {
       { id: 117, name: 'Monchi' },
       { id: 118, name: 'Taro' },
       { id: 119, name: 'Jiro' },
-      { id: 120, name: 'Usao' }
+      { id: 120, name: 'Usao' },
+      { id: 121, name: 'Popen' },
+      { id: 122, name: 'Pupuk' }
     ];
     // プロパティ名がHeroService.herosUrlのapi以下と一致していないとエラーになる。
     return { heros };

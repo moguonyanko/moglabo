@@ -1,4 +1,6 @@
 <h2>マイヒーローズ</h2>
+<p class="warn" 
+  *ngIf="heros?.length > getThreadhold()">ヒーローが{{getThreadhold()}}人を超えています！</p>
 <ul class="herolist">
   <li *ngFor="let hero of heros">
     <a routerLink="/detail/{{hero.id}}">

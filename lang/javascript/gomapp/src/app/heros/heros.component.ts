@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { Hero } from '../hero';
 import { HeroService } from '../hero.service';
 import { MessageService } from '../message.service';
-import { catchError } from 'rxjs/operators';
 
 /**
  * 参考:
@@ -18,6 +17,8 @@ import { catchError } from 'rxjs/operators';
 
 export class HerosComponent implements OnInit {
 
+  private threadhold: number = 10;
+
   heros: Hero[];
 
   constructor(private heroService: HeroService,
@@ -25,6 +26,10 @@ export class HerosComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadHeros();
+  }
+
+  getThreadhold(): number {
+    return this.threadhold;
   }
 
   loadHeros(): void {

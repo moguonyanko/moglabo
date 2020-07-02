@@ -13,6 +13,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Go My Application';
-  myHero = 'Momotaro';
+  title: string;
+  myHero: string;
+
+  constructor() {
+    this.title = 'Go My Application';
+    this.myHero = 'Momotaro';
+  }
 }

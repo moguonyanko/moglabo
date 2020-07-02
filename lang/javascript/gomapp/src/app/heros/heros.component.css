@@ -77,3 +77,7 @@ button.delete {
   background-color: gray !important;
   color: white;
 }
+
+.warn {
+  color: goldenrod;
+}
