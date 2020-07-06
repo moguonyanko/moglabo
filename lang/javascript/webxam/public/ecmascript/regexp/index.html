@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>RegExp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script src="main.js" type="module" defer></script>
+</head>
+
+<body>
+
+  <header>
+    <a href="../../">home</a>
+    <h1>RegExp</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>RegExp.prototype[@@matchAll]</h2>
+      <p>RegExpを拡張したクラスでmatchAllの振る舞いを再定義できる。</p>
+      <div>
+        <label>サンプルテキスト<input id="inputvalue" type="text" value="a12bc3" /></label>
+        <button data-event-target="runMatch">アルファベット検出</button>
+      </div>
+      <textarea class="output"></textarea>
+    </section>
+  </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a
+          href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/@@matchAll">RegExp.prototype[@@matchAll]()</a>
+      </li>
+      <li>
+        <a
+          href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll">String.prototype.replaceAll()</a>
+      </li>
+    </ul>
+  </footer>
+
+</body>
+
+</html>
