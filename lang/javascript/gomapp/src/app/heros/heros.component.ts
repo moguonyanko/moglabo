@@ -21,6 +21,12 @@ export class HerosComponent implements OnInit {
 
   heros: Hero[];
 
+  // TODO: 画像の参照方法。以下のURLは404になる。
+  imageUrl: string = '/heros/image/hello.png';
+
+  // Heroのリストが凍結されているかどうか。
+  frozen: boolean = false;
+
   constructor(private heroService: HeroService,
     private messageService: MessageService) { }
 
@@ -39,7 +45,7 @@ export class HerosComponent implements OnInit {
 
   add(heroName: string): void {
     const name = heroName.trim();
-    if (!name) {
+    if (this.frozen || !name) {
       return;
     }
     // asによる型変換ではプロパティを有しているかしか見ていないようだ。

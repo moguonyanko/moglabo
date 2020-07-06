@@ -1,4 +1,5 @@
 <h2>マイヒーローズ</h2>
+<img [src]="imageUrl" width="100" height="30" />
 <p class="warn" 
   *ngIf="heros?.length > getThreadhold()">ヒーローが{{getThreadhold()}}人を超えています！</p>
 <ul class="herolist">
@@ -13,5 +14,6 @@
   <p>ヒーローの新規登録</p>
   <label for="heroname">名前</label>
   <input id="hironame" #heroName />
-  <button (click)="add(heroName.value); heroName.value = '';">追加</button>
+  <button (click)="add(heroName.value); heroName.value = '';"
+    [disabled]="frozen">追加</button>
 </div>
