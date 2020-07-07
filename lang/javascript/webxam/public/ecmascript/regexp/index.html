@@ -25,7 +25,15 @@
         <label>サンプルテキスト<input id="inputvalue" type="text" value="a12bc3" /></label>
         <button data-event-target="runMatch">アルファベット検出</button>
       </div>
-      <textarea class="output"></textarea>
+      <textarea class="output matchall"></textarea>
+    </section>
+    <section>
+      <h2>RegExp.prototype[@@replace]()</h2>
+      <div>
+        <label>置換対象<input id="replacetarget" type="text" value="a12bc3" /></label>
+        <button data-event-target="runReplace">アルファベットを@に置換</button>
+      </div>
+      <textarea class="output replace"></textarea>
     </section>
   </main>
 
@@ -38,6 +46,9 @@
       <li>
         <a
           href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll">String.prototype.replaceAll()</a>
+      </li>
+      <li>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/@@replace">RegExp.prototype[@@replace]()</a>
       </li>
     </ul>
   </footer>

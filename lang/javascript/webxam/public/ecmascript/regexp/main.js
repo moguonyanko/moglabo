@@ -7,6 +7,14 @@
  * 同様のことはmatchやreplaceにも可能。
  */
 class SampleRegExp extends RegExp {
+  
+  #newStr = '';
+
+  constructor(pattern, flag, newStr) {
+    super(pattern, flag);
+    this.#newStr = newStr;    
+  }
+
   [Symbol.matchAll](term) {
     // 再起呼び出しが止まらなくなる。
     // return term.matchAll(this);
@@ -15,30 +23,60 @@ class SampleRegExp extends RegExp {
     const result = RegExp.prototype[Symbol.matchAll].call(this, term);
 
     // オーバーライドで戻り値の型を根本的に変えるのは誤用を招くので避けるべきである。
-    // 今回は練習のために敢えて行っている。
+    // 今回は練習のために敢えて行っている。以下のメソッドについても同様。
     return [...result].flatMap(a => Object.assign({}, a));
+  }
+  
+  // String.prototype.replaceだけでなくString.prototype.replaceAllでも参照される。
+  [Symbol.replace](term) {
+    const result = RegExp.prototype[Symbol.replace].call(this, term, this.#newStr);
+    return [...result].map(value => Object.assign({}, { value }));
   }
 }
 
-const runTest = () => {
+const testMatchAll = () => {
   const reg = new SampleRegExp('[abc]', 'g');
   const result = 'abbcdefg'.matchAll(reg);
   console.log(result);
+};
+
+const testReplaceAll = () => {
+  const reg = new SampleRegExp('[a-z]', 'g', 'X');
+  const result = 'aBcDeFg'.replace(reg);
+  // 以下も同じ結果を返す。gオプションが指定された時のreplaceは
+  // replaceAllと同じ結果になる。replaceAllはgオプションと併用しないと
+  // エラーになる。matchAllと同じ。
+  //const result = 'aBcDeFg'.replaceAll(reg);
+  console.log(result);
+};
+
+const runTest = () => {
+  testMatchAll();
+  testReplaceAll();
 };
 
 runTest();
 
 // DOM
 
-const alphaReg = new SampleRegExp('[a-zA-Z]', 'g');
+const displayResult = (result, selector) => {
+  const output = document.querySelector(selector);
+  output.value = result.map(r => `${JSON.stringify(r)}`).join('\n');
+};
 
 const funcs = {
   runMatch: () => {
     const term = document.getElementById('inputvalue').value;
     // 引数のEegExpオブジェクトがnon-global(gオプション未指定)だとエラーになる。
+    const alphaReg = new SampleRegExp('[a-zA-Z]', 'g');
     const result = term.matchAll(alphaReg);
-    const output = document.querySelector('.output');
-    output.value = result.map(r => `${JSON.stringify(r)}`).join('\n');
+    displayResult(result, '.output.matchall');
+  },
+  runReplace: () => {
+    const term = document.getElementById('replacetarget').value;
+    const reg = new SampleRegExp('[a-zA-Z]', 'g', '@');
+    const result = term.replace(reg);
+    displayResult(result, '.output.replace');
   }
 };
 
