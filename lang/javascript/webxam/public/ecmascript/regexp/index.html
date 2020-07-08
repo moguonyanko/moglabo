@@ -23,7 +23,7 @@
       <p>RegExpを拡張したクラスでmatchAllの振る舞いを再定義できる。</p>
       <div>
         <label>サンプルテキスト<input id="inputvalue" type="text" value="a12bc3" /></label>
-        <button data-event-target="runMatch">アルファベット検出</button>
+        <button data-event-target="runMatchAll">アルファベット検出</button>
       </div>
       <textarea class="output matchall"></textarea>
     </section>
@@ -34,6 +34,31 @@
         <button data-event-target="runReplace">アルファベットを@に置換</button>
       </div>
       <textarea class="output replace"></textarea>
+    </section>
+    <section>
+      <h2>RegExp.prototype[@@match]()</h2>
+      <div>
+        <label>マッチ対象<input id="samplevalue" type="text" value="123456" /></label>
+        <button data-event-target="runMatch">アルファベット検出</button>
+      </div>
+      <textarea class="output match"></textarea>
+    </section>
+    <section>
+      <h2>RegExp.prototype[@@search]()</h2>
+      <div>
+        <label>検索文字<input id="searchword" type="text" value="A" /></label>
+        <label>検索対象<input id="searchtarget" type="text" value="123A56" /></label>
+        <button data-event-target="runSearch">アルファベット検出</button>
+      </div>
+      <textarea class="output search"></textarea>
+    </section>
+    <section>
+      <h2>RegExp.prototype[@@split]()</h2>
+      <div>
+        <label>サンプルテキスト<input id="splittarget" type="text" value="ABC,DE,FG" /></label>
+        <button data-event-target="runSplit">カンマ区切り</button>
+      </div>
+      <textarea class="output split"></textarea>
     </section>
   </main>
 
@@ -49,6 +74,12 @@
       </li>
       <li>
         <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/@@replace">RegExp.prototype[@@replace]()</a>
+      </li>
+      <li>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/@@search">RegExp.prototype[@@search]()</a>
+      </li>
+      <li>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/@@split">RegExp.prototype[@@split]()</a>
       </li>
     </ul>
   </footer>
