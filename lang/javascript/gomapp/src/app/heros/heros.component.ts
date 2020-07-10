@@ -22,7 +22,7 @@ export class HerosComponent implements OnInit {
   heros: Hero[];
 
   // TODO: 画像の参照方法。以下のURLは404になる。
-  imageUrl: string = '/heros/image/hello.png';
+  imageUrl: string = './hello.png';
 
   // Heroのリストが凍結されているかどうか。
   frozen: boolean = false;
@@ -32,6 +32,27 @@ export class HerosComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadHeros();
+    
+    // 今のところ動的なインラインスクリプト以外解釈されない。
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.text = `console.info('Image URL: ${this.imageUrl}');`;
+    const container = document.getElementById('scriptcontainer');
+    container.appendChild(script);
+
+    // スクリプトが読み込まれないためonloadは呼び出されない。
+    // script.onload = () => {
+    //   console.log('Module loaded');
+    //   container.appendChild(script);
+    // };
+    // script.onerror = err => {
+    //   console.error(err);
+    // };
+    // script.src = 'https://localhost/webxam/ecmascript/importexport/mod.js';
+
+    // ローカルのディレクトリを探しに行ってしまいエラーになる。
+    //import('https://localhost/webxam/ecmascript/importexport/mod.js')
+    //  .then(module => console.log(module));
   }
 
   getThreadhold(): number {
