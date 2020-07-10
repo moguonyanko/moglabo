@@ -33,6 +33,9 @@ export class HerosComponent implements OnInit {
   ngOnInit(): void {
     this.loadHeros();
     
+    // 外部スクリプトが読み込まれていることの確認
+    console.log($('#scriptcontainer'));
+
     // 今のところ動的なインラインスクリプト以外解釈されない。
     const script = document.createElement('script');
     script.type = 'module';
