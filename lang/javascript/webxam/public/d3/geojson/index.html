@@ -6,6 +6,9 @@
   <title>GeoJSON</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="https://d3js.org/d3.v3.js" defer></script>
+  <script type="module" src="main.js" defer></script>
 </head>
 
 <body>
@@ -15,11 +18,19 @@
   </header>
 
   <main>
-    <p>D3でGeoJSONを扱う方法を調査する。Canvasに描画を試みたい。</p>
+    <p>D3でGeoJSONを扱う方法を調査する。</p>
+    <section>
+      <h2>GeoJSONをCanvasに描画</h2>
+      <canvas class="geojson" width="800" height="400"></canvas>
+    </section>
   </main>
 
   <footer>
     <p>参考サイト</p>
+    <ul>
+      <li><a href="https://bl.ocks.org/d3indepth/c62b6ce6625b69f6007cea5fccdd4599">D3 geo basic example (canvas)</a></li>
+      <li><a href="https://d3-wiki.readthedocs.io/zh_CN/master/Geo-Paths/">D3 Wiki Geo Paths</a></li>
+    </ul>
   </footer>
 </body>
 

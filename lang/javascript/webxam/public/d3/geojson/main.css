@@ -1,0 +1,6 @@
+@charset "UTF-8";
+
+canvas.geojson {
+  border: solid 1px darkgrey;
+  background: ivory;
+}
