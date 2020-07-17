@@ -5,6 +5,7 @@
  * https://d3-wiki.readthedocs.io/zh_CN/master/Geo-Paths/
  */
 
+// TODO: 投影法を外部から指定できるようにする
 const getProjection = ({ param }) => {
   return d3.geo.equirectangular()
     .scale(param.scale)
@@ -18,9 +19,15 @@ const getGeoGenerator = ({ context, param }) => {
     .context(context);
 };
 
-const drawGeoJson = ({ context, geojson, param, style = {} }) => {
-  context.lineWidth = style.lineWidth ?? 1.5;
-  context.strokeStyle = style.strokeStyle ?? '#ff1493';
+const defaultDrawStyle = {
+  lineWidth: 1.0,
+  fillStyle: '#ffcc00',
+  strokeStyle: '#ff1493'
+};
+
+const drawGeoJson = ({ context, geojson, param,
+  style = defaultDrawStyle }) => {
+  Object.assign(context, style);
 
   context.beginPath();
   const generate = getGeoGenerator({ context, param });
@@ -28,29 +35,45 @@ const drawGeoJson = ({ context, geojson, param, style = {} }) => {
     type: 'FeatureCollection',
     features: geojson.features
   });
+  context.fill();
   context.stroke();
 };
 
+const loadGeoJson = async path => {
+  const res = await fetch(path);
+  if (!res.ok) {
+    throw new Error(`Cannot load GeoJSON: ${res.status}`);
+  }
+  return await res.json();
+};
+
+// DOM
+
 const examples = {
-  drawGeoJson: async () => {
-    const res = await fetch('./samplegeojson1.json');
-    if (!res.ok) {
-      throw new Error(`Cannot load GeoJSON: ${res.status}`);
-    }
-    const geojson = await res.json();
-    const canvas = document.querySelector('canvas.geojson');
+  drawGeoJsonToCanvas: async () => {
+    const geojson = await loadGeoJson('./samplegeojson1.json');
+    const canvas = document.querySelector('canvas.mapcontainer');
     const context = canvas.getContext('2d');
     const param = {
       scale: 200,
       translate: [200, 150]
     };
     drawGeoJson({ context, geojson, param });
+  },
+  drawGeoJsonToSVG: async () => {
+    const geojson = await loadGeoJson('./samplegeojson1.json');
+    const param = {
+      scale: 200,
+      translate: [200, 150]
+    };
+    const generator = getGeoGenerator({ param });
+
+    const map = d3.select('svg.mapcontainer .svgmap')
+      .selectAll('path')
+      .data(geojson.features);
+
+    map.enter().append('path').attr('d', generator);
   }
 };
 
-const main = () => {
-  const promises = Object.values(examples).map(f => f());
-  Promise.all(promises).then();
-};
-
-main();
+Object.values(examples).map(async f => await f());

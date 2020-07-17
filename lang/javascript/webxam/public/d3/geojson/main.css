@@ -1,6 +1,17 @@
 @charset "UTF-8";
 
-canvas.geojson {
-  border: solid 1px darkgrey;
-  background: ivory;
+:root {
+  --common-border: solid 1px darkgrey;
+  --common-bg-color: ivory;
+}
+
+.mapcontainer {
+  border: var(--common-border);
+  background: var(--common-bg-color);
+  filter: saturate(50%);
+}
+
+.svgmap path {
+  fill: aquamarine;
+  stroke: blue;
 }

@@ -21,13 +21,20 @@
     <p>D3でGeoJSONを扱う方法を調査する。</p>
     <section>
       <h2>GeoJSONをCanvasに描画</h2>
-      <canvas class="geojson" width="800" height="400"></canvas>
+      <canvas class="mapcontainer" width="800" height="400"></canvas>
+    </section>
+    <section>
+      <h2>GeoJSONをSVGに描画</h2>
+      <svg class="mapcontainer" width="800" height="400">
+        <g class="svgmap"></g>
+      </svg>
     </section>
   </main>
 
   <footer>
     <p>参考サイト</p>
     <ul>
+      <li><a href="https://www.d3indepth.com/geographic/">D3 in Depth Geographic</a></li>
       <li><a href="https://bl.ocks.org/d3indepth/c62b6ce6625b69f6007cea5fccdd4599">D3 geo basic example (canvas)</a></li>
       <li><a href="https://d3-wiki.readthedocs.io/zh_CN/master/Geo-Paths/">D3 Wiki Geo Paths</a></li>
     </ul>
