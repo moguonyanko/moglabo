@@ -1,0 +1,50 @@
+[
+  {
+    "type": "AzimuthalEqualArea",
+    "scale": 100
+  },
+  {
+    "type": "AzimuthalEquidistant",
+    "scale": 80
+  },
+  {
+    "type": "Gnomonic",
+    "scale": 100
+  },
+  {
+    "type": "Orthographic",
+    "scale": 160
+  },
+  {
+    "type": "Stereographic",
+    "scale": 100
+  },
+  {
+    "type": "Albers",
+    "scale": 120
+  },
+  {
+    "type": "ConicConformal",
+    "scale": 100
+  },
+  {
+    "type": "ConicEqualArea",
+    "scale": 100
+  },
+  {
+    "type": "ConicEquidistant",
+    "scale": 100
+  },
+  {
+    "type": "Equirectangular",
+    "scale": 80
+  },
+  {
+    "type": "Mercator",
+    "scale": 70
+  },
+  {
+    "type": "TransverseMercator",
+    "scale": 70
+  }
+]

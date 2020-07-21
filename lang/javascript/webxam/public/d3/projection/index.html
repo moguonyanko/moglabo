@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>投影法</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="https://d3js.org/d3.v5.js" defer></script>
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>投影法</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>各投影法に基づいた地形描画</h2>
+      <canvas class="map" width="600" height="500"></canvas>
+      <label for="projectionlist">投影法</label>
+      <select id="projectionlist">
+        <option value="" selected></option>
+      </select>
+    </section>
+  </main>
+
+  <footer>
+    <p>参考サイト</p>
+    <ul>
+      <li><a href="https://www.d3indepth.com/geographic/">D3 in Depth Geographic</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
