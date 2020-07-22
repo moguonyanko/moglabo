@@ -118,10 +118,7 @@ const getParam = () => {
   const param = Array.from(paramEles).map(ele => {
     const oneParam = { [ele.name]: ele.value };
     return oneParam;
-  }).reduce((params, oneParam) => {
-    Object.assign(params, oneParam);
-    return params;
-  }, {})
+  }).reduce((params, oneParam) => Object.assign(params, oneParam), {});
   return param;
 };
 
