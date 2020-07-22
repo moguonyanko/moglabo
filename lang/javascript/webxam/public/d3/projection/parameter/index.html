@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>投影法のパラメータ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../../common.css" />
+  <link rel="stylesheet" href="parameter.css" />
+  <script src="https://d3js.org/d3.v5.js" defer></script>
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../../">home</a>
+    <h1>投影法のパラメータ</h1>
+  </header>
+
+  <main>
+    <canvas class="map" width="900" height="500"></canvas>
+    <p>投影法選択</p>
+    <select data-event-target class="projection"></select>
+    <p>パラメータ</p>
+    <div class="param">
+      <label>スケール<input data-event-target type="number" name="scale" min="0" max="400" value="120" /></label>
+      <label>経度<input data-event-target type="number" name="longitude" min="-180" max="180" value="0" /></label>
+      <label>緯度<input data-event-target type="number" name="latitude" min="-90" max="90" value="0" /></label>
+      <label>X座標<input data-event-target type="number" name="x" min="0" max="960" value="480" /></label>
+      <label>Y座標<input data-event-target type="number" name="y" min="0" max="500" value="250" /></label>
+      <label>ヨー<input data-event-target type="number" name="yaw" min="-180" max="180" value="0" /></label>
+      <label>ピッチ<input data-event-target type="number" name="pitch" min="-180" max="180" value="0" /></label>
+      <label>ロール<input data-event-target type="number" name="roll" min="-180" max="180" value="0" /></label>
+    </div>
+  </main>
+
+  <footer>
+    <p>参考サイト</p>
+    <ul>
+      <li><a href="https://www.d3indepth.com/geographic/">D3 in Depth Geographic</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
