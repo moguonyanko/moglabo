@@ -67,11 +67,12 @@ const drawCircle = ({ circles, context, generator }) => {
   context.restore();
 };
 
-// TODO: 描画される中心点の位置が正しくないように見える。
 const drawCenter = ({ projection, context, generator, param }) => {
   const geoCircle = getGeoCircle({ radius: 2, precision: 1 });
-  const center = projection([param.longitude, param.latitude]);
-  geoCircle.center(center);
+  // 全く意味のないワールド->ピクセル変換だがinvertの振る舞いを調べるために行っている。
+  const pixelPoint = projection([param.longitude, param.latitude]);
+  const lonlat = projection.invert(pixelPoint);
+  geoCircle.center(lonlat);
   context.save();
   context.lineWidth = 1.0;
   context.strokeStyle = "#990000";
@@ -116,7 +117,7 @@ const appendProjections = async ({ projectionList }) => {
 const getParam = () => {
   const paramEles = document.querySelectorAll('.param input[data-event-target]');
   const param = Array.from(paramEles).map(ele => {
-    const oneParam = { [ele.name]: ele.value };
+    const oneParam = { [ele.name]: parseInt(ele.value) };
     return oneParam;
   }).reduce((params, oneParam) => Object.assign(params, oneParam), {});
   return param;
