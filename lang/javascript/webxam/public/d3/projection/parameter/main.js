@@ -67,12 +67,9 @@ const drawCircle = ({ circles, context, generator }) => {
   context.restore();
 };
 
-const drawCenter = ({ projection, context, generator, param }) => {
+const drawCenter = ({ context, generator, param }) => {
   const geoCircle = getGeoCircle({ radius: 2, precision: 1 });
-  // 全く意味のないワールド->ピクセル変換だがinvertの振る舞いを調べるために行っている。
-  const pixelPoint = projection([param.longitude, param.latitude]);
-  const lonlat = projection.invert(pixelPoint);
-  geoCircle.center(lonlat);
+  geoCircle.center([param.longitude, param.latitude]);
   context.save();
   context.lineWidth = 1.0;
   context.strokeStyle = "#990000";
@@ -90,7 +87,7 @@ const draw = ({ geojson, circles, context, projectionType, param }) => {
   const generator = getGenerator({ context, projection });
 
   drawFeature({ context, generator, geojson });
-  drawCenter({ context, generator, param, projection });
+  drawCenter({ context, generator, param });
   drawGraticule({ context, generator });
   drawCircle({ context, generator, circles });
 };
