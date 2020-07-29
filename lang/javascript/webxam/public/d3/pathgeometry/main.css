@@ -1,6 +1,40 @@
 @charset "UTF-8";
 
-canvas {
+/* TODO: 最下部に表示するために100%以上のtopを指定している。もっと良い方法はないか？ */
+footer {
+  position: absolute;
+  width: 100%;
+  top: 120%;
+}
+
+.container {
+  position: relative;
+}
+
+.map {
+  position: absolute;
+  left: 0;
+  top: 0;
   border: solid 1px darkgray;
   background: #CCFFFF;
+}
+
+.attention {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.bounding-box rect {
+  fill: none;
+  stroke: #FF3300;
+  stroke-dasharray: 2, 2;
+}
+
+.centroid {
+  display: none;
+}
+
+.centroid circle {
+  fill: blue;
 }

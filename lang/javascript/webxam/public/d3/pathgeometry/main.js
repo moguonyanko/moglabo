@@ -7,6 +7,13 @@
 class MapView {
   #projection;
   #context;
+  #features = [];
+
+  #defaultStyle = {
+    lineWidth: 1.0,
+    strokeStyle: 'rgb(51, 0, 102)',
+    fillStyle: 'rgba(0, 153, 102, 0.5)'
+  };
 
   constructor({ projectionName, scale, translate, center, context }) {
     this.#projection = d3[`geo${projectionName}`]()
@@ -16,26 +23,24 @@ class MapView {
     this.#context = context;
   }
 
-  getGenerator({ pointRadius = 5, style } = {}) {
+  getGenerator({ pointRadius = 5, style,
+    context = this.#context } = {}) {
     Object.assign(this.#context, style);
 
     const generator = d3.geoPath()
       .pointRadius(pointRadius)
       .projection(this.#projection)
-      .context(this.#context);
+      .context(context);
 
     return generator;
   }
 
-  draw({ features, style = {
-    lineWidth: 1.0,
-    strokeStyle: '#CCCCCC',
-    fillStyle: '#009966'
-  } }) {
+  draw({ features, style = this.#defaultStyle }) {
+    this.#features = features;
     this.#context.save();
     const generator = this.getGenerator({ style });
     // 各々の輪郭を描画できるように地物を1つずつ処理する。
-    features.forEach(feature => {
+    this.#features.forEach(feature => {
       this.#context.beginPath();
       generator(feature);
       this.#context.stroke();
@@ -43,6 +48,26 @@ class MapView {
       // closePathを呼び出す必要はない。
     });
     this.#context.restore();
+  }
+
+  getFeaturesFromPoint({ x, y }) {
+    if (this.#features?.length <= 0) {
+      return [];
+    }
+    const { width, height } = this.#context.canvas;
+    const cvs = new OffscreenCanvas(width, height);
+    const ctx = cvs.getContext('2d');
+    const generator = this.getGenerator({ context: ctx });
+    // 地物がヒットした時点で処理を終了したいところだが、重なっている複数地物のピック
+    // 即ち串刺しもありえるので全ての地物をテストしている。
+    const results = this.#features.filter(feature => {
+      ctx.clearRect(0, 0, cvs.width, cvs.height);
+      ctx.beginPath();
+      generator(feature);
+      ctx.stroke();
+      return ctx.isPointInPath(x, y);
+    });
+    return results;
   }
 }
 
@@ -85,11 +110,37 @@ const drawMap = ({ features, canvas }) => {
   mapView.draw({ features });
 };
 
-const reportFeature = feature => {
-  // TODO: 常に1番目の地物が取得されてしまう。
-  // クリックされた位置に該当する地物を取得したい。
-  // 自前でFeatureとクリック位置のヒット判定を行うしかないだろうか？
-  console.log(feature);
+// 地物を強調するための矩形と点は元のサンプル同様SVGで描画している。
+// 強調図形描画用のCanvasに差し替えてCanvasに描画する方が一貫性があるかもしれない。
+// ただしCanvasだと毎回古い形状をクリアする処理が必要になる。
+const drawAttentionRect = ({ bounds, centroid }) => {
+  const [x, y] = [
+    bounds[0][0], bounds[0][1]
+  ];
+
+  const [width, height] = [
+    bounds[1][0] - x,
+    bounds[1][1] - y
+  ];
+
+  d3.select('.bounding-box rect')
+    .attr('x', x)
+    .attr('y', y)
+    .attr('width', width)
+    .attr('height', height);
+
+  d3.select('.centroid')
+    .style('display', 'inline')
+    .attr('transform', 'translate(' + centroid + ')');
+};
+
+function reportFeature() {
+  const [x, y] = d3.mouse(this);
+  const results = mapView.getFeaturesFromPoint({ x, y });
+  if (results.length <= 0) {
+    return;
+  }
+  const feature = results[0];
   const generator = mapView.getGenerator();
   const [area, centroid, bounds, measure] = [
     generator.area(feature),
@@ -98,18 +149,18 @@ const reportFeature = feature => {
     generator.measure(feature)
   ];
   console.log(area, centroid, bounds, measure);
+  drawAttentionRect({ bounds, centroid });
+
+  const info = document.querySelector('.infomation');
+  info.textContent = `地域名:${feature.properties.name} 面積:${area.toFixed(1)} 周長:${measure.toFixed(1)}`;
 };
 
 const init = async () => {
   const canvas = document.querySelector('canvas.map');
   const geojson = await loadJson('./sample.json');
   drawMap({ ...geojson, canvas });
-  const map = d3.select('canvas.map');
-  map.data(geojson.features).on('click', reportFeature);
-  // Feature一つ一つに対してイベントハンドラを設定する方法ではうまくいかない。
-  // geojson.features.forEach(feature => {
-  //   map.data(feature).on('click', reportFeature);    
-  // });
+  const map = d3.select('.container');
+  map.on('click', reportFeature);
 };
 
 init().then();

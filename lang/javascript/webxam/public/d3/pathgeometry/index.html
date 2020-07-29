@@ -18,9 +18,14 @@
     </header>
 
     <main>
-      <p>geoPathから幾何情報を得る。</p>
-      <p class="infomation"></p>
-      <canvas class="map" width="620" height="600"></canvas>
+      <p class="infomation">地域名:面積:周長</p>
+      <div class="container">
+        <canvas class="map" width="600" height="600"></canvas>
+        <svg class="attention" width="600px" height="600px">
+          <g class="bounding-box"><rect></rect></g>
+          <g class="centroid"><circle r="4"></circle></g>
+        </svg>      
+      </div>
     </main>
 
     <footer>
