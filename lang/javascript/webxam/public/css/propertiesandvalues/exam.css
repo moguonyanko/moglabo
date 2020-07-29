@@ -1,5 +1,11 @@
 @charset "UTF-8";
 
+@property --sample-color2 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: red;
+}
+
 .samplerect {
   display: flex;
   align-items: center;
@@ -9,9 +15,8 @@
   text-decoration: none;
   width: 250px;
   height: 250px;
-  --sample-color: url('exam.js'); /* わざと色として不正な値を指定 */
-  /* --sample-color: blue; */
-  background: radial-gradient(var(--sample-color), #00FF33);
+  --sample-color: 100px; /* わざと色として不正な値を指定 */
+  background: radial-gradient(var(--sample-color),whitesmoke);
   transition: --sample-color 1s, transform 1s, color 1s; 
 }
 
@@ -20,4 +25,19 @@
   --sample-color: yellow;
   transform: rotate(360deg);
   color: orange;
+}
+
+.samplerect2 {
+  --sample-color2: #FFFFCC;
+  display: flex;
+  align-items: center; /* 縦方向の中央揃え */
+  justify-content: center; /* 横方向の中央揃え */
+  background: orange;
+  width: 200px;
+  height: 200px;
+}
+
+.samplerect2:hover {
+  color: var(--sample-color2);
+  font-weight: bold;  
 }
