@@ -1,10 +1,13 @@
 @charset "UTF-8";
 
-/* TODO: 最下部に表示するために100%以上のtopを指定している。もっと良い方法はないか？ */
-footer {
-  position: absolute;
-  width: 100%;
-  top: 120%;
+body {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+main {
+  min-height: 100vh;
+  flex: 1;
 }
 
 .container {
