@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 120vh;
+}
+
+main {
+  flex: 1;
+}
+
+canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.container {
+  position: relative;
+}
+
+.map {
+  border: solid 1px darkgray;
+  background: white;
+}
