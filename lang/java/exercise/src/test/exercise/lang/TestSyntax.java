@@ -78,8 +78,6 @@ public class TestSyntax {
         Calc.execute();
     }
 
-    // --enable-previewがないとコンパイルできず、--enable-previewを指定すると
-    // 他のクラス含めて実行できなくなるのでコメントアウトしている。
     /**
      * 参考:
      * https://openjdk.java.net/jeps/325
@@ -167,10 +165,10 @@ public class TestSyntax {
      */
     @Test
     public void canCreateTextBlocks() {
-//        var s = "test";
-//        var s2 = """
-//        This is test
-//        """;
-//        System.out.println(s2);
+        var s = "test";
+        var s2 = """
+        This is test
+        """;
+        System.out.println(s2);
     }
 }
