@@ -14,16 +14,14 @@ const getGenerator = context => {
 
 let geojson;
 
-const attentionFeature = () => {
-  const layer = document.querySelector('canvas.attention');
-  const context = layer.getContext('2d');
-  const { width, height } = context.canvas;
-  context.clearRect(0, 0, width, height);
+// 描画コストが大きくないのであまり意味はない。
+// オフスクリーンに描画する練習である。
+const drawToOffscreen = ({ width, height, wrdP }) => {
+  const offscreen = new OffscreenCanvas(width, height);
+  const context = offscreen.getContext('2d');
   context.fillStyle = "#FF0000";
   const generator = getGenerator(context);
 
-  const devP = d3.mouse(layer);
-  const wrdP = projection.invert(devP);
   const { features } = geojson;
   // 重なっている地物を強調する可能性を考慮すると、一回包含を検出しただけで
   // getContainsのループを打ち切るわけにはいかない。
@@ -34,6 +32,18 @@ const attentionFeature = () => {
       context.fill();
     }
   });
+
+  return offscreen;
+};
+
+const attentionFeature = () => {
+  const layer = document.querySelector('canvas.attention');
+  const { width, height } = layer;
+  const wrdP = projection.invert(d3.mouse(layer));
+  const offscreen = drawToOffscreen({ width, height, wrdP });
+  const ctx = layer.getContext('2d');
+  ctx.clearRect(0, 0, width, height);
+  ctx.drawImage(offscreen, 0, 0);
 };
 
 const drawMap = () => {
