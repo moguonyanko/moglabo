@@ -9,11 +9,10 @@ import static org.junit.Assert.*;
 /**
  * 参考:
  * https://dzone.com/articles/a-first-look-at-records-in-java-14
+ * https://blogs.oracle.com/javamagazine/records-come-to-java
  */
 
-// privateを指定するとコンパイルエラーになる。
-// 同一パッケージ内からはアクセスできてしまう。
-// 暗黙てfinal宣言されている。拡張しようとするとエラーになる。
+// 暗黙でfinal宣言されている。拡張しようとするとエラーになる。
 // クラス内にネストして宣言することは可能。
 record SampleRecordItem(String name, int price) {}
 
@@ -89,5 +88,17 @@ public class TestRecord {
     public void コンパクトコンストラクタで入力値のチェックを行える() {
         var expiration = LocalDateTime.of(2019, 12, 31, 12, 0);
         new MySampleCard(expiration, "      ");
+    }
+
+    private record SampleMember(String name, int no){
+        SampleMember(String name) {
+            this(name, -1);
+        }
+    }
+
+    @Test
+    public void オルタナティブコンストラクタで初期化できる() {
+        var sample = new SampleMember("Mike");
+        assertThat(sample.no(), is(-1));
     }
 }
