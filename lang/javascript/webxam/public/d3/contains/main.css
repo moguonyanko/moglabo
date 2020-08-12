@@ -6,12 +6,12 @@ body {
   min-height: 100vh;
 }
 
-main {
+.mapcontainer {
   flex: 1;
   position: relative;
 }
 
-canvas {
+.mapcontainer canvas {
   border: solid 1px darkgray;
   position: absolute;
   left: 0;

@@ -59,6 +59,28 @@ const drawMap = () => {
   context.fill();
 };
 
+const blobUrls = [];
+
+const getImage = async () => {
+  const maps = document.querySelectorAll('.mapcontainer canvas');
+  const { width, height } = maps[0];
+
+  const off = new OffscreenCanvas(width, height);
+  const offctx = off.getContext('2d');
+  // source-overがデフォルト値なので指定しなくてもよい。確認のためのコードである。
+  offctx.globalCompositeOperation = 'source-over';
+  // 全てのcanvasの描画内容をOffscreenCanvasに合成する。
+  maps.forEach(map => offctx.drawImage(map, 0, 0));
+
+  const blob = await off.convertToBlob();
+  const blobUrl = URL.createObjectURL(blob);  
+  window.open(blobUrl);
+  blobUrls.push(blobUrl);
+  // 以下の方法ではサブウインドウをリロードした時もURL.revokeObjectURLされてしまう。
+  // URL.revokeObjectURLされたBlobURLの画像は保存できない。
+  //subWindow.onbeforeunload = () => URL.revokeObjectURL(blobUrl);
+};
+
 const init = async () => {
   const response = await fetch('sample.json');
   if (!response.ok) {
@@ -70,7 +92,15 @@ const init = async () => {
   // d3.mouseでイベント発生時のポインタのデバイス座標を得るためにonメソッドを介して
   // イベントリスナーを設定する必要がある。
   d3.select('canvas.attention')
-    .on('pointermove', attentionFeature);
+    // 実際にはポインタの移動に伴って地物を強調描画する機会はそう多くないと思われる。
+    // 例えばモバイルデバイスではpointermove自体が難しい操作である。
+    // .on('pointermove', attentionFeature)
+    .on('click', attentionFeature);
+
+  d3.select('.imagegetter')
+    .on('click', getImage);
+
+  window.onbeforeunload = () => blobUrls.forEach(URL.revokeObjectURL);
 };
 
 init().then();
