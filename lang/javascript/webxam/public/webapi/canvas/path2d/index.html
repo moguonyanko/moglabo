@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Path2D</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../../">home</a>
+    <h1>Path2D</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>addPath</h2>
+      <p>
+        isPointInPathはCanvasRenderingContext2D経由でないと使用できない。        
+      </p>
+      <p>
+        またPath2Dどうしの交差チェックなどを行うようなメソッドは存在しない。
+      </p>
+      <canvas class="addpath" width="600" height="450"></canvas>
+    </section>
+  </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Path2D">Path2D</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/DOMMatrix">DOMMatrix</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
