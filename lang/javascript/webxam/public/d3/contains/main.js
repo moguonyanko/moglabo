@@ -14,11 +14,56 @@ const getGenerator = context => {
 
 let geojson;
 
+// FirefoxはOffscreenCanvasのgetContextで2dを指定できない。
+// そのため代替のcanvas要素を生成している。こちらはblobを得るメソッド名など
+// OffscreenCanvasと差異がある。このクラスではその差異を吸収する。
+class CanvasWrapper {
+  #cvs;
+  #ctx;
+
+  constructor(width, height) {
+    this.#cvs = new OffscreenCanvas(width, height);
+    try {
+      this.#ctx = this.#cvs.getContext('2d');
+    } catch {
+      this.#cvs = document.createElement('canvas');
+      Object.assign(this.#cvs, { width, height });
+      this.#ctx = this.#cvs.getContext('2d');
+    }
+  }
+
+  get canvas() {
+    return this.#cvs;
+  }
+
+  getContext() {
+    return this.#ctx;
+  }
+
+  #toBlob = () => {
+    try {
+      return this.#cvs.convertToBlob();
+    } catch {
+      return new Promise((resolve, reject) => {
+        try {
+          this.#cvs.toBlob(resolve);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    }
+  };
+
+  async convertToBlob() {
+    return await this.#toBlob();
+  }
+}
+
 // 描画コストが大きくないのであまり意味はない。
 // オフスクリーンに描画する練習である。
 const drawToOffscreen = ({ width, height, wrdP }) => {
-  const offscreen = new OffscreenCanvas(width, height);
-  const context = offscreen.getContext('2d');
+  const wrapper = new CanvasWrapper(width, height);
+  const context = wrapper.getContext();
   context.fillStyle = "#FF0000";
   const generator = getGenerator(context);
 
@@ -33,7 +78,7 @@ const drawToOffscreen = ({ width, height, wrdP }) => {
     }
   });
 
-  return offscreen;
+  return wrapper.canvas;
 };
 
 const attentionFeature = () => {
@@ -65,15 +110,15 @@ const getImage = async () => {
   const maps = document.querySelectorAll('.mapcontainer canvas');
   const { width, height } = maps[0];
 
-  const off = new OffscreenCanvas(width, height);
-  const offctx = off.getContext('2d');
+  const wrapper = new CanvasWrapper(width, height);
+  const offctx = wrapper.getContext();
   // source-overがデフォルト値なので指定しなくてもよい。確認のためのコードである。
   offctx.globalCompositeOperation = 'source-over';
   // 全てのcanvasの描画内容をOffscreenCanvasに合成する。
   maps.forEach(map => offctx.drawImage(map, 0, 0));
 
-  const blob = await off.convertToBlob();
-  const blobUrl = URL.createObjectURL(blob);  
+  const blob = await wrapper.convertToBlob();
+  const blobUrl = URL.createObjectURL(blob);
   window.open(blobUrl);
   blobUrls.push(blobUrl);
   // 以下の方法ではサブウインドウをリロードした時もURL.revokeObjectURLされてしまう。
