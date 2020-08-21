@@ -78,7 +78,7 @@ public class Images {
      */
     public static BufferedImage changeDensity(BufferedImage src, String format,
                                               int density) {
-        return null;
+        return src;
     }
 
     public static MultiResolutionImage loadMultiResolutionImage(

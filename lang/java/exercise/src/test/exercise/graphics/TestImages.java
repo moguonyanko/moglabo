@@ -144,20 +144,26 @@ public class TestImages {
         }
     }
 
-    /**
-     * TODO: 作業中
-     */
     @Test
     public void カーブを描画できる() throws IOException {
-        var dstImg = new BufferedImage(400, 400, BufferedImage.TYPE_INT_ARGB);
+        var w = 200;
+        var h = 200;
+        var dstImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         var g = (Graphics2D)dstImg.getGraphics();
 
+        var stroke = new BasicStroke(2.0f);
+        g.setStroke(stroke);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON);
+
         var c1 = new QuadCurve2D.Double();
-        c1.setCurve(0, 0, 100, 100, 400, 400);
+        c1.setCurve(0, 0, 20, 150, w, h);
+        g.setColor(Color.RED);
         g.draw(c1);
 
         var c2 = new CubicCurve2D.Double();
-        c2.setCurve(0, 0, 100, 100, 200, 200, 400, 400);
+        c2.setCurve(0, 0, 100, 10, 0, 200, w, h);
+        g.setColor(Color.BLUE);
         g.draw(c2);
 
         var dstPath = Paths.get("./sample/curve.png");
