@@ -1,6 +1,8 @@
 package test.exercise.graphics;
 
 import java.awt.*;
+import java.awt.geom.CubicCurve2D;
+import java.awt.geom.QuadCurve2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.MultiResolutionImage;
 import java.io.IOException;
@@ -140,5 +142,25 @@ public class TestImages {
 
             assertTrue(srcSize > dstSize);
         }
+    }
+
+    /**
+     * TODO: 作業中
+     */
+    @Test
+    public void カーブを描画できる() throws IOException {
+        var dstImg = new BufferedImage(400, 400, BufferedImage.TYPE_INT_ARGB);
+        var g = (Graphics2D)dstImg.getGraphics();
+
+        var c1 = new QuadCurve2D.Double();
+        c1.setCurve(0, 0, 100, 100, 400, 400);
+        g.draw(c1);
+
+        var c2 = new CubicCurve2D.Double();
+        c2.setCurve(0, 0, 100, 100, 200, 200, 400, 400);
+        g.draw(c2);
+
+        var dstPath = Paths.get("./sample/curve.png");
+        ImageIO.write(dstImg, "png", dstPath.toFile());
     }
 }
