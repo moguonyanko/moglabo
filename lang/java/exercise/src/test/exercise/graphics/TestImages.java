@@ -223,4 +223,29 @@ public class TestImages {
         var path = Paths.get("./sample/texture1.png");
         ImageIO.write(image, "png", path.toFile());
     }
+
+    @Test
+    public void テキストの背景を描画できる() throws IOException {
+        var img = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
+
+        var font = new Font("Monospaced", Font.PLAIN, 14);
+        var g2 = (Graphics2D)img.getGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+            RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
+
+        var metrics = g2.getFontMetrics(font);
+        var sample = "こんにちは！";
+        var h = metrics.getHeight();
+        var w = metrics.stringWidth(sample);
+        var l = metrics.getLeading();
+        var d = metrics.getDescent();
+        var rect = new Rectangle(0, 0, w, h - l);
+        g2.setColor(Color.GREEN);
+        g2.fill(rect);
+        g2.setColor(Color.BLACK);
+        g2.drawString(sample, 0, h - d);
+
+        var path = Paths.get("./sample/text1.png");
+        ImageIO.write(img, "png", path.toFile());
+    }
 }
