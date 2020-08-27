@@ -1,10 +1,7 @@
 package test.exercise.graphics;
 
 import java.awt.*;
-import java.awt.geom.CubicCurve2D;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.QuadCurve2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.MultiResolutionImage;
 import java.io.IOException;
@@ -246,6 +243,35 @@ public class TestImages {
         g2.drawString(sample, 0, h - d);
 
         var path = Paths.get("./sample/text1.png");
+        ImageIO.write(img, "png", path.toFile());
+    }
+
+    private Graphics2D toG2(Graphics g) {
+        if (g instanceof Graphics2D g2) {
+            return g2;
+        } else {
+            throw new IllegalArgumentException("Required Graphics2D object");
+        }
+    }
+
+    @Test
+    public void Areaで弧を描ける() throws IOException {
+        var img = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
+
+        var arc = new Area(new Ellipse2D.Double(0, 0, 50, 50));
+        var clip = new Area(new Rectangle2D.Double(0, -25, 50, 50));
+        // クリップされた部分が描画領域として残る。
+        arc.intersect(clip);
+
+        var g2 = toG2(img.getGraphics());
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(Color.BLACK);
+        g2.draw(arc);
+        g2.setColor(Color.BLUE);
+        g2.fill(arc);
+
+        var path = Paths.get("./sample/arc1.png");
         ImageIO.write(img, "png", path.toFile());
     }
 }
