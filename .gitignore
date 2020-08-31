@@ -26,8 +26,10 @@
 **/*.bin
 **/*.timestamp
 **/target/rls
+**/target/debug
 **/*.class
 **/*.jar
 **/*-runtime
 **/*.vscode
-
+**/.rustc_info.json
+.gitignore.swp
