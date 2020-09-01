@@ -27,6 +27,7 @@
 **/*.timestamp
 **/target/rls
 **/target/debug
+**/target/doc
 **/*.class
 **/*.jar
 **/*-runtime
