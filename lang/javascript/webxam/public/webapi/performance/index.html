@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Performance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+
+  <header>
+    <a href="../../">home</a>
+    <h1>Performance</h1>
+  </header>
+  
+  <main>
+    <section class="example measureMemory">
+      <h2>performance.measureMemory()</h2>
+      <button is="memory-measure" 
+        performance-result="section.measureMemory .output">メモリ計測</button>
+      <div class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://web.dev/coop-coep/">Making your website "cross-origin isolated" using COOP and COEP</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Opener-Policy">Cross-Origin-Opener-Policy</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Performance">Performance</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
