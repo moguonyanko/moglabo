@@ -4,28 +4,67 @@
 
 const Performances = {
   measureMemory: async () => {
+    // COEP関連のレスポンスヘッダを設定していなければcrossOriginIsolatedはfalseになる。
+    // 参考: https://web.dev/coop-coep/
     if (!self.crossOriginIsolated) {
       throw Error('Cannot use Performance API');
     }
     const result = await performance.measureMemory();
     return result;
+  },
+  profile: async ({ sampleInterval = 10, task }) => {
+    if (typeof task !== 'function') {
+      throw new Error(`${task} is not function`);
+    }
+    // sampleIntervalが大きいほどtimestampの量が少なくなる。
+    const profiler = await performance.profile({ sampleInterval });
+    await task();
+    const result = await profiler.stop();
+    return result;
   }
-}; 
+};
 
-class MeasureMemoryElement extends HTMLButtonElement {
+class CustomButtonElement extends HTMLButtonElement {
+  constructor() {
+    super();
+  }
+
+  get output() {
+    const query = this.getAttribute('performance-result');
+    const output = document.querySelector(query);
+    if (!output) {
+      throw new Error('Not found output element');
+    }
+    return output;
+  }
+}
+
+class MeasureMemoryElement extends CustomButtonElement {
   constructor() {
     super();
   }
 
   connectedCallback() {
     this.addEventListener('click', async () => {
-      const query = this.getAttribute('performance-result');
-      const output = document.querySelector(query);
-      if (!output) {
-        return;
-      }
       const result = await Performances.measureMemory();
-      output.innerHTML = JSON.stringify(result);
+      super.output.innerHTML = JSON.stringify(result);
+    });
+  }
+}
+
+class ProfileTaskElement extends CustomButtonElement {
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    this.addEventListener('click', async () => {
+      const sampleHeavyTask = Performances.measureMemory;
+      const result = await Performances.profile({
+        task: sampleHeavyTask,
+        sampleInterval: 100
+      });
+      super.output.innerHTML = JSON.stringify(result);
     });
   }
 }
@@ -33,6 +72,9 @@ class MeasureMemoryElement extends HTMLButtonElement {
 const defineElements = () => {
   customElements.define('memory-measure',
     MeasureMemoryElement,
+    { extends: "button" });
+  customElements.define('profile-task',
+    ProfileTaskElement,
     { extends: "button" });
 };
 

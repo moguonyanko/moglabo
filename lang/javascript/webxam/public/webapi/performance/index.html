@@ -16,12 +16,16 @@
     <a href="../../">home</a>
     <h1>Performance</h1>
   </header>
-  
+
   <main>
     <section class="example measureMemory">
       <h2>performance.measureMemory()</h2>
-      <button is="memory-measure" 
-        performance-result="section.measureMemory .output">メモリ計測</button>
+      <button is="memory-measure" performance-result="section.measureMemory .output">メモリ計測</button>
+      <div class="output"></div>
+    </section>
+    <section class="example profile">
+      <h2>performance.profile()</h2>
+      <button is="profile-task" performance-result="section.profile .output">プロファイル実行</button>
       <div class="output"></div>
     </section>
   </main>
@@ -30,8 +34,11 @@
     <p>参考</p>
     <ul>
       <li><a href="https://web.dev/coop-coep/">Making your website "cross-origin isolated" using COOP and COEP</a></li>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Opener-Policy">Cross-Origin-Opener-Policy</a></li>
+      <li><a
+          href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Opener-Policy">Cross-Origin-Opener-Policy</a>
+      </li>
       <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Performance">Performance</a></li>
+      <li><a href="https://wicg.github.io/js-self-profiling/">JS Self-Profiling API</a></li>
     </ul>
   </footer>
 </body>
