@@ -29,6 +29,18 @@ public class Upload extends HttpServlet {
 	private static final Pattern SEMICOLON_PATTERN = Pattern.compile(";");
 	private static final Pattern EQ_PATTERN = Pattern.compile("=");
 
+    // CORSにおけるUploadリクエスト対応
+    // Webサーバ側でAccess-Control-Allow-Originを設定しているのでこのメソッド定義が無くても
+    // プリフライトリクエストは成功する。ただVaryを設定したいので定義を残している。
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        // Access-Control-Allow-OriginとAccess-Control-Allow-Credentialsは
+        // Webサーバで設定している。設定値が固定であればWebサーバで設定する方が簡潔である。
+        // 参考: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+        response.setHeader("Vary", "Origin");
+    }
+    
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 		throws ServletException, IOException {

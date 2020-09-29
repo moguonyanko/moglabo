@@ -45,7 +45,7 @@
 
     function upload() {
         var xhr = getXHR();
-        xhr.open("POST", "/webcise/Upload");
+        xhr.open("POST", "https://myhost/webcise/Upload");
         /**
          * Content-Typeは自動的に「multipart/form-data」になりboundaryも
          * 自動的に生成される。自分で設定すると正しい「multipart/form-data」の
