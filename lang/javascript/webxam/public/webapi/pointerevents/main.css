@@ -3,7 +3,13 @@
 .pointer-target {
   width: 100%;
   max-width: 400px;
-  height: 100px;
+  min-height: 100px;
   background: cyan;
   border: solid 1px black;
+  display: flex;  
+}
+
+.pointer-target p {  
+  margin: auto;
+  align-self: center;
 }
