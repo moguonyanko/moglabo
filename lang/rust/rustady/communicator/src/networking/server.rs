@@ -1,3 +1,3 @@
-fn do_connect() {
-
+pub fn do_connect() {
+  println!("Server is connected");
 }

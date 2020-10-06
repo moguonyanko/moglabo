@@ -4,9 +4,9 @@
 // 将来的にサブモジュールを作る可能性に備えて常にディレクトリを作成して
 // その中にモジュールファイルを作成するべきなのか？
 
-mod networking;
+pub mod networking;
 
-mod client;
+pub mod client;
 
 #[cfg(test)]
 mod tests {

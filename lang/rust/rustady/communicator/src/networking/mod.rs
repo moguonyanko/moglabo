@@ -1,6 +1,5 @@
-mod server;
+pub mod server;
 
-fn do_connect() {
-
+pub fn do_connect() {
+  println!("Mod is connected");
 }
-
