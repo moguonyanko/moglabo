@@ -8,10 +8,22 @@ pub mod networking;
 
 pub mod client;
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+mod outside {
+    pub fn outer_pub() {}
+    
+    fn outer() {}
+
+    mod inside {
+        pub fn inner_pub() {}
+
+        fn inner() {}
     }
+}
+
+fn check() {
+    outside::outer_pub();
+    // pubでないかつトップレベルでない関数やモジュールへのアクセスはエラー
+    //outside::outer();
+    //outside::inside::inner_pub();
+    //outside::inside::inner();
 }
