@@ -8,22 +8,34 @@ pub mod networking;
 
 pub mod client;
 
-mod outside {
+pub mod outside {
     pub fn outer_pub() {}
     
-    fn outer() {}
+    pub fn outer() {}
 
-    mod inside {
+    pub mod inside {
         pub fn inner_pub() {}
 
-        fn inner() {}
+        pub fn inner() {}
     }
 }
 
-fn check() {
+pub fn check() {
     outside::outer_pub();
     // pubでないかつトップレベルでない関数やモジュールへのアクセスはエラー
-    //outside::outer();
-    //outside::inside::inner_pub();
-    //outside::inside::inner();
+    outside::outer();
+    outside::inside::inner_pub();
+    outside::inside::inner();
+}
+
+#[cfg(test)]
+mod tests {
+    // ここはtestsモジュールのスコープになっているので改めてclientモジュールの
+    // 宣言が必要なのは理解できるが面倒だし自然な書き方に思えない。
+    use super::client;
+
+    #[test]
+    fn it_works() {
+        client::do_connect();
+    }
 }
