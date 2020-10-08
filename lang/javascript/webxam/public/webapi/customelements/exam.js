@@ -28,5 +28,32 @@ class MyAutoCompleteForm extends HTMLElement {
   }
 }
 
-customElements.define('my-autocomplete-form', MyAutoCompleteForm);
+class CustomMessage extends HTMLElement {
+  constructor() {
+    super();
 
+    const t = document.getElementById('custom-message');
+    const shadow = this.attachShadow({ mode: 'open' });
+    shadow.appendChild(t.cloneNode(true).content);
+  }
+
+  dumpAssigned() {
+    const slots = this.shadowRoot.querySelectorAll('slot');
+    slots.forEach(slot => {
+      console.log(slot.assignedNodes());
+    });
+  }
+
+  connectedCallback() {
+    this.shadowRoot.addEventListener('slotchange', () => {
+      this.dumpAssigned();
+    });
+  }
+}
+
+const init = () => {
+  customElements.define('my-autocomplete-form', MyAutoCompleteForm);
+  customElements.define('custom-message', CustomMessage);
+};
+
+init();

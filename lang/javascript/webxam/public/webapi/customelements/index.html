@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
   <link rel="stylesheet" href="exam.css" />
+  <script type="module" src="exam.js" defer></script>
 </head>
 
 <body>
@@ -20,15 +21,27 @@
       <my-autocomplete-form></my-autocomplete-form>
       <div class="output"></div>
     </section>
+    <section class="example using-slot">
+      <h2>slotの利用</h2>
+      <custom-message>
+        <p slot="message">sample message</p>
+      </custom-message>
+      <custom-message>
+        <img slot="message" src="../../image/hello.png" width="300" height="200" />
+      </custom-message>
+    </section>
   </main>
   <footer>
     <p>参考サイト</p>
     <ul>
       <li><a href="https://developers.google.com/web/fundamentals/web-components/customelements">カスタム要素 v1: 再利用可能なウェブ
           コンポーネント</a></li>
+      <li><a href="https://developers.google.com/web/fundamentals/web-components/shadowdom">Shadow DOM v1: 自己完結型ウェブ
+          コンポーネント</a></li>
+      <li><a href="https://developers.google.com/web/updates/2019/02/rendering-on-the-web">Rendering on the Web -
+          Web上のレンダリング</a></li>
     </ul>
   </footer>
-  <script type="module" src="exam.js"></script>
 </body>
 
 <template id="auto-complete-form">
@@ -39,6 +52,13 @@
     <input id="password" type="password" name="loginpassword" required />
     <button type="submit">login</button>
   </form>
+</template>
+
+<template id="custom-message">
+  <link rel="stylesheet" href="template.css" />
+  <label>
+    <slot name="message"></slot>
+  </label>
 </template>
 
 </html>

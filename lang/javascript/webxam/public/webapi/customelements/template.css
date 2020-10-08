@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+:host {
+  display: block;
+  contain: content;
+}
+
+::slotted(p) {
+  border: solid red 2px;
+  background: orange;
+  font-weight: bold;
+}
+
+::slotted(img) {
+  opacity: 0.5;
+  transform: skew(10deg, 10deg);;
+}

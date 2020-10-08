@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+.example {
+  width: 100%;
+}
+
 my-autocomplete-form {
   max-width: min-content;
   flex-wrap: wrap;
