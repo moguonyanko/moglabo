@@ -11,3 +11,27 @@ my-autocomplete-form {
   flex-direction: column;
   background: beige;
 }
+
+sample-declarative-element {
+  display: block;
+  contain: content;
+  width: 100%;
+  max-width: 400px;
+  background: seashell;
+  border: solid blue 1px;
+  color: red;
+}
+
+sample-declarative-element {
+  margin: 1em;
+}
+
+/* templateの外側にある要素であればCustomElements内にあってもスタイルが適用される。 */
+sample-declarative-element p {
+  color: green;
+}
+
+/* 以下は無効 */
+sample-declarative-element template p {
+  color: violet;
+}

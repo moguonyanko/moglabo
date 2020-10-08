@@ -51,9 +51,40 @@ class CustomMessage extends HTMLElement {
   }
 }
 
+const getTemplateInnerHTMLList = ({ query, includeShadowRoots = true }) => {
+  const templates = Array.from(document.querySelectorAll(query));
+  return templates.map(t => t.getInnerHTML({ includeShadowRoots }));
+};
+
+class SampleDeclarativeElement extends HTMLElement {
+  constructor() {
+    super();
+
+  if (this.shadowRoot) {
+      // openすると既存のShadowRootが失われてしまう。結果として何も表示されなくなる。
+      //this.attachShadow({mode: 'open'});
+      this.shadowRoot.addEventListener('click', () => {
+        // ShadowRootを明示的に宣言した場合templateを取得する方法はない？
+        //const template =  this.shadowRoot.querySelector('template');
+        //const shadowRootAttr = template.getAttribute('shadowroot');
+        const shadowRootAttr =  this.shadowRoot.mode;
+        const value = `${this.id}, shadowroot=${shadowRootAttr}`;
+        alert(value);
+      });
+    } else {
+      console.info(`要素#${this.id}は明示的に宣言されていない`);
+    }
+  }
+}
+
 const init = () => {
   customElements.define('my-autocomplete-form', MyAutoCompleteForm);
   customElements.define('custom-message', CustomMessage);
+
+  const query = 'sample-declarative-element';
+  console.log(getTemplateInnerHTMLList({ query }));
+  console.log(getTemplateInnerHTMLList({ query, includeShadowRoots: false }));
+  customElements.define(query, SampleDeclarativeElement);
 };
 
 init();

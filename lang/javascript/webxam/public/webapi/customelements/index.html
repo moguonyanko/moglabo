@@ -30,6 +30,25 @@
         <img slot="message" src="../../image/hello.png" width="300" height="200" />
       </custom-message>
     </section>
+    <section class="example declarative-shadow-dom">
+      <h2>Declarative Shadow DOM</h2>
+      <sample-declarative-element id="sample1">
+        <p>templateの外側</p>
+        <!-- shadowroot属性がないとtemplate内は表示されない。 -->
+        <template shadowroot="open">
+          <slot></slot>
+          <p>templateの内側(open)</p>
+        </template>
+      </sample-declarative-element>
+      <sample-declarative-element id="sample2">
+        <p>templateの外側</p>
+        <!-- closedでも表示はされる。 -->
+        <template shadowroot="closed">
+          <slot></slot>
+          <p>templateの内側(closed)</p>
+        </template>
+      </sample-declarative-element>
+    </section>
   </main>
   <footer>
     <p>参考サイト</p>
