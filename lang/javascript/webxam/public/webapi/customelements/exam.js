@@ -60,20 +60,17 @@ class SampleDeclarativeElement extends HTMLElement {
   constructor() {
     super();
 
-  if (this.shadowRoot) {
-      // openすると既存のShadowRootが失われてしまう。結果として何も表示されなくなる。
-      //this.attachShadow({mode: 'open'});
-      this.shadowRoot.addEventListener('click', () => {
-        // ShadowRootを明示的に宣言した場合templateを取得する方法はない？
-        //const template =  this.shadowRoot.querySelector('template');
-        //const shadowRootAttr = template.getAttribute('shadowroot');
-        const shadowRootAttr =  this.shadowRoot.mode;
+    // attachInternalsを呼び出すとthis.shadowRootはnullになる。
+    // CustomElementsが明示的に宣言されているかどうかに関わらず
+    // 同じ処理を行いたいならattachInternalsを用いる。
+    const internals = this.attachInternals();
+    if (internals.shadowRoot) {
+      internals.shadowRoot.addEventListener('click', () => {
+        const shadowRootAttr = internals.shadowRoot.mode;
         const value = `${this.id}, shadowroot=${shadowRootAttr}`;
         alert(value);
       });
-    } else {
-      console.info(`要素#${this.id}は明示的に宣言されていない`);
-    }
+    } 
   }
 }
 
