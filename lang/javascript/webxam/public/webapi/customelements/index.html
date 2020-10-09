@@ -36,7 +36,6 @@
         <p>templateの外側</p>
         <!-- shadowroot属性がないとtemplate内は表示されない。 -->
         <template shadowroot="open">
-          <slot></slot>
           <p>templateの内側(open)</p>
         </template>
       </sample-declarative-element>
@@ -44,9 +43,11 @@
         <p>templateの外側</p>
         <!-- closedでも表示はされる。 -->
         <template shadowroot="closed">
-          <slot></slot>
+          <!-- template内のスタイルはtemplate内にしか効かない。 -->
+          <link rel="stylesheet" href="inner.css" />
           <p>templateの内側(closed)</p>
         </template>
+        <p>青色にはならない</p>
       </sample-declarative-element>
     </section>
   </main>
