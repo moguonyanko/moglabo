@@ -116,6 +116,7 @@ const drawScene = ({ context, programInfo, buffers }) => {
   const aspect = context.canvas.clientWidth / context.canvas.clientHeight;
   const zNear = 0.1;
   const zFar = 100.0;
+  // glMatrixが利用されていないとmat4は参照できない。
   const projectionMatrix = mat4.create();
 
   mat4.perspective(
