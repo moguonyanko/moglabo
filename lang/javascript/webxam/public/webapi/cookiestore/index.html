@@ -7,6 +7,7 @@
   <title>Cookie Store API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
   <script type="module" src="main.js" defer></script>
 </head>
 
@@ -20,13 +21,16 @@
   <main>
     <section class="cookie-info">
       <h2>setter&amp;getter</h2>
-      <label>number<input class="cookie-number" type="number" value="0" min="0" max="10" /></label>
+      <p>CookieStoreに対するchangeイベント経由でCookieの変更内容を検出できる。</p>
+      <!-- minとmaxを指定していても範囲外の値を入力できてしまう -->
+      <label>number<input class="cookie-number" type="number" value="0" /></label>
       <button data-event-target="getCookieInfo">run</button>
       <div class="output cookie-info"></div>
     </section>
   </main>
 
   <footer>
+    <p>参考</p>
     <ul>
       <li><a href="https://developers.google.com/web/updates/2018/09/asynchronous-access-to-http-cookies">Asynchronous
           Access to HTTP Cookies</a></li>
