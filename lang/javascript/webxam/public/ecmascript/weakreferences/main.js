@@ -6,7 +6,7 @@
 
 const makeCachedFunc = heavyOperationFunc => {
   const cache = new Map();
-  
+
   // FinalizationRegistryで後始末を行わないとcacheのエントリが
   // 残り続けてしまうようである。(メモリリークする)
   const cleanup = new FinalizationRegistry(key => {
@@ -73,7 +73,7 @@ const dumpBuffers = async () => {
 
 const runTest = async () => {
   await dumpBuffers();
-}; 
+};
 
 // DOM
 
@@ -94,6 +94,35 @@ const listeners = {
     output.textContent = `Byte length = ${buf.byteLength}`;
     // キャッシュ関数にnullを代入してもFinalizationRegistryは処理されない。
     //getBufferCache = null;
+  },
+  openSubWindow: () => {
+    const output = document.querySelector('.example.detectmemoryleak .output');
+    const popup = window.open('./sub.html');
+    const ref = new WeakRef(popup);
+    // GCされるタイミングをsetIntervalでポーリングして捉える。
+    // GCで処理されるタイミングは一定ではない。
+    const timer = setInterval(() => {
+      if (ref.deref() === undefined) { // サブウインドウがGCの対象になり処理された。
+        output.innerHTML += `Popup is gc: ${new Date()}<br />`;
+        clearInterval(timer);
+      }
+    }, 20);
+    // pagehideイベントハンドラ経由では全くGCされない。
+    // popup.addEventListener('pagehide', () => {
+    //   // サブウインドウを開いた時と閉じた時にイベントリスナーが呼び出される。
+    //   // サブウインドウが開いた時はhostは空文字になっている。
+    //   if (!popup.location.host) {
+    //     return;
+    //   }
+    //   if (ref.deref() === undefined) {
+    //     output.innerHTML = 'Popup is gc';
+    //   }
+    // });
+    // FinalizationRegistryの処理は呼び出されることがない。
+    const finalizer = new FinalizationRegistry(() => {
+      output.innerHTML += `FinalizationRegistry: ${new Date()}<br />`;
+    });
+    finalizer.register(ref.deref());
   }
 };
 
