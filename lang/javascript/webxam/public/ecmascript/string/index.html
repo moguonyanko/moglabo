@@ -22,11 +22,20 @@
             <button data-event-target="matchAll">run</button>
             <div class="output"></div>
         </section>
+        <section class="example">
+            <h2>padStart&amp;padEnd</h2>
+            <label>text<input class="masktext" type="text" value="ABCDEFG123456" /></label>
+            <label><input class="paddirection" type="checkbox" checked />Mask start?</label>
+            <label>mask size<input class="masksize" type="number" value="4" min="0" /></label>
+            <button data-event-target="maskString">run</button>
+        </section>
     </main>
     <footer>
         <p>参考サイト</p>
         <ul>
-            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/matchAll">String​.prototype​.matchAll()(MDN)</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/matchAll">String​.prototype​.matchAll()</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart">String.prototype.padStart()</a></li>
+            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padEnd">String.prototype.padEnd()</a></li>
         </ul>
     </footer>
     <script type="module" src="exam.js"></script>
