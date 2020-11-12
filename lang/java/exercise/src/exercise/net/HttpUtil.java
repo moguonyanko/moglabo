@@ -195,6 +195,28 @@ public class HttpUtil {
         return res.body();
     }
 
+    public static String getContentBySSL(URI uri, Map<String, String> headers)
+        throws IOException, InterruptedException {
+        var client = HttpClient.newBuilder()
+            .build();
+
+        var builder = HttpRequest.newBuilder(uri);
+        for (String key : headers.keySet()) {
+            builder.setHeader(key, headers.get(key));
+        }
+        var req = builder.build();
+
+        var res = client.send(req, BodyHandlers.ofString());
+
+        //dumpResponseHeaders(res);
+        var status = res.statusCode();
+        if (status >= HttpURLConnection.HTTP_BAD_REQUEST) {
+            throw new IOException("Failed get file: " + status);
+        } else {
+            return res.body();
+        }
+    }
+
     public static void getContentWhenComplete(URI uri, Consumer<String> callback)
         throws GeneralSecurityException, InterruptedException, ExecutionException {
         HttpClient client = HttpClient.newBuilder()

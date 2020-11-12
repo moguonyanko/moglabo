@@ -7,7 +7,10 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -96,5 +99,22 @@ public class TestHttp {
             assertNotNull(content);
             assertFalse(content.isEmpty());
         }, proxyAddress);
+    }
+
+    /**
+     * @throws Exception
+     * TODO: Authenticationヘッダの設定
+     * 参考
+     * https://docs.microsoft.com/ja-jp/rest/api/storageservices/get-file
+     */
+    @Test
+    public void ヘッダを設定してファイル取得できる() throws Exception {
+        var uri = new URI("https://moguofileserver.file.core.windows.net/mg-azure-fileserver/sample.txt");
+        var headers = Map.of(
+            "Authorization", "",
+            "Date", new Date().toString()
+        );
+        var result = HttpUtil.getContentBySSL(uri, headers);
+        assertFalse(result.isEmpty());
     }
 }
