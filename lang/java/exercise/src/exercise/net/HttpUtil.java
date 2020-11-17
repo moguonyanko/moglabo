@@ -196,8 +196,9 @@ public class HttpUtil {
     }
 
     public static String getContentBySSL(URI uri, Map<String, String> headers)
-        throws IOException, InterruptedException {
+        throws IOException, InterruptedException, GeneralSecurityException {
         var client = HttpClient.newBuilder()
+            .sslContext(createIgnoredCheckingContext())
             .build();
 
         var builder = HttpRequest.newBuilder(uri);

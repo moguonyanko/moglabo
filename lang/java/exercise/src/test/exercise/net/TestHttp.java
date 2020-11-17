@@ -109,9 +109,8 @@ public class TestHttp {
      */
     @Test
     public void ヘッダを設定してファイル取得できる() throws Exception {
-        var uri = new URI("https://moguofileserver.file.core.windows.net/mg-azure-fileserver/sample.txt");
+        var uri = new URI("https://localhost/webxam/");
         var headers = Map.of(
-            "Authorization", "",
             "Date", new Date().toString()
         );
         var result = HttpUtil.getContentBySSL(uri, headers);
