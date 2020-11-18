@@ -3,7 +3,7 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
+    "configurations": [    
         {
             "type": "node",
             "request": "launch",
@@ -21,6 +21,12 @@
             "request": "launch",
             "name": "My WebSocket App",
             "program": "${workspaceFolder}/apps/mysocket/main.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Azure Storage",
+            "program": "${workspaceFolder}/apps/practiceazurestorage/main.js"
         }
     ]
 }
