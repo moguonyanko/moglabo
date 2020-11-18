@@ -4,6 +4,8 @@ use rand::Rng;
 use std::cmp::Ordering;
 use std::io;
 
+pub mod guesser;
+
 // 参考:
 // https://doc.rust-jp.rs/book/second-edition/ch02-00-guessing-game-tutorial.html
 fn main() {
@@ -35,12 +37,14 @@ fn main() {
         // trimは空白だけでなく入力文字列の改行も除去する。
         let guess: u64 = match guess.trim().parse() {
             Ok(num) => num,
-            Err(_) => continue,
+            Err(_) => panic!("正の整数以外が入力されました！: {}", guess),
         };
 
-        println!("あなたの予想: {}", guess);
+        let g = guesser::Guess::new(guess);
 
-        match guess.cmp(&secret_num) {
+        println!("あなたの予想: {}", g.get_value());
+
+        match g.get_value().cmp(&secret_num) {
             Ordering::Less => println!("小さすぎ"),
             Ordering::Greater => println!("大きすぎ"),
             Ordering::Equal => {
