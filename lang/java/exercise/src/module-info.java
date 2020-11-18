@@ -18,6 +18,7 @@ module exercise.base {
     requires checker;
     requires junit;
     requires hamcrest.core;
+    requires azure.storage;
 
     exports exercise.rmi to java.rmi;
 
@@ -33,4 +34,5 @@ module exercise.base {
     exports test.exercise.rmi to junit;
     exports test.exercise.time to junit;
     exports test.exercise.net to junit;
+    exports test.exercise.cloud.azure to junit;
 }
