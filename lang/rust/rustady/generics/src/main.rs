@@ -35,6 +35,47 @@ impl Point<f64> {
     }
 }
 
+// traitには指定できない。
+//#[derive(Debug)]
+trait Member {
+    fn description(&self) -> String;
+
+    fn name(&self) -> String {
+        String::from("非表示")
+    } 
+}
+
+#[derive(Debug)]
+struct Student {
+    name: String,
+    no: i32,
+    score: i32,
+}
+
+impl Member for Student {
+    fn description(&self) -> String {
+        format!("名前は{}、学生番号は{}、点数は{}", self.name, self.no, self.score)
+    }
+
+    // デフォルト実装
+    // こちらは構造体で実装されなくてもコンパイルエラーにならない。
+    fn name(&self) -> String {
+        self.name.to_string()
+    }
+}
+
+#[derive(Debug)]
+struct Employee {
+    id: String,
+    sarary: i64,
+}
+
+impl Member for Employee {
+    fn description(&self) -> String {
+        format!("{},現在の給与は{}", self.id, self.sarary)
+    }
+}
+
 fn main() {
     let list = vec![10, 8, 30, 2, 43];
     let result = smallest(&list);
@@ -51,4 +92,14 @@ fn main() {
     let p1 = Point { x: 1.2, y: 1.5 };
     println!("{:?}", p1);
     println!("原点からの距離 = {}", p1.distance_from_origin());
+
+    let student = Student { 
+        name: String::from("Masao"), no: 1, score: 80 
+    };
+    println!("{}", student.name());
+    println!("{}", student.description());
+    let employee = Employee { 
+        id: String::from("A001"), sarary: 100000 
+    };
+    println!("{}:{}", employee.name(), employee.description());
 }
