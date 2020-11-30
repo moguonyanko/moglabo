@@ -7,14 +7,14 @@
 
 // TODO: 投影法を外部から指定できるようにする
 const getProjection = ({ param }) => {
-  return d3.geo.equirectangular()
+  return d3.geoEquirectangular()
     .scale(param.scale)
     .translate(param.translate);
 };
 
 const getGeoGenerator = ({ context, param }) => {
   const proj = getProjection({ param });
-  return d3.geo.path()
+  return d3.geoPath()
     .projection(proj)
     .context(context);
 };

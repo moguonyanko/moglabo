@@ -35,4 +35,5 @@
 **/.rustc_info.json
 .gitignore.swp
 .env
+d3.*.js
 
