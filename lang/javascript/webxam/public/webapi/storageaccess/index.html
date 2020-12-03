@@ -4,10 +4,11 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Idle Detection API</title>
+  <title>Storage Access API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
   <script type="module" src="main.js" defer></script>
+  <!-- <script type="module" src="https://localhost/webxam/webapi/storageaccess/main.js" defer></script> -->
 </head>
 
 <body>
@@ -26,6 +27,19 @@
       <button data-event-target="getCookie">Get Cookie</button>
       <textarea class="output"></textarea>
     </section>
+    <section>
+      <h2>ストレージへのアクセス</h2>
+      <p>
+        将来的にはサードパーティCookieがブロックされる状況ではローカルストレージ及び
+        セッションストレージへのアクセスもブロックされるらしい。
+      </p>
+      <div>
+        <label><input data-event-target="changeStorage" type="radio" name="storagetype" value="local" checked />local</label>
+        <label><input data-event-target="changeStorage" type="radio" name="storagetype" value="session" />session</label>
+      </div>
+      <button data-event-target="incCount">increment</button>
+      <button data-event-target="viewCount">view</button>
+    </section>
   </main>
 
   <footer>
@@ -33,6 +47,7 @@
     <ul>
       <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Storage_Access_API">Storage Access API(MDN)</a></li>
       <li><a href="https://webkit.org/blog/8124/introducing-storage-access-api/">Introducing Storage Access API</a></li>
+      <li><a href="https://itnext.io/third-party-cookies-authentication-769a08709330">Third-Party Cookies & Authentication</a></li>
     </ul>
   </footer>
 </body>

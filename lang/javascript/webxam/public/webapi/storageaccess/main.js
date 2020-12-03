@@ -46,6 +46,8 @@ const setThirdPartyCookie = async () => {
 
 // DOM
 
+let storage = window.localStorage;
+
 const listener = {
   getCookie: async () => {
     const output = document.querySelector('.output');
@@ -60,7 +62,28 @@ const listener = {
       output.value = 'No Cookie';
     }
   },
-  setThirdPartyCookie
+  setThirdPartyCookie,
+  // サードパーティCookieがブロックされる場合はストレージへのアクセスが
+  // ブロックされるようになる可能性がある。
+  incCount: () => {
+    const count = parseInt(storage.getItem('count')) || 0;
+    storage.setItem('count', count + 1);
+  },
+  viewCount: () => {
+    try {
+      alert(storage.getItem('count'));
+    } catch (err) {
+      alert(err.message);
+    }
+  },
+  changeStorage: event => {
+    const { value } = event.target;
+    if (value === 'local') {
+      storage = window.localStorage;
+    } else {
+      storage = window.sessionStorage; 
+    }
+  }
 };
 
 const addListener = () => {
@@ -71,7 +94,7 @@ const addListener = () => {
       return;
     }
     event.stopPropagation();
-    await listener[eventTarget]();
+    await listener[eventTarget](event);
   });
 };
 
