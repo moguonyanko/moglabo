@@ -101,6 +101,15 @@ app.get(`${practiceNodeRoot}reversestring`, cors(corsCheck),
     }));
   });
 
+  app.post(`${practiceNodeRoot}verifycode`, cors(corsCheck),
+  (request, response) => {
+    const code = request.body.code;
+    response.setHeader('Content-Type', 'application/json');
+    response.send(JSON.stringify({
+      result: !isNaN(parseInt(code))
+    }));
+  });
+
 const main = () => {
   Certs.getOptions().then(options => {
     http2.createSecureServer(options, app).listen(port);

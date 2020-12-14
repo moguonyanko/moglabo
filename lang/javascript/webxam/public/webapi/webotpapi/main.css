@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+.sample-form {
+  /* このボックス要素自身の横中央揃え */
+  max-width: 400px;
+  margin: auto;
+  background: lightgray;
+  /* 子インライン要素の横中央揃え */
+  text-align: center;
+}
