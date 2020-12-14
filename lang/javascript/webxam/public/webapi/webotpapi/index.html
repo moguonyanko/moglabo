@@ -21,17 +21,12 @@
   <main>
     <section class="otp code sample">
       <h2>OTP code</h2>
-      <p>コード取得が行えていない状態。</p>
       <div class="sample-form">
         <span>Sample Form</span>
-        <form action="https://myhost/webxam/apps/practicenode/verifycode" method="POST">
-          <input type="text" 
-            inputmode="numeric" 
-            autocomplete="one-time-code" 
-            pattern="\d{6}" 
-            name="code"
-            required />
-          <!-- <input type="submit" /> -->
+        <form action="https://localhost/webxam/apps/practicenode/verifycode" 
+          method="POST">
+          <input is="otp-input" required />
+          <input id="runner" type="button" value="check" />
         </form>
       </div>
     </section>

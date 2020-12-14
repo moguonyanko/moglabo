@@ -104,10 +104,10 @@ app.get(`${practiceNodeRoot}reversestring`, cors(corsCheck),
   app.post(`${practiceNodeRoot}verifycode`, cors(corsCheck),
   (request, response) => {
     const code = request.body.code;
-    response.setHeader('Content-Type', 'application/json');
-    response.send(JSON.stringify({
+    const result = {
       result: !isNaN(parseInt(code))
-    }));
+    };
+    response.json(result);
   });
 
 const main = () => {

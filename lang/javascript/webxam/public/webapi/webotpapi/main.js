@@ -16,7 +16,9 @@ class MyOtp {
         otp: { transport: ['sms'] },
         signal: this.abortControler.signal
       });
-      return otp.code;
+      const { code, type } = otp;
+      console.log(`OTP Result:TYPE=${type},CODE=${code}`);
+      return code;
     } catch (err) {
       this.abort();
       throw err;
@@ -29,6 +31,7 @@ class MyOtp {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 const runTest = async () => {
   const otp = new MyOtp();
   const code = await otp.getCode();
@@ -37,28 +40,50 @@ const runTest = async () => {
 
 // DOM
 
-const prepareOtp = async otp => {
-  const form = document.querySelector('form');
-  form.addEventListener('submit', async () => {
-    otp.abort();
-  });
-  const input = form.querySelector('input[autocomplete="one-time-code"]');
-  try {
-    const code = await otp.getCode();
-    input.value = code;
-    form.submit();
-  } catch (err) {
-    input.value = `ERROR: ${err.message}`;
+class OtpInputElement extends HTMLInputElement {
+  constructor() {
+    super();
+    this.otp = new MyOtp();
+    this.setAttribute('name', 'code');
   }
-};
 
-const main = async () => {
+  init() {
+    this.setAttribute('type', 'text');
+    this.setAttribute('inputmode', 'numeric');
+    this.setAttribute('autocomplete', 'one-time-code');
+    this.setAttribute('pattern', '\\d{6}');
+  }
+
+  async receive() {
+    const code = await this.otp.getCode();
+    this.value = code;
+    this.form.submit();
+  }
+
+  connectedCallback() {
+    // 手動でformのsubmitが実行されないようにする。
+    this.form.addEventListener('submit', () => {
+      this.otp.abort();
+    });
+    //this.receive();
+  }
+}
+
+const main = () => {
   if ('OTPCredential' in window) {
-    await runTest();
-    prepareOtp(new MyOtp());
+    //await runTest();
+    const customName = 'otp-input';
+    customElements.define(customName, OtpInputElement, {
+      extends: 'input'
+    });    
+    const runner = document.querySelector('#runner');
+    runner.addEventListener('click', () => {
+      const input = document.querySelector(`input[is="${customName}"]`);
+      input.receive();
+    });
   } else {
     alert('OTPCredential is not found');
   }
 };
 
-main().then();
+main();
