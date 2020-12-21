@@ -33,4 +33,5 @@ module exercise.base {
     exports test.exercise.rmi to junit;
     exports test.exercise.time to junit;
     exports test.exercise.net to junit;
+    exports test.exercise.database to junit;
 }
