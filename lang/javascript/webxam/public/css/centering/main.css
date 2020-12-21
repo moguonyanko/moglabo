@@ -1,0 +1,61 @@
+@charset 'UTF-8';
+
+centering-element {
+  width: 100%;
+  height: 15vmin; /* ビューポート縦横の小さい方の15% */
+  background-color: lightgray;
+}
+
+/**
+ * CustomElementsの外部から内部の要素にスタイル設定する場合はpart属性やスタイルフックを 
+ * 使用する必要がある。
+ */
+/*
+centering-element::part(container) {
+  margin: 1em;
+}
+*/
+/* 以下は無効である。 */
+/*
+centering-element div {
+  margin: 1em;
+}
+*/
+
+centering-element::part(container) {
+  background-color: white;
+  border: 1px violet solid;
+}
+
+.grid {
+  display: grid;
+  place-content: center;
+  /* gap: 1ch;   */
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* gap: 1ch;   */
+}
+
+.autobot {
+  display: flex;
+}
+
+.autobot::part(container) > * {
+  margin: auto;
+}
+
+.fluffy::part(container) {
+  padding: 1ch;
+}
+
+.pops::part(container) {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

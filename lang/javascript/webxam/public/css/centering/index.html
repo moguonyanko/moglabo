@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Centering</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+
+  <header>
+    <a href="../../">home</a>
+    <h1>Centering</h1>
+    <p>要素の中央揃えを行う方法について比較する。</p>
+  </header>
+
+  <main>
+    <p>GridとFlex以外はCustomElementsに対しては適用できない。</p>
+    <section>
+      <h2>Grid</h2>
+      <centering-element class="grid">
+        <span slot="centering-text">Centering by grid layout</span>
+      </centering-element>      
+    </section>
+    <section>
+      <h2>Flex</h2>
+      <centering-element class="flex">
+        <span slot="centering-text">Centering by flex layout</span>
+      </centering-element>      
+    </section>
+    <section>
+      <h2>Autobot</h2>
+      <centering-element class="autobot">
+        <span slot="centering-text">Centering by autobot</span>
+      </centering-element>      
+    </section>
+    <section>
+      <h2>Fluffy</h2>
+      <centering-element class="fluffy">
+        <span slot="centering-text">Centering by fluffy</span>
+      </centering-element>      
+    </section>
+    <section>
+      <h2>Pops</h2>
+      <centering-element class="pops">
+        <span slot="centering-text">Centering by pops</span>
+      </centering-element>      
+    </section>
+  </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://web.dev/centering-in-css/">Centering in CSS</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/::part">::part()</a></li>
+    </ul>
+  </footer>
+
+</body>
+
+<template class="centering">
+  <div part="container">
+    <slot name="centering-text">Centering</slot>
+  </div>
+</template>
+
+</html>
