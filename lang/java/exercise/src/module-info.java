@@ -2,9 +2,12 @@
  * 参考:
  * http://www.journaldev.com/13106/java-9-modules
  * http://www.journaldev.com/13596/javase9-module-basics-part2
+ *
+ * テスト対象のパッケージを追加するたびに以下のようなexports文を追加するのが面倒なので
+ * module自体をopenとすることにした。
+ * exports test.exercise.lang to junit;
  */
-
-module exercise.base {
+open module exercise.base {
     requires java.desktop;
     requires java.logging;
     requires java.sql;
@@ -18,20 +21,5 @@ module exercise.base {
     requires checker;
     requires junit;
     requires hamcrest.core;
-
     exports exercise.rmi to java.rmi;
-
-    // テストクラスを含むパッケージはexportsやopensで公開しないとJUnitでテストできない。
-    // module宣言の前にopenを指定することでもテスト実行できるようになるが、不必要に多くの
-    // パッケージをopenすることになってしまう。
-    // アスタリスクでまとめてパッケージをまとめて指定することはできない。
-    exports test.exercise.lang to junit;
-    exports test.exercise.function to junit;
-    exports test.exercise.stream to junit;
-    exports test.exercise.graphics to junit;
-    exports test.exercise.function.util to junit;
-    exports test.exercise.rmi to junit;
-    exports test.exercise.time to junit;
-    exports test.exercise.net to junit;
-    exports test.exercise.database to junit;
 }

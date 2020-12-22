@@ -94,6 +94,12 @@ public class TestRecord {
         SampleMember(String name) {
             this(name, -1);
         }
+
+        @Override
+        public int no() {
+            System.out.println("Field [no] accessed");
+            return no;
+        }
     }
 
     @Test
