@@ -1,7 +1,5 @@
 package exercise.database;
 
-import com.mysql.jdbc.Connection;
-
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,24 +14,25 @@ public class WrapperPractice {
 	public static void main(String[] args) {
 		String url = "jdbc:mysql://localhost:3306/geolib";
 		String user = "geofw", pass = "geofw";
-		
+
 		/* usao is allowed 'SELECT' only */
 		String newUser = "usao", newPassword = "usao";
 
-		try (Connection con = (Connection)DriverManager.getConnection(url, user, pass)) {
-			
-			if(con.isWrapperFor(Connection.class)){
-				Connection myCon = con.unwrap(Connection.class);
-				
+		try (var con = DriverManager.getConnection(url, user, pass)) {
+
+			var mysqlClass = com.mysql.jdbc.Connection.class;
+			if(con.isWrapperFor(mysqlClass)){
+				var myCon = con.unwrap(mysqlClass);
+
 				myCon.changeUser(newUser, newPassword);
 				System.out.println("User changed " + newUser + " from " + user);
-				
+
 				Statement statement = myCon.createStatement();
 				/* Next query is denied */
 				statement.execute("INSERT INTO batchtest VALUES (0, 'sample0');");
 				System.out.println("INSERT finished.");
 			}
-			
+
 		} catch (SQLException ex) {
 			Logger.getLogger(WrapperPractice.class.getName()).log(Level.SEVERE, null, ex);
 		}
