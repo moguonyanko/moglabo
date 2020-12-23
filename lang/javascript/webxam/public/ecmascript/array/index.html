@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Array</title>
+  <link rel="stylesheet" href="../../common.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Array</h1>
+  </header>
+
+  <main>
+    <section class="sample at">
+      <h2>Array.prototype.at()</h2>
+      <p>String.prototype.atはサロゲートペアを含む文字列では正しく動作しない。</p>
+      <p>負のインデックスを指定できるとはいえ要素のサイズを超えてアクセスできるわけではない。</p>
+      <ol class="sample-list">
+        <li>Java</li>
+        <li>JavaScript</li>
+        <li>Rust</li>
+        <li>C#</li>
+        <li>Swift</li>
+      </ol>
+      <input type="number" id="arrayIndex" value="0" />
+      <button data-event-target="getArrayElement">run</button>
+      <div class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://github.com/tc39/proposal-relative-indexing-method/">tc39/proposal-relative-indexing-method</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
