@@ -69,6 +69,18 @@ const funcs = {
         } else {
             text.value = ms.maskEnd(size);
         }
+    },
+    atString: () => {
+        const text = document.querySelector('.target-text').value;
+        const index = parseInt(document.querySelector('.target-index').value);
+        const output = document.querySelector('.example.stringat .output');
+        try {
+            const result = text.at(index);
+            console.log(result);
+            output.value = result;
+        } catch(err) {
+            output.value = `${index}の文字取得失敗`;
+        }
     }
 };
 

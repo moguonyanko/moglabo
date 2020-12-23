@@ -29,6 +29,15 @@
             <label>mask size<input class="masksize" type="number" value="4" min="0" /></label>
             <button data-event-target="maskString">run</button>
         </section>
+        <section class="example stringat">
+            <h2>String.at()</h2>
+            <p>範囲外の文字にアクセスするとundefinedが返される。</p>
+            <p>サロゲートペアを使う文字列に対しては正しく動作しない。</p>
+            <label><input class="target-text" type="text" value="𩸽を𠮟る𠮷野家" /></label>
+            <label><input class="target-index" type="number" value="2" /></label>
+            <button data-event-target="atString">文字取得</button>
+            <textarea class="output" readonly></textarea>
+        </section>
     </main>
     <footer>
         <p>参考サイト</p>
