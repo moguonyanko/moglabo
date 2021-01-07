@@ -9,13 +9,20 @@ const application = Stimulus.Application.start()
 
 class CopyComponent extends Stimulus.Controller {
   // data-[Controller名]-target属性の値と一致させる。
-  static targets = [ 'source' ]
+  static targets = ['source']
 
   copy(event) {
     // a要素のhrefを参照してURLが変更されるといったデフォルトの動作を無効化する。
     event.preventDefault();
     this.sourceTarget.select();
     document.execCommand('copy');
+  }
+
+  connect() {
+    if (document.queryCommandSupported("copy")) {
+      // copyコマンドをサポートしているブラウザであればclipboard用のclassを追加する。
+      this.element.classList.add("clipboard--supported")
+    }
   }
 }
 

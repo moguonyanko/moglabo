@@ -21,7 +21,13 @@ footer {
   margin: 1ch;
 }
 
+/* copy非対応ブラウザでは非表示にする。 */
 .clipboard-button {
+  display: none;
+}
+
+.clipboard--supported .clipboard-button {
+  display: initial;
   background: mediumturquoise;
   border: none;
   text-decoration: none;
