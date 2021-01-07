@@ -6,8 +6,10 @@
   <meta charset="UTF-8" />
   <title>My Stimulus Practice</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://unpkg.com/stimulus/dist/stimulus.umd.js"></script>  
+  <script src="https://unpkg.com/stimulus/dist/stimulus.umd.js"></script>
   <script type="module" src="hello_controller.js" defer></script>
+  <script type="module" src="clipboard_controller.js" defer></script>
+  <link rel="stylesheet" href="main.css" />
 </head>
 
 <body>
@@ -24,10 +26,21 @@
         <div data-hello-target="output"></div>
       </div>
     </section>
+    <section>
+      <h2>Clipboard</h2>
+      <div data-controller="clipboard">
+        <label>code: <textarea data-clipboard-target="source" 
+          type="text" readonly>ABCDEFG</textarea></label>
+        <!-- [Controller名]#[メソッド名] -->
+        <!-- buttonのデフォルトイベントはclickなのでイベント名は省略できる。 -->
+        <button data-action="clipboard#copy" class="clipboard-button">to clipboard</button>
+        <a href="#" data-action="clipboard#copy" class="clipboard-button">to clipboard</a>
+      </div>
+      <label>for test<input type="text" value="" /></label>
+    </section>
   </main>
 
   <footer>
-    <p>参考</p>
     <ul>
       <li><a href="https://stimulus.hotwire.dev/handbook/">Stimulus handbook</a></li>
       <li><a href="https://github.com/hotwired/stimulus">Stimulus(github)</a></li>
