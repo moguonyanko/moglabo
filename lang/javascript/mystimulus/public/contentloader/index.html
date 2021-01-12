@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Content Loader</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../common.css" />
+  <script src="https://unpkg.com/stimulus/dist/stimulus.umd.js"></script>
+  <script type="module" src="content_loader_controller.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../">home</a>
+    <h1>Content Loader</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>External Resource Includes</h2>
+      <div data-controller="content-loader" 
+        data-content-loader-url-value="message.html"
+        data-content-loader-refresh-interval-value="5000">
+      </div>
+      <button data-event-target="disconnectContentLoader">disconnect</button>
+    </section>
+  </main>
+
+  <footer>
+    <ul>
+      <li><a href="https://stimulus.hotwire.dev/handbook/working-with-external-resources">Stimulus handbook</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
