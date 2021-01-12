@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>SlideShow</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="https://unpkg.com/stimulus/dist/stimulus.umd.js"></script>
+  <script type="module" src="slideshow_controller.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../">home</a>
+    <h1>SlideShow</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>Sample Slides</h2>
+      <div data-controller="slideshow" data-index="1">
+        <button data-action="slideshow#previous">戻る</button>
+        <button data-action="slideshow#next">進む</button>
+        <div data-slideshow-target="slide">Java</div>
+        <div data-slideshow-target="slide">JavaScript</div>
+        <div data-slideshow-target="slide">Erlang</div>
+        <div data-slideshow-target="slide">Rust</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <ul>
+      <li><a href="https://stimulus.hotwire.dev/handbook/">Stimulus handbook</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>

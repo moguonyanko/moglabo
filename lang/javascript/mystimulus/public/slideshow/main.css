@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+.invisible {
+  display: none;
+}
+
+div[data-slideshow-target] {
+  width: 200px;
+  height: 100px;
+  background: pink;
+}
