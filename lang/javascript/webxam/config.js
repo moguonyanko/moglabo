@@ -14,7 +14,8 @@ const config = {
   port: {
     webxamplain: 3443,
     practicenode: 4443,
-    mysocket: 5443
+    mysocket: 5443,
+    mywebauthn: 3000
   },
   db: {
     host: 'localhost',

@@ -7,6 +7,12 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "My WebAuthn Server",
+            "program": "${workspaceFolder}/apps/mywebauthn/main.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "WebXam Plain",
             "program": "${workspaceFolder}/main.js"
         },
