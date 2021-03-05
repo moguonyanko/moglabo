@@ -70,5 +70,9 @@
 	"小口径主砲": {
 		"scalefactor": 0.6,
 		"reinforcement": 0
+	},
+	"特殊潜航艇": {
+		"scalefactor": 0.6,
+		"reinforcement": 0
 	}
 }
