@@ -135,16 +135,16 @@ const listeners = {
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = 'red';
     ctx.fillRect(canvas.width / 2, canvas.height / 2, 100, 80);
-    const blob = await canvas.convertToBlob();
-    const url = URL.createObjectURL(blob);
-    const img = new Image();
-    img.onload = () => {
-      URL.revokeObjectURL(url);
-      const output = root.querySelector('.output');
-      output.innerHTML = '';
-      output.appendChild(img);
-    };
-    img.src = url;
+    const blob = await canvas.convertToBlob({
+      type: root.querySelector('.image-format').value,
+      quality: 1
+    });
+    const resultFormat = root.querySelector('.result-format');
+    resultFormat.textContent = blob.type;
+    const img = await blobToImage(blob);
+    const output = root.querySelector('.output');
+    output.innerHTML = '';
+    output.appendChild(img);
   },
   async transferControlToOffscreen(root) {
     if (drawWorkers.length > 0) {
