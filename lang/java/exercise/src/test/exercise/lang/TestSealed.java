@@ -46,7 +46,7 @@ final record EnglishGreeter(String name) implements Greetable {
  */
 enum GreetableEnum {
     JAPAN{
-        private String name = "まさお";
+        private final String name = "まさお";
 
         @Override
         String greet() {
