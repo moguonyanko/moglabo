@@ -1,0 +1,26 @@
+@charset "UTF-8";
+
+:root {
+  --common-alpha: 0.5;
+}
+
+.range {
+  background-color: rgba(0, 255, 0, var(--common-alpha));
+  margin: 0;
+}
+
+.range-container {
+  display: flex;
+}
+
+.range-start {
+  background-color: rgba(255, 0, 0, var(--common-alpha));
+  width: 100px;
+  height: 50px;
+}
+
+.range-end {
+  background-color: rgba(0, 0, 255, var(--common-alpha));
+  width: 50px;
+  height: 100px;
+}
