@@ -24,3 +24,15 @@
   width: 50px;
   height: 100px;
 }
+
+.sample-node {
+  background-color: rgba(120, 124, 200, 0.75);
+  width: 200px;
+  height: 100px;
+}
+
+.range-diff {
+  border: 1px solid black;
+  width: 100px;
+  height: 100px;
+}

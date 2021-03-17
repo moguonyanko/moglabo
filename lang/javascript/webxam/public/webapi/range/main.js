@@ -34,22 +34,65 @@ const displayBoundingClientRect = () => {
   container.appendChild(box);
 };
 
-// Event
+let range, staticRange;
 
-const displaySelectionText = event => {
-  const text = getSelectionText();
-  const output = document.querySelector('.output.selection-text');
-  output.textContent = text.join(',') || '未選択';
+const createRanges = () => {
+  const startContainer = document.querySelector('.range-container .range-diff-start'),
+    endContainer = document.querySelector('.range-container .range-diff-end');
+  range = document.createRange();
+  range.setStart(startContainer, 0);
+  range.setEnd(endContainer, 0);
+  
+  const spec = {
+    startContainer: document.querySelector('.staticrange-container .range-diff-start'),
+    startOffset: 0,
+    endContainer: document.querySelector('.staticrange-container .range-diff-end'),
+    endOffset: 0
+  };
+  staticRange = new StaticRange(spec);
+};
+
+const listener = {
+  displaySelectionText: () => {
+    const text = getSelectionText();
+    const output = document.querySelector('.output.selection-text');
+    output.textContent = text.join(',') || '未選択';
+  },
+  addElement: () => {
+    const node = document.querySelector('.sample-node');
+    range.selectNode(node);
+    range.surroundContents(document.querySelector('.range-output'));
+    
+    try {
+      // StaticRangeは変更するためのメソッドが実装されていないためエラーとなる。
+      staticRange.selectNode(node);
+      staticRange.surroundContents(document.querySelector('.staticrange-output'));
+    } catch(err) {
+      console.error(err.message);
+    }
+  }
 };
 
 const addListener = () => {
-  document.body.addEventListener('pointerup', displaySelectionText);
+  document.body.addEventListener('pointerup', listener.displaySelectionText);
+  
+  const main = document.querySelector('main');
+  main.addEventListener('click', event => {
+    const { eventTarget } = event.target.dataset;
+    if (eventTarget) {
+      event.stopPropagation();
+      if (typeof listener[eventTarget] === 'function') {
+        listener[eventTarget]();  
+      }
+    }
+  });
 };
 
 const init = () => {
   addListener();
 
   displayBoundingClientRect();
+  createRanges();
 };
 
 init();
