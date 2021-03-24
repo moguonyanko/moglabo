@@ -274,4 +274,27 @@ public class TestImages {
         var path = Paths.get("./sample/arc1.png");
         ImageIO.write(img, "png", path.toFile());
     }
+
+    @Test
+    public void VolatileImageを生成できる() throws IOException {
+        var srcImg = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
+
+        var g2 = toG2(srcImg.getGraphics());
+        var gc = g2.getDeviceConfiguration();
+        var vi = gc.createCompatibleVolatileImage(srcImg.getWidth(),
+            srcImg.getHeight());
+
+        var vg2 = toG2(vi.getGraphics());
+        var path = new GeneralPath();
+        path.moveTo(0, 0);
+        path.lineTo(50, 100);
+        path.lineTo(100, 50);
+        path.lineTo(200, 200);
+        vg2.draw(path);
+
+        var dstImg = vi.getSnapshot();
+
+        var dstPath = Paths.get("./sample/stars_volatile.png");
+        ImageIO.write(dstImg, "png", dstPath.toFile());
+    }
 }
