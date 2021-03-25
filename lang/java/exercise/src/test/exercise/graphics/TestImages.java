@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.MultiResolutionImage;
+import java.awt.image.VolatileImage;
 import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.file.Files;
@@ -296,5 +297,12 @@ public class TestImages {
 
         var dstPath = Paths.get("./sample/stars_volatile.png");
         ImageIO.write(dstImg, "png", dstPath.toFile());
+
+        vg2.dispose();
+        // disposeされてもcontentsLostされていない。
+        System.out.println("VolatileImage is contentLost?: " + vi.contentsLost());
+
+        var valid = vi.validate(vg2.getDeviceConfiguration());
+        assertEquals(VolatileImage.IMAGE_RESTORED, valid);
     }
 }
