@@ -100,6 +100,59 @@ const clearCanvas = ({ canvas }) => {
 
 // DOM
 
+/**
+ * @class
+ * @name CanvasWrapper
+ * @description ブラウザ間におけるOffscreenCanvasの振る舞いの差異を吸収するためのクラス
+ */
+class CanvasWrapper {
+  constructor ({ width, height, type = '2d' }) {
+    Object.assign(this, this.create({ width, height, type }));
+  }
+
+  // #を付けてprivate methodにしたいがFirefoxでは未対応。
+  create({ width, height, type }) {
+    let canvas, context;
+  
+    try {
+      canvas = new OffscreenCanvas(width, height);
+      context = canvas.getContext(type);
+    } catch (err) {
+      // FirefoxはOffscreenCanvasに2dを指定してgetContextするとエラーになる。
+      canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      context = canvas.getContext(type);
+    }
+  
+    return { canvas, context };
+  }
+  
+  get width() {
+    return this.canvas.width;
+  }
+
+  get height() {
+    return this.canvas.height;
+  }
+
+  toBlob({ type, quality = 1 }) {
+    return new Promise((resolve, reject) => {
+      if (typeof this.canvas.convertToBlob === 'function') {
+        this.canvas.convertToBlob({ type, quality })
+          .then(resolve)
+          .catch(reject);
+      } else {
+        try {
+          this.canvas.toBlob(resolve, type, quality);
+        } catch(err) {
+          reject(err);
+        }
+      }  
+    });
+  }
+}
+
 const fitCanvasSize = canvas => {
   const style = getComputedStyle(canvas);
   // canvas要素のサイズを設定しないと描画された図形が意図したサイズと異なってしまう。
@@ -131,11 +184,12 @@ const listeners = {
     }
   },
   async convertToBlob(root) {
-    const canvas = new OffscreenCanvas(300, 300);
-    const ctx = canvas.getContext('2d');
+    const width = 300, height = 300;
+    const canvas = new CanvasWrapper({ width, height });
+    const ctx = canvas.context;
     ctx.fillStyle = 'red';
-    ctx.fillRect(canvas.width / 2, canvas.height / 2, 100, 80);
-    const blob = await canvas.convertToBlob({
+    ctx.fillRect(width / 2, height / 2, 100, 80);
+    const blob = await canvas.toBlob({
       type: root.querySelector('.image-format').value,
       quality: 1
     });
