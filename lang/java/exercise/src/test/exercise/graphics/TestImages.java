@@ -6,11 +6,11 @@ import java.awt.image.BufferedImage;
 import java.awt.image.MultiResolutionImage;
 import java.awt.image.VolatileImage;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import javax.imageio.ImageIO;
 
 import org.junit.Test;
@@ -305,4 +305,38 @@ public class TestImages {
         var valid = vi.validate(vg2.getDeviceConfiguration());
         assertEquals(VolatileImage.IMAGE_RESTORED, valid);
     }
+
+    private static List<Shape> getSampleShapes() {
+        var line1 = new Line2D.Double(0, 0, 500, 500);
+        var line2 = new Line2D.Double(100, 100, 500, 100);
+        var line3 = new Line2D.Double(300, 100, 400, 400);
+
+        var rect1 = new Rectangle2D.Double(20, 20, 300, 300);
+        var rect2 = new Rectangle2D.Double(100, 100, 100, 100);
+        var rect3 = new Rectangle2D.Double(100, 50, 200, 200);
+
+        return List.of(
+            line1, line2, line3, rect1, rect2, rect3
+        );
+    }
+
+    @Test
+    public void 非同期処理で図形描画できる() throws IOException {
+        var shapes = getSampleShapes();
+        var img = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
+
+        var g2 = img.createGraphics();
+        g2.setColor(Color.WHITE);
+        g2.fillRect(0, 0, img.getWidth(), img.getHeight());
+        g2.setColor(Color.BLACK);
+
+        shapes.stream()
+            .map(shape -> CompletableFuture.runAsync(() -> g2.draw(shape)))
+            .map(f -> f.join())
+            .forEach(v -> {});
+
+        var dstPath = Paths.get("./sample/sampleshapes.png");
+        ImageIO.write(img, "png", dstPath.toFile());
+    }
+
 }

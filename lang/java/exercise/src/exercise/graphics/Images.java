@@ -1,6 +1,7 @@
 package exercise.graphics;
 
 import java.awt.*;
+import java.awt.geom.Line2D;
 import java.awt.image.BaseMultiResolutionImage;
 import java.awt.image.BufferedImage;
 import java.awt.image.MultiResolutionImage;
@@ -9,7 +10,6 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
