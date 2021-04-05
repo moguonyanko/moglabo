@@ -9,8 +9,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 
 import org.junit.Test;
@@ -320,22 +324,71 @@ public class TestImages {
         );
     }
 
+    private static List<Shape> getSampleShapes(int size, int width, int height) {
+        var list = new ArrayList<Shape>();
+        for (int i = 0; i < size; i++) {
+            var rect = new Rectangle2D.Double(
+                width - Math.random() * width,
+                height - Math.random() * height,
+                Math.random() * width,
+                Math.random() * height);
+            list.add(rect);
+        }
+        return list;
+    }
+
     @Test
     public void 非同期処理で図形描画できる() throws IOException {
-        var shapes = getSampleShapes();
-        var img = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
+        var width = 500;
+        var height = 500;
+        var shapes = getSampleShapes(10000, width, height);
+        var img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
         var g2 = img.createGraphics();
         g2.setColor(Color.WHITE);
         g2.fillRect(0, 0, img.getWidth(), img.getHeight());
         g2.setColor(Color.BLACK);
 
+        //shapes.stream().forEach(s -> g2.draw(s));
+        // 非同期にしても速度の向上は見られない。
         shapes.stream()
             .map(shape -> CompletableFuture.runAsync(() -> g2.draw(shape)))
-            .map(f -> f.join())
+            .map(CompletableFuture::join)
             .forEach(v -> {});
 
         var dstPath = Paths.get("./sample/sampleshapes.png");
+        ImageIO.write(img, "png", dstPath.toFile());
+    }
+
+    private record DrawTask(Graphics2D g2, Shape shape) implements Callable<Shape> {
+        @Override
+        public Shape call() {
+            g2.draw(shape);
+            return shape;
+        }
+    }
+
+    @Test
+    public void 並列処理で図形を描画できる() throws IOException, InterruptedException {
+        var width = 500;
+        var height = 500;
+        var shapes = getSampleShapes(10000, width, height);
+        var img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        var g2 = img.createGraphics();
+        g2.setColor(Color.WHITE);
+        g2.fillRect(0, 0, img.getWidth(), img.getHeight());
+        g2.setColor(Color.BLACK);
+
+        var tasks = shapes.stream()
+            .map(s -> new DrawTask(g2, s))
+            .collect(Collectors.toList());
+
+        //var executor = Executors.newSingleThreadExecutor();
+        // 並列処理で描画しても速度の向上は見られない。
+        var executor = Executors.newFixedThreadPool(10);
+        executor.invokeAll(tasks);
+
+        var dstPath = Paths.get("./sample/sampleshapes_thread.png");
         ImageIO.write(img, "png", dstPath.toFile());
     }
 
