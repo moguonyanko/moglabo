@@ -1,6 +1,7 @@
 package test.exercise.graphics;
 
 import java.awt.*;
+import java.awt.font.TextLayout;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.MultiResolutionImage;
@@ -392,4 +393,30 @@ public class TestImages {
         ImageIO.write(img, "png", dstPath.toFile());
     }
 
+    @Test
+    public void TextLayoutを使ってテキスト描画できる() throws IOException {
+        var width = 500;
+        var height = 500;
+        var img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        var string = "Hello, world";
+        var g2 = img.createGraphics();
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, width, height);
+        g2.setColor(Color.WHITE);
+
+        var font = new Font("Serif", Font.BOLD, 18);
+        var frc = g2.getFontRenderContext();
+        var layout = new TextLayout(string, font, frc);
+        layout.draw(g2, width / 2, height / 2);
+
+        var bounds = layout.getBounds();
+        var margin = 10;
+        bounds.setRect(new Rectangle2D.Double(margin, margin,
+            width - margin*2, height - margin*2));
+        g2.draw(bounds);
+
+        var dstPath = Paths.get("./sample/sampletextlayout.png");
+        ImageIO.write(img, "png", dstPath.toFile());
+    }
 }
