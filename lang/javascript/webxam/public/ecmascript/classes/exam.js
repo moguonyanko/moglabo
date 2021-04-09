@@ -1,6 +1,8 @@
 /**
  * @fileoverview Class関連機能調査用スクリプト
  */
+import * as specs from './specs.js';
+import TypeManager from './types.js';
 
 const methodNames = {
   getName: 'Get My Sample User Name',
@@ -43,12 +45,24 @@ const listeners = {
     const person = new Person({ name: 'Hoge', age: 67 });
     const output = element.querySelector('.output');
     output.innerHTML += `${person[methodNames.toString]()}<br />`
+  },
+  dumpImportClass() {
+    const info = new specs.SpecInfo('Hello, import class');
+    const result = specs.readData(info);
+    const output = document.querySelector('.output.dump-import-export');
+    output.textContent = result;
+  },
+  dumpStaticSample() {
+    const type = document.querySelector('.primitive-type').value;
+    const result = TypeManager.isSupported({ type });
+    const output = document.querySelector('.output.dump-static-sample');
+    output.textContent = result;
   }
 };
 
-window.addEventListener('DOMContentLoaded', () => {
+const main = () => {
   document.querySelectorAll('.example').forEach(ele => {
-    ele.addEventListener('pointerup', event => {
+    ele.addEventListener('click', event => {
       const et = event.target.dataset.eventTarget,
         listener = listeners[et];
       if (typeof listener !== 'function') {
@@ -57,4 +71,6 @@ window.addEventListener('DOMContentLoaded', () => {
       listener(event.currentTarget);
     });
   });
-});
+};
+
+main();
