@@ -32,6 +32,31 @@ const getObjectFromResponse = (response, type = 'json') => {
   }
 };
 
+// 参考:
+// https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Array/from
+const makeRangeNumbers = ({ start = 0, end, step = 1 }) => {
+  return Array.from({
+    length: ((end - start) / step) + 1
+  }, (value, index) => start + (index * step));
+};
+
+const getSumPromise = array => {
+  return array.map(v => Promise.resolve(v))
+    .reduce((acc, current) => {
+      //console.log(current);
+      return acc.then(x => current.then(y => x + y));
+    });
+};
+
+const runTest = async () => {
+  const sampleArray = makeRangeNumbers({ end: 10 });
+  console.log(sampleArray);
+  const chainedPromise = getSumPromise(sampleArray);
+  // const promises = sampleArray.map(v => Promise.resolve(v));
+  // const result = await Promise.all(promises).then(sum);
+  console.log(await chainedPromise);
+};
+
 // DOM
 
 const funcs = {
@@ -81,12 +106,12 @@ const funcs = {
     // HTTPエラーが発生した場合でもstatusはfulfilledになってしまう。
     // 従ってResponseのokプロパティの確認は必須である。
     const successResponses = results.filter(r => r.status === 'fulfilled')
-                                    .map(r => r.value)
-                                    .filter(res => res.ok);
+      .map(r => r.value)
+      .filter(res => res.ok);
     successResponses.forEach(async response => {
       const json = await response.json();
       output.innerHTML += `${JSON.stringify(json)}<br />`;
-    });                                
+    });
   },
   executeAnyPromises: async root => {
     const output = root.querySelector('.output');
@@ -99,8 +124,8 @@ const funcs = {
       // Promise.anyを使ってもリクエスト数を減らすことはできない。
       // 全てのPromiseが実行され最初に成功したPromiseの結果だけが返される。
       const json = await Promise.any(promises);
-      output.value = JSON.stringify(json); 
-    } catch(err) {
+      output.value = JSON.stringify(json);
+    } catch (err) {
       // Promise.any内でErrorがスローされ全てのPromiseがrejectされた場合、
       // 内部でAggregateErrorが生成されてスローされる。
       const message = [
@@ -110,6 +135,17 @@ const funcs = {
       ];
       output.value = message.join('\n');
     }
+  },
+  chainPromise: async () => {
+    const [ start, end ] = [
+      parseInt(document.querySelector('.array-start').value),
+      parseInt(document.querySelector('.array-end').value)
+    ];
+    const sampleArray = makeRangeNumbers({ start, end });
+    const chainedPromise = getSumPromise(sampleArray);
+    const result = await chainedPromise;
+    const output = document.querySelector('.output.chainPromise');
+    output.textContent = result;
   }
 };
 
@@ -128,4 +164,9 @@ const addListener = () => {
   });
 };
 
-addListener();
+const main = async () => {
+  await runTest();
+  addListener();
+};
+
+main().then();
