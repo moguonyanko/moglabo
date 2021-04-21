@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>画像生成</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" type="module" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>画像生成</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>フォーマットを指定して画像取得</h2>
+      <select class="image-format">
+        <option value="png" selected>png</option>
+        <option value="gif">gif</option>
+        <option value="jpeg">jpeg</option>
+        <option value="webp">webp</option>
+        <option value="avif">avif</option>
+      </select>
+      <label>幅<input class="image-width" type="number" value="400" min="1" max="1000" /></label>
+      <label>高さ<input class="image-height" type="number" value="400" min="1" max="1000" /></label>
+      <button data-event-target="createImage">get</button>
+      <canvas class="output createImage" width="400" height="400"></canvas>
+    </section>
+  </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/ImageData">ImageData</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>

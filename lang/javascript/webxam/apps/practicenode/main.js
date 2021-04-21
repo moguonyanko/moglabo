@@ -10,10 +10,12 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-const Certs = require('../../function/certs');
 const config = require('../../config');
 const MyEventLoop = require('./eventloop');
 const MyCookie = require('./cookie');
+
+const Certs = require('../../function/certs');
+const CreateImage = require('../../function/createimage');
 
 const app = express();
 // signed cookieを使用するにはsecret指定が必須
@@ -101,13 +103,24 @@ app.get(`${practiceNodeRoot}reversestring`, cors(corsCheck),
     }));
   });
 
-  app.post(`${practiceNodeRoot}verifycode`, cors(corsCheck),
+app.post(`${practiceNodeRoot}verifycode`, cors(corsCheck),
   (request, response) => {
     const code = request.body.code;
     const result = {
       result: !isNaN(parseInt(code))
     };
     response.json(result);
+  });
+
+app.get(`${practiceNodeRoot}createimage`, cors(corsCheck),
+  (request, response) => {
+    const { format, width, height } = request.query;
+    const ci = new CreateImage();
+    const buffer = ci.draw({
+      format, width, height
+    });
+    response.setHeader('Content-Type', `image/${format}`);
+    response.send(buffer);
   });
 
 const main = () => {
