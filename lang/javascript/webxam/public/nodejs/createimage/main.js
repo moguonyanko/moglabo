@@ -2,6 +2,11 @@
  * @fileoverview 画像生成調査用スクリプト
  */
 
+const outputImageInfo = blob => {
+  const output = document.querySelector('.output.image-info');
+  output.textContent = `FORMAT=${blob.type},SIZE=${blob.size}`;
+};
+
 const listener = {
   createImage: async () => {
     const format = document.querySelector('select.image-format').value;
@@ -13,7 +18,7 @@ const listener = {
     const result = await fetch(`/webxam/apps/practicenode/createimage?${query}`);
     const output = document.querySelector('canvas.output.createImage');
     const blob = await result.blob();
-    console.log(blob);
+    outputImageInfo(blob);
     const url = URL.createObjectURL(blob);
     const img = new Image();
     img.onload = () => {

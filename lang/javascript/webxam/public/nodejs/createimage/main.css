@@ -4,3 +4,8 @@ canvas.createImage {
   width: 400px;
   height: 400px;
 }
+
+.output.image-info {
+  height: 5em;
+  background-color: white;
+}

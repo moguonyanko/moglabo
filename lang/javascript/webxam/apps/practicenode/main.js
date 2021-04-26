@@ -113,10 +113,9 @@ app.post(`${practiceNodeRoot}verifycode`, cors(corsCheck),
   });
 
 app.get(`${practiceNodeRoot}createimage`, cors(corsCheck),
-  (request, response) => {
+  async (request, response) => {
     const { format, width, height } = request.query;
-    const ci = new CreateImage();
-    const buffer = ci.draw({
+    const buffer = await CreateImage.draw({
       format, width, height
     });
     response.setHeader('Content-Type', `image/${format}`);
