@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-canvas.createImage {
+.createImage {
   width: 400px;
   height: 400px;
 }

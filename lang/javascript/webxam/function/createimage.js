@@ -43,7 +43,7 @@ const getErrorImage = async ({ format, width, height, error }) => {
     create: {
       width, height,
       channels: 4,
-      background: { r: 204, g: 204, b: 204, alpha: 0.5 }
+      background: { r: 204, g: 204, b: 204, alpha: 1 }
     }
   })[format]().toBuffer();
 };
@@ -56,10 +56,13 @@ class CreateImage {
 
     drawSampleImage(ctx, width, height);
 
-    const buff = canvas.toBuffer(`raw`);
+    const imageData = ctx.getImageData(0, 0, width, height);
+    //const buff = canvas.toBuffer(`raw`);
     try {
-      return await sharp(buff).toFormat(format).toBuffer();
+      return await sharp(Buffer.from(imageData.data.buffer))
+        .toFormat(format).toBuffer();
     } catch (error) {
+      console.error(error.message);
       return await getErrorImage({ format, width, height, error });
     }
   }
