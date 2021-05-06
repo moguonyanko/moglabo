@@ -3,6 +3,7 @@
  * 参考:
  * https://developer.mozilla.org/en-US/docs/Web/API/Path2D/Path2D
  * https://www.npmjs.com/package/sharp
+ * https://sharp.pixelplumbing.com/api-output#avif
  */
 
 /* eslint-env node */
@@ -25,45 +26,56 @@ const drawSampleImage = (ctx, width, height) => {
 };
 
 const getErrorImage = async ({ format, width, height, error }) => {
+  const errMsg = `${error.message}:${format}`;
+  console.error(errMsg);
+
   // TODO: SVGでエラーメッセージを描画してクライアントに返したい。
-  // const input = Buffer.from(
-  //   `<svg>
-  //   <text x="0" y="35" font-family="Monospace" font-size="35">${error.message}</text>
-  //   </svg>`
-  // );
+  const input = Buffer.from(
+    `<svg>
+    <text x="0" y="35" font-family="Monospace" font-size="35">${errMsg}</text>
+    </svg>`
+  );
 
-  // return await sharp()
-  //   .resize(width, height)
-  //   .composite([{
-  //     input,
-  //     blend: 'dest-in'
-  //   }])[format]().toBuffer();
+  return await sharp()
+    .resize(width, height)
+    .composite([{
+      input,
+      blend: 'dest-in'
+    }]).png().toBuffer();
+};
 
-  return await sharp({
-    create: {
-      width, height,
-      channels: 4,
-      background: { r: 204, g: 204, b: 204, alpha: 1 }
-    }
-  })[format]().toBuffer();
+const defaultOptions = { quality: 50, speed: 5 };
+
+const getBuffer = (canvas, format, options = defaultOptions) => {
+  return new Promise((resolve, reject) => {
+    canvas.toBuffer(async (err, buff) => {
+      if (!err) {
+        try {
+          const result = await sharp(buff)
+            .toFormat(format, options)
+            .toBuffer();
+          resolve(result);
+        } catch (e) {
+          reject(e);
+        }
+      } else {
+        reject(err);
+      }
+    });
+  });
 };
 
 class CreateImage {
   static async draw({ format, width, height }) {
-    [ width, height ] = [ parseInt(width), parseInt(height) ];
+    [width, height] = [parseInt(width), parseInt(height)];
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext('2d');
 
     drawSampleImage(ctx, width, height);
 
-    const imageData = ctx.getImageData(0, 0, width, height);
-    //const buff = canvas.toBuffer(`raw`);
     try {
-      // TODO: sharp()に渡すBufferをCanvasから取得する方法が不明
-      return await sharp(Buffer.from(imageData.data.buffer))
-        .toFormat(format).toBuffer();
+      return await getBuffer(canvas, format);
     } catch (error) {
-      console.error(error.message);
       return await getErrorImage({ format, width, height, error });
     }
   }
