@@ -59,6 +59,7 @@ class CreateImage {
     const imageData = ctx.getImageData(0, 0, width, height);
     //const buff = canvas.toBuffer(`raw`);
     try {
+      // TODO: sharp()に渡すBufferをCanvasから取得する方法が不明
       return await sharp(Buffer.from(imageData.data.buffer))
         .toFormat(format).toBuffer();
     } catch (error) {

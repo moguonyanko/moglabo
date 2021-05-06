@@ -2,7 +2,7 @@
  * @fileoverview 画像生成調査用スクリプト
  */
 
-const outputImageInfo = async blob => {
+const outputImageInfo = blob => {
   // OffscreenCavnas.convertToBlobではAVIFのBlobを出力することができない。
   // AVIFのBlobの情報を参照したければレスポンスを直接利用するしかない。
 
@@ -27,18 +27,18 @@ const listener = {
     ];
     const query = `format=${format}&width=${width}&height=${height}`;
     const imgUrl = `/webxam/apps/practicenode/createimage?${query}`;
+    const response = await fetch(imgUrl);
+    const blob = await response.blob();
+    outputImageInfo(blob);
+    const blobUrl = URL.createObjectURL(blob);
     const img = document.createElement('img');
     img.onload = async () => {
+      URL.revokeObjectURL(blobUrl);
       const output = document.querySelector('.output.createImage');
       output.textContent = '';
       output.appendChild(img);
-      // ブラウザキャッシュは効くが無駄なリクエストである。最初からfetchを使う方がいい。
-      // ImageからCanvasなどを経由せずに直接Blobを得る方法はないか？
-      const response = await fetch(imgUrl);
-      const blob = await response.blob();
-      await outputImageInfo(blob);
     };
-    img.src = imgUrl;
+    img.src = blobUrl;
   }
 };
 
