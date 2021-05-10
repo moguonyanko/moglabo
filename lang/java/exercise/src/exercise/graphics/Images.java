@@ -1,7 +1,6 @@
 package exercise.graphics;
 
 import java.awt.*;
-import java.awt.geom.Line2D;
 import java.awt.image.BaseMultiResolutionImage;
 import java.awt.image.BufferedImage;
 import java.awt.image.MultiResolutionImage;
@@ -147,6 +146,27 @@ public class Images {
 		// ImageWriterParamを渡せるメソッドを呼ぶためにIIOImageを生成している。
 		writer.write(null, new IIOImage(src, null, null), param);
 		writer.dispose();
+    }
+
+    /**
+     * 参考:
+     * https://stackoverflow.com/questions/196890/java2d-performance-issues
+     */
+    public static BufferedImage getOptimizedBufferedImage(BufferedImage src) {
+        var config = GraphicsEnvironment
+            .getLocalGraphicsEnvironment()
+            .getDefaultScreenDevice()
+            .getDefaultConfiguration();
+
+        if (src.getColorModel().equals(config.getColorModel())) {
+            System.out.println("BufferedImageは最適化済みです。再利用します。");
+            return src;
+        }
+
+        var w = src.getWidth();
+        var h = src.getHeight();
+        var t = src.getTransparency();
+        return config.createCompatibleImage(w, h, t);
     }
 
 }

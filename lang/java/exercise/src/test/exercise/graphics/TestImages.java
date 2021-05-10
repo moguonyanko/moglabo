@@ -207,7 +207,7 @@ public class TestImages {
     @Test
     public void テクスチャーで塗りつぶせる() throws IOException {
         var textureImage = new BufferedImage(6, 6, BufferedImage.TYPE_INT_ARGB);
-        var tg2 = (Graphics2D)textureImage.getGraphics();
+        var tg2 = (Graphics2D) textureImage.getGraphics();
 
         tg2.setColor(Color.RED);
         tg2.fillRect(0, 0, 2, 2);
@@ -217,7 +217,7 @@ public class TestImages {
         var paint = new TexturePaint(textureImage, anchor);
 
         var image = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
-        var g2 = (Graphics2D)image.getGraphics();
+        var g2 = (Graphics2D) image.getGraphics();
         g2.setColor(Color.PINK);
         g2.drawRect(50, 50, 100, 100);
         g2.setPaint(paint);
@@ -232,7 +232,7 @@ public class TestImages {
         var img = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
 
         var font = new Font("Monospaced", Font.PLAIN, 14);
-        var g2 = (Graphics2D)img.getGraphics();
+        var g2 = (Graphics2D) img.getGraphics();
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
             RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB);
 
@@ -355,13 +355,15 @@ public class TestImages {
         shapes.stream()
             .map(shape -> CompletableFuture.runAsync(() -> g2.draw(shape)))
             .map(CompletableFuture::join)
-            .forEach(v -> {});
+            .forEach(v -> {
+            });
 
         var dstPath = Paths.get("./sample/sampleshapes.png");
         ImageIO.write(img, "png", dstPath.toFile());
     }
 
-    private record DrawTask(Graphics2D g2, Shape shape) implements Callable<Shape> {
+    private record DrawTask(Graphics2D g2,
+                            Shape shape) implements Callable<Shape> {
         @Override
         public Shape call() {
             g2.draw(shape);
@@ -413,10 +415,54 @@ public class TestImages {
         var bounds = layout.getBounds();
         var margin = 10;
         bounds.setRect(new Rectangle2D.Double(margin, margin,
-            width - margin*2, height - margin*2));
+            width - margin * 2, height - margin * 2));
         g2.draw(bounds);
 
         var dstPath = Paths.get("./sample/sampletextlayout.png");
         ImageIO.write(img, "png", dstPath.toFile());
+    }
+
+    private Stroke getSampleStroke() {
+        var stroke = new BasicStroke(0.5f,
+            BasicStroke.CAP_ROUND,
+            BasicStroke.JOIN_BEVEL,
+            5.0f, new float[]{ 5.0f }, 0.0f);
+        return stroke;
+    }
+
+    private void drawSampleStroke(BufferedImage img, Color color) {
+        var width = img.getWidth();
+        var height = img.getHeight();
+
+        var g2 = img.createGraphics();
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, width, height);
+        g2.setColor(color);
+
+        g2.setStroke(getSampleStroke());
+
+        for (int i = 0; i < 100; i++) {
+            var w = width - 100;
+            var h = height - 100;
+            g2.draw(new RoundRectangle2D.Double(i, i, w, h, 10, 10));
+        }
+    }
+
+    @Test
+    public void GraphicsEnvironmentからGraphicsConfigurationを得る() throws IOException {
+        var width = 500;
+        var height = 500;
+        // デフォルトと等しいimageTypeはTYPE_INT_RGB
+        var img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        drawSampleStroke(img, Color.WHITE);
+        var dstPath = Paths.get("./sample/optimizedimage.png");
+        ImageIO.write(img, "png", dstPath.toFile());
+
+        var img2 = Images.getOptimizedBufferedImage(img);
+        drawSampleStroke(img2, Color.RED);
+
+        var dstPath2 = Paths.get("./sample/optimizedimage2.png");
+        ImageIO.write(img2, "png", dstPath2.toFile());
     }
 }
