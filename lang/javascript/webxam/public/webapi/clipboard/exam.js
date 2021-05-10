@@ -30,7 +30,7 @@ const clearOutput = root => {
   root.querySelector('.output').innerHTML = '';
 };
 
-const clipTextListeners = {
+const clipTextListener = {
   async [clipboard.read](root) {
     const output = root.querySelector('.output');
     try {
@@ -92,7 +92,7 @@ const getSelectedImageType = root => {
   return eles[0] ? eles[0].value : 'image/png';
 };
 
-const clipImageListeners = {
+const clipImageListener = {
   async [clipboard.read](root) {
     const output = root.querySelector('.output');
     try {
@@ -127,31 +127,44 @@ const clipImageListeners = {
   clearOutput
 };
 
-const listeners = {
-  clipText: clipTextListeners,
-  clipImage: clipImageListeners
+const clipFileListener = {
+  [clipboard.read]: async (root, clipboardData) => {
+    const output = root.querySelector('.output');
+    const file = clipboardData.files[0];
+    if (file) {
+      console.log(file);
+      const text = await file.text();
+      output.value = text;
+    }
+  }
+};
+
+const addListener = (root, type, listener) => {
+  root.addEventListener(type, async event => {
+    const ct = event.currentTarget.dataset.eventTarget;
+    if (!ct) {
+      return;
+    }
+    const et = event.target.dataset.eventTarget;
+    if (typeof listener[et] !== 'function') {
+      return;
+    }
+    if (et in clipboard && !(await permit(et))) {
+      outputError({ root, error: new Error(`Not permitted: ${et}`) });
+      return;
+    }
+    event.stopPropagation();
+    await listener[et](root, event.clipboardData);
+  });  
 };
 
 const init = () => {
-  document.querySelectorAll('.example').forEach(root => {
-    root.addEventListener('pointerup', async event => {
-      const ct = event.currentTarget.dataset.eventTarget;
-      if (!ct) {
-        return;
-      }
-      const et = event.target.dataset.eventTarget,
-        listener = listeners[ct];
-      if (typeof listener[et] !== 'function') {
-        return;
-      }
-      if (et in clipboard && !(await permit(et))) {
-        outputError({ root, error: new Error(`Not permitted: ${et}`) });
-        return;
-      }
-      event.stopPropagation();
-      await listener[et](root);
-    });
-  });
+  const textTarget = document.querySelector('.clip-text');
+  addListener(textTarget, 'click', clipTextListener);
+  const imageTarget = document.querySelector('.clip-image');
+  addListener(imageTarget, 'click', clipImageListener);
+  const fileTarget = document.querySelector('.clip-file');
+  addListener(fileTarget, 'paste', clipFileListener);
 };
 
-window.addEventListener('DOMContentLoaded', init);
+init();
