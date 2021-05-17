@@ -122,6 +122,23 @@ app.get(`${practiceNodeRoot}createimage`, cors(corsCheck),
     response.send(buffer);
   });
 
+app.get(`${practiceNodeRoot}currenttime`, cors(corsCheck),
+  (request, response) => {
+    console.log('Called currenttime');
+    
+    response.setHeader('Cache-Control', `no-store, max-age=0`);
+    const time = new Date().toUTCString();
+    // Cache-Control以外を設定した時にキャッシュが無効化されるかどうかのテスト
+    response.setHeader('Pragma', 'public');
+    response.setHeader('Expires', time);
+    response.setHeader('Last-Modified', time);
+    response.setHeader('Vary', 'Origin');
+
+    response.json({
+      result: time
+    });
+  });
+
 const main = () => {
   Certs.getOptions().then(options => {
     http2.createSecureServer(options, app).listen(port);
