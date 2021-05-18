@@ -133,6 +133,8 @@ app.get(`${practiceNodeRoot}currenttime`, cors(corsCheck),
     response.setHeader('Expires', time);
     response.setHeader('Last-Modified', time);
     response.setHeader('Vary', 'Origin');
+    // ETagを除去してブラウザキャッシュの振る舞いを調べる。
+    response.removeHeader('ETag');
 
     response.json({
       result: time
