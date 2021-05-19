@@ -4,7 +4,12 @@
 
 const listener = {
   getCurrentTime: async () => {
-    const response = await fetch('/webxam/apps/practicenode/currenttime');
+    const url = 'https://myhost/webxam/apps/practicenode/currenttime';
+    const response = await fetch(url, {
+      mode: 'cors',
+      // このリクエストにCookieは利用されないのでomitを指定する。(クレデンシャルを含まない)
+      credentials: 'omit' 
+    });
     if (!response.ok) {
       throw new Error(`Error:${response.status}`);
     }
