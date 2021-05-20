@@ -16,6 +16,7 @@ const MyCookie = require('./cookie');
 
 const Certs = require('../../function/certs');
 const CreateImage = require('../../function/createimage');
+const Inouts = require('../../function/inouts');
 
 const app = express();
 // signed cookieを使用するにはsecret指定が必須
@@ -122,23 +123,35 @@ app.get(`${practiceNodeRoot}createimage`, cors(corsCheck),
     response.send(buffer);
   });
 
+const setCacheHeader = (response, time) => {
+  response.setHeader('Cache-Control', `no-store, max-age=0`);
+  // Cache-Control以外を設定した時にキャッシュが無効化されるかどうかのテスト
+  response.setHeader('Pragma', 'public');
+  response.setHeader('Expires', time);
+  response.setHeader('Last-Modified', time);
+  response.setHeader('Vary', 'Origin');
+  // ETagを除去してブラウザキャッシュの振る舞いを調べる。
+  response.removeHeader('ETag');
+};
+
 app.get(`${practiceNodeRoot}currenttime`, cors(corsCheck),
   (request, response) => {
     console.log('Called currenttime');
-    
-    response.setHeader('Cache-Control', `no-store, max-age=0`);
     const time = new Date().toUTCString();
-    // Cache-Control以外を設定した時にキャッシュが無効化されるかどうかのテスト
-    response.setHeader('Pragma', 'public');
-    response.setHeader('Expires', time);
-    response.setHeader('Last-Modified', time);
-    response.setHeader('Vary', 'Origin');
-    // ETagを除去してブラウザキャッシュの振る舞いを調べる。
-    response.removeHeader('ETag');
-
+    setCacheHeader(response, time);
     response.json({
       result: time
     });
+  });
+
+app.get(`${practiceNodeRoot}sampleimage`, cors(corsCheck),
+  async (request, response) => {
+    console.log('Called sampleimage');
+    const time = new Date().toUTCString();
+    setCacheHeader(response, time);
+    const buffer = await Inouts.readFile('image/testimage.png');
+    response.setHeader('Content-Type', 'image/png;charset=UTF-8');
+    response.send(buffer);
   });
 
 const main = () => {

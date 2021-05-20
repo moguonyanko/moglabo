@@ -18,10 +18,17 @@
   </header>
 
   <main>
+    <p>Cache-Control: no-store, max-age=0</p>
     <section>
-      <h2>Cache-Control: no-store, max-age=0</h2>
+      <h2>JSON</h2>
       <button data-event-target="getCurrentTime">request</button>
-      <div class="getCurrentTime output"></div>
+      <div class="output" data-event-output="getCurrentTime"></div>
+    </section>
+    <section>
+      <h2>Image</h2>
+      <p>img要素を介したリクエストではCache-Control: no-storeが無視される(Firefoxのみ)</p>
+      <button data-event-target="getSampleImage">request</button>
+      <div class="output" data-event-output="getSampleImage"></div>
     </section>
   </main>
 
