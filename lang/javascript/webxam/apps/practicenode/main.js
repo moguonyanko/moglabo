@@ -124,9 +124,9 @@ app.get(`${practiceNodeRoot}createimage`, cors(corsCheck),
   });
 
 const setCacheNoStoreHeader = (response, time) => {
-  response.setHeader('Cache-Control', `no-store, max-age=0`);
+  response.setHeader('Cache-Control', `no-store,max-age=0`);
   // Cache-Control以外を設定した時にキャッシュが無効化されるかどうかのテスト
-  response.setHeader('Pragma', 'public');
+  response.setHeader('Pragma', 'no-cache');
   response.setHeader('Expires', time);
   response.setHeader('Last-Modified', time);
   response.setHeader('Vary', 'Origin');
@@ -136,8 +136,8 @@ const setCacheNoStoreHeader = (response, time) => {
 
 app.get(`${practiceNodeRoot}currenttime`, cors(corsCheck),
   (request, response) => {
-    console.log('Called currenttime');
     const time = new Date().toUTCString();
+    console.log(`Called currenttime`);
     setCacheNoStoreHeader(response, time);
     response.json({
       result: time
@@ -146,11 +146,11 @@ app.get(`${practiceNodeRoot}currenttime`, cors(corsCheck),
 
 app.get(`${practiceNodeRoot}sampleimage`, cors(corsCheck),
   async (request, response) => {
-    console.log('Called sampleimage');
     const time = new Date().toUTCString();
+    console.log(`Called sampleimage`);
     setCacheNoStoreHeader(response, time);
     const buffer = await Inouts.readFile('image/testimage.png');
-    response.setHeader('Content-Type', 'image/png;charset=UTF-8');
+    response.setHeader('Content-Type', 'image/png');
     response.send(buffer);
   });
 
