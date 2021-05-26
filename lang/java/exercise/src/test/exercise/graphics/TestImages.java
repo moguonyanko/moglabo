@@ -3,14 +3,14 @@ package test.exercise.graphics;
 import java.awt.*;
 import java.awt.font.TextLayout;
 import java.awt.geom.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.MultiResolutionImage;
-import java.awt.image.VolatileImage;
+import java.awt.image.*;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
@@ -464,5 +464,45 @@ public class TestImages {
 
         var dstPath2 = Paths.get("./sample/optimizedimage2.png");
         ImageIO.write(img2, "png", dstPath2.toFile());
+    }
+
+    private Hashtable<?, ?> getProperties(BufferedImage image) {
+        var hash = new Hashtable<>();
+        var names = image.getPropertyNames();
+        if (names == null) {
+            return hash;
+        }
+        for (var name : names) {
+            var property = image.getProperty(name);
+            hash.put(name, property);
+        }
+        return hash;
+    }
+
+    @Test
+    public void VolatileImageの内容をBufferedImageにコピーできる() throws IOException {
+        var width = 500;
+        var height = 500;
+        var src = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        var gc = src.createGraphics().getDeviceConfiguration();
+        var vi = gc.createCompatibleVolatileImage(width, height);
+
+        var margin = 10;
+        var g = vi.createGraphics();
+        g.setColor(Color.PINK);
+        var rect = new Rectangle2D.Double(margin, margin,
+            width - margin * 2, height - margin * 2);
+        g.fill(rect);
+
+        vi.flush();
+        // snapshotをそのまま書き出せばいいのだが、ここでは他のBufferedImageに
+        // VolatileImageの内容をコピーする操作をテストしたいので以下のように記述している。
+        var snapshot = vi.getSnapshot();
+        var dst = new BufferedImage(snapshot.getColorModel(), snapshot.getRaster(),
+            snapshot.isAlphaPremultiplied(), getProperties(snapshot));
+
+        var dstPath = Paths.get("./sample/copy_rect_from_volatileimage.png");
+        ImageIO.write(dst, "png", dstPath.toFile());
     }
 }
