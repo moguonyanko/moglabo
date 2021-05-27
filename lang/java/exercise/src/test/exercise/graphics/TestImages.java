@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -410,7 +411,7 @@ public class TestImages {
         var font = new Font("Serif", Font.BOLD, 18);
         var frc = g2.getFontRenderContext();
         var layout = new TextLayout(string, font, frc);
-        layout.draw(g2, width / 2, height / 2);
+        layout.draw(g2, width >> 1, height >> 1);
 
         var bounds = layout.getBounds();
         var margin = 10;
@@ -426,7 +427,7 @@ public class TestImages {
         var stroke = new BasicStroke(0.5f,
             BasicStroke.CAP_ROUND,
             BasicStroke.JOIN_BEVEL,
-            5.0f, new float[]{ 5.0f }, 0.0f);
+            5.0f, new float[]{5.0f}, 0.0f);
         return stroke;
     }
 
@@ -504,5 +505,23 @@ public class TestImages {
 
         var dstPath = Paths.get("./sample/copy_rect_from_volatileimage.png");
         ImageIO.write(dst, "png", dstPath.toFile());
+    }
+
+    @Test
+    public void 最適化されたBufferedImageを作成できる() throws IOException {
+        var env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        var devs = env.getScreenDevices();
+        for (var dev : devs) {
+            var gcs = dev.getConfigurations();
+            var gc = gcs[0];
+            System.out.println(gc);
+            var rect = gc.getBounds();
+            var bImg = gc.createCompatibleImage(rect.width, rect.height);
+            var g = bImg.createGraphics();
+            g.setColor(Color.GREEN);
+            g.fillRect(10, 10, rect.width - 20, rect.height - 20);
+            var dstPath = Paths.get("./sample/compatiblebufferedimage.png");
+            ImageIO.write(bImg, "png", dstPath.toFile());
+        }
     }
 }
