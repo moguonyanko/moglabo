@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" /> 
+  <title>User-Agent Client Hints</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>User-Agent Client Hints</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>getHighEntropyValues</h2>
+      <label>name<input class="entropy" type="text" value="model" /></label>
+      <button data-event-src="getEntropy">get</button>
+      <div class="output" data-event-dst="getEntropy"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://wicg.github.io/ua-client-hints/">User-Agent Client Hints</a></li>
+      <li><a href="https://web.dev/migrate-to-ua-ch/">Migrate to User-Agent Client Hints</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
