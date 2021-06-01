@@ -12,15 +12,26 @@
 
 <body>
   <header>
+    <a href="../../">home</a>
     <h1>User-Agent Client Hints</h1>
   </header>
 
   <main>
     <section>
+      <h2>brands</h2>
+      <div class="output" data-event-dst="getBrands"></div>
+    </section>
+    <section>
       <h2>getHighEntropyValues</h2>
       <label>name<input class="entropy" type="text" value="model" /></label>
       <button data-event-src="getEntropy">get</button>
       <div class="output" data-event-dst="getEntropy"></div>
+    </section>
+    <section>
+      <h2>iframeの制御</h2>
+      <p>クロスオリジンだとCSPの設定でブロックされてしまう。CSPの方が優先される？</p>
+      <iframe src="https://localhost/webxam/webapi/useragentclienthints/sample1.html" 
+        allow="ch-ua-model"></iframe>
     </section>
   </main>
 
@@ -29,6 +40,7 @@
     <ul>
       <li><a href="https://wicg.github.io/ua-client-hints/">User-Agent Client Hints</a></li>
       <li><a href="https://web.dev/migrate-to-ua-ch/">Migrate to User-Agent Client Hints</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Glossary/Client_hints">Client hints(MDN)</a></li>
     </ul>
   </footer>
 </body>
