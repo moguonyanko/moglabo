@@ -4,8 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.CharBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -126,4 +130,52 @@ public class TestFileOperation {
 		}
 	}
 
+	/**
+	 * 参考：
+	 * https://www.baeldung.com/java-mapped-byte-buffer
+	 */
+	@Test
+	public void MappedByteBufferでファイル読み込みできる() throws IOException {
+		CharBuffer charBuffer = null;
+		var path = Paths.get("sample/hello.txt");
+		try (var channel = (FileChannel)Files.newByteChannel(path,
+			StandardOpenOption.READ)) {
+			var mappedByteBuffer =
+				channel.map(FileChannel.MapMode.READ_ONLY,
+				0, channel.size());
+
+			if (mappedByteBuffer != null) {
+				charBuffer = Charset.forName("UTF-8").decode(mappedByteBuffer);
+			}
+		}
+		assertNotNull(charBuffer);
+		var expected = "Hello";
+		var actual = charBuffer.toString();
+		assertThat(actual, is(expected));
+	}
+
+	@Test
+	public void MappedByteBufferでファイル書き込みできる() throws IOException {
+		// マルチバイト文字や改行文字はBufferOverflowExceptionになる。
+		var sampleText = "HelloWorld";
+		var charBuffer = CharBuffer.wrap(sampleText);
+		var path = Paths.get("sample/helloworld.txt");
+
+		try (var channel = (FileChannel)Files.newByteChannel(path,
+			StandardOpenOption.READ,
+			StandardOpenOption.WRITE,
+			StandardOpenOption.TRUNCATE_EXISTING)) {
+
+			var mappedByteBuffer = channel.map(
+				FileChannel.MapMode.READ_WRITE,
+				0, charBuffer.length()
+			);
+			if (mappedByteBuffer != null) {
+				mappedByteBuffer.put(Charset.forName("UTF-8").encode(charBuffer));
+			}
+		}
+
+		var actual = String.join("", Files.readAllLines(path));
+		assertThat(actual, is(sampleText));
+	}
 }
