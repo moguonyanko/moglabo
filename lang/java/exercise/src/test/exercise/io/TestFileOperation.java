@@ -9,10 +9,12 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.nio.file.attribute.FileAttribute;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import exercise.io.SampleMember;
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -177,5 +179,57 @@ public class TestFileOperation {
 
 		var actual = String.join("", Files.readAllLines(path));
 		assertThat(actual, is(sampleText));
+	}
+
+	@Test
+	public void MappedByteBufferでオブジェクトを書き出せる() throws IOException {
+		var name = "Mike";
+		var age = 24;
+		var member = new SampleMember(name, age);
+		var path = Paths.get("sample/samplemember.obj");
+		Files.deleteIfExists(path);
+		Files.createFile(path);
+
+		try (var channel = (FileChannel)Files.newByteChannel(path,
+			StandardOpenOption.READ,
+			StandardOpenOption.WRITE,
+			StandardOpenOption.TRUNCATE_EXISTING)) {
+
+			var mappedByteBuffer = channel.map(
+				FileChannel.MapMode.READ_WRITE,
+				0,
+				1024 // オブジェクトから計算せず適当なサイズを指定してしまっている。
+			);
+
+			if (mappedByteBuffer != null) {
+				member.save(mappedByteBuffer);
+			}
+		}
+
+		assertTrue(Files.exists(path));
+		assertTrue(Files.size(path) > 0);
+	}
+
+	@Test
+	public void MappedByteBufferでオブジェクトを読み込める() throws IOException {
+		var path = Paths.get("sample/samplemember.obj");
+		SampleMember member = null;
+
+		try (var channel = (FileChannel)Files.newByteChannel(path,
+			StandardOpenOption.READ)) {
+
+			var mappedByteBuffer = channel.map(
+				FileChannel.MapMode.READ_ONLY,
+				0,
+				channel.size()
+			);
+
+			if (mappedByteBuffer != null) {
+				member = SampleMember.load(mappedByteBuffer);
+			}
+		}
+
+		var expected = new SampleMember("Mike", 24);
+		assertThat(member, is(expected));
 	}
 }
