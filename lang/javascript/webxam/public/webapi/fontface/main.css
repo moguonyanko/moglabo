@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+aside {
+  border: 1px solid darkgray;
+}
+
+.sampletext {
+  font-size: 1.5em;
+}
+
+.samplefont1 {
+  font-family: 'Sample Font 1';
+}

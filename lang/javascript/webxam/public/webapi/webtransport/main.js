@@ -3,6 +3,7 @@
  */
 
 const testWT = async url => {
+  // eslint-disable-next-line no-undef
   const wt = new WebTransport(url);
   
   try {
