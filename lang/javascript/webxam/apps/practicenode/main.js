@@ -154,6 +154,13 @@ app.get(`${practiceNodeRoot}sampleimage`, cors(corsCheck),
     response.send(buffer);
   });
 
+app.get(`${practiceNodeRoot}meaning`, cors(corsCheck),
+  (request, response) => {
+    const { keyword } = request.query;
+    const target = `https://www.google.com/search?q=${keyword}`;
+    response.redirect(target);
+  });
+
 const main = () => {
   Certs.getOptions().then(options => {
     http2.createSecureServer(options, app).listen(port);
