@@ -38,6 +38,26 @@ class Person {
   }
 }
 
+class MyMember {
+  #name = '';
+
+  constructor (name = '') {
+    this.#name = name;
+  }
+
+  #sampleMethod() {}
+  
+  get #sampleField() { return 0; }
+
+  static isMyMember(obj) {
+    // staticメソッド内でのprivate instance fieldsを参照しているように見えるがエラーにはならない。
+    // あくまでもフィールドの有無のチェックを行っているだけなのかもしれない。
+    return #name in obj && 
+      #sampleMethod in obj && 
+      #sampleField in obj;
+  }
+}
+
 // DOM
 
 const listeners = {
@@ -57,6 +77,13 @@ const listeners = {
     const result = TypeManager.isSupported({ type });
     const output = document.querySelector('.output.dump-static-sample');
     output.textContent = result;
+  },
+  checkPrivateFields: () => {
+    const sample = new MyMember('Mike');
+    const output = document.querySelector('.output.check-private-fields');
+    const result1 = MyMember.isMyMember(sample);
+    const result2 = MyMember.isMyMember(new Map([['Mike', 29], ['Lee', 15]]));
+    output.textContent = `${result1},${result2}`;
   }
 };
 
