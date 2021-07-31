@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Window</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+
+<header>
+  <a href="../../">home</a>
+  <h1>Window</h1>
+</header>
+
+<main>
+  <section>
+    <h2>扱えるウインドウが1つ以上あるかどうか</h2>
+    <div class="output isExtended"></div>
+    <button data-listener="isExtended">check</button>
+  </section>
+  <section>
+    <h2>Window.getScreens()</h2>
+    <div class="output getScreens"></div>
+    <button data-listener="getScreens">run</button>
+  </section>
+</main>
+
+<footer>
+  <h3>参考</h3>
+  <ul>
+    <li><a href="https://web.dev/multi-screen-window-placement/">Managing several displays with the Multi-Screen Window Placement API</a></li>
+  </ul>
+</footer>
+
+</body>
+
+</html>
