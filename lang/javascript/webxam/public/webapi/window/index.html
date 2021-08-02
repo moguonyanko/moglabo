@@ -7,6 +7,7 @@
   <title>Window</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
   <script type="module" src="main.js" defer></script>
 </head>
 
@@ -19,7 +20,7 @@
 
 <main>
   <section>
-    <h2>扱えるウインドウが1つ以上あるかどうか</h2>
+    <h2>扱えるスクリーンが1つ以上あるかどうか</h2>
     <div class="output isExtended"></div>
     <button data-listener="isExtended">check</button>
   </section>
@@ -27,6 +28,20 @@
     <h2>Window.getScreens()</h2>
     <div class="output getScreens"></div>
     <button data-listener="getScreens">run</button>
+  </section>
+  <section>
+    <h2>screenschange event</h2>
+    <p>スクリーンの数が増減した時に発生するイベント</p>
+    <div class="output screensChange">イベントなし</div>
+  </section>
+  <section>
+    <h2>currentscreenchange event</h2>
+    <p>現在のスクリーンが変更された時に発生するイベント</p>
+    <div class="output currentscreenChange">イベントなし</div>
+  </section>
+  <section>
+    <h2>fullscreen</h2>
+    <button data-listener="changeFullScreen">full screen</button>
   </section>
 </main>
 
