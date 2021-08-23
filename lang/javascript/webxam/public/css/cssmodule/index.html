@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>CSS Module</title>
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <link rel="stylesheet" href="user1.css" />
+  <link rel="stylesheet" href="user2.css" />
+  <script src="main.js" type="module" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>CSS Module</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>Import Stylesheet</h2>
+      <label>Sample Element</label>
+      <custom-form></custom-form>
+    </section>
+    <section>
+      <h2>Dynamic Import Stylesheet</h2>
+      <form>
+        <textarea>Normal textarea</textarea>
+      </form>
+      <custom-area usercss="user2.css"></custom-area>
+    </section>
+  </main>
+
+  <footer>
+    <ul>
+      <li><a href="https://web.dev/css-module-scripts/">Using CSS Module Scripts to import stylesheets</a></li>
+    </ul>
+  </footer>
+</body>
+
+<template id="custom-form">
+  <form>
+    <label for="name">NAME</label>
+    <input id="name" />
+    <label for="age">AGE</label>
+    <input id="age" />
+  </form>
+</template>
+
+<template id="custom-area">
+  <form>
+    <label for="description">DESCRIPTION</label>
+    <textarea id="description"></textarea>
+  </form>
+</template>
+
+</html>
