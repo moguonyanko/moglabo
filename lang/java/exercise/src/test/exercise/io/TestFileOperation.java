@@ -1,9 +1,6 @@
 package test.exercise.io;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -268,4 +265,24 @@ public class TestFileOperation {
             System.out.println("AsynchronousFileChannel read -> " + data);
         }
     }
+
+    @Test
+    public void ランダムアクセスでファイルを読むことができる() throws IOException {
+        Path path = Paths.get("sample/helloworld.txt");
+        var size = (int)Files.size(path);
+        try (var rf = new RandomAccessFile(path.toFile(), "r");
+            var channel = rf.getChannel()) {
+            var buffer = ByteBuffer.allocate(size);
+
+            channel.read(buffer);
+            assertEquals(channel.size(), size);
+
+            var charset = StandardCharsets.UTF_8;
+            var data = new String(buffer.array(), charset);
+            buffer.clear();
+
+            System.out.println("RandomAccessFile read -> " + data);
+        }
+    }
+
 }
