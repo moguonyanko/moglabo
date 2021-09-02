@@ -268,10 +268,10 @@ public class TestFileOperation {
 
     @Test
     public void ランダムアクセスでファイルを読むことができる() throws IOException {
-        Path path = Paths.get("sample/helloworld.txt");
-        var size = (int)Files.size(path);
+        var path = Paths.get("sample/helloworld.txt");
+        var size = (int) Files.size(path);
         try (var rf = new RandomAccessFile(path.toFile(), "r");
-            var channel = rf.getChannel()) {
+             var channel = rf.getChannel()) {
             var buffer = ByteBuffer.allocate(size);
 
             channel.read(buffer);
@@ -285,4 +285,27 @@ public class TestFileOperation {
         }
     }
 
+    @Test
+    public void 非同期ファイル読み込みでロックを利用する() throws IOException {
+        var path = Paths.get("sample/hello.txt");
+        var size = Files.size(path);
+
+        try (var channel = AsynchronousFileChannel.open(
+            path, StandardOpenOption.READ);
+             var lock = channel.tryLock(0, size, true)) {
+            if (lock.isValid()) {
+                var buffer = ByteBuffer.allocate((int) size);
+                channel.read(buffer, 0).get();
+                assertEquals(channel.size(), size);
+
+                var data = new String(buffer.array(), StandardCharsets.UTF_8);
+                buffer.clear();
+                System.out.println("AsynchronousFileChannel read with lock -> " + data);
+            } else {
+                fail("Lock is invalid");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            fail(e.getMessage());
+        }
+    }
 }
