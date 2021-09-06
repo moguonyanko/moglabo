@@ -5,15 +5,21 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.channels.AsynchronousByteChannel;
 import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.nio.file.attribute.FileAttribute;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -307,5 +313,75 @@ public class TestFileOperation {
         } catch (InterruptedException | ExecutionException e) {
             fail(e.getMessage());
         }
+    }
+
+    private Callable<String> getReadThread(Path path) {
+        Callable<String> callable = () -> {
+            try (var channel = AsynchronousFileChannel.open(
+                path, StandardOpenOption.READ);
+            var lock = channel.tryLock(0, channel.size(), true)) {
+                //System.out.println("isShared:" + lock.isShared());
+                //System.out.println("overlaps:" + lock.overlaps(0, channel.size()));
+                var size = Files.size(path);
+                if (lock.isValid()) {
+                    var buffer = ByteBuffer.allocate((int)size);
+                    channel.read(buffer, size).get();
+                    var data = new String(buffer.array(), StandardCharsets.UTF_8);
+                    return data;
+                }
+            } catch (IOException | InterruptedException | ExecutionException  e) {
+                fail(e.getMessage());
+            }
+            return "";
+        };
+        return callable;
+    }
+
+    private Callable<String> getWriteThread(Path path, String message) {
+        Callable<String> r = () -> {
+            try (var channel = AsynchronousFileChannel.open(
+                path, StandardOpenOption.WRITE)) {
+                var bytes = message.getBytes(StandardCharsets.UTF_8);
+                var buffer = ByteBuffer.allocate(bytes.length);
+                buffer.put(bytes);
+                buffer.flip();
+                var future = channel.write(buffer, 0);
+                buffer.clear();
+                future.get();
+                return message;
+            } catch (IOException | InterruptedException | ExecutionException e) {
+                fail(e.getMessage());
+            }
+            return "";
+        };
+        return r;
+    }
+
+    @Test
+    public void 非同期ファイル読み書きを並列処理で行える() throws InterruptedException {
+        var path = Paths.get("sample/sample1.txt");
+        // 右辺に<>ではなく正確な型を記さないと左辺をvarで宣言できない。
+        // invokeAll呼び出しでコンパイルエラーとなる。
+        var threads = new ArrayList<Callable<String>>();
+        for (var i = 0; i < 10; i++) {
+            threads.add(getReadThread(path));
+        }
+        // 書き込みスレッドを割り込ませてみる。
+        threads.add(threads.size() / 2, getWriteThread(path, "HELLO!"));
+
+        var executor = Executors.newFixedThreadPool(4);
+        var results = executor.invokeAll(threads);
+        var text = results.stream()
+            .map(f -> {
+                try {
+                    return f.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new IllegalStateException(e);
+                }
+            })
+            .reduce(String::join);
+        var actual = text.isPresent() ? text.get() : "";
+        assertFalse(actual.isEmpty());
+        System.out.println("Read result:" + actual);
     }
 }
