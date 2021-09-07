@@ -319,16 +319,17 @@ public class TestFileOperation {
         Callable<String> callable = () -> {
             try (var channel = AsynchronousFileChannel.open(
                 path, StandardOpenOption.READ);
-            var lock = channel.tryLock(0, channel.size(), true)) {
+            /*var lock = channel.tryLock(0, channel.size(), true)*/) {
                 //System.out.println("isShared:" + lock.isShared());
                 //System.out.println("overlaps:" + lock.overlaps(0, channel.size()));
                 var size = Files.size(path);
-                if (lock.isValid()) {
+                //if (lock.isValid()) {
                     var buffer = ByteBuffer.allocate((int)size);
-                    channel.read(buffer, size).get();
+                    channel.read(buffer, 0).get();
+                    buffer.clear();
                     var data = new String(buffer.array(), StandardCharsets.UTF_8);
                     return data;
-                }
+                //}
             } catch (IOException | InterruptedException | ExecutionException  e) {
                 fail(e.getMessage());
             }
@@ -344,7 +345,7 @@ public class TestFileOperation {
                 var bytes = message.getBytes(StandardCharsets.UTF_8);
                 var buffer = ByteBuffer.allocate(bytes.length);
                 buffer.put(bytes);
-                buffer.flip();
+                //buffer.flip();
                 var future = channel.write(buffer, 0);
                 buffer.clear();
                 future.get();
@@ -367,11 +368,12 @@ public class TestFileOperation {
             threads.add(getReadThread(path));
         }
         // 書き込みスレッドを割り込ませてみる。
+        threads.add(0, getWriteThread(path, "Hey!"));
         threads.add(threads.size() / 2, getWriteThread(path, "HELLO!"));
 
         var executor = Executors.newFixedThreadPool(4);
         var results = executor.invokeAll(threads);
-        var text = results.stream()
+        var actual = results.stream()
             .map(f -> {
                 try {
                     return f.get();
@@ -379,8 +381,7 @@ public class TestFileOperation {
                     throw new IllegalStateException(e);
                 }
             })
-            .reduce(String::join);
-        var actual = text.isPresent() ? text.get() : "";
+            .collect(Collectors.joining());
         assertFalse(actual.isEmpty());
         System.out.println("Read result:" + actual);
     }
