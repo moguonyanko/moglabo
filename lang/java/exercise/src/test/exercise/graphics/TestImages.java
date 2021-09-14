@@ -524,4 +524,55 @@ public class TestImages {
             ImageIO.write(bImg, "png", dstPath.toFile());
         }
     }
+
+    @Test
+    public void 画像の一部を切り取る() throws IOException {
+        var path = Paths.get("./sample/star.png");
+        var srcImg = ImageIO.read(path.toFile());
+
+        var width = 100;
+        var height = 100;
+        //var dstImg = srcImg.getSubimage(0, 0, width, height);
+        var dstImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        // clipping
+        dstImg.setData(srcImg.getData());
+
+        var dstPath = Paths.get("./sample/clipped_star.png");
+        ImageIO.write(dstImg, "png", dstPath.toFile());
+    }
+
+    /**
+     * 参考:
+     * https://stackoverflow.com/questions/9417356/bufferedimage-resize
+     */
+    @Test
+    public void BufferedImageをリサイズできる() throws IOException {
+        var width = 50;
+        var height = 50;
+
+        var path = Paths.get("./sample/star.png");
+        var orgImg = ImageIO.read(path.toFile());
+        Image img = orgImg.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        var newImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        var g = newImg.createGraphics();
+        g.drawImage(img, 0, 0, null);
+
+        var dst = Paths.get("./sample/resized_star.png");
+        ImageIO.write(newImg, "png", dst.toFile());
+    }
+
+    @Test
+    public void BufferedImageをクリッピングできる() throws IOException {
+        var path = Paths.get("./sample/star.png");
+        var srcImg = ImageIO.read(path.toFile());
+
+        var dstImg = new BufferedImage(srcImg.getWidth(), srcImg.getHeight(),
+            BufferedImage.TYPE_INT_ARGB);
+        var g = dstImg.createGraphics();
+        g.setClip(new Rectangle(100, 100, 50, 50));
+        g.drawImage(srcImg, 0, 0, null);
+
+        var dst = Paths.get("./sample/clipped_star2.png");
+        ImageIO.write(dstImg, "png", dst.toFile());
+    }
 }
