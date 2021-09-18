@@ -163,7 +163,7 @@ app.get(`${practiceNodeRoot}meaning`, cors(corsCheck),
 
 app.get(`${practiceNodeRoot}random`, cors(corsCheck),
 (request, response) => {
-  response.setHeader('Cache-Control', 'public,max-age=5,stale-while-revalidate=30');
+  response.setHeader('Cache-Control', 'max-age=10,stale-while-revalidate=30');
   response.setHeader('Content-Type', 'application/json');
   const { limit } = request.query;
   response.send({
