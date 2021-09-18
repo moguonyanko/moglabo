@@ -161,6 +161,16 @@ app.get(`${practiceNodeRoot}meaning`, cors(corsCheck),
     response.redirect(target);
   });
 
+app.get(`${practiceNodeRoot}random`, cors(corsCheck),
+(request, response) => {
+  response.setHeader('Cache-Control', 'public,max-age=5,stale-while-revalidate=30');
+  response.setHeader('Content-Type', 'application/json');
+  const { limit } = request.query;
+  response.send({
+    value: parseInt(Math.random() * limit)
+  });
+})
+
 const main = () => {
   Certs.getOptions().then(options => {
     http2.createSecureServer(options, app).listen(port);

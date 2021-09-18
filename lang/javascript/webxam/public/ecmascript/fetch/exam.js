@@ -31,6 +31,20 @@ const fetchRandomString = async ({ lineLimit }) => {
 
 // DOM
 
+let randomRequestValueId;
+
+const updateRandomValue = async () => {
+    const limit = document.getElementById('limit-random').value;
+    const url = `/webxam/apps/practicenode/random?limit=${limit}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`Stale Request Error:${response.status}`);
+    }
+    const json = await response.json();
+    const output = document.querySelector('.output.stalerequest');
+    output.textContent = json.value;
+};
+
 const listeners = {
     async getRandomString(element) {
         const lineLimit = element.querySelector('.linelimit').value;
@@ -46,6 +60,15 @@ const listeners = {
         const result = await shortParam({ param });
         const output = root.querySelector('.output');
         output.innerHTML += `${JSON.stringify(result)}<br />`;
+    },
+    staleRequest: async () => {
+        const check = document.getElementById('staleRequest');
+        // この時点ではチェックボックスの状態は変化していない。
+        if (check.checked) {
+            clearInterval(randomRequestValueId);
+        } else {
+            randomRequestValueId = setInterval(updateRandomValue, 1000);
+        }
     }
 };
 
