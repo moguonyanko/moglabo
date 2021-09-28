@@ -1,0 +1,20 @@
+@charset "UTF-8";
+
+:root {
+  --common-shadow-color: whitesmoke;
+}
+
+.output {
+  text-align: center;
+  font-size: 2em;
+  font-weight: bold;
+  text-shadow: 
+       2px  2px 1px var(--common-shadow-color),
+      -2px  2px 1px var(--common-shadow-color),
+       2px -2px 1px var(--common-shadow-color),
+      -2px -2px 1px var(--common-shadow-color),
+       2px  0px 1px var(--common-shadow-color),
+       0px  2px 1px var(--common-shadow-color),
+      -2px  0px 1px var(--common-shadow-color),
+       0px -2px 1px var(--common-shadow-color); 
+}
