@@ -171,4 +171,28 @@ public class TestSyntax {
         """;
         System.out.println(s2);
     }
+
+    /**
+     * 参考:
+     * https://openjdk.java.net/jeps/406
+     * @todo
+     * IDEの問題で型を指定したswitch式自体がコンパイルが通らない。
+     * switch式で変換された型を型変数に束縛することができずコンパイルエラーになる。
+     */
+//    private <T> T casting(Object o) {
+//        return switch (o) {
+//            case Number n -> n;
+//            case String s -> s;
+//            case null, default -> o;
+//        };
+//    }
+//
+//    @Test
+//    public void switchでパターンマッチングできる() {
+//        var n = 123;
+//        var result = casting(n);
+//        var actual = result.getClass().getTypeName();
+//        assertThat(actual, is("Number"));
+//    }
+
 }
