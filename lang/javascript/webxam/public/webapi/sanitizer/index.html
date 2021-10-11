@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Sanitizer API</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+
+  <main>
+    <header>
+      <a href="../../">home</a>
+      <h1>Sanitizer API</h1>
+    </header>
+
+    <section>
+      <h2>XSSに対するSanintize</h2>
+      <textarea id="userinput">&lt;img src=x onerror=alert('XSS!')/&gt;</textarea>
+      <label><input type="checkbox" id="sanitized" checked />Sanitize</label>
+      <button data-event-listener="setHTML">run</button>
+      <div class="output setHTML"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://web.dev/sanitizer/">Safe DOM manipulation with the Sanitizer API</a></li>
+      <li><a href="https://wicg.github.io/sanitizer-api/">HTML Sanitizer API</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
