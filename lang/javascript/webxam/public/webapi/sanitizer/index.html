@@ -7,6 +7,7 @@
   <title>Sanitizer API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
   <script type="module" src="main.js" defer></script>
 </head>
 
@@ -18,12 +19,27 @@
       <h1>Sanitizer API</h1>
     </header>
 
-    <section>
-      <h2>XSSに対するSanintize</h2>
-      <textarea id="userinput">&lt;img src=x onerror=alert('XSS!')/&gt;</textarea>
-      <label><input type="checkbox" id="sanitized" checked />Sanitize</label>
-      <button data-event-listener="setHTML">run</button>
-      <div class="output setHTML"></div>
+    <section class="basicMethod">
+      <h2>Sanitizerの基本メソッド</h2>
+      <div class="input">
+        <p>NAME</p>
+        <textarea class="userinput">&lt;img src=x onerror=alert('XSS!')&gt;</textarea>
+        <label><input type="checkbox" class="sanitized" checked />サニタイズ</label>
+        <button data-event-listener="basicSanitize">new Sanitizer()</button>
+        <button data-event-listener="sanitizeElement">sanitizeFor</button>
+      </div>
+      <p>MY NAME</p>
+      <div class="output"></div>
+    </section>
+    <section class="sanitizeConfig">
+      <h2>サニタイズの設定</h2>
+      <div class="input">
+        <p>AGE</p>
+        <textarea class="userinput">20&lt;script&gt;alert('XSS!')&lt;/script&gt;</textarea>
+        <label><input type="checkbox" class="sanitized" checked />script除去</label>
+        <button data-event-listener="sanitizeScript">run</button>
+      </div>
+      <div class="output"></div>
     </section>
   </main>
 

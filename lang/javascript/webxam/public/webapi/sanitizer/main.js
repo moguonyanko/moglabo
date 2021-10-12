@@ -3,17 +3,44 @@
  */
 
 const funcs = {
-  setHTML: () => {
-    const output = document.querySelector(".output.setHTML");
-    const sanitized = document.getElementById("sanitized").checked;
-    const userInput = document.getElementById("userinput").value;
-    const html = `<p>MY NAME:${userInput}</p>`;
-    // TODO: SanitizerAPIを使わなくてもサニタイズされてしまう。
+  basicSanitize: () => {
+    const output = document.querySelector(".basicMethod .output");
+    const sanitized = document.querySelector(".basicMethod .sanitized").checked;
+    const userInput = document.querySelector(".basicMethod .userinput").value;
     if (sanitized) {
       const sanitizer = new Sanitizer();
-      output.setHTML(html, sanitizer);
+      output.setHTML(userInput, sanitizer);
     } else {
-      output.innerHTML = html;
+      output.innerHTML = userInput;
+    }
+  },
+  sanitizeElement: () => {
+    const output = document.querySelector(".basicMethod .output");
+    const sanitized = document.querySelector(".basicMethod .sanitized").checked;
+    const userInput = document.querySelector(".basicMethod .userinput").value;
+    if (sanitized) {
+      const sanitizer = new Sanitizer();
+      // サニタイズされた要素が必要な場合はsanitizeやsanitizeForが有用である。
+      // sanitizeは引数にDocumentやDocumentFragmentを求めるので以下はエラーとなる。
+      //const element = sanitizer.sanitize(userInput);
+      const element = sanitizer.sanitizeFor('div', userInput);
+      output.replaceChildren(element);
+    } else {
+      output.innerHTML = userInput;
+    }
+  },
+  sanitizeScript: () => {
+    const output = document.querySelector(".sanitizeConfig .output");
+    const sanitized = document.querySelector(".sanitizeConfig .sanitized").checked;
+    const userInput = document.querySelector(".sanitizeConfig .userinput").value;
+    if (sanitized) {
+      // TODO: サニタイズせずにscript要素を追加してもスクリプトが実行されない。
+      const sanitizer = new Sanitizer({
+        blockElements: ['script']
+      });
+      output.setHTML(userInput, sanitizer);
+    } else {
+      output.innerHTML = userInput;
     }
   }
 };
