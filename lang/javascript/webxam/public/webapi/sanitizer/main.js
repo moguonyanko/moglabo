@@ -42,6 +42,30 @@ const funcs = {
     } else {
       output.innerHTML = userInput;
     }
+  },
+  sanitizeAttribute: () => {
+    const output = document.querySelector(".sanitizeConfig .output");
+    const sanitized = document.querySelector(".sanitizeConfig .sanitized").checked;
+    const userInput = document.querySelector(".sanitizeConfig .userinput").value;
+    if (sanitized) {
+      // p要素はclass属性だけ許可しそれ以外の属性、たとえばonclickなどは除去する。
+      const sanitizer = new Sanitizer({
+        allowAttributes: { 'class': ['p'] }
+      });
+      output.replaceChildren(sanitizer.sanitizeFor('span', userInput));
+    } else {
+      output.innerHTML = userInput;
+    }
+  },
+  sanitizeCustomElements: () => {
+    const output = document.querySelector(".sanitizeCustomElements .output");
+    const sanitized = document.querySelector(".sanitizeCustomElements .sanitized").checked;
+    const sanitizer = new Sanitizer({
+      allowCustomElements: sanitized,
+      allowElements: ['sample-profile']
+    });
+    const element = '<sample-profile></sample-profile>';
+    output.setHTML(element, sanitizer);
   }
 };
 
@@ -53,4 +77,17 @@ const addListener = () => {
   });
 };
 
-addListener();
+const init = () => {
+  addListener();
+
+  customElements.define('sample-profile', class extends HTMLElement {
+    constructor() {
+      super();
+      const template = document.getElementById('sample-profile').content;
+      const shadowRoot = this.attachShadow({ mode: 'open' });
+      shadowRoot.appendChild(template.cloneNode(true));
+    }
+  });
+};
+
+init();

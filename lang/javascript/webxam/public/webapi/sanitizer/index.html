@@ -35,11 +35,23 @@
       <h2>サニタイズの設定</h2>
       <div class="input">
         <p>AGE</p>
-        <textarea class="userinput">20&lt;script&gt;alert('XSS!')&lt;/script&gt;</textarea>
-        <label><input type="checkbox" class="sanitized" checked />script除去</label>
-        <button data-event-listener="sanitizeScript">run</button>
+        <textarea class="userinput">
+          20&lt;script&gt;alert('XSS!')&lt;/script&gt;
+          &lt;p class="sampleelement" onclick="alert('XSS!')"&gt;SAMPLE&lt;/p&gt;
+        </textarea>
+        <label><input type="checkbox" class="sanitized" checked />サニタイズ</label>
+        <button data-event-listener="sanitizeScript">run(Script)</button>
+        <button data-event-listener="sanitizeAttribute">run(Attribute)</button>
       </div>
       <div class="output"></div>
+    </section>
+    <section class="sanitizeCustomElements">
+      <h2>CustomElements</h2>
+      <div class="userinput">
+      <label><input type="checkbox" class="sanitized" checked />CustomElements許可</label>
+      <button data-event-listener="sanitizeCustomElements">run</button>
+    </div>
+    <div class="output"></div>
     </section>
   </main>
 
@@ -51,5 +63,10 @@
     </ul>
   </footer>
 </body>
+
+<template id="sample-profile">
+  <label>NAME<input type="text" value="" placeholder="YOUR NAME" /></label>
+  <label>AGE<input type="number" value="" min="0" max="200" /></label>
+</template>
 
 </html>
