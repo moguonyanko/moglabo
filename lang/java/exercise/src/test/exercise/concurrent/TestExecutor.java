@@ -59,4 +59,16 @@ public class TestExecutor {
         assertThat(actual, is(expected));
     }
 
+    class MyHello implements Runnable {
+        @Override
+        public void run() {
+            System.out.println("Hello, Virtual Thread!");
+        }
+    }
+
+    @Test
+    public void 仮想スレッドを作成できる() {
+        var t = Thread.ofVirtual().start(new MyHello());
+        assertTrue(t.isVirtual());
+    }
 }
