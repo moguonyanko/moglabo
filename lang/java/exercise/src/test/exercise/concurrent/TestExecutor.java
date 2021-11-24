@@ -3,7 +3,9 @@ package test.exercise.concurrent;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -71,4 +73,39 @@ public class TestExecutor {
         var t = Thread.ofVirtual().start(new MyHello());
         assertTrue(t.isVirtual());
     }
+
+    // CallableなタスクはVirtualThreadに渡せない。
+    //private class Mul(int x, int y) implements Callable<Integer> {
+    private class Mul implements Runnable {
+        private final int x;
+        private final int y;
+        private final AtomicInteger z = new AtomicInteger(0);
+
+        private Mul(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public void run() {
+            z.set(x * y);
+        }
+
+        public int getZ() {
+            return z.get();
+        }
+    }
+
+    @Test
+    public void 仮想スレッドを開始できる() {
+        var x = 10;
+        var y = 20;
+        var task = new Mul(x, y);
+
+        var t = Thread.startVirtualThread(task);
+        CompletableFuture.runAsync(t)
+            .thenAccept(vd -> assertThat(task.getZ(), is(x * y)));
+    }
+
+
 }
