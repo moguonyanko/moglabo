@@ -1,9 +1,9 @@
 package test.exercise.concurrent;
 
-import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -107,5 +107,23 @@ public class TestExecutor {
             .thenAccept(vd -> assertThat(task.getZ(), is(x * y)));
     }
 
+    private record Pow(int x) implements Callable<Integer> {
+        @Override
+        public Integer call() throws Exception {
+            return x * x;
+        }
+    }
 
+    @Test
+    public void 仮想スレッドをExecutorで扱える() {
+        var executor = Executors.newVirtualThreadPerTaskExecutor();
+
+        var value = 11;
+        var f = executor.submit(new Pow(value));
+        try {
+            assertThat(f.get(), is(value * value));
+        } catch (ExecutionException | InterruptedException e) {
+            fail(e.getMessage());
+        }
+    }
 }
