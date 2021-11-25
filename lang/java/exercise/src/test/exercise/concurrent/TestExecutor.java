@@ -1,11 +1,11 @@
 package test.exercise.concurrent;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -116,13 +116,41 @@ public class TestExecutor {
 
     @Test
     public void 仮想スレッドをExecutorで扱える() {
-        var executor = Executors.newVirtualThreadPerTaskExecutor();
-
-        var value = 11;
-        var f = executor.submit(new Pow(value));
-        try {
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            var value = 11;
+            var f = executor.submit(new Pow(value));
             assertThat(f.get(), is(value * value));
         } catch (ExecutionException | InterruptedException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void Callableなタスク群と仮想スレッドをExecutorで扱える() {
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            // 左辺の方は明示しないとコンパイルエラー。型推論はできない。
+            List<Callable<String>> tasks = Arrays.asList(
+                () -> "H",
+                () -> "E",
+                () -> "L",
+                () -> "L",
+                () -> "O"
+            );
+
+            var actual = executor.invokeAll(tasks)
+                .stream()
+                .map(f -> {
+                    try {
+                        // Future::getだとどちらのgetを呼び出すのかが不明瞭なためコンパイルエラー。
+                        return f.get();
+                    } catch (ExecutionException | InterruptedException e) {
+                        throw new IllegalStateException(e);
+                    }
+                })
+                .collect(Collectors.joining());
+
+            assertThat(actual, is("HELLO"));
+        } catch (InterruptedException e) {
             fail(e.getMessage());
         }
     }
