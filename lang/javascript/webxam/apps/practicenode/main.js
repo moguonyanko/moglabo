@@ -162,14 +162,26 @@ app.get(`${practiceNodeRoot}meaning`, cors(corsCheck),
   });
 
 app.get(`${practiceNodeRoot}random`, cors(corsCheck),
-(request, response) => {
-  response.setHeader('Cache-Control', 'max-age=10,stale-while-revalidate=30');
-  response.setHeader('Content-Type', 'application/json');
-  const { limit } = request.query;
-  response.send({
-    value: parseInt(Math.random() * limit)
+  (request, response) => {
+    response.setHeader('Cache-Control', 'max-age=10,stale-while-revalidate=30');
+    response.setHeader('Content-Type', 'application/json');
+    const { limit } = request.query;
+    response.send({
+      value: parseInt(Math.random() * limit)
+    });
+  })
+
+app.get(`${practiceNodeRoot}imagebuffer`, cors(corsCheck),
+  async (request, response) => {
+    response.setHeader('Cache-Control', 'no-store');
+    response.setHeader('Content-Type', 'application/octet-stream');
+
+    const canvas = require('canvas').createCanvas(400, 400);
+    const ctx = canvas.getContext('2d');
+    ctx.fillRect(100, 100, 200, 200);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    response.send(imageData.data); 
   });
-})
 
 const main = () => {
   Certs.getOptions().then(options => {
