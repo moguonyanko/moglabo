@@ -16,7 +16,7 @@ public class WrapperPractice {
 
 		try (var con = DriverManager.getConnection(url, user, pass)) {
 
-			var mysqlClass = com.mysql.cj.jdbc.ConnectionImpl.class;
+			var mysqlClass = com.mysql.jdbc.ConnectionImpl.class;
 			if(con.isWrapperFor(mysqlClass)){
 				var myCon = con.unwrap(mysqlClass);
 

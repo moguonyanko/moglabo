@@ -12,8 +12,9 @@ public class TestInterface {
 
     // インターフェース宣言にsynchronizedやnativeは指定できない。
     // strictfpは指定できる。
+    // JDK17以降strictfpは付与する必要がない。
     @FunctionalInterface
-    private strictfp interface Calcable<T> {
+    private /*strictfp*/ interface Calcable<T> {
 
         // メソッドにsynchronizedやnative、strictfp等を指定することはできない。
         T calc(T x, T y);
@@ -149,5 +150,11 @@ public class TestInterface {
         //Object clone();
 
     }
-
+    
+    private @interface DefaultSample {
+        
+        // @interfaceでなければコンパイルエラーとなる文法である。
+        String getName() default "";
+        
+    }
 }

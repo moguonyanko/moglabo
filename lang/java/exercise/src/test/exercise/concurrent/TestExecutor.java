@@ -1,17 +1,19 @@
 package test.exercise.concurrent;
 
+import exercise.lang.TestOnMain;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
 
 public class TestExecutor {
 
@@ -71,7 +73,7 @@ public class TestExecutor {
     @Test
     public void 仮想スレッドを作成できる() {
         var t = Thread.ofVirtual().start(new MyHello());
-        assertTrue(t.isVirtual());
+        assertThat(t.isVirtual(), is(true));
     }
 
     // CallableなタスクはVirtualThreadに渡せない。
@@ -115,18 +117,18 @@ public class TestExecutor {
     }
 
     @Test
-    public void 仮想スレッドをExecutorで扱える() {
+    public void 仮想スレッドをExecutorで扱える() throws ExecutionException, 
+            InterruptedException {
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             var value = 11;
             var f = executor.submit(new Pow(value));
             assertThat(f.get(), is(value * value));
-        } catch (ExecutionException | InterruptedException e) {
-            fail(e.getMessage());
-        }
+        } 
     }
 
+    @TestOnMain
     @Test
-    public void Callableなタスク群と仮想スレッドをExecutorで扱える() {
+    public void Callableなタスク群と仮想スレッドをExecutorで扱える() throws InterruptedException {
         try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
             // 左辺の方は明示しないとコンパイルエラー。型推論はできない。
             List<Callable<String>> tasks = Arrays.asList(
@@ -150,8 +152,21 @@ public class TestExecutor {
                 .collect(Collectors.joining());
 
             assertThat(actual, is("HELLO"));
-        } catch (InterruptedException e) {
-            fail(e.getMessage());
+        } 
+    }
+    
+    public static void main(String[] args) throws IllegalAccessException, 
+            InvocationTargetException {
+        var targetName = "exercise.lang.TestOnMain";
+        var obj = new TestExecutor();
+        for (var method : TestExecutor.class.getMethods()) {
+            for (var annotation : method.getAnnotations()) {
+                var annotationName = annotation.toString();
+                System.out.println(annotationName);
+                if (annotationName.contains(targetName)) {
+                    method.invoke(obj);
+                }
+            }
         }
     }
 }
