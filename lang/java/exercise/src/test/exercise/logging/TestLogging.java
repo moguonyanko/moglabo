@@ -4,13 +4,14 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
-import exercise.logging.LogManager;
+import exercise.logging.MyLogManager;
 
 public class TestLogging {
     
     @Test
-    public void Log4jでinfoログを出力できる() {
-        LogManager.info("HelloInfoLog");
+    public void Log4jでログを出力できる() {
+        MyLogManager.info("Hello Info");
+        MyLogManager.debug("Hello Debug");
     }
     
 }

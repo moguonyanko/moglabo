@@ -21,5 +21,6 @@ open module exercise.base {
     requires checker;
     requires junit;
     requires hamcrest.core;
+    requires org.apache.logging.log4j;
     exports exercise.rmi to java.rmi;
 }

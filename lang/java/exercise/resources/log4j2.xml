@@ -4,7 +4,7 @@
         <Console name="STDOUT" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{yyyy-MM-dd} %m%n" />
         </Console>
-        <RollingFile name="MyTest" fileName="log/mytest.log"
+        <RollingFile name="MyRollingTest" fileName="log/mytest.log"
                      filePattern="log/mytest.log.%d{yyyy-MM-dd}">
             <PatternLayout>
                 <Pattern>%d{yyyy-MM-dd} %m%n</Pattern>
@@ -15,9 +15,9 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="MyInfo">
+        <Logger name="MyInfo" level="info">
             <AppenderRef ref="STDOUT" />
-            <AppenderRef ref="MyTest" />
+            <AppenderRef ref="MyRollingTest" />
         </Logger>
         <Root level="info"></Root>
     </Loggers>
