@@ -2,13 +2,11 @@
 
 main {
   display: flex;
-  /* flex-direction: column; */ /* 一列のみの表示を強制する。 */
-  justify-content: center; /* 一列のみの表示では必要ない。 */
-  flex-wrap: wrap;
+  flex-direction: column; /* 縦一列のみの表示を強制する。 */
 }
 
 section {
-  align-self: center; /* flex-directionとクロスする方向の位置を指定する。 */
+  align-self: center; /* flex-directionとクロスする方向でflexコンテナ内の要素を中央揃えする。 */
 }
 
 code {
