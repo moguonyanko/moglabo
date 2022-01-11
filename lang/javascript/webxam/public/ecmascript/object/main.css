@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+main {
+  display: flex;
+  /* flex-direction: column; */ /* 一列のみの表示を強制する。 */
+  justify-content: center; /* 一列のみの表示では必要ない。 */
+  flex-wrap: wrap;
+}
+
+section {
+  align-self: center; /* flex-directionとクロスする方向の位置を指定する。 */
+}
+
+code {
+  background-color: whitesmoke;
+}

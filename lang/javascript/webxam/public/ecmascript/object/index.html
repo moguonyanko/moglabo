@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Object</title>  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" type="module" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Object</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>オブジェクトのシャローコピー</h2>
+      <code>{...obj}</code>
+      <p>参照はそのままなので元のオブジェクトに変更の影響が及ぶ。</p>
+      <div data-event-output="shallowCopy" class="output"></div>
+    </section>
+    <section>
+      <h2>オブジェクトのディープコピー</h2>
+      <code>JSON.parse(JSON.stringify(obj));</code>
+      <p>関数などクローンできない値はコピーされず破棄される。</p>
+      <div data-event-output="deepCopy" class="output"></div>
+    </section>
+    <section>
+      <h2>structuredClone()</h2>
+      <code>structuredClone(obj);</code>
+      <p>ディープコピーと同じ結果になるがクローンできない値が含まれるとエラーになる。</p>
+      <div data-event-output="structuredClone" class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>    
+    <ul>
+      <li><a href="https://web.dev/structured-clone/">Deep-copying in JavaScript using structuredClone</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
