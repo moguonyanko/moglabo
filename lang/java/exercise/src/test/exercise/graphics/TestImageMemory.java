@@ -45,7 +45,7 @@ public class TestImageMemory {
     @Test
     public void リサイズでメモリリークしない() throws IOException {
         var count = 10000;
-        var resizeRatio = 10;
+        var reductionRatio = 10;
 
         System.out.println("画像の数:" + count);
         dumpMemory();
@@ -58,7 +58,7 @@ public class TestImageMemory {
             var orgWidth = orgImg.getWidth();
             var orgHeight = orgImg.getHeight();
             var newImg = getResizedImage(orgImg, 
-                    orgWidth / resizeRatio, orgHeight / resizeRatio);
+                    orgWidth / reductionRatio, orgHeight / reductionRatio);
             var dstPath = Paths.get("./sample/memorytest/resized_rabbit.jpeg");
             //var dstPath = Paths.get("./sample/memorytest/resized_rabbit" + i + ".jpeg");
             ImageIO.write(newImg, "jpg", dstPath.toFile());
