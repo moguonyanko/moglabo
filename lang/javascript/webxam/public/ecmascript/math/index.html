@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Math</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Math</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>Mathを用いた座標変換</h2>
+      <convert-epsg4326to3856 class="converter"></convert-epsg4326to3856>
+      <convert-epsg3857to4326 class="converter"></convert-epsg3857to4326>
+    </section>
+  </main>
+</body>
+
+<template id="convert-epsg4326to3856">
+  <link rel="stylesheet" href="template.css" />
+  <p>EPSG4326からEPSG3857への変換</p>
+  <div class="inputarea">
+    <label for="lon">lon</label><input id="lon" value="139.756360" type="number" />
+    <label for="lat">lat</label><input id="lat" value="35.653454" type="number" />
+    <button id="convert">convert</button>
+  </div>
+  <div class="outputarea">
+    <p>X(Webメルカトル)=<span id="x">?</span></p>
+    <p>Y(Webメルカトル)=<span id="y">?</span></p>
+  </div>
+</template>
+
+<template id="convert-epsg3857to4326">
+  <link rel="stylesheet" href="template.css" />
+  <p>EPSG3857からEPSG4326への変換</p>
+  <div class="inputarea">
+    <label for="x">X(Webメルカトル)</label><input id="x" value="15557606.850359" type="number" />
+    <label for="y">Y(Webメルカトル)</label><input id="y" value="4253041.339737" type="number" />
+    <button id="convert">convert</button>
+  </div>
+  <div class="outputarea">
+    <p>経度=<span id="lon">?</span></p>
+    <p>緯度=<span id="lat">?</span></p>
+  </div>
+</template>
+
+</html>
