@@ -2,11 +2,15 @@
 
 @import './sub/sub.css' layer(sub);
 
-/* 後に宣言されたlayerのスタイルが優先的に適用される。 */
+/* 後に宣言されたlayerのルールが優先的に適用される。 */
 /* importで読み込んだlayerの優先度は宣言順の影響を受けない。 */
 /* @layer special, sub, main; */
 
-/* 非layerのスタイルが最も優先度が高くなる。 */
+/* 非layerのルールが最も優先度が高くなる。 */
+em {
+  font-style: normal;
+}
+
 .mylink {
   color: gold;
   font-size: 1em;
@@ -28,7 +32,7 @@
 }
 
 /* mainより後に宣言されているのでmainより優先度が高くなる。 */
-/* ただし詳細度を高く指定していてもlayerではないスタイルには優先度で劣る。 */
+/* ただし詳細度を高く指定していてもlayerではないルールには優先度で劣る。 */
 @layer special {
   a {
     color: turquoise;
@@ -37,5 +41,25 @@
   section a.mylink {
     color: grey;
     font-size: 0.5em;
+  }
+}
+
+@layer text {
+  @layer emphasis {
+    em {
+      font-style: italic; /* 非layerのルールに優先度で劣るので無視される。 */
+      text-decoration: underline;            
+    }
+  }
+
+  p { 
+    font-style: normal;
+  }
+}
+
+/* ネストしたlayerへのルール追加 */
+@layer text.emphasis {
+  em {
+    color: darkblue;
   }
 }
