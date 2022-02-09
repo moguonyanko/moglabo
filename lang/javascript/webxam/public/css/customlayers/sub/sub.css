@@ -1,0 +1,20 @@
+@charset "UTF-8";
+
+a {
+  color: purple;
+}
+
+div {
+  border: solid 2px red;
+}
+
+div .mytext {
+  font-weight: bold;
+  font-style: italic;
+  color: yellowgreen;
+}  
+
+section a .mylink {
+  color: aqua;
+  text-shadow: 0.5em;
+}
