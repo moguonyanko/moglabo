@@ -6,22 +6,32 @@
  * https://stackoverflow.com/questions/37523872/converting-coordinates-from-epsg-3857-to-4326
  */
 
- const TOP_LEFT_CORNER = 20037508.34;
+/* 計算過程を分かりやすくするために各計算を分解して記述している。 */
+const TOP_LEFT_CORNER = 20037508.34;
 
 const convertEpsg4326ToEpsg3857 = ({ lon, lat }) => {
   const x = lon * TOP_LEFT_CORNER / 180;
-  const y = Math.log(Math.tan((90 + lat) * Math.PI / 360)) / (Math.PI / 180) * 
-    (TOP_LEFT_CORNER / 180);
+
+  let y = 90 + lat;
+  y = y * (Math.PI / 360);
+  y = Math.tan(y);
+  y = Math.log(y);
+  y = y / (Math.PI / 180);
+  y = y * (TOP_LEFT_CORNER / 180);
+
   return { x, y };
 };
 
 const convertEpsg3857ToEpsg4326 = ({ x, y }) => {
-  let lon = x * 180 / TOP_LEFT_CORNER;
+  const lon = x * 180 / TOP_LEFT_CORNER;
+
   let lat = y / (TOP_LEFT_CORNER / 180);
-  const exponent = (Math.PI / 180) * lat;
-  lat = Math.atan(Math.exp(1) ** exponent);
+  lat = (Math.PI / 180) * lat;
+  lat = Math.E ** lat;
+  lat = Math.atan(lat);
   lat = lat / (Math.PI / 360);
-  lat -= 90;
+  lat = lat - 90;
+  
   return { lon, lat };
 };
 
@@ -30,14 +40,14 @@ const runTest = () => {
   let [lon, lat] = [139.756360, 35.653454];
   const { x, y } = convertEpsg4326ToEpsg3857({ lon, lat });
   // X=15557606.850359, Y=4253041.339737
-  console.log(`X=${x}, Y=${y}`);
+  console.log(`lon=${lon}, lat=${lat} -> X=${x}, Y=${y}`);
   const pos = convertEpsg3857ToEpsg4326({ x, y });
-  console.log(`lon=${pos.lon}, lat=${pos.lat}`);
+  console.log(`X=${x}, y=${y} -> lon=${pos.lon}, lat=${pos.lat}`);
 };
 
 // DOM
 
-// Javaであれば抽象クラスとして定義される。
+// Javaであれば抽象クラスとして定義するところである。
 class BaseConvertEPSG extends HTMLElement {
   constructor(id) {
     super();
