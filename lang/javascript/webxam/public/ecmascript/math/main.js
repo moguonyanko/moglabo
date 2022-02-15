@@ -9,6 +9,9 @@
 /* 計算過程を分かりやすくするために各計算を分解して記述している。 */
 const TOP_LEFT_CORNER = 20037508.34;
 
+// EPSG4326=緯度経度
+// EPSG3857=Webメルカトル
+
 const convertEpsg4326ToEpsg3857 = ({ lon, lat }) => {
   const x = lon * TOP_LEFT_CORNER / 180;
 
