@@ -106,9 +106,43 @@ class ConvertEPSG3857To4326 extends BaseConvertEPSG {
   }
 }
 
+class CalcCbrt extends HTMLInputElement {
+  constructor() {
+    super();
+    this.clear();
+    const initialValue = parseInt(this.getAttribute('value'));
+    if (!isNaN(initialValue)) {
+      this.output(initialValue);
+    } 
+  }
+
+  get resultArea() {
+    return document.getElementById(this.getAttribute('resultid'));
+  }
+
+  clear() {
+    this.resultArea.textContent = '';
+    // リロード前の入力値をvalue属性の値で上書きして初期化する。
+    this.value = this.getAttribute('value');
+  }
+
+  output(value) {
+    this.resultArea.textContent = Math.cbrt(value);
+  }
+
+  connectedCallback() {
+    this.addEventListener('keyup', event => {
+      // getAttributeではなくevent経由でないと入力値を受け取れない。
+      const value = parseInt(event.target.value);
+      this.output(value);
+    });
+  }
+}
+
 const defineElements = () => {
   customElements.define('convert-epsg4326to3856', ConvertEPSG4326To3856);
   customElements.define('convert-epsg3857to4326', ConvertEPSG3857To4326);
+  customElements.define('calc-cbrt', CalcCbrt, { extends: 'input' });
 };
 
 const init = () => {

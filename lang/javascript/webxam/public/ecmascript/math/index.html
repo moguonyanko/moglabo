@@ -23,7 +23,20 @@
       <convert-epsg4326to3856 class="converter"></convert-epsg4326to3856>
       <convert-epsg3857to4326 class="converter"></convert-epsg3857to4326>
     </section>
+    <section>
+      <h2>Math.cbrt()</h2>
+      <label for="cbrttest">テスト値</label>
+      <input id="cbrttest" type="number" value="64" is="calc-cbrt" resultid="resultcbrt" />
+      立方根=<span id="resultcbrt"></span>
+    </section>
   </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math">Math(MDN)</a></li>
+    </ul>
+  </footer>
 </body>
 
 <template id="convert-epsg4326to3856">

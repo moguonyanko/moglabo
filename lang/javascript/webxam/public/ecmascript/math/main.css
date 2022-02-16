@@ -1,5 +1,11 @@
 @charset "UTF-8";
 
+section {
+  display: block;
+  border: solid 1px darkgrey;
+  margin: 0.5em;
+}
+
 .converter {
   display: block;
   border: solid 1px darkgrey;
