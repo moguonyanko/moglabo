@@ -38,6 +38,22 @@ const convertEpsg3857ToEpsg4326 = ({ x, y }) => {
   return { lon, lat };
 };
 
+const deg2rad = deg => {
+  return deg / (180 / Math.PI);
+};
+
+// 参考: 
+// https://developer.mozilla.org/ja/docs/Web/API/WebGL_API/Matrix_math_for_the_web
+const rotatePositon = ({ position, degrees }) => {
+  const { x, y } = position;
+  const distance = Math.sqrt(x ** 2 + y ** 2);
+  const radians = deg2rad(degrees);
+  return {
+    x: Math.cos(radians) * distance,
+    y: Math.sin(radians) * distance
+  };
+};
+
 // eslint-disable-next-line no-unused-vars
 const runTest = () => {
   let [lon, lat] = [139.756360, 35.653454];
@@ -46,6 +62,11 @@ const runTest = () => {
   console.log(`lon=${lon}, lat=${lat} -> X=${x}, Y=${y}`);
   const pos = convertEpsg3857ToEpsg4326({ x, y });
   console.log(`X=${x}, y=${y} -> lon=${pos.lon}, lat=${pos.lat}`);
+
+  const position = { x, y };
+  const degrees = 60;
+  const transformedPositon = rotatePositon({ position, degrees });
+  console.log(transformedPositon);
 };
 
 // DOM
@@ -139,10 +160,30 @@ class CalcCbrt extends HTMLInputElement {
   }
 }
 
+class RotateDegrees extends HTMLInputElement {
+  constructor() {
+    super();
+  }
+
+  connectedCallback() {
+    this.addEventListener('keyup', event => {
+      const degrees = parseFloat(event.target.value);
+      const position = {
+        x: parseFloat(document.querySelector('.rotate-x').value),
+        y: parseFloat(document.querySelector('.rotate-y').value)
+      };
+      const result = rotatePositon({ position, degrees });
+      document.querySelector('.result-x').textContent = result.x;
+      document.querySelector('.result-y').textContent = result.y;
+    });
+  }
+}
+
 const defineElements = () => {
   customElements.define('convert-epsg4326to3856', ConvertEPSG4326To3856);
   customElements.define('convert-epsg3857to4326', ConvertEPSG3857To4326);
   customElements.define('calc-cbrt', CalcCbrt, { extends: 'input' });
+  customElements.define('rotate-degrees', RotateDegrees, { extends: 'input' })
 };
 
 const init = () => {
