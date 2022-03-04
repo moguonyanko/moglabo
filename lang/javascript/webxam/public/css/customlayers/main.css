@@ -11,6 +11,13 @@ em {
   font-style: normal;
 }
 
+.container {
+  /* height: 3em; */
+  border: solid 2px red;
+  overflow: hidden;
+  scrollbar-gutter: stable both-edges;
+}
+
 .mylink {
   color: gold;
   font-size: 1em;
