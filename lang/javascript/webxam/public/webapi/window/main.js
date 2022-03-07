@@ -2,6 +2,8 @@
  * @fileoverview Window関連API調査用スクリプト
  */
 
+let screenLength;
+
 const funcs = {
   isExtended: () => {
     const result = window.screen.isExtended;
@@ -25,13 +27,19 @@ const funcs = {
     output.textContent = result.join('<br />');
   },
   screensChange: scs => {
-    const screenLength = scs.screens.length;
     const output = document.querySelector('.output.screensChange');
-    output.textContent = `Screen length = ${screenLength}`;
+    const newScreenLength = scs.screens.length;
+    if (newScreenLength !== screenLength) {
+      output.textContent = `Screen length is changed ${screenLength} to ${newScreenLength}`;
+      screenLength = newScreenLength;
+    } else {
+      output.textContent = `Screen length is not changed ${screenLength}`;
+    }
   },
   currentscreenChange: scs => {
     const output = document.querySelector('.output.currentscreenChange');
-    output.textContent = `Screen length = ${scs.currentScreen}`;
+    console.log(scs.currentScreen);
+    output.textContent = `Current screen = ${scs.currentScreen.label}`;
   },
   changeFullScreen: async () => {
     const scs = await window.getScreens();
@@ -40,12 +48,11 @@ const funcs = {
   }
 };
 
-const addListener = async () => {
+const addListener = scs => {
   document.querySelector('main').addEventListener('click', async event => {
     await funcs[event.target.dataset.listener]();
   });
 
-  const scs = await window.getScreens();
   scs.addEventListener('screenschange', () => {
     funcs.screensChange(scs);
   });
@@ -54,4 +61,31 @@ const addListener = async () => {
   });
 };
 
-addListener().then();
+const initScreens = async () => {
+  if (typeof window.getScreenDetails === 'function') {
+    if (typeof window.getScreens !== 'function') {
+      window.getScreens = () => window.getScreenDetails();
+    }
+    const scs = await window.getScreens();
+    screenLength = scs.screens.length;
+    return addListener(scs);
+  } else {
+    throw new Error('Unsupported multi screen window API');
+  }
+};
+
+const init = () => {
+  navigator.permissions.query({ name: 'window-placement' })
+    .then(result => {
+      const { state } = result;
+      if (state === 'granted') {
+        console.log(`Succeeded window-placement: ${state}`);
+        return initScreens();
+      } else {
+        throw new Error(`Failed window-placement: ${state}`);
+      }
+    })
+    .catch(e => console.error(e));
+};
+
+init();
