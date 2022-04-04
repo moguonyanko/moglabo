@@ -5,4 +5,5 @@ main {
 }
 
 section {
+  background-color: hwb(60 65% 10% / 0.3);
 }
