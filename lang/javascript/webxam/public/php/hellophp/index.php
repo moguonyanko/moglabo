@@ -7,7 +7,6 @@
     <title>はじめてのPHP</title>
     <link rel="stylesheet" href="../../common.css" />
     <link rel="stylesheet" href="main.css" />
-    <script type="module" src="main.js" defer></script>
 </head>
 
 <body>
