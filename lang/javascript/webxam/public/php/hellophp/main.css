@@ -1,6 +1,7 @@
 @charset "UTF-8";
 
-.phpinfo {
-  max-height: 50vh;
+.info {
+  max-height: 30vh;
+  border: solid 1px darkblue;
   overflow-y: scroll;
 }
