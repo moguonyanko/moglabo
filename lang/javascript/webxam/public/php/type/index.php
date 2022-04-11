@@ -56,6 +56,55 @@
       echo intval($sample_value);
       ?>
     </section>
+    <section>
+      <h2>暗黙の型変換</h2>
+      <p>文字列型の値は先行する数値型の値に合わせて変換される。クォートの種別は関係ない。</p>
+      <?php
+      $sample_value2 = 1 + "99";
+      echo "1 + \"99\" = $sample_value2", '<br />';
+      $sample_value3 = 1 + '99';
+      echo "1 + '99' = $sample_value3";
+      ?>
+    </section>
+    <section>
+      <h2>配列</h2>
+      <p>Mapに近い使い方もできる。ただしキーにオブジェクトは使用できない。</p>
+      <?php 
+      $array1 = array(1, 2, TRUE, "Foo", null, 'Hello');
+      ?>
+      <ul>
+      <?php
+      foreach ($array1 as $value1) {
+        echo  "<li>$value1</li>";
+      }
+      $array1[] = 'World';
+      echo "Added 「$array1[6]」";
+      ?>
+      </ul>
+      <p>負やサイズを超えたインデックスを指定するとエラーになる。nullの値は空文字に変換される。</p>
+      <?php
+      $array2 = ['Foo' => 100, 'Bar' => 200];
+      echo "Foo ${array2['Foo']} and Bar ${array2['Bar']}", '<br />';
+      unset($array2['Foo']);
+      // unsetされたキーを参照するとエラー
+      //echo "Foo ${array2['Foo']} and Bar ${array2['Bar']}";
+      $diff_result = $array1 === $array2;
+      echo "array1 === array2 :", $diff_result; 
+      ?>
+      <p>falseは空文字になってしまう。</p>
+      <?php
+      $array3 = [100, 200, 300];
+      // 代入では配列はコピーされる。
+      $array4 = $array3;
+      // コピー元の配列は変更されない。
+      $array4[0] = 1000;
+      echo '$array3[0]=', "$array3[0]", ",", '$array4[0]=', "$array4[0]", '<br />';
+      // リファレンスでコピーすればコピー元も変更される。
+      $array4 = &$array3;
+      $array4[0] = 2000;
+      echo '$array3[0]=', "$array3[0]", ",", '$array4[0]=', "$array4[0]";
+      ?>
+    </section>
   </main>
 
   <footer>
