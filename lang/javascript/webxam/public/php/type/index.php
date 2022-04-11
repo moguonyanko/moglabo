@@ -69,17 +69,17 @@
     <section>
       <h2>配列</h2>
       <p>Mapに近い使い方もできる。ただしキーにオブジェクトは使用できない。</p>
-      <?php 
+      <?php
       $array1 = array(1, 2, TRUE, "Foo", null, 'Hello');
       ?>
       <ul>
-      <?php
-      foreach ($array1 as $value1) {
-        echo  "<li>$value1</li>";
-      }
-      $array1[] = 'World';
-      echo "Added 「$array1[6]」";
-      ?>
+        <?php
+        foreach ($array1 as $value1) {
+          echo  "<li>$value1</li>";
+        }
+        $array1[] = 'World';
+        echo "Added 「$array1[6]」";
+        ?>
       </ul>
       <p>負やサイズを超えたインデックスを指定するとエラーになる。nullの値は空文字に変換される。</p>
       <?php
@@ -89,7 +89,7 @@
       // unsetされたキーを参照するとエラー
       //echo "Foo ${array2['Foo']} and Bar ${array2['Bar']}";
       $diff_result = $array1 === $array2;
-      echo "array1 === array2 :", $diff_result; 
+      echo "array1 === array2 :", $diff_result;
       ?>
       <p>falseは空文字になってしまう。</p>
       <?php
@@ -103,6 +103,25 @@
       $array4 = &$array3;
       $array4[0] = 2000;
       echo '$array3[0]=', "$array3[0]", ",", '$array4[0]=', "$array4[0]";
+      ?>
+    </section>
+    <section>
+      <h2>Iteratable</h2>
+      <?php
+      function getArray(): iterable {
+        return ["Foo", "Bar", "Baz"];
+      }
+      function iteratableToListElement(iterable $iteratable) {
+        echo '<ul>';
+        foreach ($iteratable as $value) {
+          echo "<li>$value</li>";
+        }
+        echo '</ul>';
+      }
+      ?>
+      <!-- phpタグを跨いでも関数を参照できる。 -->
+      <?php
+      iteratableToListElement(getArray());
       ?>
     </section>
   </main>
