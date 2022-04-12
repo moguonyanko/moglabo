@@ -124,6 +124,22 @@
       iteratableToListElement(getArray());
       ?>
     </section>
+    <section>
+      <h2>列挙型</h2>
+      <?php
+      enum ShapeType 
+      {
+        case Circle;
+        case Polygon;
+        case Line;
+        case Symbol;
+      }
+      foreach (ShapeType::cases() as $type) {
+        $type_name = var_dump($type);
+        echo "<p>$type_name</p>";
+      }
+      ?>
+    </section>
   </main>
 
   <footer>
