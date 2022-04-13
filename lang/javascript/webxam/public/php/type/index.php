@@ -140,6 +140,98 @@
       }
       ?>
     </section>
+    <section>
+      <h2>コールバック関数</h2>
+      <?php
+      enum AnimalType {
+        case Dog;
+        case Cat;
+      } 
+      class Animal {
+        function talk() {
+          return 'なにかの動物です';
+        }
+      }
+      class Cat extends Animal {
+        static function getAnimalType() {
+          return AnimalType::Cat;
+        }
+        function talk() {
+          return 'NyaNyaNya';
+        } 
+        function __invoke($name) {
+          return "My name is $name";
+        }
+      }
+      $my_cat = new Cat();
+      echo '😸&lt', '<strong>', call_user_func([$my_cat, 'talk']), '</strong><br />';
+      echo var_dump(call_user_func('Cat::getAnimalType')), '<br />';
+      echo '？？？&lt', '<strong>', call_user_func([$my_cat, 'parent::talk']), '</strong><br />';
+      echo '😸&lt', '<strong>', call_user_func($my_cat, 'タマ'), '</strong><br />';
+      ?>
+      <p>クロージャだと以下の通り</p>
+      <?php
+      $pow = function($n) {
+        return $n ** 2;
+      };
+      $numbers = range(10, 20);
+      $new_numbers = array_map($pow, $numbers);
+      print implode(',', $new_numbers);
+      ?>
+    </section>
+    <section>
+      <h2>型宣言</h2>
+      <?php 
+      interface Fly {
+        function getHeight(): int;
+      }
+      
+      class Plane implements Fly {
+        function getHeight(): int {
+          return 1000;
+        }
+        function getDescription(): ?string {
+          return null; // 戻り値の型にNull許容型が指定されていなければエラーになる。
+        }
+        function copy(): static {
+          return new Plane;
+        }
+      }
+      
+      class Car {}
+      
+      function viewFlyer(Fly $flyer) {
+        echo 'これは'.get_class($flyer).'です<br />'; // 文字列連結はピリオドでもいい。
+      }
+
+      viewFlyer(new Plane());
+      // viewFlyer(new Car()); // 型が不一致のためコンパイルエラーになる。
+      // viewFlyer(null); // viewFlyerの引数がNull許容型ではないのでエラー。
+      ?>
+    </section>
+    <section>
+      <h2>TypeError</h2>
+      <?php 
+      function square(int $a): int {
+        return $a ** 3;
+      }
+      echo '<p>', var_dump(square(2)), '</p>';
+      ?>
+      <div>
+      <p>警告の確認</p>
+      <?php
+      //declare(strict_types=1); スクリプトの先頭にしか書けない。
+
+      try {
+        echo '<p>', var_dump(square(1.5)), '</p>';
+      } catch (TypeError $err) {
+        // 厳密な型付けが指定されていればTypeErrorがスローされる。
+        // そうでなければ警告止まりとなる。
+        echo '<em>', $err->getMessage(), '</em>';
+      }
+      ?>
+      </div>
+    </section>
   </main>
 
   <footer>
