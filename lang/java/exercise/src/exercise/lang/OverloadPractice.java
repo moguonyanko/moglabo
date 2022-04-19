@@ -64,4 +64,22 @@ public class OverloadPractice<X extends CharSequence> {
 		return 0d;
 	}
 	
+    static class MyClass {
+        String hello(String name) {
+            return "Hello, " + name;
+        }
+    }
+
+    static class MySubClass extends MyClass {
+        // シグネチャが異なるのでオーバーライドではなくただのオーバーロードになる。
+        // コンパイルエラーにはならない。
+        String hello() { 
+            return super.hello("Joe");
+        }
+    }
+
+    public static void main(String[] args) {
+        var mc = new MySubClass();
+        System.out.println(mc.hello());
+    }
 }
