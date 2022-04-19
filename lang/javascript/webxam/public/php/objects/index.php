@@ -130,6 +130,7 @@ declare(strict_types=1);
       class MyMember {
         private function __construct(readonly string $name = '', readonly int $age = -1) { }
 
+        // 戻り値とコンストラクタ呼び出しのstaticをMyMemberにしても問題ない。
         public static function getInstance($data): static {
           $new = new static($data[0], $data[1]);
           return $new;
