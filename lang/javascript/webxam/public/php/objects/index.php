@@ -153,6 +153,55 @@ declare(strict_types=1);
       mymember_dump();
       ?>
     </section>
+    <section>
+      <h2>定数のアクセス権</h2>
+      <?php
+      // デフォルトはpublicになる。
+      class MyBase1 {
+        const PUBLIC = 'pub';
+        protected const PROTECTED = 'pro';
+        private const PRIVATE = 'pri';
+        
+        function description(): string {
+          // self経由でアクセスしないとエラー。$this経由ではダメ。
+          return __CLASS__;
+        }
+
+        private function hello(): string {
+          return 'HELLO';
+        }
+      }
+
+      class MySub1 extends MyBase1 {
+        // 同名で宣言しても親クラスの定数を隠してしまうだけ。
+        private const PRIVATE = 'PRIVATE!';
+        // 型が同じであれば別インスタンスからでも参照できる。
+        private string $name;
+
+        // プロパティへの昇格が行われる書き方では$nameをprivateにできないので自分で代入する。
+        function __construct(string $name) {
+          $this->name = $name;
+        }
+
+        function getName(MySub1 $other): string {
+          return $other->name;
+        }
+
+        function description(): string {
+          return self::PUBLIC.self::PROTECTED.self::PRIVATE.__CLASS__;
+        }
+
+        // オーバーライドできない親クラスのメソッドと衝突してもエラーにはならない。
+        function hello(): string {
+          return 'SUB Hello!';
+        }
+      }
+
+      $mysub1 = new MySub1('Mike');
+      $mysub2 = new MySub1('Joe');
+      echo $mysub1->description(), $mysub1->hello(), $mysub1->getName($mysub2);
+      ?>
+    </section>
   </main>
 
   <footer>
