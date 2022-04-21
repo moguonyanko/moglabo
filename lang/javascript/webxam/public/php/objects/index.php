@@ -202,6 +202,25 @@ declare(strict_types=1);
       echo $mysub1->description(), $mysub1->hello(), $mysub1->getName($mysub2);
       ?>
     </section>
+    <section>
+      <h2>クラスの抽象化</h2>
+      <?php 
+      abstract class MyData {
+        abstract protected function description(string $text): string;
+      }
+
+      class MyDataImpl extends MyData {
+        // オプション引数（＝デフォルト値が指定されている引数）であれば親クラスの抽象メソッドに定義されていなくても
+        // 追加することができる。
+        function description(string $text, string $suffix = ''): string {
+          return $text.$suffix;
+        }
+      }
+
+      $mydata1 = new MyDataImpl();
+      echo '<p>', $mydata1->description('Hello abstract class!', '★★★★★★'), '</p>';
+      ?>
+    </section>
   </main>
 
   <footer>
