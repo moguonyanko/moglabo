@@ -221,6 +221,53 @@ declare(strict_types=1);
       echo '<p>', $mydata1->description('Hello abstract class!', '★★★★★★'), '</p>';
       ?>
     </section>
+    <section>
+      <h2>トレイト</h2>
+      <?php 
+      trait Runner {
+        function run() {
+          echo 'running';
+        }
+
+        abstract function getName(): string;
+      }
+
+      trait Walker {
+        function walk() {
+          echo 'walking';
+        }
+        // trait間で抽象メソッドが衝突しても実装されていれば問題なし。
+        abstract function getName(): string;
+      }
+
+      interface Upperable {
+        function to_upper(): string;
+      }
+
+      class MyBaseMember implements Upperable {
+        use Runner, Walker;
+
+        function __construct(readonly string $name = 'no name') {
+          
+        }
+
+        function getName(): string {
+          return $this->name;
+        }
+
+        function to_upper(): string {
+          return strtoupper($this->getName());
+        }
+      }
+
+      class MySubMember extends MyBaseMember {}
+
+      $msm = new MySubMember('kentaro');
+      $msm->run();
+      $msm->walk();
+      echo '<p>', $msm->to_upper(), '</p>';
+      ?>
+    </section>
   </main>
 
   <footer>
