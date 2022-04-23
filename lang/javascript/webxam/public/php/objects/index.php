@@ -268,6 +268,34 @@ declare(strict_types=1);
       echo '<p>', $msm->to_upper(), '</p>';
       ?>
     </section>
+    <section>
+      <h2>無名クラス</h2>
+      <p>無名クラスでもトレイトは使用できる。</p>
+      <?php 
+      class BaseA {}
+      interface InterfaceA {}
+      trait TraitA {
+        function toUpper(): string {
+          return strtoupper($this->value);
+        }
+      }
+
+      echo "<p>", ((new class('Hello') extends BaseA implements InterfaceA {
+        use TraitA;
+
+        function __construct(readonly string $value = '') { }
+      })->toUpper()), "</p>";
+      ?>
+      <p>無名クラスには内部的な名前がつけられている。無名クラスから生成されたインスタンスは相互に異なる。</p>
+      <?php 
+      $anno_a = new class {};
+      $anno_b = new class {};
+      echo '$anno_a: ', get_class($anno_a), '<br />';
+      echo '$anno_b: ', get_class($anno_b), '<br />';
+      echo "\$anno_a == \$anno_b: ", var_dump($anno_a == $anno_b), '<br />';
+      echo "\$anno_a === \$anno_b: ", var_dump($anno_a === $anno_b);
+      ?>
+    </section>
   </main>
 
   <footer>
