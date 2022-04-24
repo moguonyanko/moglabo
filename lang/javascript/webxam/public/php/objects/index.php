@@ -296,6 +296,130 @@ declare(strict_types=1);
       echo "\$anno_a === \$anno_b: ", var_dump($anno_a === $anno_b);
       ?>
     </section>
+    <section>
+      <h2>final</h2>
+      <?php 
+      class SampleA {
+        // 型宣言するとエラー
+        // finalがconstより後でもエラー
+        // privateを指定してもエラー
+        protected final const NAME = 'SAMPLE'; 
+      }
+
+      class SampleSubA extends SampleA {
+        // final定数はオーバーライドできないのでエラーとなる。
+        //const NAME = 'SampleSubA';
+
+        function __toString() {
+          // 以下では定数にアクセスできない。
+          //return $this->NAME;
+          return parent::NAME;
+        }
+      }
+
+      echo new SampleSubA(), '<br />';
+      ?>
+    </section>
+    <section>
+      <h2>オブジェクトのクローン</h2>
+      <?php 
+      class MyCloneableBase {
+
+        private string $name;
+
+        function __construct(string $name = 'no name') {
+          $this->name = $name;
+         }
+
+        function __clone() {
+          $this->name = $this->name;
+        }
+      }
+
+      class MyCloneableSub extends MyCloneableBase {
+
+        private int $score;
+
+        function __construct(string $name = 'no name', int $score = -1) {
+          parent::__construct($name);
+          $this->score = $score;
+        }
+
+        function __clone() {
+           parent::__clone();
+           $this->score = $this->score;
+        }
+      }
+
+      $myobj1 = new MyCloneableSub($name = 'Mike', $score = 80);
+      var_dump($myobj1);
+      $clonedobj1 = clone $myobj1;
+      var_dump($clonedobj1);
+      ?>
+    </section>
+    <section>
+      <h2>オブジェクトの比較</h2>
+      <p>比較演算子(==)での比較ではプロパティが同じであれば異なるインスタンスでも等しいと判定される。</p>
+      <p>一致演算子(===)なら異なるインスタンスが参照されていれば等しくないと判定される。</p>
+      <?php 
+      class FooFoo {
+        function __construct(readonly string $name = 'no name') {
+        }
+      }
+
+      $foofooA = new FooFoo();
+      $foofooB = new FooFoo();
+      echo '$foofooA == $foofooB: <strong>', var_dump($foofooA == $foofooB), '</strong><br />';
+      echo '$foofooA === $foofooB: ', var_dump($foofooA === $foofooB), '<br />';
+      $foofooB = $foofooA;
+      echo '<pre>$foofooB = $foofooA</pre>';      
+      echo '$foofooA == $foofooB: ', var_dump($foofooA == $foofooB), '<br />';
+      echo '$foofooA === $foofooB: ', var_dump($foofooA === $foofooB), '<br />';
+      ?>
+    </section>
+    <section>
+      <h2>共変性</h2>
+      <p>反変性を期待するプログラムは設計ミスが疑われる。</p>
+      <?php 
+      class Car {}
+      class Bus extends Car {}
+      class BusA extends Bus {}
+      class BusB extends Bus {}
+      class Track extends Car {}
+      class TrackA extends Track {}
+      class TrackB extends Track {}
+
+      interface CarFactory {
+        function create(string $name): Car;
+      }
+
+      class BusFactory implements CarFactory {
+        // 親クラスはCar型を返すように宣言しているがCarの子クラスの型を返すことは問題ない。(共変性)
+        function create(string $name): Bus {
+          $name = strtoupper($name);
+          if ($name === 'A') {
+            return new BusA;
+          } else {
+            return new BusB;
+          }
+        }
+      }
+
+      class TrackFactory implements CarFactory {
+        function create(string $name): Track {
+          $name = strtoupper($name);
+          if ($name === 'A') {
+            return new TrackA;
+          } else {
+            return new TrackB;
+          }
+        }
+      }
+
+      echo var_dump((new BusFactory)->create('a')), '<br />';
+      echo var_dump((new TrackFactory)->create('b'));
+      ?>
+    </section>
   </main>
 
   <footer>
