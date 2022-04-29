@@ -68,6 +68,85 @@ declare(strict_types=1);
       echo '<p>', KenKen::tryFrom(-1) ?? KenKen::GURIKO->name, '</p>';
       ?>
     </section>
+    <section>
+      <h2>列挙型とメソッド</h2>
+      <?php 
+      class Dimension {
+        function __construct(readonly int $width, readonly int $height) {
+        }
+
+        function __toString() {
+          return "{$this->width}x{$this->height}";
+        }
+      }
+
+      interface Display {
+        function get_size(): Dimension;
+      }
+      
+      // トレイトなら$thisを参照できるユーティリティ関数群が作れる？
+      // ただし$thisが期待した型でなければ(トレイトが期待した型の内部で使用されなければ)エラーとなる。
+      trait Maker {
+        function get_maker_name(): string {
+          return match($this) {
+            MobileDevice::MyPhone, MobileDevice::MyPad => 'Myapple',
+            MobileDevice::Myandroid => 'GooGoo',
+            default => 'Unknown'
+          };
+        }
+      }
+
+      // 列挙型の各要素と関連づける値はstringかintでなければならない。
+      enum MobileDevice implements Display {
+
+        use Maker;
+
+        case MyPhone;
+        case Myandroid;
+        case MyPad;
+        case MyGarake;
+
+        const Huge = self::MyPad;
+        // 以下でも同じ。
+        //const Huge = MobileDevice::MyPad;
+
+        function get_size(): Dimension {
+          return match($this) { // $thisを参照していないが$thisを引数に取らないとマッチできない。
+            MobileDevice::MyPhone, MobileDevice::Myandroid => new Dimension(400, 700),
+            MobileDevice::MyPad => new Dimension(850, 1000),
+            MobileDevice::MyGarake => new Dimension(300, 550)
+          };
+        }
+
+        static function from_amount_range(string $range_word): static {
+          $w = strtoupper($range_word);
+          return match(true) {
+            $w === 'SMALL' => static::MyGarake,
+            $w === 'MIDDLE' => static::MyPhone,
+            $w === 'BIG' => static::Myandroid,
+            default => static::MyPad
+          };
+        }
+
+        // 上記と同じ結果を返す。
+        // static function from_amount_range(string $range_word): MobileDevice {
+        //   $w = strtoupper($range_word);
+        //   return match(true) {
+        //     $w === 'SMALL' => MobileDevice::MyGarake,
+        //     $w === 'MIDDLE' => MobileDevice::MyPhone,
+        //     $w === 'BIG' => MobileDevice::Myandroid,
+        //     default => MobileDevice::MyPad
+        //   };
+        // }
+      }
+
+      echo '<p>', var_dump(MobileDevice::cases()), '</p>';
+      print MobileDevice::MyGarake->name.'='.MobileDevice::MyGarake->get_size();
+      $sampledevice = MobileDevice::from_amount_range('おすすめ');
+      echo '<p>おすすめは', $sampledevice->name, '</p>';
+      echo '<p>メーカーは', $sampledevice->get_maker_name(), '</p>';
+      ?>
+    </section>
   </main>
 
   <footer>
