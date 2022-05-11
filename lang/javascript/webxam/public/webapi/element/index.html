@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Element</title>
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" type="module" defer></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Element</h1>
+  </header>
+  <main>
+    <section>
+      <h2>inert属性</h2>
+      <p class="description">
+        input要素やbutton要素などコントロールを行う要素には従来からdisabled属性が使われている。
+        それ以外の要素が不活性であることを示すのにinert属性が導入された。inert属性がtrueのとき
+        クリックイベントやフォーカスイベントが無視される。
+        showModal()でダイアログを表示している場合はinert属性に関係なく背景の要素はクリックできない。
+      </p>
+      <button data-event-target="openDialog">open</button>
+    </section>
+  </main>
+  <div class="dialogContainer">
+    <dialog id="inertTestDialog">
+      Inert Attribute Test Dialog
+      <button data-event-target="closeDialog">close</button>
+    </dialog>
+  </div>
+  <footer>
+    <h3>参考サイト</h3>
+    <ul>
+      <li><a href="https://developer.chrome.com/blog/inert/">Introducing inert</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>

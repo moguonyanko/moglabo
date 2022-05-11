@@ -1,0 +1,11 @@
+@charset "UTF-8";
+
+dialog {
+  width: 400px;
+  height: 350px;
+  background-color: pink;
+}
+
+[inert=true], [inert=true] * {
+  opacity: 0.7;
+}
