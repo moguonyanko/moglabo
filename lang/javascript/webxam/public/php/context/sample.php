@@ -10,6 +10,7 @@ declare(strict_types=1);
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sample</title>
   <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="sample.css" />
 </head>
 
 <body>

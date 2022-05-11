@@ -41,6 +41,8 @@ declare(strict_types=1);
 
       $context = stream_context_create($options);
 
+      // 引数のphpファイルがインクルードされたような状態になる。。それなら普通にincludeすればよい。
+      // この記法を使う利点はあるだろうか？
       $result = file_get_contents('./sample.php', false, $context);
       var_dump($result);
       ?>
