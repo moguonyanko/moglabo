@@ -18,13 +18,20 @@
   <main>
     <section>
       <h2>inert属性</h2>
-      <p class="description">
-        input要素やbutton要素などコントロールを行う要素には従来からdisabled属性が使われている。
+      <p class="description">input要素やbutton要素などコントロールを行う要素には従来からdisabled属性が使われている。
         それ以外の要素が不活性であることを示すのにinert属性が導入された。inert属性がtrueのとき
         クリックイベントやフォーカスイベントが無視される。
-        showModal()でダイアログを表示している場合はinert属性に関係なく背景の要素はクリックできない。
-      </p>
+        showModal()でダイアログを表示している場合はinert属性に関係なく背景の要素はクリックできない。</p>
       <button data-event-target="openDialog">open</button>
+    </section>
+    <section>
+      <h2>beforematch</h2>
+      <p class="description">hidden="until-found"が指定された要素はhidden属性だけが指定された場合と異なりdisplay: none;にはならない。
+        content-visibility: hidden;になる。その結果要素内のコンテンツだけが不可視になり要素自体の表示領域は確保される。</p>
+      <div class="sampleContainer untilfound" hidden="until-found">
+        <strong>hidden=until-foundではこのテキストは見えません</strong>
+      </div>
+      <label><input data-event-target="controlUntilfound" type="checkbox" checked />until-found</label>
     </section>
   </main>
   <div class="dialogContainer">

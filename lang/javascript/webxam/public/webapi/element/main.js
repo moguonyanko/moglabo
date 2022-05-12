@@ -14,6 +14,16 @@ const funcs = {
     dialog.close();
     const main = document.querySelector('main');
     main.removeAttribute('inert');
+  },
+  controlUntilfound: () => {
+    const src = document.querySelector(`[data-event-target='controlUntilfound']`);
+    document.querySelectorAll('.untilfound').forEach(el => {
+      if (src.checked) {
+        el.setAttribute('hidden', 'until-found');
+      } else {
+        el.removeAttribute('hidden');
+      }
+    });
   }
 };
 
@@ -26,6 +36,12 @@ const init = () => {
         funcs[eventTarget]();
       }
     }
+  });
+
+  // TODO: beforematchイベントを発生させることができていない。
+  // Chrome Canaryではbeforematchイベント自体は実装されている。  
+  document.body.addEventListener('beforematch', event => {
+    console.log(event);
   });
 };
 

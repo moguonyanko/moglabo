@@ -9,3 +9,9 @@ dialog {
 [inert=true], [inert=true] * {
   opacity: 0.7;
 }
+
+.sampleContainer {
+  width: 400px;
+  height: 150px;
+  background-color: pink;
+}
