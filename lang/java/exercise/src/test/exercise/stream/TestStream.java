@@ -459,5 +459,38 @@ public class TestStream {
         var expected = 35d;
         assertThat(actual, is(expected));
     }
+    
+    private static class MySample implements Comparable<MySample> {
+        private final String name;
 
+        public MySample(String name) {
+            this.name = name;
+        }
+        
+        String getName() {
+            return name;
+        }
+
+        @Override
+        public int compareTo(MySample o) {
+            return name.compareTo(o.name);
+        }
+
+        @Override
+        public String toString() {
+            return getName();
+        }
+    }
+
+    @Test
+    public void Comparableな要素を含むコレクションをストリームでソートする() {
+        var samples = Arrays.asList(new MySample("Foo"),
+                new MySample("Bar"),
+                new MySample("Baz"));
+        // Comparableを実装していない要素を含むコレクションをストリームで
+        // ソートしようとするとClassCastExceptionが発生する。
+        var result = samples.stream().sorted().collect(Collectors.toList());
+        assertNotNull(result);
+        System.out.println(Arrays.toString(result.toArray()));
+    }
 }

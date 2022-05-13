@@ -194,5 +194,24 @@ public class TestSyntax {
 //        var actual = result.getClass().getTypeName();
 //        assertThat(actual, is("Number"));
 //    }
+    
+    /**
+     * 参考:
+     * https://github.com/hannotify/eleven-crazy-java-things/blob/main/src/main/java/com/github/hannotify/elevencrazyjavathings/number5/Number5CrazyStuffInSwitchStatements.java
+     */
+    @Test
+    public void ビット演算をswitch式に利用できる() {
+        var value = 'g';
+        
+        var result = switch (value) {
+            case 'a' -> "Java";
+            case 'b' -> "JavaScript";
+            case 'c' | 'd' -> "PHP"; // char型なので意図せずビット演算が行われる。
+            default -> "undefined";
+        };
+        
+        // ビット演算が適用される型の値をswitchで使うと意図しない結果を招く。
+        assertSame("PHP", result);
+    }
 
 }

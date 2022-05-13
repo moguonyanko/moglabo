@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -45,5 +46,31 @@ public class TestOverload {
         
         assertArrayEquals(s.toArray(), l.toArray());
     }
+    
+    private static record Add() {
+        
+        // Integerではなくintならこちらが呼び出される。
+        static Number add(Integer a, Integer b) {
+            System.out.println("Add.add(Integer, Integer)");
+            return a + b;
+        } 
+        
+        static Number add(double a, double b) {
+            System.out.println("Add.add(double, double)");
+            return a + b;
+        } 
+        
+        static Number add(int... ints) {
+            System.out.println("Add.add(int...)");
+            return IntStream.of(ints).sum();
+        } 
+        
+    }
 
+    @Test
+    public void 型を推測してオーバーロードされたメソッドを呼び出せる() {
+        var result = Add.add(7, 3);
+        System.out.println(result);
+        assertSame(result, 10.0d);
+    }
 }
