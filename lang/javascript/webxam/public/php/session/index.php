@@ -25,6 +25,8 @@ declare(strict_types=1);
       <?php 
       session_start();
       const counter = 'counter';
+      // セッション開始直後しかセッションの変数はクリアできない？
+      //unset($_SESSION[counter]);
       if (!isset($_SESSION[counter])) {
         $_SESSION[counter] = 0;
       } else {
@@ -32,10 +34,19 @@ declare(strict_types=1);
       }
       echo 'カウンタ:', $_SESSION[counter];
       // 手動でセッションを終了させても$_SESSIONに値は残っている。
-      session_write_close();
+      //session_write_close();
       // セッションが変わるまではunsetしても値が残る。
-      unset($_SESSION[counter]);
+      // session_destroy()を呼ぶよりunsetでセッションの変数をクリアする方が推奨されている。
+      // しかしクリアされないのである。
+      // unset($_SESSION[counter]);
+      // session_unset()でもセッションの変数はクリアされない。なおこの関数の使用自体は現在は推奨されていない。
+      //session_unset();
       ?>
+    </section>
+    <section>
+      <h2>セッションIDの受渡し</h2>
+      <p>なぜかSIDが空になってしまう。</p>
+      <a href="counter.php?<?php echo htmlspecialchars(SID); ?>">カウンタ表示</a>
     </section>
   </main>
 
