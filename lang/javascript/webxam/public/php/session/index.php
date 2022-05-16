@@ -24,6 +24,7 @@ declare(strict_types=1);
       <h2>セッションの開始</h2>
       <?php 
       session_start();
+      echo "<p>SID=", SID, "<p/>";
       const counter = 'counter';
       // セッション開始直後しかセッションの変数はクリアできない？
       //unset($_SESSION[counter]);
@@ -45,7 +46,10 @@ declare(strict_types=1);
     </section>
     <section>
       <h2>セッションIDの受渡し</h2>
-      <p>なぜかSIDが空になってしまう。</p>
+      <p class="description">
+        なぜかSIDが空になってしまう。<a href="https://www.php.net/manual/ja/session.constants.php">ドキュメント</a>を見る限り
+        CookieにセッションIDが保存できているときは空文字になるのが正しいようだ。
+      </p>
       <a href="counter.php?<?php echo htmlspecialchars(SID); ?>">カウンタ表示</a>
     </section>
   </main>
