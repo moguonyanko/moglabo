@@ -39,7 +39,7 @@ declare(strict_types=1);
       // セッションが変わるまではunsetしても値が残る。
       // session_destroy()を呼ぶよりunsetでセッションの変数をクリアする方が推奨されている。
       // しかしクリアされないのである。
-      // unset($_SESSION[counter]);
+      unset($_SESSION[counter]);
       // session_unset()でもセッションの変数はクリアされない。なおこの関数の使用自体は現在は推奨されていない。
       //session_unset();
       ?>
@@ -51,6 +51,10 @@ declare(strict_types=1);
         CookieにセッションIDが保存できているときは空文字になるのが正しいようだ。
       </p>
       <a href="counter.php?<?php echo htmlspecialchars(SID); ?>">カウンタ表示</a>
+    </section>
+    <section>
+      <h2>SesshionHandler</h2>
+      <a href="session_handler.php">サンプルはこちら</a>
     </section>
   </main>
 
