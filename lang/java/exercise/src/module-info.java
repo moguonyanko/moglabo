@@ -22,5 +22,6 @@ open module exercise.base {
     requires junit;
     requires hamcrest.core;
     requires org.apache.logging.log4j;
+    requires kuromoji.ipadic;
     exports exercise.rmi to java.rmi;
 }
