@@ -18,13 +18,14 @@ declare(strict_types=1);
               if (!$data) {
                   return '';
               } else {
-                  return strtoupper($data);
+                  // TODO: こちら側に処理が到達することがないため値を大文字にできない。
+                  return strtoupper((string)$data);
               }
           }
 
           function write(string $id, string $data): bool {
               //print $data;
-              return parent::write($id, strtoupper($data));
+              return parent::write($id, strtoupper((string)$data));
           }
 
       }
