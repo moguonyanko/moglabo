@@ -45,6 +45,41 @@ declare(strict_types=1);
       krsort($arr2);
       echo '降順：', var_dump($arr2), '<br />';
       ?>
+      <p>ユーザー定義に従ってソート</p>
+      <?php 
+      class Member {
+          function __construct(readonly int $id) {
+          }
+          
+          function compare (Member $other): int {
+              return $this <=> $other;
+              // 上と同じ結果を返す。
+              // return ($this->id < $other->id) ? -1 : 1;
+          }
+          
+          static function comp(Member $a, Member $b): int {
+              return $a->compare($b);
+          }
+          
+          function __toString() {
+              return (string)id;
+          }
+      }
+      
+      $arr3 = [ new Member(3), new Member(2), new Member(5), new Member(4), 
+          new Member(1) ];
+      
+      function get_comp() {
+          return function (Member $a, Member $b): int {
+              return $a->compare($b);
+          };
+      }
+      // 第2引数の関数は文字列かクロージャで指定しないとエラーとなる。
+      usort($arr3, get_comp());
+      // 上と同じ結果を返す。
+      //usort($arr3, [Member::class, 'comp']);
+      echo 'ユーザー定義：', var_dump($arr3), '<br />';
+      ?>
     </section>
   </main>
 
