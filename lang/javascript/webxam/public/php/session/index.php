@@ -61,7 +61,7 @@ declare(strict_types=1);
   <footer>
     <h3>参考</h3>
     <ul>
-      <li><a href="https://www.php.net/manual/ja/refs.basic.session.php">PHPマニュアル 言語リファレンス セッション関連</a></li>
+      <li><a href="https://www.php.net/manual/ja/refs.basic.session.php">PHPマニュアル 関数リファレンス セッション関連</a></li>
     </ul>
   </footer>
 </body>
