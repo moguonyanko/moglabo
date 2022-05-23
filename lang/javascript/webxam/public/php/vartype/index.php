@@ -81,6 +81,25 @@ declare(strict_types=1);
       echo 'ユーザー定義：', var_dump($arr3), '<br />';
       ?>
     </section>
+    <section>
+      <h2>Ctype関数</h2>
+      <p class="description">
+        文字関連のテストに使う。高速なので正規表現などに頼るより好ましいらしい。
+      </p>
+      <p>ctype_digit</p>
+      <?php 
+      class DummyNumber {
+          function __construct(readonly string $value) { }
+      }
+      $dummy = new DummyNumber('XXX');
+      if (ctype_digit($dummy->value)) {
+          // intvalは数値以外の文字列を受け取るとエラーではなくゼロを返してしまう。
+          echo '<p>', intval($dummy->value), '</p>';
+      } else {
+          echo "数値ではありません: $dummy->value";
+      }
+      ?>
+    </section>
   </main>
 
   <footer>
