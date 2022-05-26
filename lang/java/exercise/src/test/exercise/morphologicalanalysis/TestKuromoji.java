@@ -1,4 +1,4 @@
-package test.exercise.kuromoji;
+package test.exercise.morphologicalanalysis;
 
 import java.util.stream.Collectors;
 

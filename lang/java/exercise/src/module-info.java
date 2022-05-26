@@ -23,5 +23,8 @@ open module exercise.base {
     requires hamcrest.core;
     requires org.apache.logging.log4j;
     requires kuromoji.ipadic;
+    requires lucene.core;
+    //requires lucene.analyzers.common;
+    requires lucene.analyzers.kuromoji.ipadic.neologd;
     exports exercise.rmi to java.rmi;
 }
