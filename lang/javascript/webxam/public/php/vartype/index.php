@@ -100,6 +100,36 @@ declare(strict_types=1);
       }
       ?>
     </section>
+    <section>
+      <h2>filter_var()による検証</h2>
+      <?php
+      $email = 'sample@mymail.com';
+      echo "'$email'はメールアドレスとして", 
+              filter_var($email, FILTER_VALIDATE_EMAIL) ? '有効' : '無効', '<br />';
+      
+      $ipaddr = '10.10.10.300';
+      echo "'$ipaddr'はIPアドレスとして", 
+              filter_var($ipaddr, FILTER_VALIDATE_IP) ? '有効' : '無効', '<br />';
+      
+      $value = 55;
+      $range = [
+          'options' => [
+              'min_range' => 0,
+              'max_range' => 50
+          ]
+      ];
+      echo "'$value'は範囲", filter_var($value, FILTER_VALIDATE_INT, $range) ? 
+              '内' : '外';
+      ?>
+    </section>
+    <section>
+      <h2>filter_var()による除去</h2>
+      <p>メールアドレスの場合空白と¥が除去される。</p>
+      <?php
+      $email2 = 'sama¥¥.-_Y-ple`sa  -   @  -   mymail.com';
+      echo "'$email2' -> ", filter_var($email2, FILTER_SANITIZE_EMAIL);
+      ?>
+    </section>
   </main>
 
   <footer>
