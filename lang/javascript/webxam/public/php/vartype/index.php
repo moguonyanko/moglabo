@@ -130,6 +130,21 @@ declare(strict_types=1);
       echo "'$email2' -> ", filter_var($email2, FILTER_SANITIZE_EMAIL);
       ?>
     </section>
+    <section class="shutdownsample">
+      <h2>register_shutdown_function()</h2>
+      <p class="descrioption">
+        PHPのスクリプト処理が完了した時に実行する関数を登録する。
+        登録した関数はexit()を呼び出した場合も実行される。
+      </p>
+      <?php 
+      function shutdownhook() {
+          echo '<script>document.querySelector(".shutdownsample")'
+          . '.appendChild(document.createTextNode("Shutdown!"));</script>';
+      }
+      
+      register_shutdown_function('shutdownhook');
+      ?>
+    </section>
   </main>
 
   <footer>
