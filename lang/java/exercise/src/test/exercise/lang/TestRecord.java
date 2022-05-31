@@ -107,4 +107,21 @@ public class TestRecord {
         var sample = new SampleMember("Mike");
         assertThat(sample.no(), is(-1));
     }
+    
+//    record MyPoint(int x, int y) { }
+//    
+//    /**
+//     * 参考:
+//     * https://www.infoq.com/news/2022/05/java-record-pattern/
+//     * 
+//     * レコードパターンはJDK19以降から使えるようになる予定である。
+//     */
+//    @Test 
+//    public void レコードでパターンマッチングできる() {
+//        Object o = new MyPoint(1, 2);
+//        if (o instanceof MyPoint(int x, int y)) {
+//            assertEquals(1, x);
+//            assertEquals(2, y);
+//        }
+//    }
 }
