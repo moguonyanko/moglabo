@@ -71,6 +71,8 @@ public class TestOverload {
     public void 型を推測してオーバーロードされたメソッドを呼び出せる() {
         var result = Add.add(7, 3);
         System.out.println(result);
-        assertSame(result, 10.0d);
+        assertTrue(Double.compare(result.doubleValue(), 10.0d) == 0);
+        // assertSameではdouble値の比較を正確に行えない。
+//        assertSame(result, 10.0d);
     }
 }
