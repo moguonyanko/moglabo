@@ -36,3 +36,17 @@ div button {
 :is(textarea, div):read-only {
   background: whitesmoke;
 }
+
+.samplelist {
+  width: max-content;
+  height: 2em;
+}
+
+.samplelist:empty::after {
+  background-color: darkgray;
+  content: '空のコンテナ';
+}
+
+:has(.samplelist:empty) {
+  display: none; /* 空コンテナを親要素ごと非表示にしたいができていない。 */
+}
