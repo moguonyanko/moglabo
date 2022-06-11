@@ -42,6 +42,14 @@ declare(strict_types=1);
         print_r(strpos(SUBJECT, 'Ruby'));
         ?>
       </section>
+      <section>
+        <h3>preg_replace</h3>
+        <?php 
+        $sample = '999-9999-9999';
+        // U修飾子で非貪欲モードに切り替えている。
+        echo preg_replace('/(\d+)/U', '*', $sample), '<br />';
+        ?>
+      </section>
     </section>
   </main>
 
