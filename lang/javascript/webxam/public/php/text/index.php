@@ -50,6 +50,29 @@ declare(strict_types=1);
         echo preg_replace('/(\d+)/U', '*', $sample), '<br />';
         ?>
       </section>
+      <section>
+        <h3>htmlspecialcharsとhtmlentities</h3>
+        <div id="sampleformcontainer">
+        <?php
+        $samplehtmlform = <<<END
+        <form action="/registermember" method="POST">
+          <label>'年齢'
+          <input type="number" name="age" value="20" min="0" max="150" /></label>
+          <label>'名前'<input type="text" name="name" value="My Name `Mike`" /></label>
+          <button disabled>送信 & 登録!</button>
+        </form>
+        END;
+        echo '<p>Sample Form</p>';
+        echo $samplehtmlform;
+        echo '<p>htmlspecialchars</p>';
+        echo htmlspecialchars('&, \', ", <, >'), '以外変換したくなければhtmlspecialcharsを使う。<br />';
+        echo htmlspecialchars($samplehtmlform, ENT_QUOTES, encoding: 'UTF-8');
+        echo '<p>htmlentities</p>';
+        echo htmlentities($samplehtmlform, ENT_QUOTES, encoding: 'UTF-8');
+        //var_dump(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES | ENT_HTML5));
+        ?>
+        </div>
+      </section>
     </section>
   </main>
 
