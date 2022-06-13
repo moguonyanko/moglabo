@@ -73,6 +73,20 @@ declare(strict_types=1);
         ?>
         </div>
       </section>
+      <section>
+        <h3>str_getcsv</h3>
+        <?php
+        $filename = 'sample.csv';
+        $handle = fopen($filename, 'r');
+        $csv = fread($handle, filesize($filename));
+        echo '<ul>';
+        foreach (str_getcsv($csv) as $val) {
+          echo '<li>', $val, '</li>';
+        }
+        echo '</ul>';
+        fclose($handle);
+        ?>
+      </section>
     </section>
   </main>
 
