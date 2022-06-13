@@ -36,4 +36,6 @@
 .gitignore.swp
 .env
 d3.*.js
+package.json
+
 
