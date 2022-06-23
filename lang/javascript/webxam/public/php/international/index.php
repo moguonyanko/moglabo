@@ -29,6 +29,16 @@ declare(strict_types=1);
       echo 'UTF-8:', $sample_utf8;
       ?>
     </section>
+    <section>
+      <h2>mb_convert_kana</h2>
+      <?php
+      $opts = "KVA";
+      echo "<p>オプション:$opts</p>";
+      $sampleword = 'ﾊﾝｶｸｶﾅ ZENKAKU 12345'; 
+      echo nl2br("サンプル:$sampleword\n");
+      echo '半角カナは全角カナ、半角英数字は全角英数字に変換 => ', mb_convert_kana($sampleword, $opts);
+      ?>
+    </section>
   </main>
 
   <footer>
