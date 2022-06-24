@@ -2,7 +2,8 @@ package test.exercise.lang;
 
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import org.junit.Assert;
+import static org.junit.Assert.*;
 
 sealed interface Greetable permits JapanGreeter, EnglishGreeter {
     String greet();
@@ -67,6 +68,17 @@ enum GreetableEnum {
     abstract String greet();
 }
 
+/**
+ * 参考：
+ * https://www.infoq.com/articles/data-oriented-programming-java/?itm_source=infoq&itm_medium=popular_widget&itm_campaign=popular_content_list&itm_content=
+ * 
+ * CommandOptionの内部が空だとコンパイルエラーになる。
+ */
+sealed interface CommandOption {
+    record Version() implements CommandOption {} 
+    record DebugLevel(String level) implements CommandOption {} 
+}
+
 public class TestSealed {
 
     @Test
@@ -79,6 +91,13 @@ public class TestSealed {
         System.out.println("----- GreetableEnum sample output -----");
         System.out.println(GreetableEnum.JAPAN.greet());
         System.out.println(GreetableEnum.ENGLISH.greet());
+    }
+    
+    @Test
+    public void recordを含むsealedクラスを使用できる() {
+        var version = new CommandOption.DebugLevel("warn"); 
+        assertNotNull(version);
+        System.out.println(version);
     }
 
 }
