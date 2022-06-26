@@ -2,7 +2,6 @@ package test.exercise.lang;
 
 import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
-import org.junit.Assert;
 import static org.junit.Assert.*;
 
 sealed interface Greetable permits JapanGreeter, EnglishGreeter {
@@ -79,6 +78,68 @@ sealed interface CommandOption {
     record DebugLevel(String level) implements CommandOption {} 
 }
 
+enum OperatorEnum {
+    ADD(){
+        @Override
+        int execute(int x, int y) {
+            return x + y;
+        }
+    },
+    SUB(){
+        @Override
+        int execute(int x, int y) {
+            return x - y;
+        }
+    },
+    MUL(){
+        @Override
+        int execute(int x, int y) {
+            return x * y;
+        }
+    },
+    DIV(){
+        @Override
+        int execute(int x, int y) {
+            return x / y;
+        }
+    };
+    
+    abstract int execute(int x, int y);
+}
+
+sealed interface IOpearator<T extends Number> {
+    record Add(int x, int y) implements IOpearator {
+
+        @Override
+        public Number execute() {
+            return this.x + this.y;
+        }
+    }
+    record Sub(int x, int y) implements IOpearator {
+
+        @Override
+        public Number execute() {
+            return this.x - this.y;
+        }
+    }
+    record Mul(int x, int y) implements IOpearator {
+
+        @Override
+        public Number execute() {
+            return this.x * this.y;
+        }
+    }
+    record Div(int x, int y) implements IOpearator {
+
+        @Override
+        public Number execute() {
+            return this.x / this.y;
+        }
+    }
+    
+    T execute();
+}
+
 public class TestSealed {
 
     @Test
@@ -100,4 +161,34 @@ public class TestSealed {
         System.out.println(version);
     }
 
+    @Test
+    public void enumとsealedを比較できる() {
+        // テストする変数がbyte型の範囲に含まれればassertSameで正しく比較できるが、
+        // byte型の範囲を超えてしまうと参照が同じでない限り両者は異なるものと判定されてしまう。
+        // そのようなミスを避けられるようassertEqualsを使った方が安全である。
+        var x = 10; 
+        var y = 200;
+        
+        var adde = OperatorEnum.ADD;
+        switch (adde) {
+            case ADD -> {
+                // パターンマッチングと組み合わせられることを確認するテスト
+            }
+            case SUB -> {}
+            case MUL -> {}
+            case DIV -> {}
+        }
+        assertEquals(210, adde.execute(x, y));
+        
+        var adds = new IOpearator.Add(x, y);
+        // TODO: コンパイルエラーになってしまう。エディタが未対応？
+//        var result = switch (adds) {
+//            case Add(var x, var y) -> "add";
+//            case Sub(var x, var y) -> "sub";
+//            case Mul(var x, var y) -> "mul";
+//            case Div(var x, var y) -> "div";
+//        }
+        
+        assertEquals(210, adds.execute());
+    }
 }
