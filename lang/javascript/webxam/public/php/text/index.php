@@ -87,6 +87,56 @@ declare(strict_types=1);
         fclose($handle);
         ?>
       </section>
+      <section>
+        <h3>JSON</h3>
+        <p>json_decode</p>
+        <?php 
+        $sample = <<<END
+        {
+          "member": [
+            {
+              "name": "Mike",
+              "age": 19
+            },
+            {
+              "name": "Taro",
+              "age": 43
+            }
+          ],
+          "name": "テストチーム"
+        }
+        END;
+        $my_team = json_decode($sample);
+        echo $my_team->name, '<br />';
+        echo '<ul>';
+        foreach ($my_team->member as $mem) {
+          echo '<li>', $mem->name, ':', $mem->age, '歳</li>';
+        }
+        echo '</ul>';
+        ?>
+        <p>json_encode</p>
+        <?php 
+        class Member implements JsonSerializable {
+          private $name;
+          private $age;
+
+          function __construct(string $name, int $age) {
+            $this->name = $name;
+            $this->age = $age;
+          }
+
+          public function jsonSerialize(): mixed {
+            return [$this->name => $this->age];
+          }
+        }
+
+        $member1 = new Member('Mike', 34);
+        $member2 = new Member('Taro', 29);
+        $member3 = new Member('Joe', 76);
+        $json = json_encode([$member1, $member2, $member3], JSON_PRETTY_PRINT);
+        echo $json;
+        ?>
+      </section>
     </section>
   </main>
 
