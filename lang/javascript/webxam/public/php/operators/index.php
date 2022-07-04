@@ -116,6 +116,28 @@ declare(strict_types=1);
       }
       ?>
     </section>
+    <section>
+      <h2>エラー制御演算子</h2>
+      <a href="https://www.php.net/manual/ja/language.operators.errorcontrol.php">参考ページ</a>
+      <?php 
+      $arr1 = ['a' => 1, 'b' => 2, 'c' => 3];
+      try {
+        echo '<p>'.$arr1['nothing'].'</p>';
+      } catch (Throwable $e1) {
+        // エラー時もこのブロックには遷移しない。
+        echo '<p>エラー発生1</p>';
+        echo '<p>'.var_dump($e1).'</p>';
+      }
+      echo '<p>@を先頭に付与するとエラーメッセージは無視される。</p>';
+      try {
+        echo '<p>'.@$arr1['ignore_message'].'</p>';
+      } catch (Throwable $e2) {
+        // エラーを無視してもしなくてもcatchブロックに処理が遷移しない。
+        echo '<p>エラー発生2</p>';
+        echo '<p>'.var_dump($e2).'</p>';
+      }
+      ?>
+    </section>
   </main>
 
   <footer>
