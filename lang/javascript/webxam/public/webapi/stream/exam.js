@@ -79,6 +79,14 @@ const writeViaStream = ({ file, width, height }) => {
   });
 };
 
+const getToLowerCaseTransformStream = () => {
+  return new TransformStream({
+    transform(chunk, controller) {
+      controller.enqueue(chunk.toLowerCase());
+    },
+  });
+};
+
 // DOM
 
 class ReadableStreamExample extends HTMLElement {
@@ -145,7 +153,42 @@ class WritableStreamExample extends HTMLElement {
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  customElements.define('readable-stream', ReadableStreamExample);
-  customElements.define('writable-stream', WritableStreamExample);
-});
+class TransformStreamExample extends HTMLElement {
+  constructor() {
+    super();
+    const shadow = this.attachShadow({ mode: 'open' });
+    shadow.appendChild(document.getElementById('transform-stream-example')
+      .cloneNode(true).content);
+  }
+
+  async doTransform() {
+    const response = await fetch('sample.txt');
+    const readableStream = response.body
+      .pipeThrough(new TextDecoderStream()) // TextDecoderStreamを通さないとエラー
+      .pipeThrough(getToLowerCaseTransformStream());
+
+    const reader = readableStream.getReader();
+    const output = this.shadowRoot.querySelector('.output');
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) {
+        break;
+      }
+      output.innerHTML += `<p>${value}</p>`;
+    }
+  }
+
+  connectedCallback() {
+    this.shadowRoot.addEventListener('click', async event => {
+      const { eventTarget } = event.target.dataset;
+      if (typeof this[eventTarget] === 'function') {
+        event.stopPropagation();
+        await this[eventTarget]();
+      }
+    });
+  }
+}
+
+customElements.define('readable-stream', ReadableStreamExample);
+customElements.define('writable-stream', WritableStreamExample);
+customElements.define('transform-stream', TransformStreamExample);

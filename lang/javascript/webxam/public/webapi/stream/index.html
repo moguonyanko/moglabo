@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
   <link rel="stylesheet" href="exam.css" />
+  <script type="module" src="exam.js" defer></script>
 </head>
 
 <body>
@@ -24,6 +25,10 @@
       <h2>WritableStream</h2>
       <writable-stream class="example"></writable-stream>
     </section>
+    <section>
+      <h2>TransformStream</h2>
+      <transform-stream class="example"></transform-stream>
+    </section>
   </main>
 
   <footer>
@@ -37,10 +42,10 @@
       </li>
       <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_writable_streams">Using writable
           streams</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/TransformStream">TransformStream</a></li>
+      <li><a href="https://web.dev/transformstream/">TransformStream is now supported cross-browser</a></li>
     </ul>
   </footer>
-
-  <script type="module" src="exam.js"></script>
 </body>
 
 <template id="readable-stream-example">
@@ -56,6 +61,13 @@
     <input id="image" type="file" accept="image/*" />
   </span>
   <canvas></canvas>
+</template>
+
+<template id="transform-stream-example">
+  <link rel="stylesheet" href="template.css" />
+  <link rel="stylesheet" href="../../common.css" />
+  <div class="output"></div>
+  <button data-event-target="doTransform">sample.txtを小文字に変換</button>
 </template>
 
 </html>
