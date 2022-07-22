@@ -2,6 +2,8 @@
  * @fileoverview Stream API調査用スクリプト
  */
 
+/* eslint-disable no-undef */
+
 const readViaStream = async ({ resource, contentType }) => {
   const orgResponse = await fetch(resource);
   if (!orgResponse.ok) {
@@ -54,14 +56,12 @@ const writeViaStream = ({ file, width, height }) => {
   return new Promise((resolve, reject) => {
     const writeStream = new WritableStream({
       write(chunk) {
-        return new Promise(async (resolve, reject) => {
-          try {
-            const bitmap = await createImageBitmap(chunk);
+        // Promiseコンストラクタの引数に渡す関数はasyncにするべきではないらしい。
+        return new Promise((resolve, reject) => {
+          createImageBitmap(chunk).then(bitmap => {
             ctx.drawImage(bitmap, 0, 0, width, height);
             resolve(chunk);
-          } catch (err) {
-            reject(err);
-          }
+          }).catch(reject);
         });
       },
       close() {
@@ -169,6 +169,7 @@ class TransformStreamExample extends HTMLElement {
 
     const reader = readableStream.getReader();
     const output = this.shadowRoot.querySelector('.output');
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       const { value, done } = await reader.read();
       if (done) {
