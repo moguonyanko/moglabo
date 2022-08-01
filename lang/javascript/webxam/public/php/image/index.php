@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>画像処理および作成</title>
   <link rel="stylesheet" href="../../common.css" />
+  <script src="main.js" defer></script>
 </head>
 
 <body>
@@ -23,6 +24,10 @@
       }
       echo '</ul>';
       ?>
+    </section>
+    <section>
+      <h2>imagepng</h2>
+      <div class="output imagepng"></div>
     </section>
   </main>
   <footer>
