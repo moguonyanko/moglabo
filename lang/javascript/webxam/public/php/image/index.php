@@ -24,6 +24,24 @@
       }
       echo '</ul>';
       ?>
+      <div>
+        <h3>imagetypes()によるサポート画像フォーマット確認</h3>
+      <?php 
+      $formats = [
+        IMG_GIF => 'GIF', 
+        IMG_JPG => 'JPG', 
+        IMG_BMP => 'BMP', 
+        IMG_PNG => 'PNG', 
+        IMG_AVIF => 'AVIF', 
+        IMG_WEBP => 'WEBP'
+      ];
+      foreach ($formats as $format => $name) {
+        if (imagetypes() & $format) {
+          echo "<p>$name</p>";
+        }
+      }
+      ?>
+      </div>
     </section>
     <section>
       <h2>imagepng</h2>
