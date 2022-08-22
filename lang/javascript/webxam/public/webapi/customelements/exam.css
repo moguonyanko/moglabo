@@ -35,3 +35,10 @@ sample-declarative-element p {
 sample-declarative-element template p {
   color: violet;
 }
+
+custom-profile {
+  /* --common-profile-colorは継承されるため上書きして別の値を設定できる。 */
+  --common-profile-color: rgb(0, 51, 204);
+  border: solid 1px var(--common-profile-color);
+  color: var(--common-profile-color);
+}

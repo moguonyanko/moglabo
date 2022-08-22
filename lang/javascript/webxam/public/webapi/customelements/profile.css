@@ -1,0 +1,8 @@
+@charset "UTF-8";
+
+:host {
+  all: unset;
+  display: block;
+  --common-profile-color: rgb(204, 204, 204);
+  color: var(--common-profile-color);
+}

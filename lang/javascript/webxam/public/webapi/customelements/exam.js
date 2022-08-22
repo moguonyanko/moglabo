@@ -74,9 +74,19 @@ class SampleDeclarativeElement extends HTMLElement {
   }
 }
 
+class CustomProfile extends HTMLElement {
+  constructor () {
+    super();
+    const template = document.getElementById('custom-profile');
+    const shadow = this.attachShadow({ mode: 'open' });
+    shadow.appendChild(template.cloneNode(true).content);
+  }
+}
+
 const init = () => {
   customElements.define('my-autocomplete-form', MyAutoCompleteForm);
   customElements.define('custom-message', CustomMessage);
+  customElements.define('custom-profile', CustomProfile);
 
   const query = 'sample-declarative-element';
   console.log(getTemplateInnerHTMLList({ query }));

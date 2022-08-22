@@ -50,6 +50,14 @@
         <p>青色にはならない</p>
       </sample-declarative-element>
     </section>
+    <section>
+      <h2>カスタムプロパティによるスタイル設定</h2>
+      <custom-profile>
+        <span slot="my-name">サンプル太郎</span>
+        <span slot="my-age">55</span>
+        <span slot="my-favorite">散歩</span>
+      </custom-profile>
+    </section>
   </main>
   <footer>
     <p>参考サイト</p>
@@ -79,6 +87,13 @@
   <label>
     <slot name="message"></slot>
   </label>
+</template>
+
+<template id="custom-profile">
+  <link rel="stylesheet" href="profile.css" />
+  <p>名前：<slot name="my-name">no name</slot></p>
+  <p>年齢：<slot name="my-age">-1</slot></p>
+  <p>趣味：<slot name="my-favorite">無趣味</slot></p>
 </template>
 
 </html>
