@@ -15,3 +15,35 @@ dialog {
   height: 150px;
   background-color: pink;
 }
+
+.lang-list ::marker {
+  content: counter(list-item) ': ';
+}
+
+.lang-list li {
+  counter-increment: list-item 2;
+}
+
+.greeting-list li::before {
+  content: counters(list-item, '') ': ';
+}
+
+.food-list {
+  columns: 25vw;
+  column-gap: 5rem;
+  column-rule: 4px dotted green;
+}
+
+.food-list li {
+  break-inside: avoid;
+}
+ 
+.food-list li::marker {
+  content: counters(list-item, '') '→';
+  font-weight: 120%;
+  color: steelblue;
+}
+
+.food-list li span {
+  display: block;
+}

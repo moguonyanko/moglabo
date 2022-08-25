@@ -44,6 +44,43 @@
         </ruby>
       </p>
     </section>
+    <section class="list-example">
+      <h2>様々なリスト表現</h2>
+      <h3>::marker</h3>
+      <ul class="lang-list">
+        <li>Java</li>
+        <li>JavaScript</li>
+        <li>PHP</li>
+        <li>Python</li>
+        <li>Scheme</li>
+      </ul>
+      <h3>countersプロパティ</h3>
+      <ul class="greeting-list">
+        <li>Hello</li>
+        <li>こんにちは</li>
+      </ul>
+      <h3>ol要素のreversed属性</h3>
+      <ol reversed>
+        <li>第3位</li>
+        <li>第2位</li>
+        <li>第1位</li>
+      </ol>
+      <p>マルチカラムレイアウトを使わなくてもリストを複数列で表現することはできる。</p>
+      <ol class="food-list" reversed start="10">
+        <li>カレー<span>おいしい</span></li>
+        <li>コロッケ<span>台風</span></li>
+        <li>うどん<span>ふとい</span></li>
+        <li>そば<span>蕎麦粉</span></li>
+        <li>オムライス<span>定番メニュー</span></li>
+        <li>親子丼<span>とてもおいしい</span></li>
+        <li>カツ丼<span>ごちそう</span></li>
+        <li>天丼<span>天ぷらおいしい</span></li>
+        <li>ラーメン<span>すする</span></li>
+        <li>スパゲッティ<span>ナポリタン、カルボナーラ</span></li>
+        <li>卵がけ<span>安いうまい早い</span></li>
+        <li>その他<span>加筆予定</span></li>
+      </ol>
+    </section>
   </main>
   <div class="dialogContainer">
     <dialog id="inertTestDialog">
@@ -55,6 +92,7 @@
     <h3>参考サイト</h3>
     <ul>
       <li><a href="https://developer.chrome.com/blog/inert/">Introducing inert</a></li>
+      <li><a href="https://web.dev/creative-list-styling/">Creative list styling</a></li>
     </ul>
   </footer>
 </body>
