@@ -16,6 +16,7 @@ open module exercise.base {
     requires java.json.bind;
     requires java.net.http;
     requires java.rmi;
+    //requires jdk.incubator.foreign;
     requires mysql.connector.java;
     requires mongo.java.driver;
     requires checker;
