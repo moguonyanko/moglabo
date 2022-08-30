@@ -37,5 +37,6 @@
 .env
 d3.*.js
 package.json
+**/typescript/**/*.js
 
 
