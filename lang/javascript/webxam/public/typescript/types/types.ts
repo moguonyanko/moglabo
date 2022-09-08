@@ -24,19 +24,29 @@ const getCarSpeed = (car: Car, boost: 2 | 3 | 4): number => {
   return car.speed * boost;
 };
 
+const dumpMemberInfo = (member?: Member | null): void => {
+  // !を変数の後ろに付けることでnullチェックを無視できる。実行時例外を防ぐわけではない。
+  try {
+    console.log(`${member!.name}:${member!.age}`);
+  } catch (e: any) {
+    console.warn(e);
+  }
+};
+
 const initFuncs = {
   uniontypes: (): void => {
     const message: string = 'Hello' as 'Hello';
-    const output: HTMLElement = document.querySelector('.example.uniontypes .output');
+    const output: HTMLElement = document.querySelector('.example.uniontypes .output') as HTMLElement;
     output.textContent += `「${message}」の長さは${getLength(message)},`;
     output.textContent += `[1,2,3,4,5]のサイズは${getLength([1,2,3,4,5])}`;
   },
   typealiases: (): void => {
-    const output: HTMLElement = document.querySelector('.example.typealiases .output');
+    const output: HTMLElement = document.querySelector('.example.typealiases .output') as HTMLElement;
+    dumpMemberInfo(null);
     output.textContent += getMemberInfo({ name: 'Masao', age: 29 });
   },
   interfaces: (): void => {
-    const output: HTMLElement = document.querySelector('.example.interfaces .output');
+    const output: HTMLElement = document.querySelector('.example.interfaces .output') as HTMLElement;
     output.textContent += getCarSpeed({ speed: 100 }, 3);
   }
 };
