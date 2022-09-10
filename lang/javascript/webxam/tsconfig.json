@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "commonjs",
-    //"strictNullChecks": true,
+    "strictNullChecks": true,
     //"sourceMap": true,
     "inlineSourceMap": true,
     "watch": true
