@@ -10,6 +10,11 @@ const countAll = <Type extends { length: number }>(target: Type[]): number => {
   return target.map((t: Type) => t.length).reduce((a: number, b: number) => a + b, 0);
 };
 
+const sampleEcho = (message: string, onecho: (message: string, echodate?: Date) => void) => {
+  console.log(message);
+  onecho(message, new Date());
+};
+
 const funcs = {
   callsignatures: (): void => {
     const output: HTMLElement = document.querySelector('.example.callsignatures .output') as HTMLElement;
@@ -24,6 +29,13 @@ const funcs = {
     });
     const result = countAll(sample1);
     output.innerHTML += result;
+  },
+  optionalparameters: (): void => {
+    const callback = (message: string, echodate?: Date): void => {
+      const output = document.querySelector('.example.optionalparameters .output');
+      output!.innerHTML += `${message}<br/>${echodate?.toString()}`;
+    };
+    sampleEcho('Hello optional parameters', callback);
   }
 };
 
