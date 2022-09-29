@@ -15,6 +15,17 @@ const sampleEcho = (message: string, onecho: (message: string, echodate?: Date) 
   onecho(message, new Date());
 };
 
+interface Student {
+  name: string;
+}
+
+interface Teacher {
+  students: Student[],
+  // TODO: sをthisと書けるがそうする利点が公式ドキュメントから読み取れなかった。
+  // https://www.typescriptlang.org/docs/handbook/2/functions.html#declaring-this-in-a-function
+  collectStudents(filter: (s: Student) => boolean): Student[]
+}
+
 const funcs = {
   callsignatures: (): void => {
     const output: HTMLElement = document.querySelector('.example.callsignatures .output') as HTMLElement;
@@ -36,6 +47,28 @@ const funcs = {
       output!.innerHTML += `${message}<br/>${echodate?.toString()}`;
     };
     sampleEcho('Hello optional parameters', callback);
+  },
+  declaringthis: (): void => {
+    const teacher: Teacher = {
+      students: [
+        { name: 'Taro' }, { name: 'Mike' }, { name: 'Momo' }
+      ],
+      collectStudents: function(filter: (s: Student) => boolean): Student[] {
+        const results: Student[] = [];
+        // thisにアクセスするにはfunction文を使う必要がある。
+        for (const student of this.students) {
+          if (filter(student)) {
+            results.push(student);
+          }
+        }
+        return results;
+      }
+    };
+    const results: Student[] = teacher.collectStudents(function (s: Student) {
+      return s.name.startsWith('M');
+    });
+    const output = document.querySelector('.example.declaringthis .output');
+    output!.textContent += results.map((result: Student) => result.name).join(',');
   }
 };
 
