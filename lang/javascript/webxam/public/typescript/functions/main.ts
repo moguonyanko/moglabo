@@ -26,6 +26,19 @@ interface Teacher {
   collectStudents(filter: (s: Student) => boolean): Student[]
 }
 
+const voidFunc = (): void => {
+  // voidとundefinedは異なるとのことだがvoidを返す関数の戻り値としてundefinedを返しても
+  // コンパイルエラーにならない。booleanなどを返すとエラーになる。
+  return undefined;
+};
+
+// never型であっても何もthrowしないとコンパイルエラーになる。
+const neverFunc = (): never => {
+  // コンパイルエラー
+  //return false;
+  throw new Error('Never function!');
+};
+
 const funcs = {
   callsignatures: (): void => {
     const output: HTMLElement = document.querySelector('.example.callsignatures .output') as HTMLElement;
