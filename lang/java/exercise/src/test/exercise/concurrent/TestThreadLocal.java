@@ -41,7 +41,7 @@ public class TestThreadLocal {
     }
     
     @Test
-    public void ThreadLocalから値を取得できる() throws Exception {
+    public void ThreadLocalから値を取得できる() {
         int a = 100, b = 200, c = 300;
         var ta = new MyIntThread(a);
         var tb = new MyIntThread(b);
