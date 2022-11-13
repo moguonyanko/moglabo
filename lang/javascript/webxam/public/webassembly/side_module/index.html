@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>WebAssemblyモジュール読み込み</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="side_module.js" defer></script>
+    <link rel="stylesheet" href="../../common.css" />
+  </head>
+  <body>
+    <header>
+      <a href="../../">home</a>
+      <h1>WebAssemblyモジュール読み込み</h1>
+    </header>
+    <main>
+      <h3>コンパイル例</h3>
+      <pre>
+        emcc side_module.c -O1 --no-entry -s "EXPORTED_FUNCTIONS=['_increment']" -o ../../public/webassembly/side_module/side_module.wasm
+      </pre>
+      <button data-event-target="incrementValue">加算</button>
+      <div class="output"></div>
+    </main>
+    <footer>
+      <h3>参考</h3>
+      <ul>
+        <li><a href="https://www.oreilly.co.jp/books/9784814400102/">ハンズオンWebAssembly</a>></li>
+      </ul>
+    </footer>
+  </body>
+</html>

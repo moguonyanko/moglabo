@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>WebAssemblyのコンパイル</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="calculate_primes.js" defer></script>
+    <link rel="stylesheet" href="../../common.css" />
+  </head>
+  <body>
+    <header>
+      <a href="../../">home</a>
+      <h1>WebAssemblyのコンパイル</h1>
+    </header>
+    <main>
+      <p>素数検出するプログラムをコンパイルした。出力はコンソール上に行われている。</p>
+      <h3>コンパイル例</h3>
+      <pre>
+        emcc calculate_primes.c -o ../../public/webassembly/calculate_primes/calculate_primes.js
+      </pre>
+    </main>
+    <footer>
+      <h3>参考</h3>
+      <ul>
+        <li><a href="https://www.oreilly.co.jp/books/9784814400102/">ハンズオンWebAssembly</a>></li>
+      </ul>
+    </footer>
+  </body>
+</html>
