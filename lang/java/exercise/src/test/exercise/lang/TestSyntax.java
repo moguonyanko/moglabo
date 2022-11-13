@@ -213,5 +213,32 @@ public class TestSyntax {
         // ビット演算が適用される型の値をswitchで使うと意図しない結果を招く。
         assertSame("PHP", result);
     }
+    
+    /**
+     * 参考:
+     * https://openjdk.org/jeps/433
+     */
+    private <T> void testMultiPatternLabels(T value) {
+        switch (value) {
+            case Character c: // パターンラベルその1
+            //when c.charValue() > 10:
+                if (c.charValue() > 10) {
+                    System.out.println("test character over 10:" + value + "!");
+                }
+                // 複数のパターンラベルを使う場合breakがないとコンパイルエラーになる。
+                // 複数回初期化される恐れがあるから？
+                break; 
+            case Integer i: // パターンラベルその2
+                throw new IllegalArgumentException("Invalid arg :" + i.intValue());
+            default:
+                System.out.println("nothing");
+        }
+    }
+    
+    @Test
+    public void 複数のパターンラベルを使ったメソッドを呼び出せる() {
+        var value = 11;
+        testMultiPatternLabels(value);        
+    }
 
 }
