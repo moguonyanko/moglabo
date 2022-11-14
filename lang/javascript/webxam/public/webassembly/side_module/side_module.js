@@ -31,6 +31,12 @@ const isSupportedWebAssemblyJavaScriptAPI = () => {
 let currentValue = 0;
 let loadedModule = null;
 
+const updateValue = (value = 0) => {
+  currentValue = value;    
+  const output = document.querySelector('.output');
+  output.textContent = currentValue;
+};
+
 const addListener = () => {
   const main = document.querySelector('main');
   main.addEventListener('click', event => {
@@ -38,9 +44,7 @@ const addListener = () => {
 
     if (eventTarget === 'incrementValue') {
       const newValue = loadedModule.instance.exports.increment(currentValue);
-      currentValue = newValue;    
-      const output = document.querySelector('.output');
-      output.textContent = currentValue;
+      updateValue(newValue);
     }
   });
 };
@@ -54,6 +58,7 @@ const main = async () => {
   // 実装されていない場合はWebAssembly.instantiateを使う。
   loadedModule = await WebAssembly.instantiateStreaming(fetch('side_module.wasm'), importObject);
   addListener();
+  updateValue();
 };
 
 main().then().catch(msg => alert(msg));
