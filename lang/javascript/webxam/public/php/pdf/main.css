@@ -1,0 +1,6 @@
+@charset "UTF-8";
+
+iframe {
+  /* iframeには有効でない？ */
+  max-height: 600px;
+}

@@ -10,6 +10,7 @@ declare(strict_types=1);
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PDF</title>
   <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
 </head>
 
 <body>
@@ -28,8 +29,9 @@ declare(strict_types=1);
 
       <div>
         <p>iframeでPDFを読み込むテスト</p>
-        <iframe src="sample_rect.pdf" width="500" height="600">
-          <a href="sample_rect.pdf">sample_rect.pdf</a>
+        <iframe src="sample_rect.pdf" width="100%" height="400">
+          <!-- もしiframeでPDFを開けない場合は以下をコメントアウトする。 -->
+          <!-- <a href="sample_rect.pdf">sample_rect.pdf</a> -->
         </iframe>
       </div>
 
