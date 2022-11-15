@@ -2,10 +2,14 @@
  * 参考:
  * 「ハンズオンWebAssembly」P.126 
  * コンパイル例:
+ * ・Cのライブラリ関数を使用しJavaScriptを出力する場合
  * emcc validate.cpp -o ../../public/webassembly/js_plumbing/validate.js -s "EXPORTED_RUNTIME_METHODS=['ccall', 'UTF8ToString']" -s "EXPORTED_FUNCTIONS=['_malloc', '_free']"
- **/
+ * ・Cのライブラリ関数を使用せずJavaScriptを出力しない場合
+ * emcc validate.cpp -O1 --no-entry -o ../../public/webassembly/js_plumbing/validate.wasm
+ */
 
 #include <cstdlib>
+#include <cstdint>
 #include <cstring>
 
 #ifdef __EMSCRIPTEN__
@@ -15,6 +19,28 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * 簡易版malloc関数
+ */
+#ifdef __EMSCRIPTEN__
+EMSCRIPTEN_KEEPALIVE
+#endif
+uint8_t* create_buffer(int size_needed) 
+{
+  return new uint8_t[size_needed];
+}
+
+/**
+ * 簡易版free関数 
+ */
+#ifdef __EMSCRIPTEN__
+EMSCRIPTEN_KEEPALIVE
+#endif
+void free_buffer(const char* pointer) 
+{
+  delete pointer;
+}
 
 int validateValueProvided(const char* value, const char* error_message, 
   char* return_error_message) 

@@ -1,9 +1,7 @@
 /**
  * 参考:
- * 「ハンズオンWebAssembly」P.141
+ * 「ハンズオンWebAssembly」P.141〜
  */
-
-const Module = window.Module;
 
 const initialData = {
   name: 'ダメージジーンズ',
@@ -13,7 +11,21 @@ const initialData = {
 const MAXIMUM_NAME_LENGTH = 50;
 const VALID_CATEGORY_IDS = [100, 101];
 
-const initializePage = () => {
+let moduleMemory = null;
+let moduleExports = null;
+
+const initializePage = async () => {
+  const importObject = {
+    wasi_snapshot_preview1: {
+      proc_exit: value => {}
+    }
+  };
+
+  const result = await WebAssembly.instantiateStreaming(fetch('validate.wasm'), 
+    importObject);
+  moduleExports = result.instance.exports;
+  moduleMemory = moduleExports.memory;
+
   document.getElementById('name').value = initialData.name;
 
   const category = document.getElementById('category');
@@ -25,6 +37,32 @@ const initializePage = () => {
       break;
     }
   }
+};
+
+/**
+ * @todo メッセージがマルチバイト文字を含む場合文字化けしてしまう。
+ */
+const getStringFromMemory = memoryOffset => {
+  let returnValue = '';
+
+  const size = 256;
+  const bytes = new Uint8Array(moduleMemory.buffer, memoryOffset, size);
+
+  let character = '';
+  for (let index = 0; index < size; index++) {
+    character = String.fromCharCode(bytes[index]);
+    if (character === '\0') {
+      break;
+    }
+    returnValue += character;
+  }
+
+  return returnValue;
+};
+
+const copyStringToMemory = (value, memoryOffset) => {
+  const bytes = new Uint8Array(moduleMemory.buffer);
+  bytes.set(new TextEncoder().encode(value + '\0'), memoryOffset);
 };
 
 const getSelectedCategoryId = () => {
@@ -48,29 +86,30 @@ const setErrorMessage = errMessage => {
 };
 
 const validateName = (name, errorMessagePointer) => {
-  const functionName = 'validateName'
-  const returnType = 'number';
-  const paramTypes = ['string', 'number', 'number'];
-  const paramValues = [name, MAXIMUM_NAME_LENGTH, errorMessagePointer];
+  const namePointer = moduleExports.create_buffer(name.length + 1);
+  copyStringToMemory(name, namePointer);
 
-  const isValid = Module.ccall(functionName, returnType, paramTypes, paramValues);
+  const isValid = moduleExports.validateName(namePointer, MAXIMUM_NAME_LENGTH, errorMessagePointer);
 
   return isValid === 1;
 };
 
 const validateCategory = (categoryId, errorMessagePointer) => {
+  const categoryIdPointer = moduleExports.create_buffer(categoryId.length + 1);
+  copyStringToMemory(categoryId, categoryIdPointer);  
+
   const arrayLength = VALID_CATEGORY_IDS.length;
-  const bytesPerElement = Module.HEAP32.BYTES_PER_ELEMENT;
-  const arrayPointer = Module._malloc(arrayLength * bytesPerElement);
-  Module.HEAP32.set(VALID_CATEGORY_IDS, arrayPointer / bytesPerElement);
+  const bytesPerElement = Int32Array.BYTES_PER_ELEMENT;
+  const arrayPointer = moduleExports.create_buffer(arrayLength * bytesPerElement);
 
-  const functionName = 'validateCategory';
-  const returnType = 'number';
-  const paramTypes = ['string', 'number', 'number', 'number'];
-  const paramValues = [categoryId, arrayPointer, arrayLength, errorMessagePointer];
-  const isValid = Module.ccall(functionName, returnType, paramTypes, paramValues);
+  const bytesForArray = new Int32Array(moduleMemory.buffer);
+  bytesForArray.set(VALID_CATEGORY_IDS, arrayPointer / bytesPerElement);
 
-  Module._free(arrayPointer);
+  const isValid = moduleExports.validateCategory(categoryIdPointer, arrayPointer, 
+    arrayLength, errorMessagePointer);
+
+    moduleExports.free_buffer(arrayPointer);
+    moduleExports.free_buffer(categoryIdPointer);
 
   return isValid === 1;
 };
@@ -78,23 +117,24 @@ const validateCategory = (categoryId, errorMessagePointer) => {
 const listeners = {
   onClickSave: () => {
     let errorMessage = '';
-    const errorMessagePointer = Module._malloc(256);
+    const errorMessagePointer = moduleExports.create_buffer(256);
 
     const name = document.getElementById('name').value;
     const categoryId = getSelectedCategoryId();
 
     if (!validateName(name, errorMessagePointer) || 
     !validateCategory(categoryId, errorMessagePointer)) {
-      errorMessage = Module.UTF8ToString(errorMessagePointer);
+      errorMessage = getStringFromMemory(errorMessagePointer);
     }
 
-    Module._free(errorMessagePointer);
+    moduleExports.free_buffer(errorMessagePointer);
 
     setErrorMessage(errorMessage);
 
     if (!errorMessage) {
-      console.log(`登録成功:${new Date()}`);
-      // TODO: 成功時の処理
+      const msg = '登録成功(テスト)';
+      console.log(msg, new Date());
+      alert(msg);
     }
   }
 };
@@ -111,7 +151,7 @@ const addListener = () => {
   });
 };
 
-window.addEventListener('DOMContentLoaded', () => {
-  initializePage();
+window.addEventListener('DOMContentLoaded', async () => {
+  await initializePage();
   addListener();
 });
