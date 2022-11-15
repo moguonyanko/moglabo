@@ -39,19 +39,22 @@ const initializePage = async () => {
   }
 };
 
-/**
- * @todo メッセージがマルチバイト文字を含む場合文字化けしてしまう。
- */
 const getStringFromMemory = memoryOffset => {
   let returnValue = '';
 
   const size = 256;
-  const bytes = new Uint8Array(moduleMemory.buffer, memoryOffset, size);
+  let bytes = new Uint8Array(moduleMemory.buffer, memoryOffset, size);
+  bytes = new TextDecoder('UTF-8').decode(bytes);
+
+  // 目的のメッセージの後に大量のNULL文字(\u0000、\0と同じ)が付与されているので除去する。
+
+  // replaceだと余計な文字がNULL文字の間に混ざった場合に置換しそこなって残ってしまう。
+  //returnValue = bytes.replace(/\0/g, '');
 
   let character = '';
   for (let index = 0; index < size; index++) {
-    character = String.fromCharCode(bytes[index]);
-    if (character === '\0') {
+    character = bytes[index];
+    if (character === '\0') { // \u0000と\0は等しくなる。
       break;
     }
     returnValue += character;

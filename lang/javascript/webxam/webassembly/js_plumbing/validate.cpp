@@ -58,14 +58,14 @@ EMSCRIPTEN_KEEPALIVE
 #endif
 int validateName(char* name, int max_length, char* return_error_message)
 {
-  if (validateValueProvided(name, "商品名は必須です", return_error_message) == 0) 
+  if (validateValueProvided(name, "商品名は必須です。(例：𩸽を𠮟る𠮷野家)", return_error_message) == 0) 
   {
     return 0;
   }
 
   if (strlen(name) > max_length) 
   {
-    strcpy(return_error_message, "商品名が長すぎます");
+    strcpy(return_error_message, "商品名が長すぎます。");
     return 0;
   }
 
@@ -94,20 +94,20 @@ EMSCRIPTEN_KEEPALIVE
 int validateCategory(char* category_id, int* valid_category_ids, int array_length, 
   char* return_error_message)
 {
-  if (validateValueProvided(category_id, "商品名は必須です", return_error_message) == 0) 
+  if (validateValueProvided(category_id, "商品名は必須です。(例：𩸽を𠮟る𠮷野家)", return_error_message) == 0) 
   {
     return 0;
   }
 
   if ((valid_category_ids == NULL) || (array_length == 0)) 
   {
-    strcpy(return_error_message, "利用可能な商品カテゴリがありません");
+    strcpy(return_error_message, "利用可能な商品カテゴリがありません。");
     return 0;
   }
 
   if (isCategoryIdInArray(category_id, valid_category_ids, array_length) == 0) 
   {
-    strcpy(return_error_message, "選択された商品カテゴリIDが正しくありません");
+    strcpy(return_error_message, "選択された商品カテゴリIDが正しくありません。");
     return 0;
   }
 
