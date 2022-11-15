@@ -38,5 +38,5 @@
 d3.*.js
 package.json
 **/typescript/**/*.js
-
+**/javascript/webxam/public/webassembly/common/lib
 
