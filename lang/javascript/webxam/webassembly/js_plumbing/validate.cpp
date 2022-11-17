@@ -8,6 +8,8 @@
  * emcc validate.cpp -O1 --no-entry -o ../../public/webassembly/js_plumbing/validate.wasm
  * ・出力されるJavaScriptに独自の関数をマージしたい場合
  * emcc validate.cpp -O1 --js-library mergeinto.js -s "EXPORTED_RUNTIME_METHODS=['ccall', 'UTF8ToString']" -s "EXPORTED_FUNCTIONS=['_malloc', '_free']" -o ../../public/webassembly/js_plumbing/validate.js
+ * ・JavaScriptを出力せずにWebAssemblyモジュールからJavaScriptの関数を呼び出す場合(P.191)
+ * emcc validate.cpp -O1 --no-entry -s ERROR_ON_UNDEFINED_SYMBOLS=0 -o ../../public/webassembly/js_plumbing/validate.wasm 
  * 
  */
 
