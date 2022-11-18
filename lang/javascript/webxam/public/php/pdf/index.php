@@ -29,7 +29,8 @@ declare(strict_types=1);
 
       <div>
         <p>iframeでPDFを読み込むテスト</p>
-        <iframe src="sample_rect.pdf" width="100%" height="400">
+        <iframe src="./pdfjs/web/viewer.html?file=../../office_sample_pdf.pdf" width="100%" height="400">
+        <!-- <iframe src="./pdfjs/web/viewer.html?file=../../sample_rect.pdf" width="100%" height="400"> -->
           <!-- もしiframeでPDFを開けない場合は以下をコメントアウトする。 -->
           <!-- <a href="sample_rect.pdf">sample_rect.pdf</a> -->
         </iframe>
@@ -37,12 +38,15 @@ declare(strict_types=1);
 
       <p>以下のブラウザでは正常に開くことができた。</p>
       <ul>
-        <li>iOS15.6.1 Safari</li>
         <li>macOS Safari16.1</li>
         <li>Chrome Canary</li>
         <li>Microsoft Edge 93.0.961.47</li>
       </ul>
-      <p>以下は開けなかった。</p>
+      <p>PDF.jsを使う場合開けなかった。</p>
+      <ul>
+      <li>iOS15.6.1 Safari</li>
+      </ul>
+      <p>以下はどうやっても開けなかった。</p>
       <ul>
         <li>Firefox Nightly(PDF.jsの例外が発生する。)</li>
       </ul>

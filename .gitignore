@@ -39,4 +39,6 @@ d3.*.js
 package.json
 **/typescript/**/*.js
 **/javascript/webxam/public/webassembly/common/lib
+**/javascript/webxam/public/php/pdf/office_sample_pdf.pdf
+**/javascript/webxam/public/php/pdf/pdfjs
 
