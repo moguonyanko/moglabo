@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+#errorMessage {
+  display: none;
+}
+
+#errorMessage.error {
+  display: block;
+}

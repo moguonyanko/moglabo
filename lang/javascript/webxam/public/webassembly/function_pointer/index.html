@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>関数ポインタ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../common/lib/css/bootstrap.min.css">
+  <link rel="stylesheet" href="main.css" />
+  <script src="../common/lib/js/jquery.min.js"></script>
+  <script src="../common/lib/js/popper.min.js"></script>
+  <script src="../common/lib/js/bootstrap.min.js"></script>
+  <!-- emccで生成されたJavaScriptはグローバル変数を宣言するためtype="module"を指定してはいけない。 -->
+  <script src="validate.js" defer></script>
+  <!-- emccで生成されたJavaScriptから参照される関数やプロパティを含む場合はtype="module"を指定してはいけない。 -->
+  <script type="module" src="editproduct.js" defer></script>
+</head>
+
+<body>
+  <main class="container">
+    <h1>関数ポインタ</h1>
+
+    <div id="errorMessage" class="alert alert-danger" role="alert"></div>
+
+    <div class="form-group">
+      <label for="name">名前:</label>
+      <input type="text" class="form-control" id="name">
+    </div>
+
+    <div class="form-group">
+      <label for="category">カテゴリ:</label>
+      <select class="custom-select" id="category">
+        <option value="0"></option>
+        <option value="100">ジーンズ</option>
+        <option value="101">ドレスとかパンツ</option>
+      </select>
+    </div>
+
+    <button type="button" class="btn btn-primary" data-event-target="onClickSave">Save</button>
+  </main>
+
+  <footer class="text-center text-lg-start bg-light text-muted">
+    <p>参考</p>
+    <p><a href="https://www.oreilly.co.jp/books/9784814400102/">ハンズオンWebAssembly</a></p>
+  </footer>
+</body>
+
+</html>
