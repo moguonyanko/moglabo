@@ -2,7 +2,11 @@
  * 参考:
  * 「ハンズオンWebAssembly」P.211〜 
  * コンパイル例:
+ * ・JavaScriptを生成する場合
  * emcc validate.cpp -s RESERVED_FUNCTION_POINTERS=4 -s "EXPORTED_RUNTIME_METHODS=['ccall', 'UTF8ToString', 'addFunction', 'removeFunction']" -s "EXPORTED_FUNCTIONS=['_malloc', '_free']" -o ../../public/webassembly/function_pointer/validate.js
+ * ・JavaScriptを生成しない場合
+ * 「-Wl,--export-table,--growable-table」はカンマの間にスペースを入れない。
+ * emcc validate.cpp -O1 --no-entry -Wl,--export-table,--growable-table -o ../../public/webassembly/function_pointer/validate_nojs.wasm
  */
 
 #include <cstdlib>
