@@ -32,7 +32,9 @@ const freePointers = (onSuccess, onError) => {
   Module.removeFunction(onError);
 };
 
-const createPointers = (resolve, reject, returnPointers) => {
+const createPointers = (resolve, reject) => {
+  const returnPointers = {};
+
   const onSuccess = Module.addFunction(() => {
     freePointers(onSuccess, onError);
     resolve();
@@ -45,6 +47,8 @@ const createPointers = (resolve, reject, returnPointers) => {
 
   returnPointers.onSuccess = onSuccess;
   returnPointers.onError = onError;
+
+  return returnPointers;
 };
 
 const getSelectedCategoryId = () => {
@@ -70,8 +74,7 @@ const setErrorMessage = errMessage => {
 
 const validateName = name => {
   return new Promise((resolve, reject) => {
-    const pointers = { onSuccess: null, onError: null };
-    createPointers(resolve, reject, pointers);
+    const pointers = createPointers(resolve, reject);
 
     Module.ccall('validateName',
       null,
@@ -83,8 +86,7 @@ const validateName = name => {
 
 const validateCategory = categoryId => {
   return new Promise((resolve, reject) => {
-    const pointers = { onSuccess: null, onError: null };
-    createPointers(resolve, reject, pointers);
+    const pointers = createPointers(resolve, reject);
 
     const arrayLength = VALID_CATEGORY_IDS.length;
     const bytesPerElement = Module.HEAP32.BYTES_PER_ELEMENT;
