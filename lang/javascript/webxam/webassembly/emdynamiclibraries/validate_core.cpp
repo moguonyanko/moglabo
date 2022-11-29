@@ -2,7 +2,7 @@
  * 参考:
  * 「ハンズオンWebAssembly」P.322〜 
  * コンパイル例:
- * emcc validate_core.cpp --js-library mergeinto.js -s MAIN_MODULE=2 -s MODULARIZE=1 -s "EXPORTED_FUNCTIONS=['_strlen', '_atoi']" -s "EXPORTED_RUNTIME_METHODS=['ccall', 'stringToUTF8', 'UTF8ToString']" -o ../../public/webassembly/emdynamiclibraries/validate_core.js
+ * emcc validate_core.cpp --js-library mergeinto.js -s MAIN_MODULE=2 -s MODULARIZE=1 -s "EXPORTED_FUNCTIONS=['_strlen', '_atoi', '_atol']" -s "EXPORTED_RUNTIME_METHODS=['ccall', 'stringToUTF8', 'UTF8ToString']" -o ../../public/webassembly/emdynamiclibraries/validate_core.js
  */
 
 #include <cstdlib>
@@ -40,6 +40,9 @@ void free_buffer(const char* pointer)
   delete pointer;
 }
 
+#ifdef __EMSCRIPTEN__
+EMSCRIPTEN_KEEPALIVE
+#endif
 int validateValueProvided(const char* value, const char* error_message) 
 {
     if ((value == NULL) || (value[0] == '\0')) {
@@ -50,8 +53,10 @@ int validateValueProvided(const char* value, const char* error_message)
     return 1;
 }
 
-int isIdInArray(char* selected_id, int* valid_ids, 
-  int array_length)
+#ifdef __EMSCRIPTEN__
+EMSCRIPTEN_KEEPALIVE
+#endif
+int isIdInArray(char* selected_id, int* valid_ids, int array_length)
 {
   int id = atoi(selected_id);
   for (int index = 0; index < array_length; index++) 

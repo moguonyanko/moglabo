@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>動的リンクの実装</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../common/lib/css/bootstrap.min.css">
+  <link rel="stylesheet" href="main.css" />
+  <script src="../common/lib/js/jquery.min.js"></script>
+  <script src="../common/lib/js/popper.min.js"></script>
+  <script src="../common/lib/js/bootstrap.min.js"></script>
+  <!-- 
+    emccで生成されたJavaScriptから参照される関数やプロパティを含む場合にtype="module"を指定するならば、
+    それらはグローバルオブジェクトから参照できるように宣言する必要がある。
+  -->
+  <script type="module" src="index.js"></script>
+  <!-- emccで生成されたJavaScriptはグローバル変数を宣言するためtype="module"を指定してはいけない。 -->
+  <script src="validate_core.js"></script>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="../../">Home</a>
+      </li>
+      <li class="nav-item">
+        <a id="navEditProduct" class="nav-link" href="#EditProduct" 
+          data-event-target="switchForm" data-event-args="true">商品選択</a>
+      </li>
+      <li class="nav-item">
+        <a id="navPlaceOrder" class="nav-link" href="#PlaceOrder" 
+          data-event-target="switchForm" data-event-args="false">注文</a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <h1>動的リンクの実装</h1>
+    <h2 id="formTitle"></h2>
+
+    <div id="productForm">
+      <div class="form-group">
+        <label for="name">名前:</label>
+        <input type="text" class="form-control" id="name">
+      </div>
+      <div class="form-group">
+        <label for="category">カテゴリ:</label>
+        <select class="custom-select" id="category">
+          <option value="0"></option>
+          <option value="100">ジーンズ</option>
+          <option value="101">ドレスとかパンツ</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn btn-primary" 
+        data-event-target="onClickSaveProduct">保存</button>
+    </div>
+
+    <div id="orderForm">
+      <div class="form-group">
+        <label for="product">商品:</label>
+        <select class="custom-select" id="product">
+          <option value="0"></option>
+          <option value="200">ボロボロジーンズ</option>
+          <option value="301">派手なパンツ</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="quantity">数量:</label>
+        <input type="text" class="form-control" id="quantity" value="0">
+      </div>
+
+      <button type="button" class="btn btn-primary" 
+        data-event-target="onClickAddToCart">カートに突っ込む</button>
+    </div>
+
+    <div id="errorMessage" class="alert alert-danger" role="alert"></div>
+
+  <footer class="text-center text-lg-start bg-light text-muted">
+    <p>参考</p>
+    <p><a href="https://www.oreilly.co.jp/books/9784814400102/">ハンズオンWebAssembly</a></p>
+  </footer>
+</body>
+
+</html>

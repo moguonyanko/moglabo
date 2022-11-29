@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+.visible {
+  display: block;
+}
+
+.invisible {
+  display: none;
+}

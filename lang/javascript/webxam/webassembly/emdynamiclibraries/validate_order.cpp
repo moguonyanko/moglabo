@@ -54,9 +54,9 @@ int validateQuantity(char* quantity)
     return 0;
   }
 
-  if (atoi(quantity) < 1)
+  if (atol(quantity) < 1 || 1000 < atol(quantity))
   {
-    UpdateHostAboutError("数量は1以上を指定して下さい。");
+    UpdateHostAboutError("数量は1以上1000以下を指定して下さい。");
     return 0;
   }
 

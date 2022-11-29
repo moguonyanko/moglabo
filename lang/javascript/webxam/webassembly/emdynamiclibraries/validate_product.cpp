@@ -21,28 +21,6 @@ extern int validateValueProvided(const char* value, const char* error_message);
 extern int isIdInArray(char* selected_id, int* valid_ids, int array_length);
 extern void UpdateHostAboutError(const char* error_message);
 
-/**
- * 簡易版malloc関数
- */
-#ifdef __EMSCRIPTEN__
-EMSCRIPTEN_KEEPALIVE
-#endif
-uint8_t* create_buffer(int size_needed) 
-{
-  return new uint8_t[size_needed];
-}
-
-/**
- * 簡易版free関数 
- */
-#ifdef __EMSCRIPTEN__
-EMSCRIPTEN_KEEPALIVE
-#endif
-void free_buffer(const char* pointer) 
-{
-  delete pointer;
-}
-
 #ifdef __EMSCRIPTEN__
 EMSCRIPTEN_KEEPALIVE
 #endif

@@ -33,7 +33,7 @@ Module['ready'] = new Promise(function(resolve, reject) {
   readyPromiseResolve = resolve;
   readyPromiseReject = reject;
 });
-["_strlen","_atoi","___wasm_apply_data_relocs","_create_buffer","_free_buffer","_fflush","onRuntimeInitialized"].forEach((prop) => {
+["_strlen","_atoi","_atol","___wasm_apply_data_relocs","_create_buffer","_free_buffer","_validateValueProvided","_isIdInArray","_fflush","onRuntimeInitialized"].forEach((prop) => {
   if (!Object.getOwnPropertyDescriptor(Module['ready'], prop)) {
     Object.defineProperty(Module['ready'], prop, {
       get: () => abort('You are getting ' + prop + ' on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js'),
@@ -2158,6 +2158,10 @@ var ASM_CONSTS = {
         if (ENVIRONMENT_IS_NODE) text = 'warning: ' + text;
         err(text);
       }
+    }
+
+  function _UpdateHostAboutError(errorMessagePointer) {
+      setErrorMessage(Module.UTF8ToString(errorMessagePointer));
     }
 
 
@@ -4806,6 +4810,7 @@ function checkIncomingModuleAPI() {
   ignoredModuleProp('fetchSettings');
 }
 var asmLibraryArg = {
+  "UpdateHostAboutError": _UpdateHostAboutError,
   "__heap_base": ___heap_base,
   "__indirect_function_table": wasmTable,
   "__memory_base": ___memory_base,
@@ -4834,10 +4839,19 @@ var _create_buffer = Module["_create_buffer"] = createExportWrapper("create_buff
 var _free_buffer = Module["_free_buffer"] = createExportWrapper("free_buffer");
 
 /** @type {function(...*):?} */
+var _validateValueProvided = Module["_validateValueProvided"] = createExportWrapper("validateValueProvided");
+
+/** @type {function(...*):?} */
+var _isIdInArray = Module["_isIdInArray"] = createExportWrapper("isIdInArray");
+
+/** @type {function(...*):?} */
 var _atoi = Module["_atoi"] = createExportWrapper("atoi");
 
 /** @type {function(...*):?} */
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
+
+/** @type {function(...*):?} */
+var _atol = Module["_atol"] = createExportWrapper("atol");
 
 /** @type {function(...*):?} */
 var _fflush = Module["_fflush"] = createExportWrapper("fflush");
