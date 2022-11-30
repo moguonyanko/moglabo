@@ -1,0 +1,43 @@
+@charset "UTF-8";
+
+.line {
+  visibility: hidden;
+  stroke-dasharray: 5000;
+  stroke-dashoffset: 0;
+  animation-duration: 3s;
+  animation-name: segment;
+  animation-timing-function: ease-in;
+  /* animation-iteration-count: infinite; */
+  animation-fill-mode: forwards;
+}
+
+.line.segment0 {
+  animation-delay: 0s;
+}
+
+.line.segment1 {
+  animation-delay: 0.5s;
+}
+
+.line.segment2 {
+  animation-delay: 1s;
+}
+
+.line.segment3 {
+  animation-delay: 1.5s;
+}
+
+.line.segment4 {
+  animation-delay: 2s;
+}
+
+@keyframes segment {
+  from {
+    visibility: hidden;
+    stroke-dashoffset: 5000;
+  }
+  to {
+    visibility: visible;
+    stroke-dashoffset: 0;
+  }
+}

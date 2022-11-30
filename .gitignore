@@ -41,4 +41,5 @@ package.json
 **/javascript/webxam/public/webassembly/common/lib
 **/javascript/webxam/public/php/pdf/office_sample_pdf.pdf
 **/javascript/webxam/public/php/pdf/pdfjs
-
+**/javascript/webxam/public/d3/topojson.v0.min.js
+**/javascript/webxam/public/d3/townline/geodata/conuntries.topojson
