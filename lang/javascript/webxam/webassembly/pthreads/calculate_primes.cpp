@@ -3,6 +3,8 @@
  * 「ハンズオンWebAssembly」P.399〜
  * コンパイル例:
  * emcc calculate_primes.cpp -O1 -std=c++11 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -o ../../public/webassembly/pthreads/index.html
+ * ・JavaScriptとWebAssemblyモジュールだけを出力する場合
+ * emcc calculate_primes.cpp -O1 -std=c++11 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -o ../../public/webassembly/pthreads/pthreads.js
  */
 
 #include <cstdlib>
@@ -64,7 +66,7 @@ void* thread_func(void* arg)
 int main() 
 {
   int start = 3;
-  int end = 199999;
+  int end = 1000000;
   printf("素数検出 %d から %d まで", start, end);
 
   std::chrono::high_resolution_clock::time_point duration_start = 
@@ -95,7 +97,7 @@ int main()
     args_start += 200000;
   }  
 
-  findPrimes(start, end, args[0].primes_found);
+  findPrimes(start, 199999, args[0].primes_found);
 
   for (int i = 0; i < 4; i++) 
   {

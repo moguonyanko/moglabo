@@ -43,7 +43,7 @@ void findPrimes(int start, int end, std::vector<int>& primes_found)
 int main() 
 {
   int start = 3;
-  int end = 100000;
+  int end = 1000000;
   printf("素数検出 %d から %d まで", start, end);
 
   std::chrono::high_resolution_clock::time_point duration_start = 

@@ -865,7 +865,7 @@ function isFileURI(filename) {
 
 // end include: URIUtils.js
 var wasmBinaryFile;
-  wasmBinaryFile = 'index.wasm';
+  wasmBinaryFile = 'pthreads.wasm';
   if (!isDataURI(wasmBinaryFile)) {
     wasmBinaryFile = locateFile(wasmBinaryFile);
   }
@@ -1340,7 +1340,7 @@ var ASM_CONSTS = {
         // Allow HTML module to configure the location where the 'worker.js' file will be loaded from,
         // via Module.locateFile() function. If not specified, then the default URL 'worker.js' relative
         // to the main html file is loaded.
-        var pthreadMainJs = locateFile('index.worker.js');
+        var pthreadMainJs = locateFile('pthreads.worker.js');
         PThread.unusedWorkers.push(new Worker(pthreadMainJs));
       },getNewWorker:function() {
         if (PThread.unusedWorkers.length == 0) {

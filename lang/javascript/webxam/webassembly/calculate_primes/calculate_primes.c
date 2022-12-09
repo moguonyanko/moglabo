@@ -23,7 +23,7 @@ int isPrime(int value) {
 
 int main() {
   int start = 3;
-  int end = 100000;
+  int end = 199999;
 
   printf("素数検出 %d から %d まで", start, end);
 
