@@ -2846,9 +2846,10 @@ public class TestFunctions {
 		
 		/**
 		 * 分岐が利用されなければ実質的finalは保持される。
+         * =>JDK21以降は分岐が利用されなくてもfinalとみなされなくなる。
 		 */
 		if(false){
-			suffNumber = 10000;
+			//suffNumber = 10000;
 		}
 		
 		String prefix;

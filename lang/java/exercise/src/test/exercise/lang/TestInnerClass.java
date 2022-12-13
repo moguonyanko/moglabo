@@ -52,8 +52,9 @@ public class TestInnerClass {
 		/**
 		 * suffixへの変更を行うとsuffixが「実質的final」でなくなるのでコンパイルエラーになる。
 		 * ただし変更を行っている行に到達しないならばコンパイルエラーにならない。
+         * =>JDK21以降は分岐が利用されなくてもfinalとみなされなくなる。
 		 */
-		if(false)suffix += "!";
+		//if(false)suffix += "!";
 		
 		InnerClassPractice anonymous = new InnerClassPractice(){
 
@@ -68,8 +69,9 @@ public class TestInnerClass {
 		 * 「実質的final」であるべき値が内部クラスの定義の後に変更されても
 		 * コンパイルエラーになる。 やはり変更を行っている行に到達しないならば
 		 * コンパイルエラーにならない。
+         * =>JDK21以降は分岐が利用されなくてもfinalとみなされなくなる。
 		 */
-		if(false)suffix += "?";
+		//if(false)suffix += "?";
 		
 		String expected = "sample string from anonymous" + suffix;
 		String actual = anonymous.getMyString();
