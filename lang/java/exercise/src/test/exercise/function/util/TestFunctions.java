@@ -3357,12 +3357,11 @@ public class TestFunctions {
 			(path, attr) -> attr.size() > 0;
 		
 		Set<Path> expected = new HashSet<>();
-		expected.add(Paths.get("./sample/countword1.txt"));
-		expected.add(Paths.get("./sample/countword2.txt"));
-		expected.add(Paths.get("./sample/countword3.txt"));
-		expected.add(Paths.get("./sample/foo/bar/baz/filessample.txt"));
+		expected.add(Paths.get("./sample/testfindpathset/sample1.txt"));
+		expected.add(Paths.get("./sample/testfindpathset/sample2.txt"));
+		expected.add(Paths.get("./sample/testfindpathset/sample3.txt"));
 		
-		Path base = Paths.get(".");
+		Path base = Paths.get("./sample/testfindpathset/");
 		Set<Path> actual = Functions.findPathSet(base, 10, regularFile, textExt, notEmpty);
 		
 		assertThat(actual, is(expected));
