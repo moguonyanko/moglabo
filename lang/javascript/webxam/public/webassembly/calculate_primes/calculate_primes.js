@@ -1221,9 +1221,10 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  
+  1943: ($0, $1) => { console.log('EM_ASM_:start=' + $0 + ',end=' + $1); }
 };
-
+function printMessageByMacro() { console.log('EM_JSシリーズのマクロから文字列出力します。'); }
+function NoReturnValueWithIntegerAndDoubleParameters(start,end) { console.log(start + 'から' + end + 'の間の素数を検出します。'); }
 
 
 
@@ -1292,6 +1293,38 @@ var ASM_CONSTS = {
         if (ENVIRONMENT_IS_NODE) text = 'warning: ' + text;
         err(text);
       }
+    }
+
+  var readAsmConstArgsArray = [];
+  function readAsmConstArgs(sigPtr, buf) {
+      // Nobody should have mutated _readAsmConstArgsArray underneath us to be something else than an array.
+      assert(Array.isArray(readAsmConstArgsArray));
+      // The input buffer is allocated on the stack, so it must be stack-aligned.
+      assert(buf % 16 == 0);
+      readAsmConstArgsArray.length = 0;
+      var ch;
+      // Most arguments are i32s, so shift the buffer pointer so it is a plain
+      // index into HEAP32.
+      buf >>= 2;
+      while (ch = HEAPU8[sigPtr++]) {
+        var chr = String.fromCharCode(ch);
+        var validChars = ['d', 'f', 'i'];
+        assert(validChars.includes(chr), 'Invalid character ' + ch + '("' + chr + '") in readAsmConstArgs! Use only [' + validChars + '], and do not specify "v" for void return argument.');
+        // Floats are always passed as doubles, and doubles and int64s take up 8
+        // bytes (two 32-bit slots) in memory, align reads to these:
+        buf += (ch != 105/*i*/) & buf;
+        readAsmConstArgsArray.push(
+          ch == 105/*i*/ ? HEAP32[buf] :
+         HEAPF64[buf++ >> 1]
+        );
+        ++buf;
+      }
+      return readAsmConstArgsArray;
+    }
+  function _emscripten_asm_const_int(code, sigPtr, argbuf) {
+      var args = readAsmConstArgs(sigPtr, argbuf);
+      if (!ASM_CONSTS.hasOwnProperty(code)) abort('No EM_ASM constant found at address ' + code);
+      return ASM_CONSTS[code].apply(null, args);
     }
 
   function _emscripten_memcpy_big(dest, src, num) {
@@ -1381,8 +1414,11 @@ function checkIncomingModuleAPI() {
   ignoredModuleProp('fetchSettings');
 }
 var asmLibraryArg = {
+  "NoReturnValueWithIntegerAndDoubleParameters": NoReturnValueWithIntegerAndDoubleParameters,
+  "emscripten_asm_const_int": _emscripten_asm_const_int,
   "emscripten_memcpy_big": _emscripten_memcpy_big,
-  "fd_write": _fd_write
+  "fd_write": _fd_write,
+  "printMessageByMacro": printMessageByMacro
 };
 var asm = createWasm();
 /** @type {function(...*):?} */
@@ -1429,7 +1465,8 @@ var stackAlloc = Module["stackAlloc"] = createExportWrapper("stackAlloc");
 /** @type {function(...*):?} */
 var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
 
-
+var ___start_em_js = Module['___start_em_js'] = 1748;
+var ___stop_em_js = Module['___stop_em_js'] = 1943;
 
 
 
@@ -1699,7 +1736,6 @@ var missingLibrarySymbols = [
   'getRandomDevice',
   'traverseStack',
   'convertPCtoSourceLocation',
-  'readAsmConstArgs',
   'mainThreadEM_ASM',
   'jstoi_q',
   'jstoi_s',

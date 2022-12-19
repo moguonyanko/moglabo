@@ -9,6 +9,16 @@
 #include <stdio.h>
 #include <emscripten.h>
 
+// ES_JS関数で囲むとコンパイルエラーになる。
+EM_JS(void, printMessageByMacro, (), {
+  console.log('EM_JSシリーズのマクロから文字列出力します。');
+});
+
+EM_JS(void, printStartAndEndByMacro, (int start, int end), {
+  // バッククォートを使うとコンパイルエラーになる。
+  console.log(start + 'から' + end + 'の間の素数を検出します。');
+});
+
 int isPrime(int value) {
   if (value == 2) return 1;
 
@@ -24,6 +34,12 @@ int isPrime(int value) {
 int main() {
   int start = 3;
   int end = 199999;
+
+  printMessageByMacro();
+  printStartAndEndByMacro(start, end);
+  EM_ASM_({
+    console.log('EM_ASM_:start=' + $0 + ',end=' + $1);
+  }, start, end);
 
   printf("素数検出 %d から %d まで", start, end);
 
