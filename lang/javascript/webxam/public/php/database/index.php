@@ -22,23 +22,44 @@ declare(strict_types=1);
     <section>
       <h2>PDOオブジェクトの生成</h2>
       <?php
+      function connect(): PDO
+      {
+        try {
+          $user = 'sampleuser';
+          $password = 'samplepass';
+          $dbh = new PDO('mysql:host=localhost;dbname=test', $user, $password);
+          return $dbh;
+        } catch (PDOException $err) {
+          echo '<strong>' . $err->getMessage() . '</strong>';
+          throw $err;
+        }
+      }
+
       // jdbc:mysql://localhost:3306/test
       echo '<ol>';
-      try {
-        $user = 'sampleuser';
-        $password = 'samplepass';
-        $dbh = new PDO('mysql:host=localhost;dbname=test', $user, $password);
-        // PHP8.0.0以降はデフォルトでPDO::ERRMODE_EXCEPTIONなので指定しなくてよい。
-        //$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sth = $dbh->prepare('SELECT * FROM authors');
-        $sth->execute();
-        while ($row = $sth->fetch(PDO::FETCH_NUM, PDO::FETCH_ORI_NEXT)) {
-          echo '<li>' . $row[0] . ':' . $row[1] . '</li>';
-        }
-      } catch (PDOException $err) {
-        echo '<strong>' . $err->getMessage() . '</strong>';
+      $dbh = connect();
+      // PHP8.0.0以降はデフォルトでPDO::ERRMODE_EXCEPTIONなので指定しなくてよい。
+      //$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      $sth = $dbh->prepare('SELECT * FROM authors');
+      $sth->execute();
+      while ($row = $sth->fetch(PDO::FETCH_NUM, PDO::FETCH_ORI_NEXT)) {
+        echo '<li>' . $row[0] . ':' . $row[1] . '</li>';
       }
       echo '</ol>';
+      $dbh = null;
+      ?>
+    </section>
+    <section>
+      <h2>プリペアドステートメント</h2>
+      <?php
+      $dbh = connect();
+      $sth = $dbh->prepare('SELECT * FROM authors WHERE id = ? OR id = ?');
+      $sth->execute(['B001', 'Y001']);
+      // printでは配列を文字列で出力できない。
+      //print_r($result);
+      while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+        echo '<p>' . $row['id'] . ':' . $row['name'] . '</p>';
+      }
       ?>
     </section>
   </main>
