@@ -1,16 +1,14 @@
 /**
  * 参考:
- * https://go.dev/tour/moretypes/7
- * https://go.dev/tour/moretypes/8
- * https://go.dev/tour/moretypes/9
- * https://go.dev/tour/moretypes/10
- * https://go.dev/tour/moretypes/11
- * https://go.dev/tour/moretypes/12
+ * https://go.dev/tour/moretypes/7 - 15
  */
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // 要素数も型に含まれる。要素数が異なれば同じ方としてみなされずエラーとなる。
 func sliceNames(names [5]string, start int, end int) []string {
@@ -42,6 +40,39 @@ func dumpSliceLiterals() {
 	fmt.Println(nila == nil)
 }
 
+func printSlice(name string, slice []int) {
+	fmt.Printf("%s:len=%d cap=%d %v\n", name, len(slice), cap(slice), slice)
+}
+
+func dumpMakeSlice() {
+	a := make([]int, 10) // lenもcapも10
+	printSlice("a []int", a)
+	printSlice("a[2:5]", a[2:5])
+	b := make([]int, 0, 10) // lenは0、capは10
+	printSlice("b []int", b)
+	printSlice("b[:3]", b[:3])
+
+	a = append(a, 1000)
+	printSlice("a []int", a)
+	a = append(a, 2000, 3000, 4000, 5000)
+	printSlice("a []int", a)
+}
+
+func dumpMultiSlices() {
+	flags := [][]string{
+		{"0", "0"},
+		{"0", "1"},
+		{"1", "1"},
+	}
+	flags[0][0] = "1"
+	flags[1][0] = "1"
+	flags[2][0] = "1"
+
+	for i := 0; i < len(flags); i++ {
+		fmt.Printf("%s\n", strings.Join(flags[i], "-"))
+	}
+}
+
 func main() {
 	names := [5]string{"Mike", "Foo", "Bar", "Baz", "Hoge"}
 	var n = sliceNames(names, 1, 4)
@@ -58,4 +89,8 @@ func main() {
 	fmt.Println(names)
 
 	dumpSliceLiterals()
+
+	dumpMakeSlice()
+
+	dumpMultiSlices()
 }
