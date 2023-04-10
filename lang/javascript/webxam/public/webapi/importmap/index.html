@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>importmap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../common.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "samplemath": "./samplemath.js"
+        }
+      }
+    </script>
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+    <header>
+        <a href="../../">home</a>
+        <h1>importmap</h1>
+    </header>
+    <main>
+      <label>a=<input data-event-args="a" type="number" value="1" /></label>
+      <label>b=<input data-event-args="b" type="number" value="2" /></label>
+      <select data-event-type>
+        <option value="add" selected>加算</option>
+      </select>
+      <button data-event-target="calc">実行</button>
+      <div class="output"></div>
+    </main>
+    <footer>
+        <p>参考サイト</p>
+        <ul>
+          <li>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap">&lt;script type="importmap"&gt;</script></a>
+          </li>
+        </ul>
+    </footer>
+</body>
+
+</html>
