@@ -4169,4 +4169,20 @@ public class TestFunctions {
 		assertThat(actual, is(expected));
 	}
 
+    /**
+     * 参考:
+     * https://blogs.oracle.com/javamagazine/post/java-quiz-streams-collections-dropwhile-takewhile
+     */
+    @Test
+    public void dropWhileとtakeWhileで値を絞り込める() {
+        var set = Set.of(1, 2, 3, 4, 5, 6, 7);
+        set = new TreeSet(set); // 順序付けされたSetを使わないと結果が安定しない。
+        var actual = set.stream()
+                .dropWhile(i -> i < 5)
+                .takeWhile(i -> i < 7)
+                .count(); // 順序付けされていれば5と6が返る。
+        
+        assertTrue(actual == 2);
+    }
+    
 }
