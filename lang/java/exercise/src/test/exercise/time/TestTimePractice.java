@@ -906,5 +906,19 @@ public class TestTimePractice {
 		assertTrue(sample2.after(startDate) && sample2.before(endDate));
 		assertTrue(sample3.after(startDate) && sample3.after(endDate));
 	}
+    
+    /**
+     * 参考:
+     * https://blogs.oracle.com/javamagazine/post/java-quiz-date-time-generalization
+     */
+    @Test
+    public void DateTimeFormatterで日時を表示する() {
+        var pattern = "dd MMM yyyy";
+        // このサンプルでは時刻を与えないので実行時例外が発生する。
+        //var pattern = "dd MMM yyyy HH:mm";
+        var formatter = DateTimeFormatter.ofPattern(pattern);
+        var result = LocalDate.of(2023, 4, 1);
+        System.out.println(formatter.format(result));
+    }
 	
 }
