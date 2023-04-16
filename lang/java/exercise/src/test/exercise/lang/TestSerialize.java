@@ -82,6 +82,8 @@ public class TestSerialize {
             this("no name", -1, BatterType.SWITCH);
             System.out.println("Batter name " + name);
         }
+        // classと違いrecordのデシリアライズではシリアライズされたオブジェクトに
+        // 対応したコンストラクタが呼び出される。
         Batter {
             System.out.println("Batter name " + name);
         }
