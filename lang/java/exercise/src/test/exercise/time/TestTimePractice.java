@@ -921,4 +921,18 @@ public class TestTimePractice {
         System.out.println(formatter.format(result));
     }
 	
+    /**
+     * 参考:
+     * https://blogs.oracle.com/javamagazine/post/java-quiz-birthday-weekday
+     */
+    @Test
+    public void LocalDateで年を追加する() {
+        var date = LocalDate.now();
+        // LocalDateは不変
+        date = date.plus(12, ChronoUnit.MONTHS);
+        date = date.plus(1, ChronoUnit.YEARS);
+        var result = date.getDayOfWeek();
+        System.out.println(result);
+    }
+    
 }
