@@ -177,5 +177,16 @@ public class TestOptional {
         var actual2 = s.flatMap(v -> Optional.of(v.length())).get();
         assertThat(actual2, is(4));
     }
+    
+    /**
+     * 参考:
+     * https://blogs.oracle.com/javamagazine/post/java-quiz-optional-objects
+     */
+    @Test
+    public void nullのOptionalは空のOptionalと等しくなる() {
+        var o1 = Optional.ofNullable(0).filter(v -> v == null);
+        var o2 = Optional.ofNullable(null);
+        assertTrue(o1.equals(o2));
+    }
 
 }
