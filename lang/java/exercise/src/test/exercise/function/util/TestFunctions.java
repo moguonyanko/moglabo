@@ -4185,4 +4185,25 @@ public class TestFunctions {
         assertTrue(actual == 2);
     }
     
+    /**
+     * 参考:
+     * https://blogs.oracle.com/javamagazine/post/java-quiz-generics-primitives-autoboxing
+     */
+    @Test
+    public void identityはシングルトンを返す() {
+        Function<Double, Double> f1 = Function.identity();
+        Function<Double, Double> f2 = Function.identity();
+        assertTrue(f1 == f2);
+        Function<String, String> f3 = Function.identity();
+        // 原型のFunction型に一旦代入しないと比較できない。
+        Function f1_1 = f1;
+        Function f3_1 = f3;
+        assertTrue(f1_1 == f3_1);
+        
+        Function<Integer, Integer> f4 = i -> i;
+        Function<Integer, Integer> f5 = i -> i;
+        // identityでなければシングルトンではない。
+        assertTrue(f4 != f5);
+    }
+    
 }

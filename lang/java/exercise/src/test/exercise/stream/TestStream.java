@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.regex.Pattern;
 import static java.util.stream.Collectors.*;
 
 import org.jetbrains.annotations.NotNull;
@@ -492,5 +493,16 @@ public class TestStream {
         var result = samples.stream().sorted().collect(Collectors.toList());
         assertNotNull(result);
         System.out.println(Arrays.toString(result.toArray()));
+    }
+    
+    private static final Pattern SLASH_PATTERN = Pattern.compile("\\/");
+    
+    @Test
+    public void splitAsStreamでストリームを処理できる() {
+        var sample = "https://localhost/sample/index.php";
+        var size = SLASH_PATTERN.splitAsStream(sample)
+                .mapToInt(String::length)
+                .sum();
+        assertThat(size, is(30));
     }
 }
