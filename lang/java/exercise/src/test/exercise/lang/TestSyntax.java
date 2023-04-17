@@ -1,12 +1,12 @@
 package test.exercise.lang;
 
 import org.junit.Test;
+import org.junit.Ignore;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 import exercise.lang.EnumFruits;
 import exercise.lang.StaticFruits;
-import org.junit.Ignore;
 
 // 一部のテストクラスは--enable-previewが指定されないとコンパイルできず、--enable-previewが
 // 指定されると他のクラス含めて実行できなくなるのでコメントアウトしている。

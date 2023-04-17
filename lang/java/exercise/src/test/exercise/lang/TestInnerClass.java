@@ -3,6 +3,7 @@ package test.exercise.lang;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.function.Function;
 
@@ -243,5 +244,55 @@ public class TestInnerClass {
 
 		assertNotEquals(o1.getClass().getTypeName(), o2.getClass().getTypeName());
 	}
+    
+    /**
+     * 参考:
+     * https://blogs.oracle.com/javamagazine/post/java-quiz-collection-contains
+     */
+    private static class SampleCar {
+        private final Integer year;
+        // staticがないと常に空のリストを使ってcheckYearが行われてしまう。
+        private static final List<Integer> existingYears = new ArrayList<>();
+        
+        private SampleCar(Integer year) {
+           checkYear(year);
+           existingYears.add(year);
+           this.year = year;
+        }
+        
+        private void checkYear(Integer year) {
+            for (var existingYear : existingYears) {
+                if (existingYear.equals(year)) {
+                    throw new IllegalArgumentException(year + " is existed yet.");
+                }
+            }
+        }
+
+        @Override
+        public String toString() {
+            return year.toString();
+        }
+    }
+    
+    private static class SampleCarException extends RuntimeException {
+        private SampleCarException(Throwable t) {
+            super(t);
+        }
+    }
+    
+    @Test(expected = SampleCarException.class)
+    public void staticフィールドの値をチェックできる() {
+        var c1 = new SampleCar(1999);
+        var c2 = new SampleCar(2003);
+        try {
+            // 同じyearを持つSampleCarが作られたタイミングで例外がスロー去れるかのテスト
+            var c3 = new SampleCar(1999);
+            System.out.print(c1);
+            System.out.print(c2);
+            System.out.print(c3);
+        } catch (IllegalArgumentException e) {
+            throw new SampleCarException(e);
+        }
+    }
 	
 }
