@@ -505,4 +505,27 @@ public class TestStream {
                 .sum();
         assertThat(size, is(30));
     }
+    
+    /**
+     * 参考:
+     * https://blogs.oracle.com/javamagazine/post/java-quiz-stream-api-side-effects
+     */
+    @Test
+    public void 個数の分かっているストリームのストリームパイプラインは実行されない() {
+        var list = new ArrayList<String>();
+        var size = List.of("Hello", "World")
+                .stream()
+                .map(v -> {
+                    // filterなどが呼ばれずストリームのサイズが確定しており
+                    // 終端操作がcountなのでこのブロックは処理が到達しない。
+                    // 意図せぬ動作を回避したければストリームの処理に副作用を持たせないことが肝要である。
+                    list.add(v);
+                    return v;
+                })
+                // 終端操作がcollectだとmap内の処理は実行される。
+                //.collect(Collectors.joining());
+                .count(); // 終端操作
+        
+        assertTrue(list.isEmpty());
+    }
 }
