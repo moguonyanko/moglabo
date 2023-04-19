@@ -528,4 +528,30 @@ public class TestStream {
         
         assertTrue(list.isEmpty());
     }
+    
+    private record MyStudent(String name, Integer score) {}
+    
+    /**
+     * 参考:
+     * https://blogs.oracle.com/javamagazine/post/java-stream-api-reduce-overloads
+     */
+    @Test
+    public void reduceのcombinerで結果を結合できる() {
+        var stream = List.of(
+                new MyStudent("Masao", 10),
+                new MyStudent("Taro", 9),
+                new MyStudent("Jiro", 6),
+                new MyStudent("Hime", 7),
+                new MyStudent("Mike", 8)
+        ).stream();
+        var result = stream.reduce(Integer.valueOf(0), 
+                (sum, ms) -> sum += ms.score, 
+                /**
+                 * TODO:
+                 * combinerの使い方を調べる。少なくともコンパイルエラーにはならない。
+                 */
+                (sum1, sum2) -> sum1 * sum2);
+        
+        assertTrue(result == 40);
+    }
 }
