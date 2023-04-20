@@ -534,6 +534,7 @@ public class TestStream {
     /**
      * 参考:
      * https://blogs.oracle.com/javamagazine/post/java-stream-api-reduce-overloads
+     * https://docs.oracle.com/javase/jp/19/docs/api/java.base/java/util/stream/package-summary.html
      */
     @Test
     public void reduceのcombinerで結果を結合できる() {
@@ -544,13 +545,10 @@ public class TestStream {
                 new MyStudent("Hime", 7),
                 new MyStudent("Mike", 8)
         ).stream();
-        var result = stream.reduce(Integer.valueOf(0), 
-                (sum, ms) -> sum += ms.score, 
-                /**
-                 * TODO:
-                 * combinerの使い方を調べる。少なくともコンパイルエラーにはならない。
-                 */
-                (sum1, sum2) -> sum1 * sum2);
+        var result = stream.reduce(0, 
+                (sum, ms) -> sum + ms.score, 
+                // この引数がなくても集計は行えそうだが実際にはコンパイルエラーになる。
+                Integer::sum);
         
         assertTrue(result == 40);
     }
