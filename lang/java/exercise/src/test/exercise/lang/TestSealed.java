@@ -4,23 +4,102 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
-sealed interface Greetable permits JapanGreeter, EnglishGreeter {
+/**
+ * 参考:
+ * https://blogs.oracle.com/javamagazine/post/java-sealed-types-subtypes-final
+ */
+sealed interface Greetable permits JapanGreeter, EnglishGreeter, UnknownGreeter,
+       SealedEnumGreeter, FinalEnumGreeter {
     String greet();
 }
 
-// Greetableがsealedの場合はfinal宣言されていないとコンパイルエラー
-final record JapanGreeter(String name) implements Greetable {
+/**
+ * recordはfinalがなくてもコンパイルエラーにならない。recordは暗黙的にfinalである。
+ */
+record JapanGreeter(String name) implements Greetable {
 
+    @Override
     public String greet() {
         return name + "です。こんにちは";
     }
 }
 
-final record EnglishGreeter(String name) implements Greetable {
+record EnglishGreeter(String name) implements Greetable {
 
+    @Override
     public String greet() {
         return "I am " + name + ", Hello";
     }
+}
+
+/**
+ * classはsealed、non-sealedあるいはfinalがないとコンパイルエラー
+ */
+non-sealed class UnknownGreeter implements Greetable {
+
+    @Override
+    public String greet() {
+        return "?????????";
+    }
+}
+
+/**
+ * UnknownGreeterはnon-sealedなので継承可能。
+ */
+class SubUnknownGreeter extends UnknownGreeter {
+
+    @Override
+    public String greet() {
+        return super.greet() + "★★★★★★★★★★★★★★★";
+    }
+}
+
+/**
+ * enumもrecord同様何も付けなくてもコンパイルエラーにならない。
+ * クラスボディ({}のこと)を持つenum定数を1つでも含む場合そのenumクラスはsealedになる。
+ */
+enum SealedEnumGreeter implements Greetable {
+
+    /**
+     * 以下の3つの列挙子はSealedEnumGreeterのサブクラスになる。
+     */
+    FOO{
+        @Override
+        public String greet() {
+            return "FOO!";
+        }
+    }, 
+    BAR{
+        @Override
+        public String greet() {
+            return "BAR!";
+        }
+    }, 
+    BAZ{
+        @Override
+        public String greet() {
+            return "BAZ!";
+        }
+    };
+
+    @Override
+    public String greet() {
+        return "SEALED ENUM";
+    }
+}
+
+/**
+ * クラスボディを持つenum定数を1つも含んでいないのでこのenumクラスはfinalになる。
+ */
+enum FinalEnumGreeter implements Greetable {
+
+    FOO, BAR, BAZ;
+
+    @Override
+    public String greet() {
+        return "FINAL ENUM";
+    }
+    
 }
 
 // DummyはGreetableの宣言でpermitsに含まれていないため
@@ -148,10 +227,14 @@ public class TestSealed {
         assertThat(jg.greet(), is("まさおです。こんにちは"));
         var eg = new EnglishGreeter("Masao");
         assertThat(eg.greet(), is("I am Masao, Hello"));
-
+        
         System.out.println("----- GreetableEnum sample output -----");
         System.out.println(GreetableEnum.JAPAN.greet());
         System.out.println(GreetableEnum.ENGLISH.greet());
+        
+        System.out.println(new SubUnknownGreeter().greet());
+        System.out.println(SealedEnumGreeter.FOO.greet());
+        System.out.println(FinalEnumGreeter.FOO.greet());
     }
     
     @Test
