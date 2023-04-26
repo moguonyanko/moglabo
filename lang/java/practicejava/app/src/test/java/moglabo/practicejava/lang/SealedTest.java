@@ -59,6 +59,14 @@ public class SealedTest {
         }
 
     }
+    
+    // sealedクラスはpremitsがなくてもコンパイルエラーにならない。
+    private abstract sealed class A {
+    }
+
+    // final、sealed、non-sealedがないとコンパイルエラーになる。
+    private non-sealed class B extends A {
+    }
 
     /**
      * 参考:
