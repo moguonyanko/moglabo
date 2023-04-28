@@ -420,12 +420,51 @@ declare(strict_types=1);
       echo var_dump((new TrackFactory)->create('b'));
       ?>
     </section>
+    <section>
+      <h2>readonlyクラス</h2>
+      <?php
+      readonly class PerssonalData {
+        public string $name;
+        public int $age;
+
+        function __construct(string $name, int $age)
+        { 
+          $this->name = $name;
+          $this->age = $age;
+        }
+      }
+
+      const pdata = new PerssonalData("Mike", 45);
+      //pdata->name = 'Hoge'; // Fatal Errorになる。
+      echo '<p>名前：', pdata->name, 'さん</p>';
+      echo '<p>年齢：', pdata->age, '歳</p>';
+      ?>
+    </section>
+    <section>
+      <h2>Disjunctive Normal Form (DNF) Types</h2>
+      <?php
+      interface Walkable {}
+      interface Swimable {}
+      
+      function checkRyoseirui((Walkable & Swimable) | null $target) {
+        return $target;
+      }
+
+      class Frog implements Walkable, Swimable {}
+
+      class Fish implements Swimable {}
+      
+      echo var_dump(checkRyoseirui((new Frog)));
+      //echo var_dump(checkRyoseirui((new Fish))); // Type Errorになる。
+      ?>
+    </section>
   </main>
 
   <footer>
     <h3>参考</h3>
     <ul>
       <li><a href="https://www.php.net/manual/ja/language.oop5.php">PHPマニュアル 言語リファレンス クラスとオブジェクト</a></li>
+      <li><a href="https://www.php.net/releases/8.2/en.php">PHP8.2の特徴</a></li>
     </ul>
   </footer>
 </body>
