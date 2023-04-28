@@ -458,6 +458,35 @@ declare(strict_types=1);
       //echo var_dump(checkRyoseirui((new Fish))); // Type Errorになる。
       ?>
     </section>
+    <section>
+      <h2>stand-alone types</h2>
+      <?php
+      function getFalse(): false {
+        //return true; // false以外を返すとTypeErrorになる。
+        return false;
+      }
+      function getTrue(): true {
+        return true;
+      }
+      function getNull(): null {
+        return null;
+      }
+
+      echo var_dump(getFalse());
+      echo var_dump(getTrue());
+      echo var_dump(getNull());
+
+      function requirePositiveNumber($number): true {
+        return $number > 0;
+      }
+
+      try {
+        echo var_dump(requirePositiveNumber(-1));
+      } catch (TypeError $err) {
+        echo '<p><strong>', $err->getMessage(), '</strong></p>';
+      }
+      ?>
+    </section>
   </main>
 
   <footer>
