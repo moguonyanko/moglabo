@@ -29,12 +29,28 @@ declare(strict_types=1); // 厳密な型付けを指定する。
       ?>
       <p>Javaなどと異なり配列の要素への変更もエラーとなる。</p>
     </section>
+    <section>
+      <h2>Constants in traits</h2>
+      <?php
+        trait Code {
+          public const NUMBER = 123456;
+        }      
+
+        class Item {
+          use Code;
+        }
+
+        //echo var_dump(Code::NUMBER); // 実行時エラー。traitをuseした側からしかアクセスできない。
+        echo var_dump(Item::NUMBER);
+      ?>
+    </section>
   </main>
 
   <footer>
     <h3>参考</h3>
     <ul>
       <li><a href="https://www.php.net/manual/ja/language.constants.php">PHPマニュアル 言語リファレンス</a></li>
+      <li><a href="https://www.php.net/releases/8.2/en.php#constants_in_traits">Constants in traits</a></li>
     </ul>
   </footer>
 </body>
