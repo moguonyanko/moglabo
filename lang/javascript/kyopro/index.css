@@ -1,0 +1,24 @@
+@charset "UTF-8";
+
+main {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  width: 95%;
+}
+
+section ul {
+  display: flex;
+  flex-direction: column;
+}
+
+.latest {
+  order: -1;
+}
+
+section.latest .latest::after {
+  content: 'NEW';
+  color: red;
+  font-size: 50%;
+  padding: 0.25em;
+}
