@@ -14,10 +14,10 @@ class KyoPro {
     main.addEventListener('click', event => {
       if ('eventTrigger' in event.target.dataset) {
         event.stopPropagation();
-        const args = document.querySelector('input[data-event-args]');
+        const args = document.querySelector('*[data-event-args]');
         const result = this.#runner.run(args.value);
         const output = document.querySelector('.output');
-        output.textContent = result;
+        output.innerHTML = result;
       }
     });  
   }
