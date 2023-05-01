@@ -99,4 +99,26 @@ public class RecordTest {
         assertTrue(sm.createDescriptionWithSelf().getId().equals("ABCDE"));
     }
     
+    private class Student {
+        // ネストされたrecordは暗黙でstaticとなる。
+        record Name(String name){}
+        class Description {
+            private final String desc;
+            
+            public Description(String desc) {
+                this.desc = desc;
+            }
+            
+        }
+    }
+    
+    @Test
+    void ネストされたレコードからインスタンス生成できる() {
+        var studentName = new Student.Name("Mike");
+        var studentDesc = new Student().new Description("Sample");
+        
+        assertTrue(studentName.name.equals("Mike"));
+        assertTrue(studentDesc.desc.equals("Sample"));
+    }
+    
 }
