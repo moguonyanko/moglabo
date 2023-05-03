@@ -121,4 +121,24 @@ public class RecordTest {
         assertTrue(studentDesc.desc.equals("Sample"));
     }
     
+    /**
+     * 参考:
+     * https://blogs.oracle.com/javamagazine/post/java-record-canonical-constructor
+     */
+    private record Score(int value) {
+        // 引数を取るコンストラクタが暗黙で定義される。
+//        Score(int value) {
+//            this.value = value;
+//        }
+        Score(){
+            this(0);
+        }
+    }
+    
+    @Test
+    void recordのフィールドをコンストラクタで初期化できる() {
+        var score = new Score();
+        assertTrue(score.value == 0);
+    }
+    
 }
