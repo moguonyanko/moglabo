@@ -1,9 +1,11 @@
 /**
- * @fileoverview 重複検査
+ * @fileoverview SNSのログ
  * 問題
  * https://atcoder.jp/contests/past201912-open/tasks/past201912_e
  * 解説
- * 
+ * https://blog.hamayanhamayan.com/entry/2019/12/31/235442
+ * 課題
+ * ユーザー1の結果が正解とは異なってしまっている。
  */
 
 import KyoPro from '../../kyopro.js';
@@ -16,8 +18,8 @@ class Runner {
     for (let i = 1; i <= memberSize; i++) {
       followMap[i] = new Array(memberSize).fill('N');
     }
-    for (let i = 1; i <= logSize; i++) {
-      const [type, member, target] = lines[i].split(' ').map(v => parseInt(v));
+    for (let logIndex = 1; logIndex <= logSize; logIndex++) {
+      const [type, member, target] = lines[logIndex].split(' ').map(v => parseInt(v));
       if (type === 2) {
         for (let j = 1; j <= memberSize; j++) {
           if (followMap[j][member - 1] === 'Y') {
@@ -41,7 +43,19 @@ class Runner {
       }
     }
 
-    return JSON.stringify(Object.values(followMap).map(v => v));
+    // 自分自身を未フォロー（N）に変更する。
+    for (let member in followMap) {
+      for (let target = 1 ; target <= memberSize; target++) {
+        if (member === target) {
+          followMap[member][target] = 'N';
+        }
+      }
+    }
+
+    const result = Object.values(followMap).map(v => v.join(''))
+      .join('<br />');
+
+    return result;
   }
 }
 
