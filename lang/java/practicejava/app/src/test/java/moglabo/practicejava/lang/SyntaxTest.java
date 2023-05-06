@@ -28,4 +28,31 @@ public class SyntaxTest {
         assertSame("Default", result);
     }    
     
+    Object getSampeValue() {
+        var message = "HelloWorld";
+        return message;
+    }
+    
+    /**
+     * 参考:
+     * https://blogs.oracle.com/javamagazine/post/java-pattern-matching-instanceof-flow-scoping
+     */
+    @Test
+    void instanceofでパターンマッチングできる() {
+        // この時点で型推論ができていればinstanceofはコンパイルエラーになる。
+        //var message = "Hello";
+        Object message = getSampeValue();
+        
+        if (!(message instanceof String v)) {
+            // vは参照できない。
+            // if (message instanceof String v) なら参照できる。
+            //assertTrue(message.equals(v)); 
+            assertFalse(((String)message).isEmpty());
+        } 
+        
+        if (!(message instanceof Number v)) { // String vと同じ変数名でもコンパイルエラーにならない。
+            // Does nothing
+        }
+    }
+    
 }
