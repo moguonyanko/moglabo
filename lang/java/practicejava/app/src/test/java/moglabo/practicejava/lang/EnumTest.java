@@ -60,4 +60,30 @@ public class EnumTest {
         System.out.println(s);
     }
 
+    private enum Direction {
+        LEFT, RIGHT, UP, DOWN
+    }
+    
+    /**
+     * 参考:
+     * https://blogs.oracle.com/javamagazine/post/java-switch-expressions-arrow-break-yield
+     */
+    @Test
+    void enumとアロー式を組み合わせる() {
+        var direction = Direction.RIGHT;
+        
+        // 左辺がなければswitch式とは見なされない。
+        // これはswitch文になる。swicth文ではenumを網羅していなくても
+        // コンパイルエラーにならない。->を使おうがcaseを使おうがそれは変わらない。
+        // ->を使って変わるのはbreakを書かなくても1つのcaseしか実行されなくなる点。
+        // switch式であれば網羅していない値があればコンパイルエラーになる。
+        switch (direction) {
+            case UP -> System.out.println("UP!");
+            case DOWN -> System.out.println("UP!");
+                // defaultを指定するとコンパイルエラー
+//            default:
+//                throw new AssertionError();
+        }       
+    }
+    
 }
