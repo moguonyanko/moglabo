@@ -36,11 +36,12 @@ const updateMultiCards = (cards, buySize, opt_filter = () => true) => {
 class Runner {
   run(args) {
     const lines = args.split('\n');
-    const size = parseInt(lines[0].trim());
+    //const size = parseInt(lines[0].trim());
     const cards = lines[1].split(' ').map(v => parseInt(v.trim()));
+    const querySize = parseInt(lines[2].trim());
 
     let result = 0;
-    for (let i = 2; i <= size; i++) {
+    for (let i = 3; i <= querySize; i++) {
       const line = lines[i];
       const param = line.split(' ').map(v => parseInt(v.trim()));
       switch (param[0]) {
