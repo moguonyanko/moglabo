@@ -1,9 +1,9 @@
 /**
  * @fileoverview まとめ売り
  * 問題
- * 
+ * https://atcoder.jp/contests/past201912-open/tasks/past201912_h
  * 解説
- * 
+ * https://blog.hamayanhamayan.com/entry/2019/12/31/235746
  */
 
 import KyoPro from '../../kyopro.js';
@@ -19,14 +19,14 @@ const updateCards = (cards, cardNumber, buySize) => {
 };
 
 const updateMultiCards = (cards, buySize, opt_filter = () => true) => {
-  let size = 0, boughtSize = 0;
+  let boughtSize = 0;
   for (let i = 0; i < cards.length; i++) {
-    if (opt_filter) {
-      size = updateCards(cards, i, buySize);
-      if (size) {
+    if (opt_filter(i)) {
+      let size = updateCards(cards, i + 1, buySize);
+      if (size === buySize) {
         boughtSize += buySize;
       } else {
-        break;
+        return 0;
       }
     }
   }
@@ -38,22 +38,22 @@ class Runner {
     const lines = args.split('\n');
     //const size = parseInt(lines[0].trim());
     const cards = lines[1].split(' ').map(v => parseInt(v.trim()));
-    const querySize = parseInt(lines[2].trim());
+    //const querySize = parseInt(lines[2].trim());
 
     let result = 0;
-    for (let i = 3; i <= querySize; i++) {
+    for (let i = 3; i < lines.length; i++) {
       const line = lines[i];
       const param = line.split(' ').map(v => parseInt(v.trim()));
-      switch (param[0]) {
-        case 1: 
+      const type = param[0];
+      if (type === 1) {
           let size = updateCards(cards, param[1] - 1, param[2]);
-          if (size !== 0) {
+          if (size > 0) {
             result += size;
           } 
-        case 2:
-          result += updateMultiCards(cards, param[2], index => (index + 1) % 2 !== 0);
-        case 3:
-          result += updateMultiCards(cards, param[2]);
+      } else if (type === 2) {
+          result += updateMultiCards(cards, param[1], index => (index + 1) % 2 !== 0);
+      } else if (type === 3) {
+          result += updateMultiCards(cards, param[1]);
       }
     }
     return result;
