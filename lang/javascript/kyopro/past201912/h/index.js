@@ -8,10 +8,10 @@
 
 import KyoPro from '../../kyopro.js';
 
-const updateCards = (cards, cardNumber, buySize) => {
-  const zaiko = cards[cardNumber];
+const updateCards = (cards, cardIndex, buySize) => {
+  const zaiko = cards[cardIndex];
   if (zaiko >= buySize) {
-    cards[cardNumber] -= buySize;
+    cards[cardIndex] -= buySize;
     return buySize;
   } else {
     return 0;
@@ -20,9 +20,14 @@ const updateCards = (cards, cardNumber, buySize) => {
 
 const updateMultiCards = (cards, buySize, opt_filter = () => true) => {
   let boughtSize = 0;
-  for (let i = 0; i < cards.length; i++) {
+  /**
+   * 一つでも在庫不足があれば何もしないので全ての在庫が足りていたことが確認できるまで
+   * 一時的なcardsを使ってupdateCardsを行う。
+   */
+  let tmpCards = [...cards];
+  for (let i = 0; i < tmpCards.length; i++) {
     if (opt_filter(i)) {
-      let size = updateCards(cards, i + 1, buySize);
+      let size = updateCards(tmpCards, i, buySize);
       if (size === buySize) {
         boughtSize += buySize;
       } else {
@@ -30,15 +35,15 @@ const updateMultiCards = (cards, buySize, opt_filter = () => true) => {
       }
     }
   }
+  // 全ての在庫が足りていたので引数のcardsにtmpCardsの内容をコピーする。
+  cards.splice(0, tmpCards.length, ...tmpCards);
   return boughtSize;
 };
 
 class Runner {
   run(args) {
     const lines = args.split('\n');
-    //const size = parseInt(lines[0].trim());
     const cards = lines[1].split(' ').map(v => parseInt(v.trim()));
-    //const querySize = parseInt(lines[2].trim());
 
     let result = 0;
     for (let i = 3; i < lines.length; i++) {
