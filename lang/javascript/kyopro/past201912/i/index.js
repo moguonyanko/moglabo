@@ -3,13 +3,77 @@
  * 問題
  * https://atcoder.jp/contests/past201912-open/tasks/past201912_i
  * 解説
- * 
+ * https://blog.hamayanhamayan.com/entry/2019/12/31/235848
  */
 
 import KyoPro from '../../kyopro.js';
 
+class Order {
+  constructor() {
+    this.orderIndex = -1;
+    this.price = 1_000_000_000;
+  }
+
+  setInfo({ orderIndex, price }) {
+    this.orderIndex = orderIndex;
+    this.price = parseInt(price);
+  }
+
+  equals(other) {
+    if (!(other instanceof Order)) {
+      return false;
+    }
+    return this.orderIndex === other.orderIndex;
+  }
+
+  exists() {
+    return this.orderIndex > -1;
+  }
+}
+
 class Runner {
+  /**
+   * @todo DPを使って解くように修正したい。ただしDPを使ってもループの回数は減らない。
+   */
   run(args) {
+    const lines = args.split('\n');
+    const [itemSize, orderSize] = lines[0].trim().split(' ').map(v => parseInt(v.trim()));
+    const orders = lines.slice(1);
+    const itemOrders = [];
+    /**
+     * new Array(itemSize).fill(new Order()) では全ての配列の要素に同一のOrderインスタンスが
+     * 割り当てられてしまう。
+     */
+    for (let i = 0; i < itemSize; i++) {
+      itemOrders.push(new Order());
+    }
+    for (let orderIndex = 0; orderIndex < orderSize; orderIndex++) {
+      const [items, price] = orders[orderIndex].trim().split(' ').map(v => v.trim());
+      for (let itemIndex = 0; itemIndex < itemSize; itemIndex++) {
+        if (items[itemIndex] === 'Y' && itemOrders[itemIndex].price > parseInt(price)) {
+          itemOrders[itemIndex].setInfo({ orderIndex, price });
+        }
+      }
+    }
+
+    for (let i = 0; i < itemSize; i++) {
+      if (!itemOrders[i].exists()) {
+        return -1;
+      }
+    }
+
+    const checkedIndexes = new Set();
+    let result = 0;
+    for (let i = 0; i < itemSize; i++) {
+      if (!checkedIndexes.has(itemOrders[i].orderIndex)) {
+        result += itemOrders[i].price;
+        checkedIndexes.add(itemOrders[i].orderIndex);
+      }
+    }
+    return result;
+  }
+
+  old_run(args) {
     const lines = args.split('\n');
     const [itemSize, orderSize] = lines[0].trim().split(' ').map(v => parseInt(v.trim()));
     const orders = lines.slice(1);
