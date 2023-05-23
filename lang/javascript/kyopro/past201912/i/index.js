@@ -33,9 +33,49 @@ class Order {
 
 class Runner {
   /**
-   * @todo DPを使って解くように修正したい。ただしDPを使ってもループの回数は減らない。
+   * 以下の解説をそのまま真似たbitDP版
+   * https://blog.hamayanhamayan.com/entry/2019/12/31/235848
    */
   run(args) {
+    const lines = args.split('\n');
+    const MSK = [], C = [];
+    const [N, M] = lines[0].trim().split(' ').map(v => parseInt(v.trim()));
+
+    const orders = lines.slice(1);
+    for (let i = 0; i < M; i++) {
+      const [items, price] = orders[i].trim().split(' ').map(v => v.trim());
+      C[i] = parseInt(price);
+      for (let j = 0; j < N; j++) {
+        const c = items[j];
+        MSK[i] <<= 1;
+        if (c === 'Y') MSK[i] |= 0x01; 
+      }
+    }
+    
+    const dp = [];
+    for (let msk = 0; msk < 1 << N; msk++) {
+      dp[msk] = Infinity;
+    }
+
+    dp[0] = 0;
+    for (let msk = 0; msk < 1 << N; msk++) {
+      for (let i = 0; i < M; i++) {
+        dp[msk | MSK[i]] = Math.min(dp[msk | MSK[i]], dp[msk] + C[i]);
+      }
+    }
+
+    const ans = dp[(1 << N) - 1];
+    if (ans !== Infinity) {
+      return ans;
+    } else {
+      return -1;
+    }
+  }
+
+  /**
+   * 入力例3で正しい解が得られない。
+   */
+  bug_run(args) {
     const lines = args.split('\n');
     const [itemSize, orderSize] = lines[0].trim().split(' ').map(v => parseInt(v.trim()));
     const orders = lines.slice(1);
