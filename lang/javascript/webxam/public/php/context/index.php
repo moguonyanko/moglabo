@@ -47,12 +47,55 @@ declare(strict_types=1);
       var_dump($result);
       ?>
     </section>
+    <section>
+      <h2>ストリームフィルタ</h2>
+      <p>数値を読み取って紐づく文字列に変換している。</p>
+      <?php
+      const angou_map = [
+        1 => 'PHP',
+        2 => 'Java',
+        3 => 'Go',
+        4 => 'JavaScript',
+        5 => 'Scheme'
+      ];
+
+      class my_angou_filter extends php_user_filter
+      {
+        function filter($in, $out, &$consumed, $closing): int
+        {
+          while ($bucket = stream_bucket_make_writeable($in)) {
+            $angou = trim($bucket->data);
+            $bucket->data = angou_map[$angou] ?? 'Unknown';
+            $consumed += $bucket->datalen;
+            stream_bucket_append($out, $bucket);
+          }
+          return PSFS_PASS_ON;
+        }
+      }
+
+      stream_filter_register('angou_filter', 'my_angou_filter') or die('フィルタ設定失敗');
+
+      $angoup = fopen('angou.txt', 'r');
+      stream_filter_append($angoup, 'angou_filter');
+
+      // fgets呼び出し1回でファイルの内容全てがfilterメソッド内の$bucket->dataに渡されてしまう。
+      while (($buffer = fgets($angoup, 4096)) !== false) {
+        echo '<strong>'.$buffer.'</strong>';
+      }
+      if (!feof($angoup)) {
+        echo '<p><em>'.'ファイルが終端に達していません！'.'</em></p>';
+      }
+      fclose($angoup);
+      ?>
+    </section>
   </main>
 
   <footer>
     <h3>参考</h3>
     <ul>
       <li><a href="https://www.php.net/manual/ja/context.php">PHPマニュアル 言語リファレンス コンテキストオプションとパラメータ</a></li>
+      <li><a href="https://www.php.net/manual/ja/function.stream-filter-register.php">stream_filter_register</a></li>
+      <li><a href="https://www.php.net/fgets">fgets</a></li>
     </ul>
   </footer>
 </body>
