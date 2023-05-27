@@ -42,15 +42,16 @@ class Runner {
     const [N, M] = lines[0].trim().split(' ').map(v => parseInt(v.trim()));
 
     const orders = lines.slice(1);
-    for (let i = 0; i < M; i++) {
-      const [items, price] = orders[i].trim().split(' ').map(v => v.trim());
-      C[i] = parseInt(price);
-      for (let j = 0; j < N; j++) {
-        const c = items[j];
-        MSK[i] <<= 1;
-        if (c === 'Y') MSK[i] |= 0x01; 
+    for (let setTypeIndex = 0; setTypeIndex < M; setTypeIndex++) {
+      const [items, price] = orders[setTypeIndex].trim().split(' ').map(v => v.trim());
+      C[setTypeIndex] = parseInt(price);
+      for (let itemTypeIndex = 0; itemTypeIndex < N; itemTypeIndex++) {
+        const c = items[itemTypeIndex];
+        MSK[setTypeIndex] <<= 1; // 各セットの部品有無にあたるビットをゼロで初期化
+        if (c === 'Y') MSK[setTypeIndex] |= 0x01; // 部品があるなら1に変更
       }
     }
+    console.log(MSK);
     
     const dp = [];
     for (let msk = 0; msk < 1 << N; msk++) {
