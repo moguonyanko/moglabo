@@ -39,4 +39,31 @@ public class StringTest {
         System.out.println(s2);
     }
     
+    /**
+     * 参考:
+     * https://blogs.oracle.com/javamagazine/post/java-text-block-string-indent-whitespace
+     */
+    @Test
+    public void indentで文字列の空白を除去できる() {
+        /**
+         * テキストブロックは行頭の空白を自動的に削除する。indentと組み合わせると直感と
+         * 反する挙動を示す可能性がある。
+         */
+        var s = """
+  A
+   \
+    \s
+     B""";
+        System.out.println("---");
+        System.out.println(s);
+        System.out.println("---");
+        
+        s = s.indent(-2); // line n1
+        s = s.indent(-2); // line n2
+        
+        System.out.println("---");
+        System.out.println(s);
+        System.out.println("---");
+    }    
+    
 }
