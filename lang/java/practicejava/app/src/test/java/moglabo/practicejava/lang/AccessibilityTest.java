@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import moglabo.practicejava.lang.animal.Animal;
+import moglabo.practicejava.lang.animal.impl.AbstractDog;
 
 public class AccessibilityTest {
     
@@ -29,10 +30,25 @@ public class AccessibilityTest {
         }
     }
     
+    private static class SampleDog extends AbstractDog {
+
+        @Override
+        protected String cry() {
+            return "WANWAN";
+        }
+        
+    }
+    
     @Test
     void 継承したメソッドを呼び出せる() {
         var cat = new Cat();
         cat.test(cat);
     }
     
+    
+    @Test
+    void アクセシビリティを考慮して抽象メソッドを実装できる() {
+        var dog = new SampleDog();
+        assertEquals("WANWAN", dog.cry());
+    }
 }
