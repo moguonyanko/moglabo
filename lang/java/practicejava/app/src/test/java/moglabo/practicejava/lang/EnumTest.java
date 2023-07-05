@@ -86,4 +86,57 @@ public class EnumTest {
         }       
     }
     
+    /**
+     * 参考
+     * https://blogs.oracle.com/javamagazine/post/java-enums-extends-interfaces
+     */
+    private interface IMark {
+        String getMark();
+    }
+    
+    private enum Kaomoji implements IMark {
+        NICO {
+            @Override
+            public String getMark() {
+                return "(^_^)";
+            }
+        },
+        IKARI {
+            @Override
+            public String getMark() {
+                return "(￣^￣)";
+            }
+        };
+        
+        @Override
+        public String toString() {
+            return getMark();
+        }
+    }
+    
+    private enum Kigou implements IMark {
+        STAR {
+            @Override
+            public String toString() {
+                return getMark();
+            }
+        },
+        CIRCLE {
+            @Override
+            public String getMark() {
+                return "○";
+            }
+        };
+        
+        @Override
+        public String getMark() {
+            return "★";
+        }
+    }
+    
+    @Test
+    void enumでインタフェースを実装できる() {
+        var actual = "RESULT:" + Kaomoji.NICO + "," + Kigou.STAR + "," + Kigou.CIRCLE;
+        System.out.println(actual);
+    }
 }
