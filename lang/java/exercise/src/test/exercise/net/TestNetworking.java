@@ -9,47 +9,37 @@ import java.util.List;
 import java.net.InetAddress;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.net.URI;
+import java.net.URISyntaxException;
 import static java.util.stream.Collectors.*;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import exercise.net.Networks;
+import java.net.Inet6Address;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 
 public class TestNetworking {
 
-	@BeforeClass
-	public static void setUpClass() {
-	}
-
-	@AfterClass
-	public static void tearDownClass() {
-	}
-
-	@Before
-	public void setUp() {
-	}
-
-	@After
-	public void tearDown() {
-	}
-
-	private URL getSampleURL() throws MalformedURLException {
-		String protocol = "http";
+	private URL getSampleURL() throws MalformedURLException, URISyntaxException {
+		String scheme = "http";
 		int port = 80;
 		String host = "localhost";
 		String userInfo = "testuser:testpassword";
+        
+        var path = "/webcise/studyinghtml5/websocket/index.html";
+        var query = "id=12345";
+        var fragment = "ResultArea";
 
-		return new URL(protocol, userInfo + "@" + host,
-			port, "/webcise/studyinghtml5/websocket/index.html?id=12345#ResultArea");
+		var uri =  new URI(scheme, userInfo, host, port, path, query, fragment);
+        
+        return uri.toURL();
 	}
 
 	@Test
-	public void URLから情報を取得する() throws MalformedURLException {
+	public void URLから情報を取得する() throws Exception {
 		URL url = getSampleURL();
 
 		System.out.println("getProtocol=" + url.getProtocol());
@@ -105,5 +95,19 @@ public class TestNetworking {
 			.map(nif -> new NifInfo(nif.getName(), nif.getInetAddresses()))
 			.forEach(info -> System.out.println(info));
 	}
+    
+    @Test
+    public void ループバックアドレスを判別できる() throws Exception {
+        var adr = InetAddress.getLoopbackAddress();
+        assertTrue(adr.isLoopbackAddress());
+    } 
+    
+    @Test
+    public void IPv6が使われているかどうか判別できる() throws UnknownHostException {
+        var adr = InetSocketAddress
+                .createUnresolved(InetAddress.getLocalHost().getHostAddress(), 80);
+        var usedIPv6 = adr.getAddress() instanceof Inet6Address;
+        assertFalse(usedIPv6);
+    }
 
 }
