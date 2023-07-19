@@ -3,11 +3,12 @@ package moglabo.practicejava.net;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AddressTest {
+public class SocketTest {
 
     @Test
     void ループバックアドレスを判別できる() throws Exception {
@@ -38,6 +39,18 @@ public class AddressTest {
             var size = server.getReceiveBufferSize();
             System.out.println(size);
             assertNotNull(size);
+        }
+    }
+    
+    @Test
+    void リモートホストの情報を取得できる() throws IOException {
+        var host = "myhost";
+        var port = 80;
+        try (var socket = new Socket(host, port)) {
+            var addr = socket.getRemoteSocketAddress();
+            System.out.println(addr);
+            assertNotNull(addr);
+            assertEquals(socket.getPort(), port);
         }
     }
 
