@@ -1,7 +1,10 @@
 package moglabo.practicejava.net;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -51,6 +54,17 @@ public class SocketTest {
             System.out.println(addr);
             assertNotNull(addr);
             assertEquals(socket.getPort(), port);
+        }
+    }
+    
+    @Test
+    void プロキシ経由で接続を試行できる() throws IOException {
+        var proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("myhost", 8080));
+        try (var socket = new Socket(proxy)) {
+            socket.connect(new InetSocketAddress("localhost", 80));
+        } catch (ConnectException ce) {
+            // 適切なプロキシが設定されていないのでこのテストでは例外が発生する。
+            System.err.println(ce.getMessage());
         }
     }
 
