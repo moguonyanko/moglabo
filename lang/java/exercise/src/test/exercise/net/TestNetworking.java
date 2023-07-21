@@ -11,15 +11,15 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.Inet6Address;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import static java.util.stream.Collectors.*;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import exercise.net.Networks;
-import java.net.Inet6Address;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 
 public class TestNetworking {
 
