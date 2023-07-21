@@ -1,5 +1,6 @@
 package moglabo.practicejava.net;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.InetAddress;
@@ -23,9 +24,8 @@ public class SocketTest {
     @Test
     void ローカルアドレスを再利用できる() throws IOException {
         var port = 38888;
-        try (var server1 = new ServerSocket(port); 
-             // portが衝突するとBindExceptionが発生するので1足す。
-             var server2 = new ServerSocket(port + 1)) {
+        try (var server1 = new ServerSocket(port); // portが衝突するとBindExceptionが発生するので1足す。
+                 var server2 = new ServerSocket(port + 1)) {
             // 戻り値がtrueかどうかはOSに依存する。macOSではtrueになる。
             // ServerSocketコンストラクタに渡したポート番号が他のServerSocketで使われて
             // いるとserver.getReuseAddress()はfalseを返すことがある。
@@ -44,7 +44,7 @@ public class SocketTest {
             assertNotNull(size);
         }
     }
-    
+
     @Test
     void リモートホストの情報を取得できる() throws IOException {
         var host = "myhost";
@@ -56,7 +56,7 @@ public class SocketTest {
             assertEquals(socket.getPort(), port);
         }
     }
-    
+
     @Test
     void プロキシ経由で接続を試行できる() throws IOException {
         var proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("myhost", 8080));
@@ -65,6 +65,24 @@ public class SocketTest {
         } catch (ConnectException ce) {
             // 適切なプロキシが設定されていないのでこのテストでは例外が発生する。
             System.err.println(ce.getMessage());
+        }
+    }
+
+    @Test
+    void ソケットからデータを読み込める() throws IOException {
+        try (var socket = new Socket("localhost", 80); 
+             var in = new BufferedInputStream(socket.getInputStream(),
+                socket.getReceiveBufferSize())) {
+            var buffer = new byte[8192];
+            var offset = 0;
+            var size = buffer.length;
+            var count = 0;
+            while (count > 0) {
+                count = in.read(buffer, offset, size);
+                if (count < 0) {
+                    throw new IOException("read error");
+                }
+            }
         }
     }
 
