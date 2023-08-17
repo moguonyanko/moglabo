@@ -1,5 +1,6 @@
-package moglabo.practicejava.concurrent;
+package moglabo.practicejava.function;
 
+import java.util.Arrays;
 import java.util.OptionalInt;
 import java.util.function.IntFunction;
 
@@ -7,19 +8,20 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FunctionTest {
-    
+
     /**
      * 参考
      * https://blogs.oracle.com/javamagazine/post/java-functional-interfaces-checked-exceptions
      */
     @FunctionalInterface
     private interface CustomFunction {
+
         int checkPositive(int x) throws Exception;
     }
-    
-    private static class FunctionSample implements 
+
+    private static class FunctionSample implements
             /*Function<Integer, Integer>*/ CustomFunction {
-        
+
         /**
          * Functionはthrows句を定義していない。チェック例外をスローしたければ
          * 独自のFunctionInterfaceを実装する必要がある。
@@ -38,7 +40,7 @@ public class FunctionTest {
             }
             return x;
         }
-        
+
         /**
          * 例外をスローさせたくない場合はOptionalを使えるとのことだが普通にcheckPositiveの
          * 例外を握りつぶすのとどれだけに違いがあるのだろうか？
@@ -56,9 +58,9 @@ public class FunctionTest {
                 return OptionalInt.empty();
             }
         };
-        
+
     }
-    
+
     @Test
     void 独自のFunctionInterfaceを実装できる() throws Exception {
         var fs = new FunctionSample();
@@ -67,5 +69,22 @@ public class FunctionTest {
         // Optionalが空であれば失敗したことを確信できる。
         assertTrue(opt.isEmpty());
     }
-    
+
+    /**
+     * 参考
+     * https://blogs.oracle.com/javamagazine/post/java-streams-flatmap-peek
+     */
+    @Test
+    void peekをストリームに挟み込むことができる() {
+        int[][] sample = {{1, 2}, {3, 4}, {5, 6}};
+        var result = Arrays.stream(sample)
+                // peekに渡したラムダに副作用がある場合は結果に影響が出る。
+                // peekは引数にConsumerを求めているが戻り値のあるラムダを渡しても
+                // コンパイルエラーにはならない。単に戻り値が無視される。
+                .peek(value -> Arrays.equals(value, new int[]{3,4}))
+                .flatMapToInt(value -> Arrays.stream(value))
+                .sum();
+        assertEquals(21, result);
+    }
+
 }
