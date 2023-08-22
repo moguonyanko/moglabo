@@ -8,8 +8,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,7 +37,7 @@ public class ThreadTest {
                 = Collections.synchronizedList(new ArrayList<>());
         private int result;
 
-        private static class Calculator extends Thread {
+        private static class Calculator implements Runnable {
 
             private final CyclicBarrier barrier;
             private final int param;
@@ -49,13 +47,22 @@ public class ThreadTest {
                 this.param = param;
             }
 
+            /**
+             * runはthrowsが宣言されていない。すなわちrun内で発生したチェック例外は
+             * runの中で責任持って対処せよという設計思想だと思われる。
+             */
             @Override
             public void run() {
                 targetValues.add(param * 100);
                 try {
                     barrier.await();
                 } catch (InterruptedException | BrokenBarrierException ex) {
-                    ex.printStackTrace();
+                    // ログを書く以外のことができるだろうか？
+                    ex.printStackTrace(System.err);
+                    
+                    // クリアっぽい処理を行ってみる。
+                    targetValues.clear();
+                    barrier.reset();
                 }
             }
         }
@@ -64,12 +71,29 @@ public class ThreadTest {
             return result;
         }
 
-        void execute(List<Integer> values) {
+        void execute(List<Integer> values) throws InterruptedException {
             var partySize = values.size();
             var br = new CyclicBarrier(partySize, () -> {
                 result = targetValues.stream().mapToInt(v -> v).sum();
             });
-            values.stream().forEach(value -> new Calculator(br, value).start());
+            
+            var threads = new ArrayList<Thread>(partySize);
+            values.stream().forEach(value -> {
+                var thread = new Thread(new Calculator(br, value));
+                threads.add(thread);
+                thread.start();            
+            });
+            
+            // チェック例外のために以下の書き方はコンパイルエラーになる。
+            // ラムダ導入時にチェック例外を投げないjoinなどが実装されればよかったのではないか？
+            // しかしそれをやり始めたら同じようなメソッド追加を他のAPIに対しても大量にやることに
+            // なりかねない。
+            //threads.forEach(Thread::join);
+            
+            // joinしないとresultはゼロのままである。
+            for (Thread thread : threads) {
+               thread.join();
+            }
         }
 
     }
@@ -81,7 +105,7 @@ public class ThreadTest {
      * @todob テストが成功していない。
      */
     @Test
-    void CyclicBarrierで並列処理の結果を結合できる() {
+    void CyclicBarrierで並列処理の結果を結合できる() throws Exception {
         var mc = new MyCalc();
         mc.execute(List.of(1, 2, 3));
         assertEquals(600, mc.getResult());
