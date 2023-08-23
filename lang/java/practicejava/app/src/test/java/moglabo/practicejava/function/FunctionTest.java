@@ -1,7 +1,6 @@
 package moglabo.practicejava.function;
 
-import java.util.Arrays;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.function.IntFunction;
 
 import org.junit.jupiter.api.Test;
@@ -81,10 +80,43 @@ public class FunctionTest {
                 // peekに渡したラムダに副作用がある場合は結果に影響が出る。
                 // peekは引数にConsumerを求めているが戻り値のあるラムダを渡しても
                 // コンパイルエラーにはならない。単に戻り値が無視される。
-                .peek(value -> Arrays.equals(value, new int[]{3,4}))
+                .peek(value -> Arrays.equals(value, new int[]{3, 4}))
                 .flatMapToInt(value -> Arrays.stream(value))
                 .sum();
         assertEquals(21, result);
+    }
+
+    private <T> boolean isOrdered(Collection<T> c) {
+        return (c.spliterator().characteristics() & Spliterator.ORDERED) != 0;
+    }
+
+    /**
+     * 参考
+     * https://blogs.oracle.com/javamagazine/post/java-streams-set-hashset-treeset
+     */
+    @Test
+    void 順序づけされたコレクションのストリームを処理できる() {
+        var base = Set.of("my", "name", "is", "Taro");
+        var s1 = new HashSet(base);
+        var s2 = new TreeSet(base);
+
+        // 何が返されるかは仕様上不定である。
+        System.out.println(s1.stream().findFirst().get());
+
+        /**
+         * 順序づけされたコレクションから生成されたストリームに対する処理は要素の出現順序を
+         * 保持して行われる。すなわち元のコレクションの順序が維持される。
+         */
+        assertEquals(s2.stream().findFirst().get().toString(), "Taro");
+    }
+
+    @Test
+    void コレクションが順序づけされているかどうかをテストできる() {
+        var base = Set.of(1, 5, 3, 0, 2);
+        var s1 = new HashSet(base);
+        var s2 = new TreeSet(base);
+        assertFalse(isOrdered(s1));
+        assertTrue(isOrdered(s2));
     }
 
 }
