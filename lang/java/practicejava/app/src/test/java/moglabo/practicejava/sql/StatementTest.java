@@ -53,5 +53,22 @@ public class StatementTest {
         
         assertEquals(preCount + 1, currentCount);
     }
+    
+    /**
+     * 参考
+     * https://blogs.oracle.com/javamagazine/post/quiz-yourself-working-with-preparedstatement-and-sql-null-values-in-java
+     */
+    @Test
+    void PreparedStatementでnullを登録できる() throws SQLException {
+        try (var con = getConnection()) {
+            var stmt = con.prepareStatement("UPDATE TEST.PRODUCTS SET PRICE = ? "
+                    + "WHERE DESCRIPTION IS NULL");
+            
+            // @todo implement
+            
+            stmt.execute();
+            con.commit();
+        }
+    }
 
 }
