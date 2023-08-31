@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,13 +62,29 @@ public class StatementTest {
     @Test
     void PreparedStatementでnullを登録できる() throws SQLException {
         try (var con = getConnection()) {
-            var stmt = con.prepareStatement("UPDATE TEST.PRODUCTS SET PRICE = ? "
+            var ct1 = con.createStatement();
+            ct1.execute("UPDATE TEST.PRODUCTS SET PRICE = 100");
+            // autocommit=trueの時に呼び出すと実行時エラーになる。
+            // すなわちcommitを手動で呼び出しているアプリケーションのJDBCの設定では
+            // automommit=trueにしてはいけないということである。
+            //con.commit();
+            
+            var pt = con.prepareStatement("UPDATE TEST.PRODUCTS SET PRICE = ? "
                     + "WHERE DESCRIPTION IS NULL");
+            // null値はsetNullで設定できるがnull値の取得はgetObjectを使う。getNullは存在しない。
+            //pt.setNull(1, Types.INTEGER);
+            Integer val = null;
+            pt.setObject(1, val, Types.INTEGER);
+            pt.execute();
             
-            // @todo implement
-            
-            stmt.execute();
-            con.commit();
+            var ct2 = con.createStatement();
+            var rs = ct2.executeQuery("SELECT * FROM TEST.PRODUCTS");
+            while (rs.next()) {
+                // getIntでint型カラムにあるnull値を得るとゼロにされてしまう。
+                //var price = rs.getInt(3);
+                var price = rs.getObject(3);
+                assertNull(price);
+            }
         }
     }
 
