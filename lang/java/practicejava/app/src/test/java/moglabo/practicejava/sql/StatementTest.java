@@ -78,13 +78,21 @@ public class StatementTest {
             pt.execute();
             
             var ct2 = con.createStatement();
-            var rs = ct2.executeQuery("SELECT * FROM TEST.PRODUCTS");
-            while (rs.next()) {
+            var rs1 = ct2.executeQuery("SELECT * FROM TEST.PRODUCTS");
+            while (rs1.next()) {
                 // getIntでint型カラムにあるnull値を得るとゼロにされてしまう。
                 //var price = rs.getInt(3);
-                var price = rs.getObject(3);
+                var price = rs1.getObject(3);
                 assertNull(price);
             }
+            // setNullで?にnullを設定してもSQLにおいてNULLは何とも等しくならないので
+            // 返されるレコードは0件になる。SELECT文でsetNullを使うのは避けるべき。
+            //var pt2 = con.prepareStatement("SELECT COUNT(*) FROM TEST.PRODUCTS WHERE PRICE = ?");
+            //pt2.setNull(1, Types.INTEGER);
+            var ct3 = con.createStatement();
+            var rs2 = ct3.executeQuery("SELECT COUNT(*) FROM TEST.PRODUCTS WHERE PRICE IS NULL");
+            rs2.next();
+            assertTrue(rs2.getInt(1) > 0);
         }
     }
 
