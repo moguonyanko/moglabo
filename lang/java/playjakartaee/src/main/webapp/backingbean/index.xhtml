@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+  <head>
+    <meta charset="UTF-8" />
+    <title>学生一覧</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <h1>学生一覧</h1>
+    <h:dataTable value="#{studentBean.students}" var="user" border="1">
+      <h:column>
+        <f:facet name="header">名前</f:facet>
+          #{student.name}
+      </h:column>
+      <h:column>
+        <f:facet name="header">点数</f:facet>
+          #{student.score}
+      </h:column>
+    </h:dataTable>
+  </body>
+</html>
