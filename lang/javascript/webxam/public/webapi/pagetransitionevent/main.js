@@ -15,7 +15,8 @@ const funcs = {
     const output = document.querySelector('.output')
     const value = localStorage.getItem('hidecount')
     if (!isNaN(parseInt(value))) {
-      output.textContent += `${value}回隠されました`
+      // +=にすると追記されてしまう。bfcacheは各要素への入力内容もキャッシュから取得して再現するため。
+      output.textContent = `${value}回隠されました`
     }
   }
 };
