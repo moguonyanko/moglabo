@@ -44,4 +44,4 @@ package.json
 **/javascript/webxam/public/d3/topojson.v0.min.js
 **/javascript/webxam/public/d3/townline/geodata/conuntries.topojson
 **/*.out
-
+**/*target
