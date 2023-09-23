@@ -3,11 +3,13 @@ package moglabo.practicejava.concurrent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -59,7 +61,7 @@ public class ThreadTest {
                 } catch (InterruptedException | BrokenBarrierException ex) {
                     // ログを書く以外のことができるだろうか？
                     ex.printStackTrace(System.err);
-                    
+
                     // クリアっぽい処理を行ってみる。
                     targetValues.clear();
                     barrier.reset();
@@ -76,23 +78,22 @@ public class ThreadTest {
             var br = new CyclicBarrier(partySize, () -> {
                 result = targetValues.stream().mapToInt(v -> v).sum();
             });
-            
+
             var threads = new ArrayList<Thread>(partySize);
             values.stream().forEach(value -> {
                 var thread = new Thread(new Calculator(br, value));
                 threads.add(thread);
-                thread.start();            
+                thread.start();
             });
-            
+
             // チェック例外のために以下の書き方はコンパイルエラーになる。
             // ラムダ導入時にチェック例外を投げないjoinなどが実装されればよかったのではないか？
             // しかしそれをやり始めたら同じようなメソッド追加を他のAPIに対しても大量にやることに
             // なりかねない。
             //threads.forEach(Thread::join);
-            
             // joinしないとresultはゼロのままである。
             for (Thread thread : threads) {
-               thread.join();
+                thread.join();
             }
         }
 
@@ -101,7 +102,7 @@ public class ThreadTest {
     /**
      * 参考
      * https://blogs.oracle.com/javamagazine/post/quiz-yourself-happens-before-thread-synchronization-in-java-with-cyclicbarrier
-     * 
+     *
      * @todob テストが成功していない。
      */
     @Test
@@ -111,4 +112,25 @@ public class ThreadTest {
         assertEquals(600, mc.getResult());
     }
 
+    @Test
+    void 仮想スレッド群をExecutorServiceに渡して結果を得られる() throws InterruptedException {
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            Callable<String> hello = () -> "Hello";
+            Callable<String> world = () -> "World";
+            var result = executor.invokeAll(List.of(
+                    hello, world
+            )).stream().map(future -> {
+                try {
+                    return future.get();
+                } catch (InterruptedException | ExecutionException ex) {
+                    throw new IllegalStateException(ex);
+                }
+            }).collect(Collectors.toSet());
+
+            // 結果の順序は保証されないと考えた方が安全だろう。
+            // 少なくともExecutorServiceのAPIドキュメントには順序の保証について
+            // 何も記述されていない。
+            assertTrue(Set.of("Hello", "World").equals(result));
+        }
+    }
 }

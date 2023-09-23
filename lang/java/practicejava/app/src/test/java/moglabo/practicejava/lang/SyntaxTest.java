@@ -60,12 +60,12 @@ public class SyntaxTest {
 //        
 //    }
     
-    // JDK21まではプレビュー機能
+    // JDK22でもまだプレビュー機能
 //    private boolean isMatchRecordStudent(Object o) {
 //        return o instanceof Student(String name, int age, int score);
 //    }
  
-    // switchのパターンマッチはJDK21までプレビュー機能
+    // switchのパターンマッチはJDK22でもまだプレビュー機能
 //    @Test
 //    void whenでマッチできる() {
 //        var i = 1;
@@ -80,4 +80,28 @@ public class SyntaxTest {
 //        assertEquals("PLUS", result);
 //    }
 
+    private record MyPoint(double x, double y) {
+        
+    }
+    
+    private record MyCircle(MyPoint center, double radius) {
+        
+    }
+    
+    /**
+     * 参考:
+     * https://www.baeldung.com/java-19-record-patterns
+     */
+    @Test
+    public void レコードパターンで判別できる() {
+        var center = new MyPoint(0, 0);
+        var circle = new MyCircle(center, 1);
+        
+        var result = switch (circle) {
+            case MyCircle(MyPoint(var x, var y), var radius) -> new double[]{x, y};
+            default -> null;
+        };
+        
+        assertTrue(Arrays.equals(result, new double[]{0, 0}));
+    }      
 }
