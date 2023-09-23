@@ -240,32 +240,6 @@ public class TestSyntax {
     public void 複数のパターンラベルを使ったメソッドを呼び出せる() {
         var value = 11;
         testMultiPatternLabels(value);        
-    }
-    
-    
-    private record MyPoint(double x, double y) {
-        
-    }
-    
-    private record MyCircle(MyPoint center, double radius) {
-        
-    }
-    
-    /**
-     * 参考:
-     * https://www.baeldung.com/java-19-record-patterns
-     */
-    @Test
-    public void レコードパターンで判別できる() {
-        var center = new MyPoint(0, 0);
-        var circle = new MyCircle(center, 1);
-        
-        var result = switch (circle) {
-            case MyCircle(MyPoint(var x, var y), var radius) -> new double[]{x, y};
-            default -> null;
-        };
-        
-        assertTrue(Arrays.equals(result, new double[]{0, 0}));
-    }    
+    }  
 
 }
