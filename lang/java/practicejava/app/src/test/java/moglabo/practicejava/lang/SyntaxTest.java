@@ -1,5 +1,6 @@
 package moglabo.practicejava.lang;
 
+import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,4 +79,5 @@ public class SyntaxTest {
 //        
 //        assertEquals("PLUS", result);
 //    }
+
 }

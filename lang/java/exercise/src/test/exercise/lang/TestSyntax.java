@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import exercise.lang.EnumFruits;
 import exercise.lang.StaticFruits;
+import java.util.Arrays;
 
 // 一部のテストクラスは--enable-previewが指定されないとコンパイルできず、--enable-previewが
 // 指定されると他のクラス含めて実行できなくなるのでコメントアウトしている。
@@ -240,5 +241,31 @@ public class TestSyntax {
         var value = 11;
         testMultiPatternLabels(value);        
     }
+    
+    
+    private record MyPoint(double x, double y) {
+        
+    }
+    
+    private record MyCircle(MyPoint center, double radius) {
+        
+    }
+    
+    /**
+     * 参考:
+     * https://www.baeldung.com/java-19-record-patterns
+     */
+    @Test
+    public void レコードパターンで判別できる() {
+        var center = new MyPoint(0, 0);
+        var circle = new MyCircle(center, 1);
+        
+        var result = switch (circle) {
+            case MyCircle(MyPoint(var x, var y), var radius) -> new double[]{x, y};
+            default -> null;
+        };
+        
+        assertTrue(Arrays.equals(result, new double[]{0, 0}));
+    }    
 
 }
