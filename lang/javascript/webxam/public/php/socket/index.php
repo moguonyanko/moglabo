@@ -20,7 +20,7 @@ declare(strict_types=1);
 
   <main>
     <section>
-      <h2>ソケット接続による通信</h2>
+      <h2>socket_connectによるMySQL接続</h2>
       <?php
       function handle_error($result)
       {
@@ -56,12 +56,36 @@ declare(strict_types=1);
       $response = socket_read($socket, 1024);
 
       if (strlen($response) == 1) {
-        echo "<p>ソケットでMySQLデータベース $dbname に接続成功: $response</p>";
+        echo "<p>$dbname に接続成功: $response</p>";
       } else {
-        echo "<p class=\"error\">ソケットでMySQLデータベース $dbname に接続失敗: $response</p>";
+        echo "<p class=\"error\">$dbname に接続失敗: $response</p>";
       }
 
       socket_close($socket);
+      ?>
+    </section>
+    <section>
+      <h2>fsocketopenによるMySQL接続</h2>
+      <?php
+      $fsocket = fsockopen($host, $port, $err_no, $err_message, 5);
+      if (!$fsocket) {
+        handle_error($fsocket);
+      }
+      $packet = pack('V', 0x0000000a).pack('V', 0x00000000).'xxxxxxxx';
+      $packet .= pack('a', $user).'\x00';
+      $packet .= pack('a', $password).'\x00';
+      $packet .= pack('a', $dbname).'\x00';
+
+      fwrite($fsocket, $packet);
+
+      $fresponse = fread($fsocket, 1024);
+      $connect_success = strpos($fresponse, '\x00\x00\x00\x02') !== false;
+
+      if ($connect_success) {
+        echo "<p>$dbname に接続成功: $fresponse</p>";
+      } else {
+        echo "<p class=\"error\">$dbname に接続失敗: $fresponse</p>";
+      }
       ?>
     </section>
   </main>
