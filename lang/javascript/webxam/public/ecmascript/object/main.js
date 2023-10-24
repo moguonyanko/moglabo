@@ -21,6 +21,39 @@ const getSampleObj = () => {
   return originalObj;
 };
 
+const FavoriteTaste = {
+  NONE: '無所属',
+  AMATOU: '甘党',
+  KARATOU: '辛党'
+}
+
+class Member {
+  constructor(name = '', age = NaN, favoriteTaste = FavoriteTaste.NONE) {
+    this.name = name
+    this.age = age
+    this.favoriteTaste = favoriteTaste
+  }
+
+  isAdult() {
+    return this.age >= 20
+  }
+
+  toString() {
+    return JSON.stringify(Object.assign({}, this))
+  }
+}
+
+const getSampleMembers = () => {
+  return [
+    new Member('Mike', 19,FavoriteTaste.KARATOU),
+    new Member('Taro', 43, FavoriteTaste.AMATOU),
+    new Member('Joe', 25, FavoriteTaste.AMATOU),
+    new Member('Rico', 17),
+    new Member('Peter', 14, FavoriteTaste.KARATOU),
+    new Member('Masao', 56)
+  ]
+}
+
 const funcs = {
   load: {
     shallowCopy: () => {
@@ -62,6 +95,14 @@ const funcs = {
       output.innerHTML += `[更新]originalObj.score.geography = ${originalObj.score.geography}<br />`;
       output.innerHTML += `structuredCloneObj.greet() = エラー回避のため削除<br />`;
       output.innerHTML += `structuredCloneObj.book.name = ${structuredCloneObj.book?.name}<br />`;
+    },
+    groupByParams: () => {
+      const members = getSampleMembers()
+      // groupBy第2引数の関数の引数に指定した値が戻り値に含まれるようになる。
+      // ここではname, age, favoriteTasteがresultに含まれる。
+      const result = Object.groupBy(members, ({ name, age, favoriteTaste }) => favoriteTaste)
+      const output = document.querySelector('.groupByExample .output')
+      output.textContent = JSON.stringify(result)
     }
   },
   click: {
@@ -75,7 +116,7 @@ const addListener = () => {
     // Does nothing
   });
 
-  window.addEventListener('DOMContentLoaded', () => {
+  window.addEventListener('pageshow', () => {
     Object.values(funcs.load).forEach(f => f());
   });
 };
