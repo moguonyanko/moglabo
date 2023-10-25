@@ -98,11 +98,19 @@ const funcs = {
     },
     groupByParams: () => {
       const members = getSampleMembers()
+      const output = document.querySelector('.groupByExample .output')
       // groupBy第2引数の関数の引数に指定した値が戻り値に含まれるようになる。
       // ここではname, age, favoriteTasteがresultに含まれる。
       const result = Object.groupBy(members, ({ name, age, favoriteTaste }) => favoriteTaste)
-      const output = document.querySelector('.groupByExample .output')
       output.textContent = JSON.stringify(result)
+
+      const output2 = document.querySelector('.groupByExample .output.isadultornot')
+      const result2 = Object.groupBy(members, member => member.isAdult() ? 'adult' : 'child')
+      output2.textContent = JSON.stringify(result2, null, '\t')
+
+      const mapOutput = document.querySelector('.groupByExample .output.mapgroupby')
+      const mapResult = Map.groupBy(members, member => member.isAdult() ? 'adult' : 'child')
+      mapOutput.textContent = JSON.stringify(mapResult, null, '\t')
     }
   },
   click: {
