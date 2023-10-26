@@ -107,13 +107,6 @@ const funcs = {
       const output2 = document.querySelector('.groupByExample .output.isadultornot')
       const result2 = Object.groupBy(members, member => member.isAdult() ? 'adult' : 'child')
       output2.textContent = JSON.stringify(result2, null, '\t')
-      /**
-       * MapからJSONを得る方法の参考:
-       * https://bobbyhadz.com/blog/javascript-convert-map-to-json
-       */
-      const mapOutput = document.querySelector('.groupByExample .output.mapgroupby')
-      const mapResult = Map.groupBy(members, member => member.isAdult() ? 'adult' : 'child')
-      mapOutput.textContent = JSON.stringify(Object.fromEntries(mapResult), null, '\t')
     }
   },
   click: {
