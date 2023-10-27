@@ -1,0 +1,10 @@
+@charset 'UTF-8';
+
+*[popover] {
+  background-color: beige;
+}
+
+/* ポップオーバー表示中は背景を少し暗くする。 */
+*[popover]::backdrop {
+  background: rgb(190 190 190 / 50%);
+}

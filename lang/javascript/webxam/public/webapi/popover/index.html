@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Popover API</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Popover API</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>基本的な使い方</h2>
+      <button popovertarget="sample-popover">ポップオーバー</button>
+      <div id="sample-popover" popover>
+        <p>サンプル</p>
+      </div>
+    </section>
+    <section>
+      <h2>閉じるボタンをつける場合</h2>
+      <p>ポップオーバーの外側の領域をクリックしてもポップオーバーは閉じられる。</p>
+      <button popovertarget="sample-popover-with-close-button">ポップオーバー（閉じるボタン付き）</button>
+      <div id="sample-popover-with-close-button" popover>
+        <button popovertarget="sample-popover-with-close-button" popovertargetaction="hide">
+          <span>閉じる</span>
+        </button>
+        <p>サンプル</p>
+      </div>
+    </section>
+    <section>
+      <h2>閉じるボタン以外では閉じられないようにする場合</h2>
+      <button popovertarget="sample-popover-with-manualclose-button">ポップオーバー（閉じるボタン付き）</button>
+      <div id="sample-popover-with-manualclose-button" popover=manual>
+        <button popovertarget="sample-popover-with-manualclose-button" popovertargetaction="hide">
+          <span>閉じる</span>
+        </button>
+        <p>サンプル</p>
+      </div>
+    </section>
+    <section>
+      <h2>dialogと組み合わせて使う場合</h2>
+      <button popovertarget="sample-dialog">dialog表示</button>
+      <dialog popover id="sample-dialog">
+        <button popovertarget="sample-dialog" popovertargetaction="hide">閉じる</button>
+        <div>サンプル</div>
+      </dialog>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://developer.chrome.com/blog/introducing-popover-api/">Introducing the popover API</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
