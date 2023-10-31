@@ -93,7 +93,7 @@ public class SyntaxTest {
      * https://www.baeldung.com/java-19-record-patterns
      */
     @Test
-    public void レコードパターンで判別できる() {
+    void レコードパターンで判別できる() {
         var center = new MyPoint(0, 0);
         var circle = new MyCircle(center, 1);
         
@@ -103,5 +103,20 @@ public class SyntaxTest {
         };
         
         assertTrue(Arrays.equals(result, new double[]{0, 0}));
-    }      
+    }     
+    
+    /**
+     * 参考:
+     * https://openjdk.org/jeps/459
+     * JDK22では文字列テンプレートはまだ使用できない。
+     * --enable-previewをGradleで設定できれば使用できるかもしれない。
+     */
+//    @Test
+//    void StringTemplateに変数を埋め込める() {
+//        var name = "Mike";
+//        var age = 24;
+//        
+//        var result = STR."\{name} is \{age} years old.";
+//        assertEquals("Mike is 24 years old", result);
+//    }
 }
