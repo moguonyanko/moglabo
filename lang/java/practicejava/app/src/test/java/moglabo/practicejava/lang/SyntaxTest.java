@@ -110,6 +110,8 @@ public class SyntaxTest {
      * https://openjdk.org/jeps/459
      * JDK22では文字列テンプレートはまだ使用できない。
      * --enable-previewをGradleで設定できれば使用できるかもしれない。
+     * Disabledでは実行時にテストを無視できずエラーになってしまうためやむなく
+     * コメントアウトしている。
      */
 //    @Test
 //    void StringTemplateに変数を埋め込める() {
