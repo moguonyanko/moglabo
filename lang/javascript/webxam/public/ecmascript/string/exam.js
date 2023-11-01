@@ -71,7 +71,7 @@ const funcs = {
         }
     },
     atString: () => {
-        const text = document.querySelector('.target-text').value;
+        const text = document.querySelector('.stringat .target-text').value;
         const index = parseInt(document.querySelector('.target-index').value);
         const output = document.querySelector('.example.stringat .output');
         try {
@@ -81,17 +81,23 @@ const funcs = {
         } catch(err) {
             output.value = `${index}の文字取得失敗`;
         }
+    },
+    isWellFormed: () => {
+        const output = document.querySelector(`.iswellformed .output`) 
+        const input = document.querySelector(`.iswellformed .target-text`)
+        const result = Array.from(input.value).map(v => `${v}:${v.isWellFormed()}`)
+        output.innerHTML = result.join('<br />')
     }
 };
 
 const addListener = () => {
-    const eles = document.querySelectorAll('.example');
-    eles.forEach(ele => {
+    document.querySelectorAll('.example').forEach(ele => {
         ele.addEventListener('click', event => {
             const t = event.target.dataset.eventTarget;
             if (!t) {
                 return;
             }
+            event.stopPropagation()
             if (typeof funcs[t] === 'function') {
                 funcs[t](ele);
             }

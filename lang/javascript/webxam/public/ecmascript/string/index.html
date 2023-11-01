@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../../common.css" />
     <link rel="stylesheet" href="exam.css" />
+    <script type="module" src="exam.js"></script>
 </head>
 
 <body>
@@ -38,6 +39,12 @@
             <button data-event-target="atString">文字取得</button>
             <textarea class="output" readonly></textarea>
         </section>
+        <section class="example iswellformed">
+            <h2>String.isWellFormed()</h2>
+            <label><input class="target-text" type="text" value="𩸽を𠮟る𠮷野家" /></label>
+            <button data-event-target="isWellFormed">isWellFormed</button>
+            <div class="output"></div>
+        </section>
     </main>
     <footer>
         <p>参考サイト</p>
@@ -45,9 +52,9 @@
             <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/matchAll">String​.prototype​.matchAll()</a></li>
             <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart">String.prototype.padStart()</a></li>
             <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padEnd">String.prototype.padEnd()</a></li>
+            <li><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/String/isWellFormed">String.prototype.isWellFormed()</a></li>
         </ul>
     </footer>
-    <script type="module" src="exam.js"></script>
 </body>
 
 </html>
