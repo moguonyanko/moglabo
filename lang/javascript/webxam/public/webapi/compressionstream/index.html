@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Compression Streams API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../common.css" />
+    <script src="main.js" type="module"></script>
+</head>
+
+<body>
+    <header>
+        <a href="../../">home</a>
+        <h1>Compression Streams API</h1>
+    </header>
+    <main>
+      <section>
+        <h2>gzipの展開</h2>
+        <p>実際にはWebサーバとブラウザでgzipによる圧縮及び展開が行われるため使用する機会はない？</p>
+        <button data-event-target="deflateGZip">run</button>
+        <div class="output" data-event-output="deflateGZip"></div>
+      </section>
+    </main>
+    <footer>
+        <p>参考サイト</p>
+        <ul>
+          <li><a href="https://web.dev/blog/compressionstreams?hl=en">Compression Streams are now supported on all browsers</a></li>
+          <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Compression_Streams_API">Compression Streams API</a></li>
+          <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams">Using readable streams</a></li>
+        </ul>
+    </footer>
+</body>
+
+</html>
