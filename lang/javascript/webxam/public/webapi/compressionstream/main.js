@@ -2,25 +2,28 @@
  * @fileoverview Compression Streams API調査用スクリプト
  */
 
+const COMPRESSED = true
+
 const funcs = {
   deflateGZip: async () => {
-    const readableStream = await fetch('./sample.json.gz').then(response => response.body)
-    const ds = new DecompressionStream('gzip')
-    const decompressedStream = readableStream.pipeThrough(ds)
-    const reader = decompressedStream.getReader()
-    const values = []
+    const path = COMPRESSED ? './sample.json.gz' : './sample.json'
+    let readableStream = await fetch(path).then(response => response.body)
+    if (COMPRESSED) {
+      readableStream = readableStream.pipeThrough(new DecompressionStream('gzip'))
+    }
+    const reader = readableStream.getReader()
+    const uintArrays = []
     const output = document.querySelector(`*[data-event-output='deflateGZip']`)
     const readerFunc = ({ done, value }) => {
       if (done) {
-        console.log('Finish')
-        const array = new Uint8Array(values)
+        console.log(`圧縮ファイルの展開：${COMPRESSED}`)
+        console.log(uintArrays)
         const decoder = new TextDecoder('UTF-8')
-        // TODO: 期待した形のJSONが得られない。
-        const result = decoder.decode(array)
+        const result = decoder.decode(...uintArrays)
         output.textContent = result
         return
       }
-      values.push(value)
+      uintArrays.push(value)
       return reader.read().then(readerFunc)
     }
     reader.read().then(readerFunc)

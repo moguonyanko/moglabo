@@ -1,0 +1,23 @@
+{
+  "items": [
+    {
+      "Apple": {
+        "price": 120,
+        "taste": "甘い"
+      }
+    },
+    {
+      "Banana": {
+        "price": 300,
+        "taste": "ふつう"
+      }
+    },
+    {
+      "Orange": {
+        "price": 200,
+        "taste": "酸っぱい"
+      }
+    }
+  ],
+  "memo": "𩸽を𠮟る𠮷野家と髙﨑"
+}
