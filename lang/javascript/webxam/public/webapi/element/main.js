@@ -28,7 +28,7 @@ const funcs = {
   doAnimation: () => {
     const sampleBox = document.querySelector('.animation .samplebox')
     sampleBox.animate([
-      { transform: 'rotate(0) scale(1)' },
+      // { transform: 'rotate(0) scale(1)' }, // 開始状態の指定は必須ではない。
       { transform: 'rotate(360deg) scale(0)' }
     ],
     {
