@@ -24,6 +24,17 @@ const funcs = {
         el.removeAttribute('hidden');
       }
     });
+  },
+  doAnimation: () => {
+    const sampleBox = document.querySelector('.animation .samplebox')
+    sampleBox.animate([
+      { transform: 'rotate(0) scale(1)' },
+      { transform: 'rotate(360deg) scale(0)' }
+    ],
+    {
+      duration: 1000,
+      iterations: 1
+    })
   }
 };
 

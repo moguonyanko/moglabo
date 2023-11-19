@@ -47,3 +47,14 @@ dialog {
 .food-list li span {
   display: block;
 }
+
+.samplebox {
+  width: 200px;
+  height: 100px;
+  padding: 0.5rem;
+  text-transform: uppercase; /* 要素内のテキストを自動的に大文字にする */
+  text-align: center;
+  background-color: oldlace;
+  border: solid 1px red;
+  cursor: pointer;  
+}
