@@ -14,3 +14,23 @@
   margin: 0 auto;
   background-color: turquoise;
 }
+
+.scrollTimeline {
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
+.content {
+  border: solid 1px darkgray;
+  height: 2000px;
+}
+
+.box {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  background-color: rebeccapurple;
+  position: fixed;
+  top: 20px;
+  left: 0%;
+}
