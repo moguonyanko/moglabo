@@ -37,14 +37,17 @@ public class ClassTest {
         assertEquals(1000, actual);
     }
     
+    private record MyId(int value) {
+    }
+    
     private class MyParent {
-        private final int id;
+        private final MyId id;
 
-        public MyParent(int id) {
-            this.id = id;
+        public MyParent(MyId id, MyId defaultId) {
+            this.id = id == null ? defaultId : id;
         }
 
-        public final int getId() {
+        public final MyId getId() {
             return id;
         }
 
@@ -54,13 +57,17 @@ public class ClassTest {
         }
     }
     
+    /**
+     * 参考
+     * https://openjdk.org/jeps/447
+     */
     private class MyChild extends MyParent {
 
         public MyChild(String param) {
             //setup(); // インスタンスメソッドなので書けない。
             //parseId(id); // 将来書けるようになるかもしれない。
-            super(parseId(param)); // これは現状でもOK。
-            //super(id);
+            //var defaultId = new MyId(0); // これも将来はOKになるかもしれない。
+            super(new MyId(parseId(param)), new MyId(0)); // これは現状でもOK。
         }
         
         private void setup() {
@@ -79,7 +86,7 @@ public class ClassTest {
     }
     
     @Test
-    void super呼び出し時に静的メソッドは事前に呼び出せる() {
+    void super呼び出し時にインスタンスを参照しないコードは事前に呼び出せる() {
         var ex = assertThrows(IllegalArgumentException.class, () -> new MyChild("ERROR"));
         System.out.println(ex.getMessage());
     }
