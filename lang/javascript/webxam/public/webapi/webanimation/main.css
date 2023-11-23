@@ -15,13 +15,14 @@
   background-color: turquoise;
 }
 
-.scrollTimeline {
+.scrollTimelineContainer {
   max-height: 400px;
   overflow-y: scroll;
 }
 
 .content {
   border: solid 1px darkgray;
+  background-color: snow;
   height: 2000px;
 }
 
@@ -29,8 +30,8 @@
   width: 100px;
   height: 100px;
   border-radius: 10px;
-  background-color: rebeccapurple;
-  position: fixed;
-  top: 20px;
+  background-color: mediumseagreen;
+  position: sticky;
+  top: 0px;
   left: 0%;
 }

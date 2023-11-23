@@ -27,27 +27,30 @@ const initViewTimeline = () => {
   output.innerHTML += `end offset: ${timeline.endOffset}<br />`
 }
 
+/**
+ * 対象の要素の見え方とは関係なくスクロール量に応じてアニメーションさせる。
+ */
 const initScrollTimeline = () => {
-  const box = document.querySelector('.box')
+  const box = document.querySelector('.scrollTimeline .box')
 
   // TODO: コンテナ内でboxを回転させるようにしたい。
   const timeline = new ScrollTimeline({
-    source: document.documentElement,
-    // source: document.querySelector('.scrollTimeline .content'),
+    //source: document.documentElement,
+    source: document.querySelector('.scrollTimeline .content'),
     axis: 'block' 
   })
 
   box.animate(  {
-    rotate: ["0deg", "720deg"],
-    left: ["0%", "100%"],
+    rotate: ['0deg', '720deg'],
+    left: ['0%', '100%']
   },
   {
     timeline,
   })
 
   const output = document.querySelector('.scrollTimeline .output')
-  output.innerHTML += `Timeline source element: ${timeline.source.nodeName}<br />`
-  output.innerHTML += `Timeline scroll axis: ${timeline.axis}<br />`
+  output.value += `Timeline source element: ${timeline.source.nodeName}\n`
+  output.value += `Timeline scroll axis: ${timeline.axis}`
 }
 
 const init = () => {
