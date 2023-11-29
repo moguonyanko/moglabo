@@ -7,7 +7,9 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,18 @@ public class SimpleDateFormatSample {
         }
 
     }
+    
+    /**
+     * @todo
+     * 非同期処理を介してもSimpleDateFormatは例外をスローしない。
+     */
+    private static CompletableFuture<String> getFormatFuture(Timestamp timestamp, 
+            Executor executor) {
+        var future = CompletableFuture.supplyAsync(() -> {
+            return new FormatTask(timestamp).call();
+        }, executor);
+        return future;
+    }
 
     /**
      * 参考
@@ -64,10 +78,23 @@ public class SimpleDateFormatSample {
             }
         }).collect(Collectors.toList());
     }
+    
+    private static List<String> asyncFormatting(int size) throws InterruptedException, ExecutionException {
+        var executor = Executors.newVirtualThreadPerTaskExecutor();
+        var results = new ArrayList<String>();
+        for (int i = 0; i < size; i++) {
+            var future = getFormatFuture(getSampleTimestamp(i), executor);
+            results.add(future.get());
+        }
+        return results;
+        // CompletableFuture.allOfはコレクションを受け取れない。
+        //CompletableFuture.allOf(futures);
+    }
 
-    public static void main(String[] args) throws InterruptedException {
-        var result = executeFormatting(10000);
-        System.out.println(result.size());
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        //var result = executeFormatting(10000);
+        var result = asyncFormatting(10000);
+        System.out.println(result);
     }
 
 }
