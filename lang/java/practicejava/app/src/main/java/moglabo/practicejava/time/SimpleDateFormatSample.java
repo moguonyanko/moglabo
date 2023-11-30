@@ -11,14 +11,15 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 public class SimpleDateFormatSample {
 
     private static final String SAMPLE_DATETIME_PATTERN = "yyyyMMddHHmmss";
 
-    private static final SimpleDateFormat SIMPLE_DATE_FORMATTER
-            = new SimpleDateFormat(SAMPLE_DATETIME_PATTERN);
+    private static final SimpleDateFormat SIMPLE_DATE_FORMATTER =
+            new SimpleDateFormat(SAMPLE_DATETIME_PATTERN);
 
     private static class FormatTask implements Callable<String> {
 
@@ -63,8 +64,9 @@ public class SimpleDateFormatSample {
         return timestamp;
     }
 
-    private static List<String> executeFormatting(int threadSize) throws InterruptedException {
+    private static List<String> invokeAllFormatting(int threadSize) throws InterruptedException {
         var executor = Executors.newVirtualThreadPerTaskExecutor();
+        
         List<FormatTask> tasks = new ArrayList<>();
         for (var i = 0; i < threadSize; i++) {
             tasks.add(new FormatTask(getSampleTimestamp(i)));
@@ -79,6 +81,27 @@ public class SimpleDateFormatSample {
         }).collect(Collectors.toList());
     }
     
+    /**
+     * 期待通りArrayIndexOutOfBoundsExceptionが発生することがある。
+     */
+    private static List<String> submitFormatting(int threadSize) throws InterruptedException {
+        var executor = Executors.newVirtualThreadPerTaskExecutor();
+        
+        var futures = new ArrayList<Future<String>>();
+        for (var i = 0; i < threadSize; i++) {
+            futures.add(executor.submit(new FormatTask(getSampleTimestamp(i))));
+        }
+        
+        return futures.stream().map(f -> {
+            try {
+                return f.get();
+            } catch (InterruptedException | ExecutionException ex) {
+                throw new IllegalStateException(ex);
+            }
+        }).collect(Collectors.toList());
+    }
+    
+    
     private static List<String> asyncFormatting(int size) throws InterruptedException, ExecutionException {
         var executor = Executors.newVirtualThreadPerTaskExecutor();
         var results = new ArrayList<String>();
@@ -92,8 +115,7 @@ public class SimpleDateFormatSample {
     }
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-        //var result = executeFormatting(10000);
-        var result = asyncFormatting(10000);
+        var result = submitFormatting(10000);
         System.out.println(result);
     }
 
