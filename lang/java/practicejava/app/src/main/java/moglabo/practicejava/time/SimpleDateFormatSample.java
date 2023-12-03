@@ -46,7 +46,7 @@ public class SimpleDateFormatSample {
      * @todo
      * 非同期処理を介してもSimpleDateFormatは例外をスローしない。
      */
-    private static CompletableFuture<String> getFormatFuture(Timestamp timestamp, 
+    private static CompletableFuture<String> getAsyncFormatFuture(Timestamp timestamp, 
             Executor executor) {
         var future = CompletableFuture.supplyAsync(() -> {
             return new FormatTask(timestamp).call();
@@ -101,21 +101,29 @@ public class SimpleDateFormatSample {
         }).collect(Collectors.toList());
     }
     
-    
+    /**
+     * @todo
+     * タスクの数が増えると他のメソッドのように例外は発生しないものの実行時間が非常に長くなる。
+     */
     private static List<String> asyncFormatting(int size) throws InterruptedException, ExecutionException {
         var executor = Executors.newVirtualThreadPerTaskExecutor();
         var results = new ArrayList<String>();
         for (int i = 0; i < size; i++) {
-            var future = getFormatFuture(getSampleTimestamp(i), executor);
+            var future = getAsyncFormatFuture(getSampleTimestamp(i), executor);
             results.add(future.get());
         }
-        return results;
+        // CompletableFuture::joinはCompletableFutureの結果を結合する。
+        // 複数のCompletableFutureを連結するわけではない。
         // CompletableFuture.allOfはコレクションを受け取れない。
         //CompletableFuture.allOf(futures);
+        return results;
     }
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-        var result = submitFormatting(10000);
+        var taskSize = 100000;
+        //var result = submitFormatting(taskSize);
+        //var result = invokeAllFormatting(taskSize);
+        var result = asyncFormatting(taskSize);
         System.out.println(result);
     }
 
