@@ -35,7 +35,7 @@ const initScrollTimeline = () => {
 
   // TODO: コンテナ内でboxを回転させるようにしたい。
   const timeline = new ScrollTimeline({
-    //source: document.documentElement,
+    // source: document.documentElement,
     source: document.querySelector('.scrollTimeline .content'),
     axis: 'block' 
   })
