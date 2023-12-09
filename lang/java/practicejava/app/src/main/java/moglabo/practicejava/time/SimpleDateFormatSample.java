@@ -102,8 +102,8 @@ public class SimpleDateFormatSample {
     }
     
     /**
-     * @todo
      * タスクの数が増えると他のメソッドのように例外は発生しないものの実行時間が非常に長くなる。
+     * マルチスレッドと非同期処理が異なるものであることを示す証左とも言える。
      */
     private static List<String> asyncFormatting(int size) throws InterruptedException, ExecutionException {
         var executor = Executors.newVirtualThreadPerTaskExecutor();
@@ -119,11 +119,32 @@ public class SimpleDateFormatSample {
         return results;
     }
 
+    /**
+     * ArrayIndexOutOfBoundsExceptionがスローされる。すなわちマルチスレッドでのSimpleDateFormat
+     * による処理が行えているということである。
+     */
+    private static List<String> hiSpeedAsyncFormatting(int size) {
+        var executor = Executors.newVirtualThreadPerTaskExecutor();
+        var futures = new ArrayList<CompletableFuture<String>>();
+        for (int i = 0; i < size; i++) {
+            var future = getAsyncFormatFuture(getSampleTimestamp(i), executor);
+            futures.add(future);
+        }
+        return futures.stream().parallel().map(f -> {
+            try {
+                return f.get();
+            } catch (InterruptedException | ExecutionException ex) {
+                throw new IllegalStateException(ex);
+            }
+        }).collect(Collectors.toList());
+    }
+    
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-        var taskSize = 100000;
+        var taskSize = 100;
         //var result = submitFormatting(taskSize);
         //var result = invokeAllFormatting(taskSize);
-        var result = asyncFormatting(taskSize);
+        //var result = asyncFormatting(taskSize);
+        var result = hiSpeedAsyncFormatting(taskSize);
         System.out.println(result);
     }
 
