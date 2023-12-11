@@ -84,7 +84,7 @@
       <p>負やサイズを超えたインデックスを指定するとエラーになる。nullの値は空文字に変換される。</p>
       <?php
       $array2 = ['Foo' => 100, 'Bar' => 200];
-      echo "Foo ${array2['Foo']} and Bar ${array2['Bar']}", '<br />';
+      echo "Foo {$array2['Foo']} and Bar {$array2['Bar']}", '<br />';
       unset($array2['Foo']);
       // unsetされたキーを参照するとエラー
       //echo "Foo ${array2['Foo']} and Bar ${array2['Bar']}";
@@ -166,6 +166,7 @@
       $my_cat = new Cat();
       echo '😸&lt', '<strong>', call_user_func([$my_cat, 'talk']), '</strong><br />';
       echo var_dump(call_user_func('Cat::getAnimalType')), '<br />';
+      echo '<em>▼PHP8.3以降はparent::talkという形式は警告される。警告なく置き換える書き方は不明。</em><br />';
       echo '？？？&lt', '<strong>', call_user_func([$my_cat, 'parent::talk']), '</strong><br />';
       echo '😸&lt', '<strong>', call_user_func($my_cat, 'タマ'), '</strong><br />';
       ?>
