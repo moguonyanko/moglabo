@@ -487,6 +487,16 @@ declare(strict_types=1);
       }
       ?>
     </section>
+    <section>
+      <h2>クラス定数の文字列指定</h2>
+      <?php
+      class Student {
+        const ID = 100;
+      }
+      $id_prop = 'ID';
+      echo '<p>ID='.Student::{$id_prop}.'</p>';
+      ?>
+    </section>
   </main>
 
   <footer>
