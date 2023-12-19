@@ -497,6 +497,31 @@ declare(strict_types=1);
       echo '<p>ID='.Student::{$id_prop}.'</p>';
       ?>
     </section>
+    <section>
+      <h2>アトリビュート#[\Override]</h2>
+      <?php
+      class MyAnimal {
+        function cry(): void {
+          echo '???';
+        }
+      }
+
+      class MyDog extends MyAnimal {
+        #[\Override]
+        function cry(): void {
+          echo 'wanwan';
+        }
+        // 以下は規定クラスのメソッドとシグネチャが一致しないため実行時エラーになる。
+        // #[\Override]
+        // function cry(): string {
+        //   return 'wanwan';
+        // }
+      }
+
+      $dog = new MyDog();
+      echo '<p>'.$dog->cry().'</p>';
+      ?>
+    </section>
   </main>
 
   <footer>
