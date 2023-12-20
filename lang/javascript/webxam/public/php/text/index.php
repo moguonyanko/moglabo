@@ -137,6 +137,15 @@ declare(strict_types=1);
         echo $json;
         ?>
       </section>
+      <section>
+        <h2>json_validate</h2>
+        <?php
+        $sample_json = '{"name": "Mike", "age": 30}';
+        echo '<pre>', $sample_json, '</pre>';
+        $json_validate_result = json_validate($sample_json) ? 'true' : 'false';
+        echo "<p>json_validate={$json_validate_result}</p>";
+        ?>
+      </section>
     </section>
   </main>
 
