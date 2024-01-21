@@ -3,45 +3,54 @@
  * 参考:
  * https://leafletjs.com/examples/quick-start/example.html
  */
+/* eslint-disable no-undef */
 
 const init = () => {
-	const map = L.map('map').setView([51.505, -0.09], 13);
+	const [lat, lon] = [35.6815657, 139.7675949]
+	const zoom = 14
+	const map = L.map('map').setView([lat, lon], zoom)
 
 	const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 19,
 		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-	}).addTo(map);
+	}).addTo(map)
+	console.log(tiles)
 
-	const marker = L.marker([51.5, -0.09]).addTo(map)
-		.bindPopup('<b>Hello world!</b><br />I am a popup.').openPopup();
+	const marker = L.marker([lat, lon])
+		.addTo(map).bindPopup('<strong>𩸽を𠮟る𠮷野家</strong>').openPopup()
+	console.log(marker)
 
-	const circle = L.circle([51.508, -0.11], {
+	const [circleLat, circleLon] = [35.6856189, 139.7525002]
+	const circle = L.circle([circleLat, circleLon], {
 		color: 'red',
 		fillColor: '#f03',
-		fillOpacity: 0.5,
-		radius: 500
-	}).addTo(map).bindPopup('I am a circle.');
+		fillOpacity: 0.2,
+		radius: 1000
+	}).addTo(map).bindPopup(`円の中心は経度${circleLat},緯度${circleLon}`)
+	console.log(circle)
 
 	const polygon = L.polygon([
-		[51.509, -0.08],
-		[51.503, -0.06],
-		[51.51, -0.047]
-	]).addTo(map).bindPopup('I am a polygon.');
-
+		[35.6813576, 139.7784939],
+		[35.6822327, 139.7859957],
+		[35.6697208, 139.7708326],
+		[35.6731245, 139.7583829]
+	]).addTo(map).bindPopup('サンプルポリゴン')
+	console.log(polygon)
 
 	const popup = L.popup()
-		.setLatLng([51.513, -0.09])
-		.setContent('I am a standalone popup.')
-		.openOn(map);
+		.setLatLng([35.6885528, 139.7658447])
+		.setContent('サンプルポップアップ').openOn(map);
+	console.log(popup)
 
-	function onMapClick(e) {
-		popup
-			.setLatLng(e.latlng)
-			.setContent(`You clicked the map at ${e.latlng.toString()}`)
-			.openOn(map);
+	const onMapClick = evt => {
+		console.log(evt)
+		const { lat, lng } = evt.latlng
+		popup.setLatLng(evt.latlng)
+			.setContent(`緯度=${lat}<br />経度=${lng}`)
+			.openOn(map)
 	}
 
-	map.on('click', onMapClick);  
+	map.on('click', onMapClick);
 }
 
 init()
