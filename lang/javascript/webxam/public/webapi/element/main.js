@@ -35,6 +35,10 @@ const funcs = {
       duration: 1000,
       iterations: 1
     })
+  },
+  doPick: () => {
+    const sourceSelect = document.querySelector('select[data-event-pick-source="doPick"]')
+    sourceSelect.showPicker()
   }
 };
 
