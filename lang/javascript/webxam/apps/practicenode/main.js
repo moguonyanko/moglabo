@@ -188,8 +188,8 @@ app.get(`${practiceNodeRoot}imagebuffer`, cors(corsCheck),
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     response.send(imageData.data); 
   });
-
-app.use(`${practiceNodeRoot}public`, express.static(`public`))
+ 
+app.use(`${practiceNodeRoot}public`, express.static(__dirname + `/public`))
 
 const main = () => {
   Certs.getOptions().then(options => {
