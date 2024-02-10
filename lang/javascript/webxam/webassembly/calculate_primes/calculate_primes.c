@@ -3,7 +3,8 @@
  * 「ハンズオンWebAssembly」P.73
  * コンパイル例:
  * emcc calculate_primes.c -o ../../public/webassembly/calculate_primes/calculate_primes.js
-**/
+ * ブラウザでデバッグする場合は -g オプションを付ける。
+ **/
 
 #include <stdlib.h>
 #include <stdio.h>

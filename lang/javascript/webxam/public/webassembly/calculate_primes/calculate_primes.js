@@ -1224,7 +1224,7 @@ var ASM_CONSTS = {
   1943: ($0, $1) => { console.log('EM_ASM_:start=' + $0 + ',end=' + $1); }
 };
 function printMessageByMacro() { console.log('EM_JSシリーズのマクロから文字列出力します。'); }
-function NoReturnValueWithIntegerAndDoubleParameters(start,end) { console.log(start + 'から' + end + 'の間の素数を検出します。'); }
+function printStartAndEndByMacro(start,end) { console.log(start + 'から' + end + 'の間の素数を検出します。'); }
 
 
 
@@ -1414,11 +1414,11 @@ function checkIncomingModuleAPI() {
   ignoredModuleProp('fetchSettings');
 }
 var asmLibraryArg = {
-  "NoReturnValueWithIntegerAndDoubleParameters": NoReturnValueWithIntegerAndDoubleParameters,
   "emscripten_asm_const_int": _emscripten_asm_const_int,
   "emscripten_memcpy_big": _emscripten_memcpy_big,
   "fd_write": _fd_write,
-  "printMessageByMacro": printMessageByMacro
+  "printMessageByMacro": printMessageByMacro,
+  "printStartAndEndByMacro": printStartAndEndByMacro
 };
 var asm = createWasm();
 /** @type {function(...*):?} */

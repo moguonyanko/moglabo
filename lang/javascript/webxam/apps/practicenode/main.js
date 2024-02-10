@@ -58,6 +58,12 @@ app.get(`${practiceNodeRoot}hello`, (request, response) => {
   response.send('Hello Node World');
 });
 
+app.get(`${practiceNodeRoot}errortest`, (request, response) => {
+  response.status(500).send({
+    message: 'ERROR TEST'
+  })
+});
+
 app.get(`${practiceNodeRoot}eventloop/redos`, (request, response) => {
   const el = new MyEventLoop;
   response.send(el.redos(request));
@@ -182,6 +188,8 @@ app.get(`${practiceNodeRoot}imagebuffer`, cors(corsCheck),
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     response.send(imageData.data); 
   });
+
+app.use(`${practiceNodeRoot}public`, express.static(`public`))
 
 const main = () => {
   Certs.getOptions().then(options => {
