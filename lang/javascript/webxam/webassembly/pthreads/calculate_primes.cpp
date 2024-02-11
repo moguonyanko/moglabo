@@ -3,8 +3,10 @@
  * 「ハンズオンWebAssembly」P.399〜
  * コンパイル例:
  * emcc calculate_primes.cpp -O1 -std=c++11 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -o ../../public/webassembly/pthreads/index.html
- * ・JavaScriptとWebAssemblyモジュールだけを出力する場合
+ * JavaScriptとWebAssemblyモジュールだけを出力する場合
  * emcc calculate_primes.cpp -O1 -std=c++11 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -o ../../public/webassembly/pthreads/pthreads.js
+ * DWARFでデバッグする場合
+ * emcc calculate_primes.cpp -g -O1 -std=c++11 -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -o ../../public/webassembly/pthreads/pthreads.js
  */
 
 #include <cstdlib>

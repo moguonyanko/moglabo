@@ -3,6 +3,8 @@
  * 「ハンズオンWebAssembly」P.381〜
  * コンパイル例:
  * emcc calculate_primes.cpp -O1 -std=c++11 -s MODULARIZE=1 -o ../../public/webassembly/prefetch/calculate_primes.js
+ * DWARFでデバッグする場合
+ * emcc calculate_primes.cpp -g -O1 -std=c++11 -s MODULARIZE=1 -o ../../public/webassembly/prefetch/calculate_primes.js
 **/
 
 #include <cstdlib>

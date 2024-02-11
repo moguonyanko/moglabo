@@ -39,6 +39,12 @@
             "request": "launch",
             "name": "Azure Storage",
             "program": "${workspaceFolder}/apps/practiceazurestorage/main.js"
-        }
-    ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Test WebAssembly By Node.js",
+            "program": "${workspaceFolder}/apps/practicenode/test_webassembly.js"
+        },
+   ]
 }
