@@ -65,12 +65,16 @@ const main = async () => {
   }
   // WebAssembly.instantiateStreamingは実装されているものとする。
   // 実装されていない場合はWebAssembly.instantiateを使う。
+  let stream = null
   try {
     // TODO: wasmが正常に読み込めず左辺値がnullになってしまう。
-    loadedModule = await loadWasmModule('./side_module.wasm')
-    //loadedModule = await WebAssembly.instantiate(mod, importObject);
+    //loadedModule = await loadWasmModule('./side_module.wasm')
+    stream = fs.createReadStream('./side_module.wasm')
+    loadedModule = await WebAssembly.instantiateStreaming(stream, importObject);
   } catch (err) {
     throw new Error(`モジュール読み込み失敗:${err.message}`)
+  } finally {
+    stream && stream.close()
   }
   updateValue();
 };
