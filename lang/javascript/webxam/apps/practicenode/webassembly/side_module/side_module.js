@@ -5,6 +5,9 @@
  */
 /* eslint-env node */
 
+const fs = require('fs');
+const loader = require('webassembly-loader');
+
 const importObject = {
   env: {
     __memory_base: 0
@@ -36,6 +39,25 @@ const updateValue = (value = 0) => {
   currentValue = value;
 };
 
+/**
+ * TODO: どの方法でもwasmを正常に読み込めない。
+ */
+const loadWasmModule = async path => {
+  // return await loader.load(path)
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, (err, buffer) => {
+      if (err) {
+        reject(err)
+        return
+      } 
+      const bufferSource = new BufferSource(buffer);
+      WebAssembly.instantiate(bufferSource, importObject).then(module => {
+        resolve(module)
+      })
+    })    
+  })
+}
+
 const main = async () => {
   if (!isSupportedWebAssemblyJavaScriptAPI()) {
     const errMessage = 'WebAssembly JavaScript APIが使用できません';
@@ -45,8 +67,8 @@ const main = async () => {
   // 実装されていない場合はWebAssembly.instantiateを使う。
   try {
     // TODO: wasmが正常に読み込めず左辺値がnullになってしまう。
-    loadedModule = await WebAssembly.instantiate(require('./side_module'),
-      importObject);
+    loadedModule = await loadWasmModule('./side_module.wasm')
+    //loadedModule = await WebAssembly.instantiate(mod, importObject);
   } catch (err) {
     throw new Error(`モジュール読み込み失敗:${err.message}`)
   }
