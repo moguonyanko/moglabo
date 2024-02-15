@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Array</title>
   <link rel="stylesheet" href="../../common.css" />
-  <script type="module" src="main.js" defer></script>
+  <script type="module" src="main.js"></script>
 </head>
 
 <body>
@@ -32,12 +32,20 @@
       <button data-event-target="getArrayElement">run</button>
       <div class="output"></div>
     </section>
+    <section class="sample">
+      <h2>Array.prototype.with()</h2>
+      <p>元の配列に副作用をもたらさずに配列の要素を変更した新しい配列を生成する。</p>
+      <button data-event-target="arrayWith">run</button>
+      <div class="output" data-event-output="arrayWith"></div>
+    </section>
   </main>
 
   <footer>
     <p>参考</p>
     <ul>
       <li><a href="https://github.com/tc39/proposal-relative-indexing-method/">tc39/proposal-relative-indexing-method</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/with">Array.prototype.with()</a></li>
+      <li><a href="https://web.dev/blog/array-with?hl=en">Immutable array updates with Array.prototype.with</a></li>
     </ul>
   </footer>
 </body>

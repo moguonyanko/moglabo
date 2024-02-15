@@ -53,6 +53,13 @@ const funcs = {
     } catch (err) {
       output.textContent = `${index}の位置の要素は存在しない`;
     }
+  },
+  arrayWith: () => {
+    const oldArray = [1,2,3,4,5]
+    const newArray = oldArray.with(1, 2000).with(2, 3000).with(3, 4000)
+    const output = document.querySelector(`*[data-event-output='arrayWith']`)
+    // oldArrayに副作用が発生しておらず元の値がそのまま出力される。
+    output.textContent = `${oldArray} -> ${newArray}`
   }
 };
 
