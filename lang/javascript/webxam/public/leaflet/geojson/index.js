@@ -1,5 +1,5 @@
 /**
- * @fileoverview LeafletでGeoJSONのGeoJSONによる地物を描画するためのサンプルスクリト
+ * @fileoverview LeafletでGeoJSONのGeoJSONによる地物を描画するためのサンプルスクリプト
  * 参考:
  * https://leafletjs.com/examples/geojson/
  */

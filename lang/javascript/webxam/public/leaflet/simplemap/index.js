@@ -1,5 +1,5 @@
 /**
- * @fileoverview LeafletでOpenStreetMapの地図を表示するためのサンプルスクリト
+ * @fileoverview LeafletでOpenStreetMapの地図を表示するためのサンプルスクリプト
  * 参考:
  * https://leafletjs.com/examples/quick-start/example.html
  */
