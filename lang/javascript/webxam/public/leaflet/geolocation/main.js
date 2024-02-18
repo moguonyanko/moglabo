@@ -16,6 +16,7 @@ const init = () => {
   }).addTo(map)
   console.log(tiles)
 
+  // locateを呼び出さないとGPSでの位置検索が開始されない。
   map.locate({
     setView: true,
     maxZoom: 16
