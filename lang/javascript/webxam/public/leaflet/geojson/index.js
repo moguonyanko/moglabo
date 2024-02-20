@@ -15,7 +15,7 @@ const init = async () => {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   }).addTo(map)
 
-  const features = await (await fetch('samplefeatures.json')).json()
+  const features = await (await fetch('../data/samplefeatures.json')).json()
 
   const onEachFeature = (feature, layer) => {
     const popupContent = `<strong>${feature.properties.message}</strong>`
