@@ -25,6 +25,9 @@ const init = () => {
   const map = L.map('map', {
     center: [35.656159, 139.7552989],
     zoom: 15,
+    zoomDelta: 0.5,
+    // 拡大縮小操作時にスナップされる縮尺の量を設定する。 https://leafletjs.com/examples/zoom-levels/
+    zoomSnap: 0,  
     layers: [osm, stations]
   })
 
