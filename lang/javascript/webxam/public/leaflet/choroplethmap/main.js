@@ -199,6 +199,7 @@ const init = async () => {
   const { map } = lc.initMap()
 
   const geojson = await viewJinkouShuchuChikuMap(map)
+  //const geojson = await viewChikakoujiMap(map)
   console.log(geojson)
 }
 

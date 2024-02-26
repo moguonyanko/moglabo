@@ -16,8 +16,8 @@ class LeafletCommons {
     this.#lng = lng
   }
 
-  initMap() {
-    const map = L.map('map').setView([this.#lat, this.#lng], this.#zoom)
+  initMap({ renderer = L.canvas() } = {}) {
+    const map = L.map('map', { renderer }).setView([this.#lat, this.#lng], this.#zoom)
   
     const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: this.#maxZoom,
