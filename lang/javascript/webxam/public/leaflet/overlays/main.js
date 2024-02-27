@@ -41,29 +41,29 @@ const addVideoOverlay = map => {
   }).addTo(map)
 
   videoOverlay.on('load', () => {
-    const MyPauseControl = L.Control.extend({
-      onAdd: () => {
+    class MyPauseControl extends L.Control {
+      onAdd() {
         const button = L.DomUtil.create('button')
         button.title = '動画の一時停止'
         button.textContent = '一時停止'
-        L.DomEvent.on(button, 'click', () => {
+        L.DomEvent.on(button, 'click', event => {
+          // TODO: stopPropagationしてもダブルクリック時に地図拡大が発生してしまう。
+          //event.stopPropagation()
           videoOverlay.getElement().pause()
         })
         return button
       }
-    })
+    }
 
-    const MyPlayControl = L.Control.extend({
-      onAdd: () => {
+    class MyPlayControl extends L.Control {
+      onAdd() {
         const button = L.DomUtil.create('button')
         button.title = '動画の再生'
         button.textContent = '再生'
-        L.DomEvent.on(button, 'click', () => {
-          videoOverlay.getElement().play()
-        })
+        L.DomEvent.on(button, 'click', () => videoOverlay.getElement().play())
         return button
       }
-    })
+    }
 
     const pauseControl = (new MyPauseControl()).addTo(map)
     const playControl = (new MyPlayControl()).addTo(map)
