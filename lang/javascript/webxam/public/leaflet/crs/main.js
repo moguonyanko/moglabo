@@ -39,7 +39,7 @@ const init = () => {
       .openOn(map)
   }
 
-  map.on('click', viewClickLatLng);
+  map.on('click', viewClickLatLng)
 }
 
 window.addEventListener('pageshow', init)
