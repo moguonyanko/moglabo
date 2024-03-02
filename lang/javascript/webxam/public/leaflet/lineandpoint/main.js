@@ -9,9 +9,10 @@ const main = async () => {
     attribution: '&copy <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   })
 
-  const response = await fetch('samplefeatures.json')
-  const sampleFeatures = await response.json()
-  console.log(sampleFeatures)
+  const getJson = async path => await (await fetch(path)).json()
+  const line = await getJson('line.json')
+  const rightPoint = await getJson('rightpoint.json')
+  const leftPoint = await getJson('leftpoint.json')
 
   const map = L.map('map', {
     renderer: L.canvas(),
@@ -19,15 +20,34 @@ const main = async () => {
   })
 
   const onEachFeature = (feature, layer) => {
-    const content = `<p>${feature.geometry.type}</p>${feature.geometry.coordinates}`
-    layer.bindPopup(content)
+    layer.on({
+      click: async () => {
+        if (feature.geometry.type !== 'Point') {
+          return
+        }
+        const response = await fetch('https://localhost/mygis/pointsideofline/', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: {
+            point: JSON.stringify(feature),
+            line: JSON.stringify(line)
+          }
+        })
+        const json = await response.json()
+        console.log(json)
+      }
+    })
+    // const content = `<p>${feature.geometry.type}</p>${feature.geometry.coordinates}`
+    // layer.bindPopup(content)
   }
 
-  L.geoJSON(sampleFeatures, {
+  L.geoJSON([line, rightPoint, leftPoint], {
     onEachFeature
-  }).addTo(map)  
+  }).addTo(map)
 
-  map.setView({ lat: 35.657871, lng: 139.755138 }, 15)  
+  map.setView({ lat: 35.657871, lng: 139.755138 }, 15)
 }
 
 main().then()
