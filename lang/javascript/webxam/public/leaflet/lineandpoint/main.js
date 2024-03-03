@@ -25,8 +25,10 @@ const main = async () => {
         if (feature.geometry.type !== 'Point') {
           return
         }
-        const response = await fetch('https://localhost/mygis/pointsideofline/', {
+        // TODO: 検証のためクロスオリジンにしたい。
+        const response = await fetch('/brest/gis/pointsideofline/', {
           method: 'POST',
+          mode: 'cors',
           headers: {
             "Content-Type": "application/json",
           },
