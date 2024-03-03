@@ -30,10 +30,10 @@ const main = async () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: {
-            point: JSON.stringify(feature),
-            line: JSON.stringify(line)
-          }
+          body: JSON.stringify({
+            point: feature,
+            line
+          })
         })
         const json = await response.json()
         console.log(json)
