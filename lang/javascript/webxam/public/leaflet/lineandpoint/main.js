@@ -37,12 +37,17 @@ const main = async () => {
             line
           })
         })
-        const json = await response.json()
-        console.log(json)
+        const result = await response.json()
+        // TODO: 最初は2回クリックしないとポップアップが表示されない。
+        if (result.side > 0) {
+          layer.bindPopup('シンボルはラインの右側にあります')   
+        } else if (result.side < 0) {
+          layer.bindPopup('シンボルはラインの左側にあります')   
+        } else {
+          layer.bindPopup('シンボルはライン上にあります')   
+        }
       }
     })
-    // const content = `<p>${feature.geometry.type}</p>${feature.geometry.coordinates}`
-    // layer.bindPopup(content)
   }
 
   L.geoJSON([line, rightPoint, leftPoint], {
