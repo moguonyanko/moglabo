@@ -38,13 +38,13 @@ const main = async () => {
           })
         })
         const result = await response.json()
-        // TODO: 最初は2回クリックしないとポップアップが表示されない。
+        // openPopup()を呼ばないと初回のクリックではポップアップが表示されない。
         if (result.side > 0) {
-          layer.bindPopup('シンボルはラインの右側にあります')   
+          layer.bindPopup('シンボルはラインの右側にあります').openPopup()  
         } else if (result.side < 0) {
-          layer.bindPopup('シンボルはラインの左側にあります')   
+          layer.bindPopup('シンボルはラインの左側にあります').openPopup()   
         } else {
-          layer.bindPopup('シンボルはライン上にあります')   
+          layer.bindPopup('シンボルはライン上にあります').openPopup()   
         }
       }
     })
