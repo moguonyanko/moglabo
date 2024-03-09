@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Set</title>
+  <link href="../../common.css" rel="stylesheet" />
+  <script src="main.js" async></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Set</h1>
+  </header>
+  <main>
+    <label>Set A<input id="setA" type="text" value="2,3,5,7,11" /></label>
+    <label>Set B<input id="setB" type="text" value="1,3,5,7,9" /></label>
+    <p>Set AのメソッドにSet Bを渡した結果を示す。メソッドは以下から選ぶ。</p>
+    <div class="methodContainer">
+      <label><input type="radio" name="setMethod" value="difference" checked />difference</label>
+      <label><input type="radio" name="setMethod" value="intersection" />intersection</label>
+      <label><input type="radio" name="setMethod" value="isDisjointFrom" />isDisjointFrom</label>
+      <label><input type="radio" name="setMethod" value="isSubsetOf" />isSubsetOf</label>
+      <label><input type="radio" name="setMethod" value="isSuperSetOf" />isSuperSetOf</label>
+      <label><input type="radio" name="setMethod" value="symetricDifference" />symetricDifference</label>
+      <label><input type="radio" name="setMethod" value="union" />union</label>
+    </div>
+    <section>
+      <div class="output"></div>
+    </section>
+  </main>
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set">Set(MDN)</a></li>
+      <li><a href="https://web.dev/blog/web-platform-02-2024?hl=en">JavaScript Set methods</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
