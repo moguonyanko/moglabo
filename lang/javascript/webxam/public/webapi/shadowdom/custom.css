@@ -4,3 +4,8 @@ button {
   color: red;
   font-weight: bold;
 }
+
+/* 定義前のCustomElementsは非表示にすることでFOUCを回避する。 */
+my-button:not(:defined)>* {
+  display: none;
+}
