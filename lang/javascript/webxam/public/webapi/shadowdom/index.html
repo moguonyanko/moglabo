@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ShadowDOM</title>
+  <link href="../../common.css" rel="stylesheet" />
+  <script src="main.js" async></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>ShadowDOM</h1>
+  </header>
+  <main>
+    <section>
+      <h2>宣言型のShadowDOM</h2>
+      <my-button>
+        <template shadowrootmode="open">
+          <link rel="stylesheet" href="custom.css" />
+          <button class="runner">
+            テストボタン
+          </button>
+        </template>
+      </my-button>
+      <div class="output"></div>
+    </section>
+  </main>
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://developer.chrome.com/docs/css-ui/declarative-shadow-dom?hl=ja">宣言型の Shadow DOM</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
