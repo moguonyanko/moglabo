@@ -39,7 +39,7 @@ const main = async () => {
       convexfullLayer = L.geoJSON([result]).addTo(map)
     },
     clearConvexhull
-  } 
+  }
 
   document.querySelector('main').addEventListener('click', async event => {
     const { eventTarget } = event.target.dataset
@@ -48,7 +48,23 @@ const main = async () => {
     }
   })
 
-  L.geoJSON([multipoint]).addTo(map)
+  // CircleMarkerでGeoJSONのPointをCanvasに描画するときのスタイル。
+  // 通常のMarkerだとimg要素で追加されるため数が多い場合にパフォーマンスが低下する。
+  const circleMarkerStyle = {
+    radius: 8,
+    fillColor: 'green',
+    color: 'black',
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+  }
+
+  L.geoJSON([multipoint], {
+    // MarkerではなくCircleMarkerで描画させるためにpointToLayerを定義する。
+    pointToLayer: (feature, latlng) => {
+      return L.circleMarker(latlng, circleMarkerStyle);
+    }
+  }).addTo(map)
 
   map.setView({ lat: 35.65910479239084, lng: 139.7561359405518 }, 15)
 
@@ -58,7 +74,7 @@ const main = async () => {
     console.log(info)
   }
 
-  map.on('click', viewClickLatLng)  
+  map.on('click', viewClickLatLng)
 }
 
 main().then()
