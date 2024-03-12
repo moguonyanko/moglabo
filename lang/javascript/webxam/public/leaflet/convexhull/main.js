@@ -33,9 +33,7 @@ const main = async () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          multipoint
-        })
+        body: JSON.stringify(multipoint)
       })
       const { result } = await response.json()
       convexfullLayer = L.geoJSON([result]).addTo(map)
