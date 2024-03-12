@@ -8,10 +8,10 @@ const main = async () => {
     attribution: '&copy <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
   })
 
-  const getJson = async path => await (await fetch(path)).json()
-  const targetLine = await getJson('targetline.json')
-  const checkLine1 = await getJson('checkline1.json')
-  const checkLine2 = await getJson('checkline2.json')
+  const loadGeoJson = async path => await (await fetch(path)).json()
+  const targetLine = await loadGeoJson('targetline.json')
+  const checkLine1 = await loadGeoJson('checkline1.json')
+  const checkLine2 = await loadGeoJson('checkline2.json')
 
   const map = L.map('map', {
     renderer: L.canvas(),
@@ -33,18 +33,36 @@ const main = async () => {
           })
         })
         const { result } = await response.json()
-        if (result > 0) {
+        if (result) {
           layer.bindPopup('ラインは交差しています').openPopup()  
-        } else if (result < 0) {
-          layer.bindPopup('ラインは交差していません').openPopup()  
         } else {
-          layer.bindPopup('ラインは重なっています').openPopup()  
+          layer.bindPopup('ラインは交差していません').openPopup()  
         }
       }
     })
   }
 
-  L.geoJSON([targetLine, checkLine1, checkLine2], {
+  const targetLineLayer = L.geoJSON([targetLine], {
+    style: feature => {
+      return {
+        color: 'red',
+        weight: 15
+      }
+    },
+    onEachFeature
+  })
+  // setStyleで後からスタイル設定することもできる。
+  // targetLineLayer.setStyle({
+  //   color: 'red'
+  // })
+  targetLineLayer.addTo(map)
+
+  L.geoJSON([checkLine1, checkLine2], {
+    style: feature => {
+      return {
+        weight: 10
+      }
+    },
     onEachFeature
   }).addTo(map)
 
