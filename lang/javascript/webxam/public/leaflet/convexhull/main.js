@@ -3,6 +3,7 @@
  * Windowオブジェクトに公開されてしまっている関数や変数が多いがサンプルなので放置する。
  * もし気になるならscript要素のtype属性にmoduleを指定すればいい。
  */
+/* eslint-disable no-undef */
 
 let convexfullLayer = null
 
@@ -38,7 +39,7 @@ const addListener = (map, multipoint) => {
   })
 }
 
-const drawMarker = (map, multipoint) => {
+const drawCircleMarker = (map, multipoint) => {
   // CircleMarkerでGeoJSONのPointをCanvasに描画するときのスタイル。
   // 通常のMarkerだとimg要素で追加されるため数が多い場合にパフォーマンスが低下する。
   const circleMarkerStyle = {
@@ -53,9 +54,33 @@ const drawMarker = (map, multipoint) => {
   L.geoJSON([multipoint], {
     // MarkerではなくCircleMarkerで描画させるためにpointToLayerを定義する。
     pointToLayer: (feature, latlng) => {
-      return L.circleMarker(latlng, circleMarkerStyle);
+      return L.circleMarker(latlng, circleMarkerStyle)
     }
   }).addTo(map)
+}
+
+/**
+ * 参考:
+ * https://www.npmjs.com/package/leaflet-canvas-marker
+ */
+const drawImageMarker = (map, multipoint) => {
+  const ciLayer = L.canvasIconLayer({}).addTo(map)
+
+  const iconSize = [38, 38]
+  const icon = L.icon({
+    iconUrl: '../../image/sampleblock.png',
+    iconSize,
+    // アンカーを画像サイズに合わせて設定しないと凸包の図形がずれたような表示になる。
+    iconAnchor: [iconSize[0] / 2, iconSize[1] / 2]
+  })
+
+  L.geoJSON([multipoint], {
+    pointToLayer: (feature, latlng) => {
+      const marker = L.marker([latlng.lat, latlng.lng], { icon })
+      ciLayer.addMarker(marker)
+      return marker
+    }
+  }) // ここでaddTo(map)をするとimg要素のマーカーが追加されてしまう。
 }
 
 const initMap = () => {
@@ -76,7 +101,7 @@ const initMap = () => {
     const info = `lat: ${lat}, lng: ${lng}`
     console.log(info)
   }
-  
+
   return map.on('click', viewClickLatLng)
 }
 
@@ -85,7 +110,8 @@ const main = async () => {
   const loadGeoJson = async path => await (await fetch(path)).json()
   const multipoint = await loadGeoJson('multipoint.json')
   addListener(map, multipoint)
-  drawMarker(map, multipoint)
+  // drawCircleMarker(map, multipoint)
+  drawImageMarker(map, multipoint)
 }
 
 main().then()
