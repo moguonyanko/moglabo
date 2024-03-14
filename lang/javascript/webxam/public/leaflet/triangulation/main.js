@@ -5,16 +5,16 @@
 
 let trianglationLayer = null
 
-const resetTrianglation = () => {
+const resetTriangulation = () => {
   if (trianglationLayer) {
     trianglationLayer.remove()
   }
 }
 
 const listeners = {
-  drawTrianglation: async (map, rectangle) => {
-    resetTrianglation()
-    const response = await fetch('/brest/gis/trianglation/', {
+  drawTriangulation: async (map, rectangle) => {
+    resetTriangulation()
+    const response = await fetch('/brest/gis/triangulation/', {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -26,13 +26,13 @@ const listeners = {
     trianglationLayer = L.geoJSON(result, {
       style: () => {
         return {
-          color: 'red',
-          opacity: 0.2
+          color: 'black',
+          fillColor: 'rgba(255,0,0,0.7)'
         }
       }
     }).addTo(map)
   },
-  resetTrianglation
+  resetTriangulation
 }
 
 const addListener = (map, rectangle) => {
