@@ -5,6 +5,7 @@
 const listeners = {
   showDialog: () => {
     const dialog = document.getElementById('simple-dialog')
+    // show()では::backdoropで指定したスタイルが適用されない。
     dialog.showModal()
   }
 }
