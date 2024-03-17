@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>::backdrop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" async></script>
+</head>
+
+<body>
+
+  <header>
+    <a href="../../">home</a>
+    <h1>::backdrop</h1>
+    <p>::backdrop疑似要素について調べます。</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>::backdrop疑似要素を使った背景色設定</h2>
+      <dialog id="simple-dialog">
+        <p>ダイアログ表示中！</p>
+        <form method="dialog">
+          <button>閉じる</button>
+        </form>
+      </dialog>
+      <button data-event-name="showDialog">開く</button>  
+    </section>
+  </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://developer.chrome.com/blog/css-backdrop-inheritance?hl=ja">CSS ::backdrop の継承に関する変更</a></li>
+    </ul>
+  </footer>
+
+</body>
+
+</html>
