@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>最小外接円</title>
+  <title>内外判定</title>
   <link href="../../common.css" rel="stylesheet" />
   <link href="../leaflet_common.css" rel="stylesheet" />
   <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -17,11 +17,11 @@
 <body>
   <header>
     <a href="../../">home</a>
-    <h1>最小包含円</h1>
+    <h1>内外判定</h1>
   </header>
   <main>
     <div id="map"></div>
-    <button data-event-name="drawMinimumBoundingCircle">最小包含円描画</button>
+    <button data-event-name="emphasizeContainsPoints">内部の点強調</button>
     <button data-event-name="reset">リセット</button>
   </main>
   <footer>

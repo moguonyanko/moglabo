@@ -1,5 +1,5 @@
 /**
- * @fileoverview 最小外接円の描画を試すためのスクリプト
+ * @fileoverview 最小包含円の描画を試すためのスクリプト
  */
 /* eslint-disable no-undef */
 
