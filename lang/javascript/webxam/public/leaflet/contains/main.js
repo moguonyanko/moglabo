@@ -23,24 +23,24 @@ const listeners = {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        area_geojson: polygon, 
+        area_geojson: polygon,
         target_geojson: points
       })
     })
     const { result } = await response.json()
     const resultPoints = result[0]
-    const circleMarkerStyle = {
+    const emphasisMarkerStyle = {
       radius: 16,
       fillColor: 'red',
       color: 'black',
       weight: 1,
       opacity: 1,
       fillOpacity: 0.8
-    }  
+    }
     emphasizePointsLayer = L.geoJSON(resultPoints, {
       pointToLayer: (feature, latlng) => {
-        return L.circleMarker(latlng, circleMarkerStyle)
-      }      
+        return L.circleMarker(latlng, emphasisMarkerStyle)
+      }
       // style: () => {
       //   return {
       //     color: 'black',
@@ -57,7 +57,7 @@ const addListener = (map, polygon, points) => {
     const { eventName } = event.target.dataset
     if (typeof listeners[eventName] === 'function') {
       await listeners[eventName](map, polygon, points)
-    } 
+    }
   })
 }
 
@@ -68,8 +68,20 @@ const main = async () => {
   const polygon = await loadJson('polygon.json')
   L.geoJSON([polygon]).addTo(map)
   const points = await loadJson('points.json')
-  L.geoJSON([points]).addTo(map)
-  
+  const markerStyle = {
+    radius: 16,
+    fillColor: 'blue',
+    color: 'black',
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+  }
+  L.geoJSON([points], {
+    pointToLayer: (feature, latlng) => {
+      return L.circleMarker(latlng, markerStyle)
+    }
+  }).addTo(map)
+
   addListener(map, polygon, points)
 }
 
