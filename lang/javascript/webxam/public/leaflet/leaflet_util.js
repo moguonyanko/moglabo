@@ -27,7 +27,15 @@ const initMap = ({lat = 35.658043614238586, lng = 139.75555658340457, zoom = 16}
 
 const loadJson = async path => await (await fetch(path)).json()
 
+const getRandomRgb = (alpha = 1.0) => {
+  return `rgba(${Math.random() * 255},
+          ${Math.random() * 255},
+          ${Math.random() * 255},
+          ${alpha})`
+}
+
 export {
   initMap,
-  loadJson
+  loadJson,
+  getRandomRgb
 }
