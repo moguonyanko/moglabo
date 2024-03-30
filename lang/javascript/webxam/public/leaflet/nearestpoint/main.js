@@ -28,13 +28,17 @@ const listeners = {
       })
     })
     let { result } = await response.json()
+    const circleMarkerStyle = {
+      radius: 10,
+      fillColor: 'red',
+      color: 'black',
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 0.8
+    }
     nearestPointLayer = L.geoJSON(result, {
-      style: () => {
-        return {
-          color: 'black',
-          fillColor: getRandomRgb(),
-          weight: 1
-        }
+      pointToLayer: (feature, latlng) => {
+        return L.circleMarker(latlng, circleMarkerStyle)
       }
     }).addTo(map)
   },
