@@ -6,16 +6,16 @@
 import { initMap, loadJson, getRandomRgb } from '../leaflet_util.js'
 
 let nearestPointLayer = null
+let bufferNearPointsLayer = null
 
 const reset = () => {
-  if (nearestPointLayer) {
-    nearestPointLayer.remove()
-  }
+  nearestPointLayer?.remove()
+  bufferNearPointsLayer?.remove()
 }
 
 const listeners = {
   drawNearestPoint: async (map, points, line) => {
-    reset()
+    nearestPointLayer?.remove()
     const response = await fetch('/brest/gis/nearestpoint/', {
       method: 'POST',
       mode: 'cors',
@@ -42,14 +42,44 @@ const listeners = {
       }
     }).addTo(map)
   },
+  drawBufferNearPoints: async (map, points, line) => {
+    bufferNearPointsLayer?.remove()
+    const distance = 0.001 // TODO: メートルで指定したい。
+    const response = await fetch('/brest/gis/buffernearpoints/', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        points,
+        line,
+        distance
+      })
+    })
+    const { result } = await response.json()
+    const circleMarkerStyle = {
+      radius: 10,
+      fillColor: 'green',
+      color: 'black',
+      weight: 1,
+      opacity: 1,
+      fillOpacity: 0.8
+    }
+    bufferNearPointsLayer = L.geoJSON(result, {
+      pointToLayer: (feature, latlng) => {
+        return L.circleMarker(latlng, circleMarkerStyle)
+      }
+    }).addTo(map)    
+  },
   reset
 }
 
-const addListener = (map, polygon, line) => {
+const addListener = (map, points, line) => {
   document.querySelector('main').addEventListener('click', async event => {
     const { eventName } = event.target.dataset
     if (typeof listeners[eventName] === 'function') {
-      await listeners[eventName](map, polygon, line)
+      await listeners[eventName](map, points, line)
     }
   })
 }

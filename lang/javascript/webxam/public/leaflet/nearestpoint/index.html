@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>近傍点検索</title>
+  <title>近傍点探索</title>
   <link href="../../common.css" rel="stylesheet" />
   <link href="../leaflet_common.css" rel="stylesheet" />
   <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -17,11 +17,12 @@
 <body>
   <header>
     <a href="../../">home</a>
-    <h1>近傍点検索</h1>
+    <h1>近傍点探索</h1>
   </header>
   <main>
     <div id="map"></div>
-    <button data-event-name="drawNearestPoint">実行</button>
+    <button data-event-name="drawNearestPoint">最近傍点描画</button>
+    <button data-event-name="drawBufferNearPoints">線分周辺の点描画</button>
     <button data-event-name="reset">リセット</button>
   </main>
   <footer>
