@@ -7,10 +7,12 @@ import { initMap, loadJson, getRandomRgb } from '../leaflet_util.js'
 
 let nearestPointLayer = null
 let bufferNearPointsLayer = null
+let bufferedLineLayer = null
 
 const reset = () => {
   nearestPointLayer?.remove()
   bufferNearPointsLayer?.remove()
+  bufferedLineLayer?.remove()
 }
 
 const listeners = {
@@ -27,7 +29,7 @@ const listeners = {
         line
       })
     })
-    let { result } = await response.json()
+    const { result } = await response.json()
     const circleMarkerStyle = {
       radius: 10,
       fillColor: 'red',
@@ -44,6 +46,7 @@ const listeners = {
   },
   drawBufferNearPoints: async (map, points, line) => {
     bufferNearPointsLayer?.remove()
+    bufferedLineLayer?.remove()
     const distance = 0.001 // TODO: メートルで指定したい。
     const response = await fetch('/brest/gis/buffernearpoints/', {
       method: 'POST',
@@ -57,7 +60,7 @@ const listeners = {
         distance
       })
     })
-    const { result } = await response.json()
+    const { result, bufferedLine } = await response.json()
     const circleMarkerStyle = {
       radius: 10,
       fillColor: 'green',
@@ -71,6 +74,7 @@ const listeners = {
         return L.circleMarker(latlng, circleMarkerStyle)
       }
     }).addTo(map)    
+    bufferedLineLayer = L.geoJSON(bufferedLine).addTo(map)
   },
   reset
 }
