@@ -21,15 +21,15 @@
   </header>
   <main>
     <div id="map"></div>
-    <label for="fromCrs">FROM</label>
+    <label for="fromCrs">FROM(青):座標参照系</label>
     <select id="fromCrs">
-      <option value="jgd2011" selected>日本測地系</option>
-      <option value="wgs84">世界測地系</option>
+      <option value="4301" selected>日本測地系</option>
+      <option value="4326">世界測地系</option>
     </select>
-    <label for="toCrs">TO</label>
+    <label for="toCrs">TO(赤):座標参照系</label>
     <select id="toCrs">
-      <option value="jgd2011">日本測地系</option>
-      <option value="wgs84" selected>世界測地系</option>
+      <option value="4301">日本測地系</option>
+      <option value="4326" selected>世界測地系</option>
     </select>
     <button data-event-name="convert">実行</button>
     <button data-event-name="reset">リセット</button>

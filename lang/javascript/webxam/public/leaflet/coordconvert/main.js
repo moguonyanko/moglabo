@@ -14,8 +14,8 @@ const reset = () => {
 const listeners = {
   convert: async (map, point) => {
     resultPointLayer?.remove()
-    const fromcrs = document.getElementById('fromCrs').value
-    const tocrs = document.getElementById('toCrs').value
+    const fromepsg = document.getElementById('fromCrs').value
+    const toepsg = document.getElementById('toCrs').value
     const response = await fetch('/brest/gis/coordconvert/', {
       method: 'POST',
       mode: 'cors',
@@ -24,8 +24,8 @@ const listeners = {
       },
       body: JSON.stringify({
         point,
-        fromcrs,
-        tocrs
+        fromepsg,
+        toepsg
       })
     })
     const { result } = await response.json()
