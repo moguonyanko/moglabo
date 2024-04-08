@@ -1,0 +1,19 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "浜松町駅",
+        "id": 0
+      },
+      "geometry": {
+        "coordinates": [
+          139.75676229423522,
+          35.655393628051385
+        ],
+        "type": "Point"
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "東京タワー",
+        "id": 1
+      },
+      "geometry": {
+        "coordinates": [
+          139.74538477339485,
+          35.658643501386834
+        ],
+        "type": "Point"
+      }
+    }
+  ]
+}
