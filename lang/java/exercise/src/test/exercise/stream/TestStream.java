@@ -8,6 +8,7 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
 import static java.util.stream.Collectors.*;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +22,7 @@ import exercise.stream.StreamUtil;
  * 参考:
  * http://www.journaldev.com/13204/javase9-stream-api-improvements
  */
+
 public class TestStream {
 
     @Test
@@ -78,8 +80,8 @@ public class TestStream {
         // 第1引数を0にすると以下のストリームの処理は無限ループする。0 * 2 = 0が繰り返されるため。
         // 5回目のiterateでは8 * 2 = 16で第2引数を満たさなくなりストリームの処理は終了される。
         int actual = IntStream.iterate(1, i -> i <= 10, i -> i * 2)
-            .peek(System.out::println)
-            .sum();
+                .peek(System.out::println)
+                .sum();
         assertThat(actual, is(expected));
     }
 
@@ -88,9 +90,9 @@ public class TestStream {
         int expected = 15;
         // limitが無いと永遠にストリームの処理が継続されてしまう。
         int actual = IntStream.iterate(1, i -> i * 2)
-            .limit(5)
-            .filter(i -> i <= 10)
-            .sum();
+                .limit(5)
+                .filter(i -> i <= 10)
+                .sum();
         assertThat(actual, is(expected));
     }
 
@@ -99,11 +101,11 @@ public class TestStream {
         String expected = "";
 
         String actual = Stream.ofNullable(null)
-            .takeWhile(Objects::isNull)
-            // NullPointerExceptionはスローされない。
-            // ofNullableにより空のストリームが生成されているからである。
-            .map(Object::toString)
-            .collect(Collectors.joining(""));
+                .takeWhile(Objects::isNull)
+                // NullPointerExceptionはスローされない。
+                // ofNullableにより空のストリームが生成されているからである。
+                .map(Object::toString)
+                .collect(Collectors.joining(""));
 
         assertThat(actual, is(expected));
     }
@@ -126,12 +128,12 @@ public class TestStream {
 
         // longsの第1引数が指定されないと無限ストリームになるのでメソッドが完了しない。
         var valueSize = random.longs(size, start, end)
-            .parallel()
-            .filter(i -> isMultiple(i, n))
-            // boxed()はmapToObj(i -> i)と同じ。
-            .boxed()
-            .collect(toSet())
-            .size();
+                .parallel()
+                .filter(i -> isMultiple(i, n))
+                // boxed()はmapToObj(i -> i)と同じ。
+                .boxed()
+                .collect(toSet())
+                .size();
 
         // テストされる数列がランダムで構築されるため結果も毎回変わる。
         System.out.println(valueSize);
@@ -159,8 +161,8 @@ public class TestStream {
         public boolean equals(Object obj) {
             if (obj instanceof Student) {
                 var other = (Student) obj;
-                return name.equals(other.name) &&
-                    age == other.age;
+                return name.equals(other.name)
+                        && age == other.age;
             }
 
             return false;
@@ -176,10 +178,10 @@ public class TestStream {
     @Test
     public void calcStreamElementsAverage() {
         var actual = Stream.of(new Student("Mike", 19), new Student("Hoge", 20),
-            new Student("Poko", 33))
-            .mapToInt(Student::getAge)
-            .average()
-            .orElseThrow(IllegalStateException::new);
+                new Student("Poko", 33))
+                .mapToInt(Student::getAge)
+                .average()
+                .orElseThrow(IllegalStateException::new);
 
         var expected = 24d;
 
@@ -200,8 +202,8 @@ public class TestStream {
 
         // flatMapでList<Student>のStreamをStudentのStreamに変換している。
         var actual = stream.flatMap(groups -> groups.stream().filter(adult))
-            .map(Student::getName)
-            .collect(toList());
+                .map(Student::getName)
+                .collect(toList());
 
         assertThat(actual, is(expected));
     }
@@ -242,6 +244,7 @@ public class TestStream {
     }
 
     private static class MyItem implements Comparable<MyItem> {
+
         private final int id;
 
         private MyItem() {
@@ -268,9 +271,9 @@ public class TestStream {
     public void throwExceptionWhenSortedNotComparableObjects() {
         Supplier<NotComparableClass> sp = NotComparableClass::new;
         Stream.generate(sp)
-            .limit(10)
-            .sorted()
-            .collect(toList());
+                .limit(10)
+                .sorted()
+                .collect(toList());
     }
 
     @Test
@@ -278,17 +281,17 @@ public class TestStream {
         Supplier<MyItem> sp = MyItem::new;
 
         var results = Stream.generate(sp)
-            .limit(10)
-            .sorted()
-            .collect(toList());
+                .limit(10)
+                .sorted()
+                .collect(toList());
 
         System.out.println(results);
 
         // 上と同じ振る舞いになる。
         var results2 = Stream.generate(sp)
-            .limit(10)
-            .sorted(Comparator.comparing(MyItem::getId))
-            .collect(toList());
+                .limit(10)
+                .sorted(Comparator.comparing(MyItem::getId))
+                .collect(toList());
 
         System.out.println(results2);
     }
@@ -320,8 +323,8 @@ public class TestStream {
     @Test
     public void calcByAveragingDouble() {
         var students = List.of(new Student("Mike", 19),
-            new Student("Pony", 21),
-            new Student("Boo", 23));
+                new Student("Pony", 21),
+                new Student("Boo", 23));
 
         var actual = students.stream().collect(averagingDouble(Student::getAge));
         var expected = 21.0;
@@ -331,16 +334,16 @@ public class TestStream {
     @Test
     public void canPartTwoGroup() {
         var students = List.of(new Student("Mike", 19),
-            new Student("Pony", 21),
-            new Student("Boo", 23),
-            new Student("Bar", 18),
-            new Student("Foo", 30),
-            new Student("Peter", 13));
+                new Student("Pony", 21),
+                new Student("Boo", 23),
+                new Student("Bar", 18),
+                new Student("Foo", 30),
+                new Student("Peter", 13));
 
         Predicate<Student> isAdult = student -> student.getAge() >= 20;
 
         var map = students.stream()
-            .collect(partitioningBy(isAdult, counting()));
+                .collect(partitioningBy(isAdult, counting()));
         var expected = 3L; // countingがLongを扱うためintではエラーになる
         assertThat(map.get(Boolean.TRUE), is(expected));
     }
@@ -350,7 +353,6 @@ public class TestStream {
         var stream = Stream.of(4, 2, 1, 3, 5);
 
         //UnaryOperator<Integer> square = i -> (int)Math.pow(i, 2);
-
         var expected = List.of(16d, 4d, 1d, 9d, 25d);
         // unorderedしたからといって順序(encounter order(検出順))が
         // いきなり変更されるわけではない。
@@ -358,16 +360,16 @@ public class TestStream {
         // 図れることもあるということ。
         // https://docs.oracle.com/javase/jp/13/docs/api/java.base/java/util/stream/package-summary.html#Ordering
         var actual = stream
-            .unordered()
-            .parallel()
-            //.map(square)
-            // DoubleStreamなどを経由する場合boxedしないと
-            // Collectors.toList()のみを引数にとるcollectが使えない。
-            // パフォーマンスの観点ではこれらの基本データ型に特化した
-            // Streamを使用する方が良いのだろうと思われる。
-            .mapToDouble(i -> Math.pow(i, 2))
-            .boxed()
-            .collect(toList());
+                .unordered()
+                .parallel()
+                //.map(square)
+                // DoubleStreamなどを経由する場合boxedしないと
+                // Collectors.toList()のみを引数にとるcollectが使えない。
+                // パフォーマンスの観点ではこれらの基本データ型に特化した
+                // Streamを使用する方が良いのだろうと思われる。
+                .mapToDouble(i -> Math.pow(i, 2))
+                .boxed()
+                .collect(toList());
 
         assertThat(actual, is(expected));
     }
@@ -384,18 +386,19 @@ public class TestStream {
         // IntStreamは以下のシグネチャのreduceを利用することができない。
         // そのためmapToIntを経由しようとするとコンパイルエラーとなる。
         var d = values.parallelStream().reduce(0,
-            (acc, current) -> acc + current,
-            (p1, p2) -> p1 + p2).intValue();
+                (acc, current) -> acc + current,
+                (p1, p2) -> p1 + p2).intValue();
 
         assertEquals(a, b, c);
         assertEquals(c, d);
     }
-    
+
     /**
      * 参考:
      * https://blogs.oracle.com/otnjp/quiz-advanced-collectors-ja
      */
     private static class Student2 {
+
         private final String name;
         private final int age;
 
@@ -412,7 +415,7 @@ public class TestStream {
             return age;
         }
     }
-    
+
     @Test
     public void canUsePartitioningBy() {
         var s = Stream.of(new Student2("Mike", 19),
@@ -420,7 +423,7 @@ public class TestStream {
                 new Student2("Peter", 17),
                 new Student2("Anko", 20),
                 new Student2("Taro", 78));
-        
+
         Predicate<Student2> adult = student -> student.getAge() >= 20;
         var actual = s.collect(Collectors.partitioningBy(adult, Collectors.counting()));
         var expected = Map.of(true, 3L, false, 2L);
@@ -437,37 +440,35 @@ public class TestStream {
     @Test
     public void canCalcDoubleUnaryOperator() {
         var stream = DoubleStream.of(1.0, 3.0, 5.0);
-        DoubleFunction<DoubleUnaryOperator> mapperFactory =
-            exponent -> base -> Math.pow(base, exponent);
+        DoubleFunction<DoubleUnaryOperator> mapperFactory
+                = exponent -> base -> Math.pow(base, exponent);
 
         // 上と同じ結果を返せるがexponentを受け取った段階でボクシング操作が発生するため
         // 上よりも効率は落ちる。
         //Function<Double, DoubleUnaryOperator> mapperFactory =
         //    exponent -> base -> Math.pow(base, exponent);
-
         // DoubleStreamのmapにはDoubleUnaryOperatorしか渡せない。仮に渡せるとしても
         // Stream<Double>をsumすることはできないのでコンパイルエラーとなる。
         //DoubleFunction<DoubleFunction<Double>> mapperFactory =
         //    exponent -> base -> Math.pow(base, exponent);
-
         // 上と同じ理由によりコンパイルエラーとなる。
         //Function<Double, DoubleFunction<Double>> mapperFactory =
         //    exponent -> base -> Math.pow(base, exponent);
-
         var pow = 2d;
         var actual = stream.map(mapperFactory.apply(pow)).sum();
 
         var expected = 35d;
         assertThat(actual, is(expected));
     }
-    
+
     private static class MySample implements Comparable<MySample> {
+
         private final String name;
 
         public MySample(String name) {
             this.name = name;
         }
-        
+
         String getName() {
             return name;
         }
@@ -494,9 +495,9 @@ public class TestStream {
         assertNotNull(result);
         System.out.println(Arrays.toString(result.toArray()));
     }
-    
+
     private static final Pattern SLASH_PATTERN = Pattern.compile("\\/");
-    
+
     @Test
     public void splitAsStreamでストリームを処理できる() {
         var sample = "https://localhost/sample/index.php";
@@ -505,7 +506,7 @@ public class TestStream {
                 .sum();
         assertThat(size, is(30));
     }
-    
+
     /**
      * 参考:
      * https://blogs.oracle.com/javamagazine/post/java-quiz-stream-api-side-effects
@@ -525,12 +526,14 @@ public class TestStream {
                 // 終端操作がcollectだとmap内の処理は実行される。
                 //.collect(Collectors.joining());
                 .count(); // 終端操作
-        
+
         assertTrue(list.isEmpty());
     }
-    
-    private record MyStudent(String name, Integer score) {}
-    
+
+    private record MyStudent(String name, Integer score) {
+
+    }
+
     /**
      * 参考:
      * https://blogs.oracle.com/javamagazine/post/java-stream-api-reduce-overloads
@@ -545,11 +548,96 @@ public class TestStream {
                 new MyStudent("Hime", 7),
                 new MyStudent("Mike", 8)
         ).stream();
-        var result = stream.reduce(0, 
-                (sum, ms) -> sum + ms.score, 
+        var result = stream.reduce(0,
+                (sum, ms) -> sum + ms.score,
                 // この引数がなくても集計は行えそうだが実際にはコンパイルエラーになる。
                 Integer::sum);
-        
+
         assertTrue(result == 40);
     }
+
+    /**
+     * 参考
+     * https://blog.payara.fish/introducing-stream-gatherers-jep-461-for-enhanced-java-stream-operations
+     * @param fixedSize
+     * @param grouping
+     * @return
+     */
+    private static ArrayList<ArrayList<Integer>> findGroupsOfThree(int fixedSize,
+            int grouping) {
+
+        return Stream.iterate(0, i -> i + 1)
+                .limit(fixedSize * grouping)
+                .collect(Collector.of(
+                        () -> new ArrayList<ArrayList<Integer>>(),
+                        (groups, element) -> {
+                            if (groups.isEmpty() || groups.getLast().size() == fixedSize) {
+                                var current = new ArrayList<Integer>();
+                                current.add(element);
+                                groups.addLast(current);
+                            } else {
+                                groups.getLast().add(element);
+                            }
+                        },
+                        (left, right) -> {
+                            throw new UnsupportedOperationException("Cannot be parallelized");
+                        }
+                ));
+    }
+
+    /**
+     * 参考
+     * https://blog.payara.fish/introducing-stream-gatherers-jep-461-for-enhanced-java-stream-operations
+     * @todo
+     * Gatherersを参照してビルドすると実行時エラーになってしまう。IDE側の問題かもしれない。
+     * @param fixedSize
+     * @param grouping
+     * @return
+     */
+//    private static List<List<Integer>> findGroupsOfThreeWithGatherer(int fixedSize, 
+//        int grouping) {
+//        return Stream.iterate(0, i -> i + 1)
+//                .gather(Gatherers.windowFixed(fixedSize))
+//                .limit(grouping)
+//                .collect(Collectors.toList());
+//    }
+    
+    /**
+     * findGroupsOfThree及びfindGroupsOfThreeWithGathererを同じことをforループを使って
+     * 行うメソッドです。findGroupsOfThreeWithGathererに比べるとカウンタが複数必要になる
+     * など確かに若干複雑にはなる。ただし行ごとのデバッグは行いやすい。
+     * @param fixedSize
+     * @param grouping
+     * @return 
+     */
+    private static List<List<Integer>> findGroupsOfThreeWithForLoop(int fixedSize, 
+        int grouping) {
+        var targetElements = Stream.iterate(0, i -> i + 1)
+                .limit(fixedSize * grouping)
+                .collect(Collectors.toList());
+        
+        var allResults = new ArrayList<List<Integer>>();
+        for (var i = 0; i < grouping; i++) {
+            var results = new ArrayList<Integer>();
+            for (int j = i * fixedSize, count = 0; count < fixedSize; j++, count++) {
+                var element = targetElements.get(j);
+                results.add(element);
+            }
+            allResults.add(results);
+        }
+        return allResults;
+    }
+
+    @Test
+    public void StreamGatherersでリストをグループ分けできる() {
+        var fixedSize = 3;
+        var grouping = 2;
+        
+        var expected = findGroupsOfThree(fixedSize, grouping);
+        //var actual = findGroupsOfThreeWithGatherer(fixedSize, grouping);
+        var actual = findGroupsOfThreeWithForLoop(fixedSize, grouping);
+        
+        assertThat(actual, is(expected));
+    }
+
 }
