@@ -14,6 +14,10 @@ const reset = () => {
 const listeners = {
   executeRouteSearch: async (map, start, goal) => {
     resultRouteSearchLayer?.remove()
+    /**
+     * @todo
+     * 現在の表示範囲全体を探索範囲としてしまうので小縮尺にすればするほど遅くなってしまう。
+     */
     const bounds = map.getBounds()
     const bbox = [
       bounds.getNorth(), bounds.getSouth(), bounds.getEast(), bounds.getWest()
