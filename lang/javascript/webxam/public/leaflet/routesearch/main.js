@@ -5,6 +5,7 @@
 
 import { initMap, loadJson } from '../leaflet_util.js'
 
+let startGoalLayerGroup = null
 let resultRouteSearchLayer = null
 
 const reset = () => {
@@ -14,11 +15,8 @@ const reset = () => {
 const listeners = {
   executeRouteSearch: async (map, start, goal) => {
     resultRouteSearchLayer?.remove()
-    /**
-     * @todo
-     * 現在の表示範囲全体を探索範囲としてしまうので小縮尺にすればするほど遅くなってしまう。
-     */
-    const bounds = map.getBounds()
+    const [startP, goalP] = startGoalLayerGroup.getLayers().map(layer => layer.getLatLng())
+    const bounds = L.latLngBounds(startP, goalP)
     const bbox = [
       bounds.getNorth(), bounds.getSouth(), bounds.getEast(), bounds.getWest()
     ]
@@ -54,7 +52,7 @@ const main = async () => {
   })
   const start = await loadJson('start.json')
   const goal = await loadJson('goal.json')
-  L.geoJSON([start, goal], {
+  startGoalLayerGroup = L.geoJSON([start, goal], {
     pointToLayer: (feature, latlng) => {
       return L.circleMarker(latlng, {
         radius: 10,
@@ -65,7 +63,8 @@ const main = async () => {
         fillOpacity: 0.8
       })
     }
-  }).addTo(map)
+  })
+  startGoalLayerGroup.addTo(map)
 
   addListener(map, start, goal)
 }
