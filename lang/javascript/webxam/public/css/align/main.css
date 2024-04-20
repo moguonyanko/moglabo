@@ -1,0 +1,21 @@
+@charset "UTF-8";
+
+.alicn-content-container {
+  width: 100%;
+  height: 300px;
+  max-width: 300px;
+  border: 1px solid black;
+  /* 効かない。FlexboxやGridLayoutと合わせて使うもの。 */
+  /* align-self: center;  */
+  /* 効かない。FlexboxやGridLayoutと合わせて使うもの。 */
+  /* align-items: center;  */
+  /* FlexboxやGridLayoutを使っていなくても効く。 */
+  align-content: center; 
+}
+
+.content {
+  background-color: aquamarine;
+  border: solid 1px blue;
+  /* 以下は効かない。中央揃えしたい要素自身に指定しても効果が無い。 */
+  align-content: center;
+}
