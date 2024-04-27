@@ -4,7 +4,8 @@
 /* eslint-disable no-undef */
 
 import { initMap, loadJson } from '../leaflet_util.js'
-
+import { h, Component, render } from 'https://esm.sh/preact';
+    
 let startGoalLayerGroup = null
 let resultRouteSearchLayer = null
 
@@ -46,7 +47,14 @@ const addListener = (map, start, goal) => {
   })
 }
 
+const addSamplePreactHeader = () => {
+  const app = h('p', null, 'OSMnxで経路探索します。');
+  render(app, document.querySelector('main'));  
+}
+
 const main = async () => {
+  addSamplePreactHeader()
+
   const map = initMap({
     lat: 35.45562693113854, lng: 139.63408470153811, zoom: 14
   })
