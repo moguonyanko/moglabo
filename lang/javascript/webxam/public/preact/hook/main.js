@@ -4,7 +4,7 @@
  * https://preactjs.com/guide/v10/hooks/
  */
 import { render, Component, Fragment } from 'https://esm.sh/preact'
-import { useState, useCallback, useReducer, useRef, useEffect } from 'https://esm.sh/preact/hooks'
+import { useState, useReducer, useRef, useEffect, useErrorBoundary } from 'https://esm.sh/preact/hooks'
 import { html } from '../comcom.js'
 
 const useCounter = () => {
@@ -100,6 +100,43 @@ const EffectHeader = props => {
   return html`<div contenteditable="true">${props.value}</div>`
 }
 
+const ChildComponent = props => {
+  const [errorCount, setErrorCount] = useState(0)
+  const incErrorCount = () => setErrorCount(errorCount + 1)
+
+  // resetErrorでコンポーネントの生成が最初からやり直しされるのでステートを元に処理を分岐しようとしても
+  // 初期値で判定され続けてしまうのでうまくいかない。
+  // if (errorCount === 0) {
+  //   incErrorCount()
+  //   throw new Error(`${props.name}:ERROR TEST`)
+  // }
+
+  const onClick = () => {
+    if (errorCount > 0) {
+      return
+    }
+    incErrorCount()
+    throw new Error(`${props.name}:${new Date().toLocaleString()}`)
+  }
+
+  return html`<p>${props.name}</p><button onClick=${onClick}>エラー発生</button>`
+}
+
+// TODO: エラーが発生しても呼び出されない。
+const reportError = error => {
+  alert(error.message)
+}
+
+const ParentComponent = props => {
+  const [error, resetError] = useErrorBoundary(reportError)
+
+  if (!error) {
+    return html`<div>${props.children}</div>`
+  } else { // ここに入るのはコンポーネント初期化時にエラーが発生した場合だけである。
+    return html`<button onClick=${resetError}>reset</button>`
+  }
+}
+
 const init = () => {
   const counterContainer = document.querySelector('.counter.useState')
   render(html`<${MyCounterJa} /><${MyCounterEn} />`, counterContainer)
@@ -112,6 +149,12 @@ const init = () => {
 
   const effectContainer = document.querySelector('.useEffect')
   render(html`<${EffectHeader} value="TEST" />`, effectContainer)
+
+  const errorBoundaryContainer = document.querySelector('.useErrorBoundary')
+  render(html`<${ParentComponent}>
+  <${ChildComponent} name="ChildA" />
+  <${ChildComponent} name="ChildB" />
+  </ ${ParentComponent}>`, errorBoundaryContainer)
 }
 
 init()
