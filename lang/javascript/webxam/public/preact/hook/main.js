@@ -9,25 +9,28 @@ import { html } from '../comcom.js'
 
 const useCounter = () => {
   const [count, setCount] = useState(0)
-  const increment = useCallback(() => {
-    setCount(count + 1)
-  }, [count])
+  const increment = () => setCount(count + 1)
+  const decrement = () => setCount(count - 1)
+  // 関数を渡すこともできる。結果は上と同じ。
+  //const decrement = () => setCount(currentCount => currentCount - 1)
 
-  return { count, increment }
+  return { count, increment, decrement }
 }
 
 const MyCounterJa = () => {
-  const { count, increment } = useCounter()
+  const { count, increment, decrement } = useCounter()
 
   return html`<span>カウンター: ${count}</span>
-  <button onClick=${increment}>加算</button>`
+  <button onClick=${increment}>加算</button>
+  <button onClick=${decrement}>減算</button>`
 }
 
 const MyCounterEn = () => {
-  const { count, increment } = useCounter()
+  const { count, increment, decrement } = useCounter()
 
   return html`<span>Counter: ${count}</span>
-  <button onClick=${increment}>Increment</button>`
+  <button onClick=${increment}>Increment</button>
+  <button onClick=${decrement}>Decrement</button>`
 }
 
 const init = () => {
