@@ -4,7 +4,7 @@
  * https://preactjs.com/guide/v10/hooks/
  */
 import { render, Component, Fragment } from 'https://esm.sh/preact'
-import { useState, useCallback, useReducer, useRef } from 'https://esm.sh/preact/hooks'
+import { useState, useCallback, useReducer, useRef, useEffect } from 'https://esm.sh/preact/hooks'
 import { html } from '../comcom.js'
 
 const useCounter = () => {
@@ -75,15 +75,39 @@ const EmphasisBox = () => {
     onPointerOut=${onPointerOut}>SAMPLE BOX</div>`
 }
 
+const EffectHeader = props => {
+  // ページ読み込み時しか呼び出されない。
+  // イベントや時間の変化を補足して副作用を肩代わりしてくれるわけではない。
+  useEffect(() => {
+    const header = document.querySelector('.useEffect .sampleHeader')
+    header.textContent = props.value
+  }, [props.value])
+
+  // TODO: currentが常にnullになる。onInputに対してはuseRefは使えないのか？
+  // const elementRef = useRef(null)
+  // const onInput = () => {
+  //   if (elementRef.current) {
+  //     elementRef.current.textContent = props.value
+  //   }
+  // }
+  // return html`<input type="text" onInput=${onInput} />`
+
+  // propsを参照していないとuseEffectが呼び出されない。
+  return html`<input type="text" value="${props.value}" />`
+}
+
 const init = () => {
   const counterContainer = document.querySelector('.counter.useState')
   render(html`<${MyCounterJa} /><${MyCounterEn} />`, counterContainer)
 
   const reducerContainer = document.querySelector('.counter.useReducer')
   render(html`<${MyReducerCounter} />`, reducerContainer)
-  
+
   const refContainer = document.querySelector('.useRef')
   render(html`<${EmphasisBox} />`, refContainer)
+
+  const effectContainer = document.querySelector('.useEffect')
+  render(html`<${EffectHeader} value="TEST" />`, effectContainer)
 }
 
 init()
