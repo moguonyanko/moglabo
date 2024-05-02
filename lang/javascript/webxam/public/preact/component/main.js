@@ -38,7 +38,7 @@ class Greeting extends Component {
   render() {
     // この例ではあまり意味がないがFragmentを使うと要素群に対して単一のルート要素を持たせやすくなる。
     return html`<${Fragment}>
-      <div>
+      <div part="component">
         <h1>こんにちは、${this.state.name}</h1>
         <form onSubmit=${this.onSubmit}>
           <input type="text" value=${this.state.value} onInput=${this.onInput} />
@@ -69,9 +69,9 @@ class MyClock extends Component {
   render() {
     if (!this.state.errored) {
       const timeState = new Date(this.state.time)
-      return html`<div>${timeState.toLocaleString()}</div>`
+      return html`<div part="component">${timeState.toLocaleString()}</div>`
     } else {
-      return html`<div>${this.state.message}</div>`
+      return html`<div part="component">${this.state.message}</div>`
     }
   }
 }
@@ -99,7 +99,7 @@ function MyList(props) {
     <dt>${item.name}</dt>
     <dd>${item.price}</dd>
   </${Fragment}>`)
-  return html`<div><dl>${content}</dl></div>`
+  return html`<div part="component"><dl>${content}</dl></div>`
 }
 
 const sampleItems = [
@@ -121,13 +121,14 @@ const init = () => {
   // 複数のコンポーネントを同じ要素に対して個別にrenderすると他のコンポーネントを上書きしてしまうので
   // その場合は全ての要素を一度にrenderする必要がある。
   const container = document.querySelector('.container')
+  container.attachShadow({ mode: 'open' })
   render(html`<${Greeting} name="NO NAME" value="𩸽太郎" />
     <p>時計</p>
     <${MyClock} />
     <p>エラーが発生する時計</p>
     <${BrokenMyClock} />
     <p>リスト</p>
-    <${MyList} items="${JSON.stringify(sampleItems)}" />`, container) // コンポーネントにclassを指定しても除去される。
+    <${MyList} items="${JSON.stringify(sampleItems)}" />`, container.shadowRoot) // コンポーネントにclassを指定しても除去される。
   // なぜか初期化エラーになる。renderを複数回呼び出すのは好ましくないのかもしれない。
   // render(html`<${MyClock} />`, document.getElementById('myclock'))
   // render(html`<${BrokenMyClock} />`, document.getElementById('brokenmyclock'))
