@@ -81,6 +81,8 @@ const EffectHeader = props => {
   useEffect(() => {
     const header = document.querySelector('.useEffect .sampleHeader')
     header.textContent = props.value
+    // クリーンアップ処理の関数を返してもページ読み込み時しかuseEffectされないのは変わらない。
+    return () => header.textContent = '' 
   }, [props.value])
 
   // TODO: currentが常にnullになる。onInputに対してはuseRefは使えないのか？
@@ -93,7 +95,9 @@ const EffectHeader = props => {
   // return html`<input type="text" onInput=${onInput} />`
 
   // propsを参照していないとuseEffectが呼び出されない。
-  return html`<input type="text" value="${props.value}" />`
+  // return html`<input type="text" value="${props.value}" />`
+  // inputではなくcontenteditableにしてもページ読み込み完了後の変更は反映されない。
+  return html`<div contenteditable="true">${props.value}</div>`
 }
 
 const init = () => {
