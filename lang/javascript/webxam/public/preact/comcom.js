@@ -20,5 +20,6 @@ class Header extends Component {
 }
 
 export {
-  Header
+  Header,
+  html
 }
