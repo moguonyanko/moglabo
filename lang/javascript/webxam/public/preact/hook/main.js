@@ -4,7 +4,7 @@
  * https://preactjs.com/guide/v10/hooks/
  */
 import { render, Component, Fragment } from 'https://esm.sh/preact'
-import { useState, useCallback, useReducer } from 'https://esm.sh/preact/hooks'
+import { useState, useCallback, useReducer, useRef } from 'https://esm.sh/preact/hooks'
 import { html } from '../comcom.js'
 
 const useCounter = () => {
@@ -59,11 +59,31 @@ const MyReducerCounter = () => {
   </${Fragment}>`
 }
 
+const EmphasisBox = () => {
+  const box = useRef(null)
+  const onPointerEnter = () => {
+    if (box.current) {
+      box.current.classList.add('emphasis')
+    }
+  }
+  const onPointerOut = () => {
+    if (box.current) {
+      box.current.classList.remove('emphasis')
+    }
+  }
+  return html`<div ref=${box} onPointerEnter=${onPointerEnter} 
+    onPointerOut=${onPointerOut}>SAMPLE BOX</div>`
+}
+
 const init = () => {
   const counterContainer = document.querySelector('.counter.useState')
   render(html`<${MyCounterJa} /><${MyCounterEn} />`, counterContainer)
+
   const reducerContainer = document.querySelector('.counter.useReducer')
   render(html`<${MyReducerCounter} />`, reducerContainer)
+  
+  const refContainer = document.querySelector('.useRef')
+  render(html`<${EmphasisBox} />`, refContainer)
 }
 
 init()

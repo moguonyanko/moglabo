@@ -1,2 +1,7 @@
 @charset "UTF-8";
 
+.emphasis {
+  border: 2px red solid;
+  background-color: lightsalmon;
+  font: bold;
+}
