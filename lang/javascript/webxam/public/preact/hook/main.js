@@ -3,7 +3,7 @@
  * 参考:
  * https://preactjs.com/guide/v10/hooks/
  */
-import { render, Component, Fragment } from 'https://esm.sh/preact'
+import { render, Fragment } from 'https://esm.sh/preact'
 import { useState, useReducer, useRef, useEffect, useErrorBoundary } from 'https://esm.sh/preact/hooks'
 import { html } from '../comcom.js'
 
