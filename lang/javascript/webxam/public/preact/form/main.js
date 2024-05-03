@@ -1,7 +1,7 @@
 /**
  * @fileoverview Preactのフォーム調査用スクリプト
  * 参考:
- * https://preactjs.com/guide/v10/forms/
+ * https://preactjs.com/guide/v10/forms
  */
 import { render } from 'https://esm.sh/preact'
 import { useState } from 'https://esm.sh/preact/hooks'
