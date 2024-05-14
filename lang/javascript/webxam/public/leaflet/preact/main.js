@@ -1,7 +1,7 @@
 /**
  * @fileoverview PreactとLeafletを組み合わせて地図表示するサンプル
  */
-import { h, render } from 'https://esm.sh/preact'
+import { render, Component } from 'https://esm.sh/preact'
 import htm from 'https://esm.sh/htm'
 import {
   MapContainer,
@@ -9,10 +9,42 @@ import {
   Marker,
   Popup
 } from 'https://cdn.esm.sh/react-leaflet'
+import { initMap } from '../leaflet_util.js'
+import { html } from '../../preact/comcom.js'
 
-const html = htm.bind(h)
+/**
+ * TODO: Preactで制御するための状態を持たせてみる。
+ */
+class MyMap extends Component {
+  #lat
+  #lng
+  #zoom
 
-function MyMap({ lat, lng, zoom, scrollWheelZoom = false }) {
+  constructor({ lat, lng, zoom }) {
+    super()
+    this.#lat = lat
+    this.#lng = lng
+    this.#zoom = zoom
+  }
+
+  componentDidMount() {
+    const map = initMap({
+      lat: this.#lat, lng: this.#lng, zoom: this.#zoom
+    })
+    console.log(map)
+  }
+
+  render() {
+    return html`
+        <div id="map"></div>
+      `
+  }
+}
+
+/**
+ * 以下は動作しない。react-leafletがPreactに対応していないようである。
+ */
+function MyMapByLibrary({ lat, lng, zoom, scrollWheelZoom = false }) {
   return html`
     <${MapContainer} center=${[lat, lng]} zoom=${zoom} scrollWheelZoom=${scrollWheelZoom}>
       <${TileLayer}
