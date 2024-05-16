@@ -2,6 +2,7 @@
  * @fileoverview PreactとLeafletを組み合わせて地図表示するサンプル
  */
 import { render, Component } from 'https://esm.sh/preact'
+import { useState, useEffect } from 'https://esm.sh/preact/hooks'
 import htm from 'https://esm.sh/htm'
 import {
   MapContainer,
@@ -13,9 +14,39 @@ import { initMap } from '../leaflet_util.js'
 import { html } from '../../preact/comcom.js'
 
 /**
+ * 管理するべき状態とその状態を変更する関数を切り出せる。
+ */
+const useMapSize = () => {
+  const [width, setWidth] = useState(window.innerWidth)
+  const [height, setHeight] = useState(window.innerHeight)
+
+  const size = { width, height }
+
+  const setSize = ({width, height}) => {
+    setWidth(width)
+    setHeight(height)
+  }
+
+  const onResize = () => {
+    setSize({
+      width: window.innerWidth,
+      height: window.innerHeight
+    })
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, []);  
+
+  return size
+}
+
+/**
  * TODO: Preactで制御するための状態を持たせてみる。
  */
 class MyMap extends Component {
+  #map
   #lat
   #lng
   #zoom
@@ -28,16 +59,42 @@ class MyMap extends Component {
   }
 
   componentDidMount() {
-    const map = initMap({
+    this.#map = initMap({
       lat: this.#lat, lng: this.#lng, zoom: this.#zoom
     })
-    console.log(map)
+    console.log('Map initialized', this.#map)
+    // ここでステートを参照するとエラーになる。render内でしか参照できないのか？
+    // const size = useMapSize()
+    // const popup = L.popup()
+  	// 	.setLatLng([this.#lat, this.#lng])
+	  // 	.setContent(`Width=${size.width}, Height=${size.height}`)
+    //   .openOn(this.#map)
   }
 
   render() {
+    const size = useMapSize()
+
+    // Mapが初期化されていないのでポップアップが表示できない。
+    // const popup = L.popup()
+  	// 	.setLatLng([this.#lat, this.#lng])
+	  // 	.setContent(`Width=${size.width}, Height=${size.height}`)
+    //   .openOn(this.#map)
+
+    // ページがレンダリングされていないので以下はエラーになる。
+    //document.querySelector('main').innerHTML = `<p class="info">Width=${size.width}, Height=${size.height}</p>`
+
+    // renderの戻り値以外でステートを参照してもエラーとなる。
+    // if (size.width > size.height) {
+    //   return html`<div id="map" class="hot"></div>`
+    // } else {
+    //   return html`<div id="map" class="cool></div>`
+    // }
+
+    // ステートはコンポーネントに埋め込んで使うしかない？
     return html`
-        <div id="map"></div>
-      `
+        <p class="info">Width=${size.width}, Height=${size.height}</p>
+        <div id="map" class=${size.width > size.height ? "hot" : "cool"}></div>
+      `    
   }
 }
 
