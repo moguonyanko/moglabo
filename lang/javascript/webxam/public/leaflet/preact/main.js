@@ -71,6 +71,10 @@ class MyMap extends Component {
     //   .openOn(this.#map)
   }
 
+  static #getSizeClassName = size => {
+    return size.width > size.height ? "wide" : "narrow"    
+  }
+
   render() {
     const size = useMapSize()
 
@@ -92,9 +96,9 @@ class MyMap extends Component {
 
     // ステートはコンポーネントに埋め込んで使うしかない？
     return html`
-        <p class="info">Width=${size.width}, Height=${size.height}</p>
-        <div id="map" class=${size.width > size.height ? "hot" : "cool"}></div>
-      `    
+        <p class=${MyMap.#getSizeClassName(size)}>Width=${size.width}, 
+        Height=${size.height}, ${MyMap.#getSizeClassName(size)}</p>
+        <div id="map"></div>`    
   }
 }
 

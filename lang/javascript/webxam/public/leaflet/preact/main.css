@@ -1,32 +1,27 @@
 @charset "UTF-8";
 
-body {
+body, header, .mapcontainer {
   margin: 0;
 }
 
 header {
-  height: 20vh;
+  height: 10vh;
 }
 
 .mapcontainer {
   width: 100vw;
-  height: 80vh;  
+  height: 90vh;  
 }
 
-.info {
-  font-size: 80%;
+.wide {
+  color: red;
 }
 
-.hot {
-  border: red;
-}
-
-.cool {
-  border: blue;
+.narrow {
+  color: blue;
 }
 
 #map {
-  border: solid 5px black;
   width: 100%;
   height: 100%;
 }
