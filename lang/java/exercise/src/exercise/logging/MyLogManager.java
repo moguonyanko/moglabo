@@ -16,4 +16,8 @@ public class MyLogManager {
        MY_INFO.debug(message);
     }
     
+    public static void warn(String message) {
+        MY_INFO.warn(message);
+    }
+    
 }

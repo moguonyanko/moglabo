@@ -12,6 +12,8 @@ public class TestLogging {
     public void Log4jでログを出力できる() {
         MyLogManager.info("Hello Info");
         MyLogManager.debug("Hello Debug");
+        MyLogManager.warn("Hello warn");
+        System.out.println("Finish!");
     }
     
 }
