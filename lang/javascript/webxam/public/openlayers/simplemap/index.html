@@ -4,7 +4,8 @@
 <head>
   <title>シンプルな地図</title>
   <link href="../../common.css" rel="stylesheet" />
-  <script src="https://www.openlayers.org/api/OpenLayers.js"></script>
+  <script src="OpenLayers.js"></script>
+  <link href="index.css" rel="stylesheet" />
   <script src="index.js" type="module"></script>
 </head>
 
@@ -13,9 +14,10 @@
     <a href="../../">home</a>
     <h1>シンプルな地図</h1>
   </header>
-  <main>
-    <div id="demoMap"></div>
-  </main>
+  <!-- <main> -->
+  <!-- Mapを格納する要素はbody直下に存在する必要がある。 -->
+  <div id="demoMap"></div>
+  <!-- </main> -->
   <footer>
     <h3>参考</h3>
     <ul>
