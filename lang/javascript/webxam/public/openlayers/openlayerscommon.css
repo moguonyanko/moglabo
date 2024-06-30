@@ -1,15 +1,7 @@
 @charset "UTF-8";
 
-html,
-body {
-  margin: 0;
-  height: 100%;
-}
-
 #map {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
+  width: 100vw;
+  height: 65vh;
   background-color: beige;
 }

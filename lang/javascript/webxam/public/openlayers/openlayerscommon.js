@@ -8,8 +8,8 @@ const { OSM } = ol.source
 const { Tile } = ol.layer
 
 const initMap = ({ target = 'map',
-  lon = 139.63408470153811, lat = 35.45562693113854,
-  zoom = 15 } = {}) => {
+  lon = 139.64006991057147, lat = 35.44343730412503,
+  zoom = 16 } = {}) => {
   const map = new Map({
     target,
     layers: [

@@ -3,11 +3,13 @@
 
 <head>
   <title>ポリゴンの面積計算</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="../../common.css" rel="stylesheet" />
   <link href="../openlayerscommon.css" rel="stylesheet" />
+  <link href="main.css" rel="stylesheet" />
   <!-- <script src="http://www.openlayers.org/api/OpenLayers.js"></script> -->
-  <script src="https://cdn.jsdelivr.net/npm/ol@v9.2.4/dist/ol.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v9.2.4/ol.css">
+  <script src="https://cdn.jsdelivr.net/npm/ol@v9.2.4/dist/ol.js"></script>
   <script src="main.js" type="module"></script>
 </head>
 
@@ -17,10 +19,15 @@
     <h1>ポリゴンの面積計算</h1>
   </header>
   <div id="map"></div>
+  <div>
+    <button data-event-function="calcArea">run</button>
+    <div class="output" data-event-output="calcArea"></div>
+  </div>
   <footer>
     <h3>参考</h3>
     <ul>
-      <li><a href="https://wiki.openstreetmap.org/wiki/OpenLayers_Simple_Example">OpenLayers Simple Example</a></li>
+      <li><a href="https://openlayers.org/en/latest/examples/accessible.html">Accessible Map</a></li>
+      <li><a href="https://openlayers.org/en/latest/examples/polygon-styles.html">Custom Polygon Styles</a></li>
     </ul>
   </footer>
 </body>
