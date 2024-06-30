@@ -18,6 +18,7 @@ const initMap = ({ target = 'map',
       }),
     ],
     view: new View({
+      projection: 'EPSG:4326',
       center: [lon, lat],
       zoom,
     }),
