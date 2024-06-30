@@ -61,10 +61,27 @@ const getPolygonLayer = async () => {
   return layer
 }
 
+// DOM
+
+const funcs = {
+  calcArea: () => {
+    const output = document.querySelector(`div[data-event-output='calcArea']`)
+    output.textContent = "test"
+
+    // TODO: 描画済みポリゴンから座標群を得る。
+    // TODO: 関数アプリに座標群を渡してポリゴンの面積を得る。
+  }
+}
+
 const init = async () => {
   const map = initMap()
   const polygonLayer = await getPolygonLayer()
   map.addLayer(polygonLayer)
+
+  document.querySelector('main').addEventListener('click', event => {
+    const { eventFunction } = event.target.dataset
+    funcs[eventFunction]?.()
+  })
 }
 
 init().then()
