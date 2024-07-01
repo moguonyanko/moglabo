@@ -45,17 +45,17 @@ const styles = [
   }),
 ]
 
-const getPolygonLayer = async () => {
-  const response = await fetch('polygon.json')
-  const geojson = await response.json()
+const POLYGON_ID = 'sample-polygon-layer-1'
 
+const getPolygonLayer = async () => {
   const source = new VectorSource({
-    features: new GeoJSON().readFeatures(geojson),
+    url: 'polygon.json',
+    format: new GeoJSON()
   })
 
   const layer = new VectorLayer({
     source,
-    style: styles,
+    style: styles
   })
 
   return layer
@@ -64,7 +64,8 @@ const getPolygonLayer = async () => {
 // DOM
 
 const funcs = {
-  calcArea: () => {
+  calcArea: map => {
+    console.log(map.getLayers())
     const output = document.querySelector(`div[data-event-output='calcArea']`)
     output.textContent = "test"
 
@@ -80,7 +81,7 @@ const init = async () => {
 
   document.querySelector('main').addEventListener('click', event => {
     const { eventFunction } = event.target.dataset
-    funcs[eventFunction]?.()
+    funcs[eventFunction]?.(map)
   })
 }
 

@@ -5,7 +5,7 @@
 
 const { Map, View } = ol
 const { OSM } = ol.source
-const { Tile } = ol.layer
+const TileLayer = ol.layer.Tile
 
 const initMap = ({ target = 'map',
   lon = 139.64006991057147, lat = 35.44343730412503,
@@ -13,7 +13,7 @@ const initMap = ({ target = 'map',
   const map = new Map({
     target,
     layers: [
-      new Tile({
+      new TileLayer({
         source: new OSM(),
       }),
     ],
