@@ -47,7 +47,7 @@ const styles = [
 
 const POLYGON_ID = 'sample-polygon-layer-1'
 
-const getPolygonLayer = async () => {
+const getPolygonLayer = () => {
   const source = new VectorSource({
     url: 'polygon.json',
     format: new GeoJSON()
@@ -64,25 +64,37 @@ const getPolygonLayer = async () => {
 // DOM
 
 const funcs = {
-  calcArea: map => {
-    console.log(map.getLayers())
-    const output = document.querySelector(`div[data-event-output='calcArea']`)
-    output.textContent = "test"
+  calcArea: async layer => {
+    const features = layer.getSource().getFeatures()
+    const polygon = features[0].getGeometry()
+    // GeometryのみをGeoJSONに書き出すならwriteGeometryを使う。
+    //const geojsonPolygon = new GeoJSON().writeFeatures(features)
+    const geojsonPolygon = new GeoJSON().writeGeometry(polygon)
+    console.log(geojsonPolygon)
 
-    // TODO: 描画済みポリゴンから座標群を得る。
-    // TODO: 関数アプリに座標群を渡してポリゴンの面積を得る。
+    const respone = await fetch('https://localhost/falcon/api/calcarea', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application.json'
+      },
+      body: geojsonPolygon
+    })
+    const { area } = await respone.json()
+
+    const output = document.querySelector(`div[data-event-output='calcArea']`)
+    output.textContent = area
   }
 }
 
-const init = async () => {
+const init = () => {
   const map = initMap()
-  const polygonLayer = await getPolygonLayer()
+  const polygonLayer = getPolygonLayer()
   map.addLayer(polygonLayer)
 
-  document.querySelector('main').addEventListener('click', event => {
+  document.querySelector('main').addEventListener('click', async event => {
     const { eventFunction } = event.target.dataset
-    funcs[eventFunction]?.(map)
+    await funcs[eventFunction]?.(polygonLayer)
   })
 }
 
-init().then()
+init()
