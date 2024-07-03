@@ -12,6 +12,7 @@ const { MultiPoint } = ol.geom
 const VectorLayer = ol.layer.Vector
 const VectorSource = ol.source.Vector
 const { Circle, Fill, Stroke, Style } = ol.style
+const TransformExtent = ol.proj.transformExtent
 
 const styles = [
   /* We are using two different styles for the polygons:
@@ -45,8 +46,6 @@ const styles = [
   }),
 ]
 
-const POLYGON_ID = 'sample-polygon-layer-1'
-
 const getPolygonLayer = () => {
   const source = new VectorSource({
     url: 'polygon.json',
@@ -61,15 +60,25 @@ const getPolygonLayer = () => {
   return layer
 }
 
+/**
+ * 参考:
+ * https://stackoverflow.com/questions/36134974/transforming-coordinates-of-feature-in-openlayers
+ */
+const getPolygonGeoJson = layer => {
+  const features = layer.getSource().getFeatures()
+  // 元のPolygonを残したい場合はcloneしておく必要がある。
+  const polygon = features[0].getGeometry().transform('EPSG:4326', 'EPSG:3857')
+  // GeometryのみをGeoJSONに書き出すならwriteGeometryを使う。
+  //const geojsonPolygon = new GeoJSON().writeFeatures(features)
+  const geojsonPolygon = new GeoJSON().writeGeometry(polygon)
+  return geojsonPolygon
+}
+
 // DOM
 
 const funcs = {
   calcArea: async layer => {
-    const features = layer.getSource().getFeatures()
-    const polygon = features[0].getGeometry()
-    // GeometryのみをGeoJSONに書き出すならwriteGeometryを使う。
-    //const geojsonPolygon = new GeoJSON().writeFeatures(features)
-    const geojsonPolygon = new GeoJSON().writeGeometry(polygon)
+    const geojsonPolygon = getPolygonGeoJson(layer)
     console.log(geojsonPolygon)
 
     const respone = await fetch('https://localhost/falcon/api/calcarea', {
