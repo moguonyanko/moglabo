@@ -2,6 +2,7 @@
  * @fileoverview OpenLayers上にあるポリゴンの面積を計算するサンプル
  * 参考:
  * https://openlayers.org/en/latest/examples/polygon-styles.html
+ * https://openlayers.org/en/latest/examples/measure.html
  */
 /* eslint-disable no-undef */
 
@@ -13,6 +14,7 @@ const VectorLayer = ol.layer.Vector
 const VectorSource = ol.source.Vector
 const { Circle, Fill, Stroke, Style } = ol.style
 const TransformExtent = ol.proj.transformExtent
+const { getArea } = ol.sphere
 
 const styles = [
   /* We are using two different styles for the polygons:
@@ -64,10 +66,17 @@ const getPolygonLayer = () => {
  * 参考:
  * https://stackoverflow.com/questions/36134974/transforming-coordinates-of-feature-in-openlayers
  */
-const getPolygonGeoJson = layer => {
+const getGeometry = layer => {
   const features = layer.getSource().getFeatures()
+  // 緯度経度の座標を保持するポリゴンから平方メートルの面積を得るための座標変換
   // 元のPolygonを残したい場合はcloneしておく必要がある。
-  const polygon = features[0].getGeometry().transform('EPSG:4326', 'EPSG:3857')
+  const geom = features[0].getGeometry().clone()
+  const polygon = geom.transform('EPSG:4326', 'EPSG:3857')
+  return polygon
+}
+
+const getPolygonGeoJson = layer => {
+  const polygon = getGeometry(layer)
   // GeometryのみをGeoJSONに書き出すならwriteGeometryを使う。
   //const geojsonPolygon = new GeoJSON().writeFeatures(features)
   const geojsonPolygon = new GeoJSON().writeGeometry(polygon)
@@ -76,8 +85,13 @@ const getPolygonGeoJson = layer => {
 
 // DOM
 
+const printResult = result => {
+  const output = document.querySelector(`div[data-event-output='calcArea']`)
+  output.innerHTML += `${result}<br />`
+}
+
 const funcs = {
-  calcArea: async layer => {
+  calcAreaByShapely: async layer => {
     const geojsonPolygon = getPolygonGeoJson(layer)
     console.log(geojsonPolygon)
 
@@ -89,9 +103,12 @@ const funcs = {
       body: geojsonPolygon
     })
     const { area } = await respone.json()
-
-    const output = document.querySelector(`div[data-event-output='calcArea']`)
-    output.textContent = area
+    printResult(area)
+  },
+  calcAreaByOpenLayers: layer => {
+    const polygon = getGeometry(layer)
+    const area = getArea(polygon)
+    printResult(area)
   }
 }
 
