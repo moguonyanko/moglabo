@@ -4,7 +4,9 @@
 <head>
   <title>シンプルな地図</title>
   <link href="../../common.css" rel="stylesheet" />
-  <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+  <link href="../openlayerscommon.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v9.2.4/ol.css">
+  <script src="https://cdn.jsdelivr.net/npm/ol@v9.2.4/dist/ol.js"></script>
   <link href="index.css" rel="stylesheet" />
   <script src="index.js" type="module"></script>
 </head>
@@ -16,12 +18,12 @@
   </header>
   <!-- <main> -->
   <!-- Mapを格納する要素はbody直下に存在する必要がある。 -->
-  <div id="demoMap"></div>
+  <div id="map"></div>
   <!-- </main> -->
   <footer>
     <h3>参考</h3>
     <ul>
-      <li><a href="https://wiki.openstreetmap.org/wiki/OpenLayers_Simple_Example">OpenLayers Simple Example</a></li>
+      <li><a href="https://openlayers.org/en/latest/examples/canvas-tiles.html">Canvas Tiles</a></li>
     </ul>
   </footer>
 </body>

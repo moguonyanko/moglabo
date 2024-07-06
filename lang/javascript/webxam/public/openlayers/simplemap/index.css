@@ -1,11 +1,11 @@
 @charset "UTF-8";
 
-html, body, #demoMap {
+html, body, #map {
   width: 100%;
   height: 85%;
   margin: 0;
 }
 
-#demoMap {
+#map {
   background-color: beige;
 }
