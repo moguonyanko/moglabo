@@ -6,23 +6,27 @@
 const { Map, View } = ol
 const { OSM, TileDebug } = ol.source
 const TileLayer = ol.layer.Tile
+const { defaults } = ol.interaction.defaults
 
 const initMap = ({ target = 'map',
   lon = 139.64006991057147, lat = 35.44343730412503,
-  zoom = 16, debug = false, projection = 'EPSG:4326' } = {}) => {
-  const layers = [
+  zoom = 16, debug = false, projection = 'EPSG:4326', 
+  interactions = defaults(),
+  layers = [] } = {}) => {
+  const requestLayers = [
     new TileLayer({
       source: new OSM()
     })
-  ]
+  ].concat(layers)
   if (debug) {
-    layers.push(new TileLayer({
+    requestLayers.push(new TileLayer({
       source: new TileDebug()
     }))
   }
   const map = new Map({
+    interactions,
     target,
-    layers,
+    layers: requestLayers,
     view: new View({
       projection,
       center: [lon, lat],
