@@ -45,3 +45,5 @@ package.json
 **/javascript/webxam/public/d3/townline/geodata/conuntries.topojson
 **/*.out
 **/*target
+*.gml
+
