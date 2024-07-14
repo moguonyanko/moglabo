@@ -31,7 +31,10 @@ const select = new Select({
  * https://openlayers.org/en/latest/apidoc/module-ol_geom_Polygon-Polygon.html#intersectsCoordinate
  */
 const modify = new Modify({
-  features: select.getFeatures()
+  features: select.getFeatures(),
+  insertVertexCondition: () => {
+    console.log(select)
+  }
 })
 
 const map = initMap({
