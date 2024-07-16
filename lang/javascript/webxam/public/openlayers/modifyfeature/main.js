@@ -46,7 +46,7 @@ modify.on('modifyend', async event => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: `{"target": ${geojsonFeature}}`
+    body: geojsonFeature
   })
   if (!response.ok) {
     throw new Error(`交差判定失敗:${response.status}`)
