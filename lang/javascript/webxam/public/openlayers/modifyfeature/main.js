@@ -13,15 +13,17 @@ const VectorLayer = ol.layer.Vector
 const VectorSource = ol.source.Vector
 const { GeoJSON } = ol.format
 
-const gj = new GeoJSON()
+const geoJson = new GeoJSON()
+
+const source = new VectorSource({
+  url: 'sample_donutpolygon.json',
+  format: new GeoJSON(),
+  wrapX: false
+})
 
 const vector = new VectorLayer({
   background: 'transparent',
-  source: new VectorSource({
-    url: 'sample.json',
-    format: new GeoJSON(),
-    wrapX: false
-  })
+  source
 })
 
 const select = new Select({
@@ -36,17 +38,28 @@ const modify = new Modify({
   features: select.getFeatures()
 })
 
+// const draw = new Draw({
+//   source,
+//   type: 'Polygon',
+// })
+
+let map, preFeature
+
+modify.on('modifystart', event => {
+  preFeature = event.features.item(0).clone()
+})
+
 modify.on('modifyend', async event => {
-  const polygon = event.features.pop()
+  const newFeature = event.features.pop()
   // writeFeaturesの戻り値は文字列なのでJSON.stringifyは必要ない。
-  const geojsonFeature = gj.writeFeatures([polygon])
+  const body = geoJson.writeFeatures([newFeature])
   const response = await fetch('/brest/gis/crosscheck/', {
     method: 'POST',
     mode: 'cors',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json'
     },
-    body: geojsonFeature
+    body
   })
   if (!response.ok) {
     throw new Error(`交差判定失敗:${response.status}`)
@@ -55,20 +68,17 @@ modify.on('modifyend', async event => {
   if (result) {
     alert('ポリゴンが自己交差しています！')
     // TOOD: 編集前のポリゴンに戻す処理
+    source.removeFeature(newFeature)
+    source.addFeature(preFeature)
+    // TODO: 図形を非選択状態に戻したい。
+    //map.removeInteraction(modify)
+    //map.addInteraction(modify)
+    select.setActive(false)
   }
 })
 
-// const drawInterraction = new Draw({
-//   type: 'Polygon'
-// })
-
-// drawInterraction.on('drawend', event => {
-//   console.log(event)
-// })
-
-const map = initMap({
+map = initMap({
   interactions: defaults().extend([select, modify]),
   layers: [vector],
   zoom: 17
 })
-//map.addInteraction(drawInterraction)
