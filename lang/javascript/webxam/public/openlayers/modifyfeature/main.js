@@ -49,8 +49,16 @@ const modify = new Modify({
 //   oldFeature = event.features.item(0).clone()
 // })
 
+// エラーが発生した際、その場でalertなどによるエラーハンドリングを行うのではなく
+// CustomEventを使って伝播させていくことでエラーハンドリングが柔軟に行えるようにする。
+const createModifyErrorEvent = detail => {
+  return new CustomEvent('modifyerror', { detail })
+}
+
 modify.on('modifyend', async event => {
-  const newFeature = event.features.pop()
+  // features.pop()でも期待通りに動作しているが予期せぬ副作用による影響を
+  // 避けるためitem(0)で取得しclone()している。
+  const newFeature = event.features.item(0).clone()
   // writeFeaturesの戻り値は文字列なのでJSON.stringifyは必要ない。
   const body = geoJson.writeFeatures([newFeature])
   const response = await fetch('/brest/gis/crosscheck/', {
@@ -60,14 +68,19 @@ modify.on('modifyend', async event => {
     },
     body
   })
+  let modifyErrorEvent
   if (!response.ok) {
-    throw new Error(`交差判定失敗:${response.status}`)
+    modifyErrorEvent = createModifyErrorEvent(`交差判定失敗:${response.status}`)
   }
   const { result } = await response.json()
   if (result) {
-    alert('ポリゴンが自己交差しています！')
-    // 一点前に戻る。
+    modifyErrorEvent = createModifyErrorEvent('ポリゴンが自己交差しています！')
+  }
+  if (modifyErrorEvent) {
+    // 問題発生時は一点前に戻る。modifyerrorのイベントリスナー側でやってもいいが
+    // イベントリスナーを自由に設定できるようにするなら必須処理はこちらに書くべきである。
     modify.removePoint()
+    window.dispatchEvent(modifyErrorEvent)
   }
 })
 
@@ -80,4 +93,8 @@ const map = initMap({
   interactions: defaults().extend([select, modify, snap]),
   layers: [vector],
   zoom: 17
+})
+
+window.addEventListener('modifyerror', event => {
+  alert(event.detail)
 })
