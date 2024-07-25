@@ -69,12 +69,13 @@ modify.on('modifyend', async event => {
     body
   })
   let modifyErrorEvent
-  if (!response.ok) {
+  if (response.ok) {
+    const { result } = await response.json()
+    if (result) {
+      modifyErrorEvent = createModifyErrorEvent('ポリゴンが自己交差しています！')
+    }  
+  } else {
     modifyErrorEvent = createModifyErrorEvent(`交差判定失敗:${response.status}`)
-  }
-  const { result } = await response.json()
-  if (result) {
-    modifyErrorEvent = createModifyErrorEvent('ポリゴンが自己交差しています！')
   }
   if (modifyErrorEvent) {
     // 問題発生時は一点前に戻る。modifyerrorのイベントリスナー側でやってもいいが
