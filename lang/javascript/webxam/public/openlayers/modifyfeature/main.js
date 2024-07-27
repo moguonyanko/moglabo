@@ -55,6 +55,8 @@ const createModifyErrorEvent = detail => {
   return new CustomEvent('modifyerror', { detail })
 }
 
+let mapElement
+
 modify.on('modifyend', async event => {
   // features.pop()でも期待通りに動作しているが予期せぬ副作用による影響を
   // 避けるためitem(0)で取得しclone()している。
@@ -81,7 +83,7 @@ modify.on('modifyend', async event => {
     // 問題発生時は一点前に戻る。modifyerrorのイベントリスナー側でやってもいいが
     // イベントリスナーを自由に設定できるようにするなら必須処理はこちらに書くべきである。
     modify.removePoint()
-    window.dispatchEvent(modifyErrorEvent)
+    mapElement.dispatchEvent(modifyErrorEvent)
   }
 })
 
@@ -95,7 +97,8 @@ const map = initMap({
   layers: [vector],
   zoom: 17
 })
+mapElement = map.getTargetElement()
 
-window.addEventListener('modifyerror', event => {
+mapElement.addEventListener('modifyerror', event => {
   alert(event.detail)
 })
