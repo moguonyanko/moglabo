@@ -57,7 +57,7 @@ const createModifyErrorEvent = detail => {
 
 let mapElement
 
-modify.on('modifyend', async event => {
+const modifyEndListener = async event => {
   // features.pop()でも期待通りに動作しているが予期せぬ副作用による影響を
   // 避けるためitem(0)で取得しclone()している。
   const newFeature = event.features.item(0).clone()
@@ -77,15 +77,22 @@ modify.on('modifyend', async event => {
       modifyErrorEvent = createModifyErrorEvent('ポリゴンが自己交差しています！')
     }  
   } else {
+    // 交差判定失敗時も一点前に戻す。
     modifyErrorEvent = createModifyErrorEvent(`交差判定失敗:${response.status}`)
   }
   if (modifyErrorEvent) {
     // 問題発生時は一点前に戻る。modifyerrorのイベントリスナー側でやってもいいが
     // イベントリスナーを自由に設定できるようにするなら必須処理はこちらに書くべきである。
+    // removeEventの呼び出しでmodifyendイベントが発生しないように一旦イベントリスナーを削除する。
+    modify.un('modifyend', modifyEndListener)
     modify.removePoint()
     mapElement.dispatchEvent(modifyErrorEvent)
+    // modyfyerrorイベントを発生させたらmodifyendのイベントリスナーを戻す。
+    modify.on('modifyend', modifyEndListener)
   }
-})
+}
+
+modify.on('modifyend', modifyEndListener)
 
 // 点や線分に入力中の点を「吸着」させることができる。
 const snap = new Snap({
