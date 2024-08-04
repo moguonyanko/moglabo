@@ -1,5 +1,5 @@
 /**
- * @fileoverview 地物の修正を試すためのスクリプト
+ * @fileoverview GML表示を試すためのスクリプト
  * 参考:
  * https://openlayers.org/en/latest/examples/modify-features.html
  */

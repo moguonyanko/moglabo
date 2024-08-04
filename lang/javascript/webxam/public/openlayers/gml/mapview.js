@@ -1,5 +1,5 @@
 /**
- * @fileoverview GMLファイルから読み込んだ地物をを地図に重ねるサンプル
+ * @fileoverview GMLファイルから読み込んだ地物をを地図に重ねるスクリプト
  */
 
 /* eslint-disable no-undef */
