@@ -20,4 +20,24 @@ public class TestScopedValue {
         assertNotNull(sampleValue);
     }
     
+    private static final ScopedValue<User> SAMPLE_USER1 = ScopedValue.newInstance();
+
+    @Test
+    public void ScopedValueに値を設定できる() {
+        ScopedValue.runWhere(SAMPLE_USER1, new User("Mike"), () -> {
+            assertEquals(SAMPLE_USER1.get(), new User("Mike"));
+        });
+    }
+    
+    private static final ScopedValue<User> SAMPLE_USER2 = ScopedValue.newInstance();
+        
+    @Test
+    public void 複数のスレッドがScopedValueから自身の値を取得できる() {
+        ScopedValue.runWhere(SAMPLE_USER2, new User("Foo"), () -> {
+            assertEquals(SAMPLE_USER2.get(), new User("Foo"));
+        });
+        ScopedValue.runWhere(SAMPLE_USER2, new User("Bar"), () -> {
+            assertEquals(SAMPLE_USER2.get(), new User("Bar"));
+        });
+    }
 }
