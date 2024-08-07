@@ -10,7 +10,7 @@ const { defaults } = ol.interaction.defaults
 
 const initMap = ({ target = 'map',
   lon = 139.64006991057147, lat = 35.44343730412503,
-  zoom = 16, debug = false, projection = 'EPSG:4326', 
+  zoom = 16, debug = false, projection = 'EPSG:3857', 
   interactions = defaults(),
   layers = [] } = {}) => {
   const requestLayers = [
@@ -28,8 +28,7 @@ const initMap = ({ target = 'map',
     target,
     layers: requestLayers,
     view: new View({
-      projection,
-      center: [lon, lat],
+      center: ol.proj.fromLonLat([lon, lat], projection),
       zoom,
     }),
   })
