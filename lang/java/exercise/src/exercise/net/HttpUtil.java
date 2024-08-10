@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.*;
 import java.nio.file.Path;
 import java.security.GeneralSecurityException;
@@ -23,6 +24,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import static java.net.http.HttpClient.Version;
 import static java.net.http.HttpResponse.BodyHandlers;
+import java.nio.charset.StandardCharsets;
 import javax.net.ssl.*;
 
 /**
@@ -307,6 +309,42 @@ public class HttpUtil {
         });
 
         f1.get();
+    }
+    
+    /**
+     * JDK8を想定している。
+     */
+    public static String requestToRestApi(URL url, Map<String, String> body)
+            throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+//        connection.setRequestMethod("POST");
+//        connection.setRequestProperty("Content-Type", "application/json; " + 
+//                StandardCharsets.UTF_8.name());
+//        connection.setRequestProperty("Accept", "application/json");
+//        connection.setDoOutput(true);
+
+//        String jsonInputString = "{  }";
+//
+//        try (OutputStream os = connection.getOutputStream()) {
+//            byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
+//            os.write(input, 0, input.length);
+//        }
+
+        String responseText;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                connection.getInputStream(), StandardCharsets.UTF_8))) {
+            StringBuilder response = new StringBuilder();
+            String responseLine;
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+            responseText = response.toString();
+        }
+
+        connection.disconnect();
+
+        return responseText;
     }
 
     public static void main(String ...args) {

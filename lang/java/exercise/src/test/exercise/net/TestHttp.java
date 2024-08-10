@@ -18,6 +18,9 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import exercise.net.HttpUtil;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
 
 public class TestHttp {
 
@@ -115,5 +118,13 @@ public class TestHttp {
         );
         var result = HttpUtil.getContentBySSL(uri, headers);
         assertFalse(result.isEmpty());
+    }
+    
+    @Test
+    public void RESTのAPIをリクエストして結果を得られる() throws IOException, URISyntaxException {
+        var url = new URI("http://127.0.0.1:9000/hellogis/").toURL();
+        var responseText = HttpUtil.requestToRestApi(url, new HashMap<>());
+        System.out.println(responseText);
+        assertFalse(responseText.isEmpty());
     }
 }

@@ -27,5 +27,6 @@ open module exercise.base {
     requires lucene.core;
     //requires lucene.analyzers.common;
     requires lucene.analyzers.kuromoji.ipadic.neologd;
+    requires org.apache.httpcomponents.client5.httpclient5;
     exports exercise.rmi to java.rmi;
 }
