@@ -123,7 +123,7 @@ public class TestHttp {
     @Test
     public void RESTのAPIをリクエストして結果を得られる() throws IOException, URISyntaxException {
         var url = new URI("http://127.0.0.1:9000/hellogis/").toURL();
-        var responseText = HttpUtil.requestToRestApi(url, new HashMap<>());
+        var responseText = HttpUtil.getFromRestApi(url);
         System.out.println(responseText);
         assertFalse(responseText.isEmpty());
     }

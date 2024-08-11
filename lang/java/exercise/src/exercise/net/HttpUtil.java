@@ -314,22 +314,10 @@ public class HttpUtil {
     /**
      * JDK8を想定している。
      */
-    public static String requestToRestApi(URL url, Map<String, String> body)
+    public static String getFromRestApi(URL url)
             throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
-//        connection.setRequestMethod("POST");
-//        connection.setRequestProperty("Content-Type", "application/json; " + 
-//                StandardCharsets.UTF_8.name());
-//        connection.setRequestProperty("Accept", "application/json");
-//        connection.setDoOutput(true);
-
-//        String jsonInputString = "{  }";
-//
-//        try (OutputStream os = connection.getOutputStream()) {
-//            byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
-//            os.write(input, 0, input.length);
-//        }
 
         String responseText;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -347,6 +335,46 @@ public class HttpUtil {
         return responseText;
     }
 
+    /**
+     * JDK8を想定している。
+     */
+    public static String postFromRestApi(URL url, Map<String, Object> body)
+            throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json; " + 
+                StandardCharsets.UTF_8.name());
+        connection.setRequestProperty("Accept", "application/json");
+        connection.setDoOutput(true);
+
+        String jsonInputString = "{  }";
+        StringBuilder json = new StringBuilder();
+        json.append("{");
+        for (String key : body.keySet()) {
+            
+        }
+
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+        }
+
+        String responseText;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                connection.getInputStream(), StandardCharsets.UTF_8))) {
+            StringBuilder response = new StringBuilder();
+            String responseLine;
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+            responseText = response.toString();
+        }
+
+        connection.disconnect();
+
+        return responseText;
+    }
+    
     public static void main(String ...args) {
         String url = "https://localhost/";
 
