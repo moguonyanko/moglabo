@@ -25,12 +25,22 @@ import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.InputStream;
 
 public class HttpSample {
     
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
-    private static final String DEFAULT_CONTENT_TYPE = "application/json";    
+    private static final String DEFAULT_CONTENT_TYPE = "application/json";   
+    
+    private static String readTextByReader(BufferedReader br) throws IOException {
+        StringBuilder response = new StringBuilder();
+        String responseLine;
+        while ((responseLine = br.readLine()) != null) {
+            response.append(responseLine.trim());
+        }
+        return response.toString();
+    }
 
     public static String requestGet(String uri) throws IOException, URISyntaxException {
         URL url = new URI(uri).toURL();
@@ -40,12 +50,13 @@ public class HttpSample {
         String responseText;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
                 connection.getInputStream(), DEFAULT_CHARSET))) {
-            StringBuilder response = new StringBuilder();
-            String responseLine;
-            while ((responseLine = br.readLine()) != null) {
-                response.append(responseLine.trim());
+            responseText = readTextByReader(br);
+        }catch (Exception e) {
+            //e.printStackTrace(System.err);
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(
+                connection.getErrorStream(), DEFAULT_CHARSET))) {
+                responseText = readTextByReader(br);
             }
-            responseText = response.toString();
         }
 
         connection.disconnect();
@@ -155,13 +166,13 @@ public class HttpSample {
             os.write(input, 0, input.length);
         }
 
-        Map<String, Object> result;
+        Map<String, Object> result = new HashMap<>();
 
         // リクエストの実行とレスポンスの読み込み
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(connection.getInputStream(), DEFAULT_CHARSET))) {
             result = fromJsonReader(br);
-        }
+        } 
 
         connection.disconnect();
 
@@ -170,13 +181,20 @@ public class HttpSample {
     }
     
     public static void main(String[] args) throws IOException, URISyntaxException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        
         String uriForGet = "http://127.0.0.1:9000/hellogis/";
         String resultByGet = requestGet(uriForGet);
         System.out.println(resultByGet);
+        System.out.println(objectMapper.readValue(resultByGet, Map.class));
+        
+        String uriForGetError = "http://127.0.0.1:9000/helloerror/";
+        String resultByGetError = requestGet(uriForGetError);
+        System.out.println(resultByGetError);
+        System.out.println(objectMapper.readValue(resultByGetError, Map.class));
         
         String uriForPost = "http://127.0.0.1:9000/pointsideofline/";
         String jsonString = "{¥\"point¥\":{¥\"type¥\":¥\"Feature¥\",¥\"properties¥\":{},¥\"geometry¥\":{¥\"coordinates¥\":[139.751363304702,35.65771000179585],¥\"type¥\":¥\"Point¥\"}},¥\"line¥\":{¥\"type¥\":¥\"FeatureCollection¥\",¥\"features¥\":[{¥\"type¥\":¥\"Feature¥\",¥\"properties¥\":{},¥\"geometry¥\":{¥\"coordinates¥\":[[139.7551995346509,35.66006748781244],[139.75693265376594,35.65465624195437]],¥\"type¥\":¥\"LineString¥\"}}]}}";
-        ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> jsonMap = objectMapper.readValue(jsonString, Map.class);
         //Map<String, Object> jsonMap = fromJsonReader(new StringReader(jsonString));
         Map<String, Object>  resultByPost = requestPost(uriForPost, jsonMap);

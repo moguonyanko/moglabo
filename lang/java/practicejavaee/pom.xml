@@ -21,16 +21,16 @@
             <version>${jakartaee}</version>
             <scope>provided</scope>
         </dependency>
-<dependency>
-    <groupId>javax.json</groupId>
-    <artifactId>javax.json-api</artifactId>
-    <version>1.1.4</version> <!-- 最新の安定版を指定してください -->
-</dependency>
-<dependency>
-    <groupId>org.glassfish</groupId>
-    <artifactId>javax.json</artifactId>
-    <version>1.1.4</version> <!-- 最新の安定版を指定してください -->
-</dependency>
+        <dependency>
+            <groupId>javax.json</groupId>
+            <artifactId>javax.json-api</artifactId>
+            <version>1.1.4</version> <!-- 最新の安定版を指定してください -->
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.1.4</version> <!-- 最新の安定版を指定してください -->
+        </dependency>
         
         
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
