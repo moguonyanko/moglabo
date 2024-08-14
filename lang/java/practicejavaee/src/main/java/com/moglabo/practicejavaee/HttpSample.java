@@ -1,5 +1,6 @@
 package com.moglabo.practicejavaee;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,7 +26,6 @@ import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.InputStream;
 
 public class HttpSample {
     
@@ -64,6 +64,9 @@ public class HttpSample {
         return responseText;
     }
     
+    /**
+     * サポートする方が増えるたびに修正する必要が生じる。
+     */
     private static String toJsonFromMap(Map<String, Object> body) {
         JsonObjectBuilder builder = Json.createObjectBuilder();     
         
@@ -110,6 +113,9 @@ public class HttpSample {
         return map;        
     }
 
+    /**
+     * サポートする方が増えるたびに修正する必要が生じる。
+     */
     private static Object toObjectFromJsonValue(JsonValue jsonValue) {
         switch (jsonValue.getValueType()) {
             case STRING:
@@ -151,7 +157,13 @@ public class HttpSample {
             throws IOException, URISyntaxException {
         URL url = new URI(uri).toURL();
         
-        String jsonString = toJsonFromMap(body);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonString;
+        try {
+            jsonString = objectMapper.writeValueAsString(body);
+        } catch (JsonProcessingException jpe) {
+            throw new IOException(jpe);
+        }
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("POST");
@@ -166,12 +178,17 @@ public class HttpSample {
             os.write(input, 0, input.length);
         }
 
-        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> result;
 
         // リクエストの実行とレスポンスの読み込み
         try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(connection.getInputStream(), DEFAULT_CHARSET))) {
-            result = fromJsonReader(br);
+            StringBuilder response = new StringBuilder();
+            String responseLine;
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+            result = objectMapper.readValue(response.toString(), Map.class);
         } 
 
         connection.disconnect();
@@ -194,7 +211,7 @@ public class HttpSample {
         System.out.println(objectMapper.readValue(resultByGetError, Map.class));
         
         String uriForPost = "http://127.0.0.1:9000/pointsideofline/";
-        String jsonString = "{¥\"point¥\":{¥\"type¥\":¥\"Feature¥\",¥\"properties¥\":{},¥\"geometry¥\":{¥\"coordinates¥\":[139.751363304702,35.65771000179585],¥\"type¥\":¥\"Point¥\"}},¥\"line¥\":{¥\"type¥\":¥\"FeatureCollection¥\",¥\"features¥\":[{¥\"type¥\":¥\"Feature¥\",¥\"properties¥\":{},¥\"geometry¥\":{¥\"coordinates¥\":[[139.7551995346509,35.66006748781244],[139.75693265376594,35.65465624195437]],¥\"type¥\":¥\"LineString¥\"}}]}}";
+        String jsonString = "{\"point\":{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"coordinates\":[139.751363304702,35.65771000179585],\"type\":\"Point\"}},\"line\":{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"coordinates\":[[139.7551995346509,35.66006748781244],[139.75693265376594,35.65465624195437]],\"type\":\"LineString\"}}]}}";
         Map<String, Object> jsonMap = objectMapper.readValue(jsonString, Map.class);
         //Map<String, Object> jsonMap = fromJsonReader(new StringReader(jsonString));
         Map<String, Object>  resultByPost = requestPost(uriForPost, jsonMap);
