@@ -92,9 +92,69 @@ const defineElements = () => {
     RandomNumberButton, { extends: 'button' });
 };
 
+let growBuffer
+
+const displayGrowBufferLength = () => {
+  console.log(growBuffer)
+  const output = document.querySelector('.grow .output')
+  output.textContent = `Sample growable buffer byteLength=${growBuffer.byteLength}, 
+  maxByteLength=${growBuffer.maxByteLength}`
+}
+
+const eventFuncs = {
+  grow: () => {
+    /**
+     * コントロール（JavaScriptの処理の制御）のためだけにclassを使いたくない。
+     * そこでカスタムデータ属性を使ってJavaScriptの処理を行っている。
+     * *ではなく具体的な要素名を書く方が効率は良いはずだが、別の要素に変えたりすると
+     * 不具合に繋がるので*にしている。
+     */
+    const ele = document.querySelector('*[data-grow-number]')
+    const glowNum = parseInt(ele.value)
+    if (growBuffer.growable) {
+      try {
+        growBuffer.grow(glowNum)
+        displayGrowBufferLength()
+      } catch (err) {
+        window.dispatchEvent(new CustomEvent("growerror", {
+          detail: err.message
+        }))
+      }
+    } else {
+      window.dispatchEvent(new CustomEvent("growerror", {
+        detail: 'Sample buffer is not growable'
+      }))
+    }
+  }
+}
+
+const addListener = () => {
+  const main = document.querySelector('main')
+  main.addEventListener('click', event => {
+    const { eventFunc } = event.target.dataset
+    if (typeof eventFuncs[eventFunc] === 'function') {
+      eventFuncs[eventFunc]()
+    }
+  })
+
+  window.addEventListener('growerror', event => {
+    alert(event.detail)
+  })
+}
+
+const initFuncs = {
+  grow: () => {
+    growBuffer = new SharedArrayBuffer(8, { maxByteLength: 16 })
+    displayGrowBufferLength()
+  }
+}
+
 const init = async () => {
   await runTest();
   defineElements();
+
+  addListener()
+  Object.values(initFuncs).forEach(f => f())
 };
 
 init().then();
