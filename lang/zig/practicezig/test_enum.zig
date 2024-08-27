@@ -28,7 +28,7 @@ const Mode = enum(u32) {
     special = 5,
     basic = 1,
     pub fn isBasic(self: Mode) bool {
-        // TODO: selc.countはエラーになる。
+        // TODO: self.countはエラーになる。
         // if (Mode.special < self.count) {
         //     return false;
         // }
