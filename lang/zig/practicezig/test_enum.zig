@@ -41,3 +41,34 @@ test "列挙子の状態を変更しメソッドを呼び出せる" {
     try expect(Mode.basic.isBasic() == Mode.isBasic(.basic));
     try expect(Mode.count == 6);
 }
+
+const Suit = enum {
+    clubs,
+    spades,
+    diamonds,
+    hearts,
+    // staticメソッドとしてもインスタンスメソッドとしても呼び出せている？
+    pub fn isClubs(self: Suit) bool {
+        return self == Suit.clubs;
+    }
+};
+
+test "列挙子のメソッドを呼び出せる" {
+    try expect(Suit.spades.isClubs() == Suit.isClubs(.spades));
+}
+
+const SampleMachine: type = enum(u32) {
+    var count: u32 = 0;
+    mode = 5,
+    // 状態を参照するメソッドは書けない？
+    // なお未使用の引数が書かれているとエラーになる。
+    fn isEnable() bool {
+        return count < 10;
+    }
+};
+
+test "状態を参照する列挙子のメソッドを呼び出せる" {
+    SampleMachine.count += 10;
+    // isEnableはselfを引数にとらないのでSampleMachine.mode.isEnable()では呼び出せない。
+    try expect(SampleMachine.isEnable() == false);
+}
