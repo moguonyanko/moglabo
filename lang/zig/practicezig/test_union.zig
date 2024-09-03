@@ -19,3 +19,18 @@ test "Unionのフィールドを更新できる" {
 
     try expect(sample.int == 10);
 }
+
+const Tagged = union(enum) { a: u8, b: f32, c: bool };
+
+test "タグ付きUnionでswitch文の処理が行える" {
+    var value = Tagged{ .b = 0.5 };
+    switch (value) {
+        .a => |*byte| byte.* += 1,
+        .b => |*float| float.* *= 10,
+        .c => |*b| b.* = !b.*,
+    }
+    // b以外に触るとエラー
+    // try expect(value.a == 1);
+    try expect(value.b == 5);
+    // try expect(value.c == false);
+}
