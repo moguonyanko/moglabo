@@ -146,6 +146,27 @@ const funcs = {
     const result = await chainedPromise;
     const output = document.querySelector('.output.chainPromise');
     output.textContent = result;
+  },
+  doPromiseTry: () => {
+    const funcs = [
+      () => 'Sync Function',
+      () => { throw new Error('Sync Error') },
+      async () => await Promise.resolve('Async Function'),
+      async () => await Promise.reject(new Error('Async Error'))
+    ]
+
+    const output = document.querySelector('.output.PromiseTry')
+
+    /**
+     * Promise.tryは引数の関数が同期・非同期どちらの方法で結果を返してくるかに関係なく
+     * 処理することができる。
+     */
+    funcs.forEach(func => {
+      Promise.try(func)
+        .then(result => output.innerHTML += `then...${result}<br />`)
+        .catch(error => output.innerHTML += `catch...${error}<br />`)
+        .finally(() => output.innerHTML += 'Finished<br />')
+    })
   }
 };
 
