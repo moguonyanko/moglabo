@@ -151,22 +151,48 @@ const funcs = {
     const funcs = [
       () => 'Sync Function',
       () => { throw new Error('Sync Error') },
-      async () => await Promise.resolve('Async Function'),
-      async () => await Promise.reject(new Error('Async Error'))
+      async () => 'Async Function',
+      async () => { throw new Error('Async Error') }
+      // 上の2つの関数と同じ。
+      // async () => await Promise.resolve('Async Function'),
+      // async () => await Promise.reject(new Error('Async Error'))
     ]
 
-    const output = document.querySelector('.output.PromiseTry')
+    const output = document.querySelector('.output.PromiseTry'),
+      useTry = document.querySelector('.useTry').checked
+
+    const tryPromise = func => {
+      Promise.try(func)
+        .then(result => output.innerHTML += `try then...${result}<br />`)
+        .catch(error => output.innerHTML += `try catch...${error}<br />`)
+        .finally(() => output.innerHTML += 'Try Finished<br />')
+    }
+
+    const noTryPromise = func => {
+      // Promise.try()と同じことをする。new Promise(func)やnew Promise(func)では
+      // 非同期関数を渡された時にthenやcatthで処理することができない。
+      // これを分かりやすくしたのがPromise.try()である。
+      new Promise(resolve => resolve(func()))
+        // new Promise(func, func)
+        .then(result => output.innerHTML += `no try then...${result}<br />`)
+        .catch(error => output.innerHTML += `no catch...${error}<br />`)
+        .finally(() => output.innerHTML += 'No Try Finished<br />')
+    }
 
     /**
      * Promise.tryは引数の関数が同期・非同期どちらの方法で結果を返してくるかに関係なく
      * 処理することができる。
      */
     funcs.forEach(func => {
-      Promise.try(func)
-        .then(result => output.innerHTML += `then...${result}<br />`)
-        .catch(error => output.innerHTML += `catch...${error}<br />`)
-        .finally(() => output.innerHTML += 'Finished<br />')
+      if (useTry) {
+        tryPromise(func)
+      } else {
+        noTryPromise(func)
+      }
     })
+  },
+  clearPromiseTry: () => {
+    document.querySelector('.output.PromiseTry').innerHTML = ''
   }
 };
 
