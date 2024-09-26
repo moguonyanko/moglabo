@@ -28,18 +28,7 @@ const getCurrentPos = option => {
     const op = option ? turnMillisecond(option) : defaultOption;
     return new Promise((resolve, reject) => {
         gl.getCurrentPosition(pos => {
-            // PositionにもCoordinatesにもtoJSONが実装されていないので、
-            // そのままJSON.stringifyを適用すると空のJSONが返されてしまう。
-            const p = Object.assign(pos.coords, {
-                toJSON() {
-                    return {
-                        latitude: pos.coords.latitude,
-                        longitude: pos.coords.longitude,
-                        accuracy: pos.coords.accuracy
-                    };
-                }
-            })
-            resolve(p);
+            resolve(pos.coords.toJSON());
         }, reject, op);
     });
 };
