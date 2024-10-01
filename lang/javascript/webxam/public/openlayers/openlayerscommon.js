@@ -28,6 +28,7 @@ const initMap = ({ target = 'map',
     target,
     layers: requestLayers,
     view: new View({
+      projection,
       center: ol.proj.fromLonLat([lon, lat], projection),
       zoom,
     }),
