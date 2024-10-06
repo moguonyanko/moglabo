@@ -28,7 +28,7 @@ const distProj = 'EPSG:3857'
 const view = new View({
   projection: distProj, 
   center: fromLonLat([lon, lat], distProj),
-  zoom: 2,
+  zoom: 7,
 })
 
 const map = new Map({
