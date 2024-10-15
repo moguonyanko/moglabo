@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>SQLインジェクション</title>
+  <script src="main.js" type="module"></script>
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>SQLインジェクション</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>SQLの送信</h2>
+      <textarea id="requestsql">SELECT REPLACE('2024/10/01', '/', '20241001')</textarea>
+      <button data-event-function="sendSql">send</button>
+      <button data-event-function="clearSql">clear</button>
+      <div class="sendSql output"></div>
+    </section>
+  </main>
+</body>
+
+</html>
