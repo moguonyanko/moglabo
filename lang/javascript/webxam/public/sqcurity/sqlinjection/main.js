@@ -3,7 +3,7 @@
  */
 
 const requestSql = async sql => {
-  const response = await fetch('/brest/gis/sqlinject/', {
+  const response = await fetch('/brest/gis/injectsql/', {
     method: 'POST',
     mode: 'cors',
     headers: {
@@ -24,13 +24,16 @@ const requestSql = async sql => {
 
 const funcs = {
   sendSql: async () => {
-    const sql = document.getElementById('requestsql')
+    const sql = document.getElementById('requestsql').value
+    if (!sql) {
+      return
+    }
     const result = await requestSql(sql)
     const output = document.querySelector('.sendSql.output')
     output.value = result
   },
   clearSql: () => {
-    document.querySelector('.sendSql.output').value = ''
+    document.getElementById('requestsql').value = ''
   }
 }
 
