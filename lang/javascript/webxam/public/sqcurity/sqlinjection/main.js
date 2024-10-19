@@ -16,8 +16,8 @@ const requestSql = async sql => {
   if (!response.ok) {
     throw new Error(`ERROR:${response.status}:${response.statusText}`)
   }
-  const { result } = await response.json()
-  return result
+  const { results } = await response.json()
+  return results
 }
 
 // DOM
@@ -28,9 +28,9 @@ const funcs = {
     if (!sql) {
       return
     }
-    const result = await requestSql(sql)
+    const results = await requestSql(sql)
     const output = document.querySelector('.sendSql.output')
-    output.value = result
+    output.textContent = JSON.stringify(results)
   },
   clearSql: () => {
     document.getElementById('requestsql').value = ''

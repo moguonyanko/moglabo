@@ -3,5 +3,6 @@
 #requestsql {
   width: 100vw;
   max-width: 400px;
-  height: 300px;
+  height: 200px;
+  overflow-y: scroll;
 }
