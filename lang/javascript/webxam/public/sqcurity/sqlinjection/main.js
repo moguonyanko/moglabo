@@ -30,7 +30,11 @@ const funcs = {
     }
     const results = await requestSql(sql)
     const output = document.querySelector('.sendSql.output')
-    output.textContent = JSON.stringify(results)
+    const resultText = []
+    for (let result of results) {
+      resultText.push(result.join('<br />'))
+    }
+    output.innerHTML = resultText.join('<br />')
   },
   clearSql: () => {
     document.getElementById('requestsql').value = ''
