@@ -20,8 +20,14 @@
     <section>
       <h2>SQLの送信</h2>
       <textarea id="requestsql">
-        explain analyze select town_kana from postal_codes where postal_code between concat('06000', '00') and concat('06000', '10');
+        SELECT town_kana FROM postal_codes WHERE postal_code BETWEEN CONCAT('06000', '00') AND CONCAT('06000', '10')
       </textarea>
+      <div class="explainconrtrol">
+        <label><input type="radio" value="analyze" name="explain" checked />EXPLAIN ANALYZE</label>
+        <label><input type="radio" value="buffers" name="explain" />EXPLAIN (ANALYZE BUFFERS)</label>
+        <label><input type="radio" value="explain" name="explain" />EXPLAIN</label>
+        <label><input type="radio" value="none" name="explain" />NONE</label>
+      </div>
       <button data-event-function="sendSql">send</button>
       <button data-event-function="clearSql">clear</button>
       <div class="sendSql output"></div>

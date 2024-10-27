@@ -22,13 +22,29 @@ const requestSql = async sql => {
 
 // DOM
 
+const getExplainCode = () => {
+  const ctrls = document.querySelectorAll('.explainconrtrol input[type=radio]')
+  const typeValue = Array.from(ctrls)
+    .filter(ctrl => ctrl.checked)
+    .map(ctrl => ctrl.value)[0]
+  if (typeValue === 'analyze') {
+    return 'EXPLAIN ANALYZE '
+  } else if(typeValue === 'buffers') {
+    return 'EXPLAIN (ANALYZE, BUFFERS) '
+  } else if(typeValue === 'explain') {
+    return 'EXPLAIN '
+  } else {
+    return ''
+  }
+}
+
 const funcs = {
   sendSql: async () => {
     const sql = document.getElementById('requestsql').value
     if (!sql) {
       return
     }
-    const results = await requestSql(sql)
+    const results = await requestSql(`${getExplainCode()} ${sql}`)
     const output = document.querySelector('.sendSql.output')
     const resultText = []
     for (let result of results) {
