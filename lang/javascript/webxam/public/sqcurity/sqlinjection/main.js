@@ -20,6 +20,14 @@ const requestSql = async sql => {
   return results
 }
 
+const formatResults = (results, lineSeparator) => {
+  const lines = []
+  for (let result of results) {
+    lines.push(result.join(','))
+  }
+  return lines.join(lineSeparator)
+}
+
 // DOM
 
 const getExplainCode = () => {
@@ -46,11 +54,7 @@ const funcs = {
     }
     const results = await requestSql(`${getExplainCode()} ${sql}`)
     const output = document.querySelector('.sendSql.output')
-    const resultText = []
-    for (let result of results) {
-      resultText.push(result.join('<br />'))
-    }
-    output.innerHTML = resultText.join('<br />')
+    output.innerHTML = formatResults(results, '<br />')
   },
   clearSql: () => {
     document.getElementById('requestsql').value = ''
