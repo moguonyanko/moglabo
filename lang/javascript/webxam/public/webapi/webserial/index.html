@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Serial API</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+
+  <header>
+    <a href="../../">home</a>
+    <h1>Web Serial API</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>シリアルポートを開く</h2>
+      <section>
+        <h3>ウェブサイトでアクセス権が付与されているシリアルポートのリストを得る</h3>
+        <button value="getPorts">run</button>
+        <div class="output portInfo"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://developer.chrome.com/docs/capabilities/serial?hl=ja">シリアルポートに対して読み取り / 書き込みを行う</a></li>
+    </ul>
+  </footer>
+
+</body>
+
+</html>
