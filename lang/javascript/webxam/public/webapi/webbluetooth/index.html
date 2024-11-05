@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Web Bluetooth API</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script type="module" src="main.js" defer></script>
+</head>
+
+<body>
+
+  <header>
+    <a href="../../">home</a>
+    <h1>Web Bluetooth API</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>Bluetooth デバイスをリクエストする</h2>
+      <section class="service-filter">
+        <h3>サービスフィルタ</h3>
+        <button data-event-function="requestDevice">run</button>
+        <div class="output"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <p>参考</p>
+    <ul>
+      <li><a href="https://developer.chrome.com/docs/capabilities/bluetooth?hl=ja">JavaScript 経由で Bluetooth デバイスと通信する</a></li>
+    </ul>
+  </footer>
+
+</body>
+
+</html>
