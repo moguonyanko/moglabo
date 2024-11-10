@@ -22,8 +22,10 @@
       <h2>Bluetooth デバイスをリクエストする</h2>
       <section class="service-filter">
         <h3>サービスフィルタ</h3>
-        <label>サービス名<input id="service-name" type="text" value="audio_input_control_service" /></label>
+        <p>フィルタを指定しない場合は周囲のデバイス全ての検出を試みます。</p>
+        <label>サービス名<input id="service-name" type="text" value="" /></label>        
         <button data-event-function="requestDevice">run</button>
+        <button data-event-function="clearDevices">clear</button>
         <div class="output"></div>
       </section>
     </section>
@@ -33,6 +35,7 @@
     <p>参考</p>
     <ul>
       <li><a href="https://developer.chrome.com/docs/capabilities/bluetooth?hl=ja">JavaScript 経由で Bluetooth デバイスと通信する</a></li>
+      <li><a href="https://www.bluetooth.com/specifications/specs/">Bluetooth Specifications and Documents</a></li>
     </ul>
   </footer>
 

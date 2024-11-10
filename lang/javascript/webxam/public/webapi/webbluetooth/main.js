@@ -7,13 +7,18 @@
 // DOM
 
 const loadDeviceInfo = services => {
+  let acceptAllDevices = false
   if (!Array.isArray(services) || services.length === 0) {
-    throw new Error(`Service names is not found`)
+    acceptAllDevices = true
   }
   return new Promise((resolve, reject) => {
-    navigator.bluetooth.requestDevice({
-      filters: [{ services }]
-    })
+    const args = {}
+    if (acceptAllDevices) { 
+      args.acceptAllDevices = acceptAllDevices
+    } else {
+      args.filters = [{ services }]
+    }
+    navigator.bluetooth.requestDevice(args)
     .then(device => {
       resolve(JSON.stringify(device))
     })
@@ -24,21 +29,31 @@ const loadDeviceInfo = services => {
 const eventFunctions = {
   requestDevice: async () => {
     const serviceName = document.getElementById('service-name').value
+    const services = serviceName ? [serviceName] : []
     const output = document.querySelector('.service-filter .output')
     try {
-      const info = await loadDeviceInfo([serviceName])
-      output.textContent = JSON.stringify(device)
+      const device = await loadDeviceInfo(services)
+      // TODO: 取得結果が空のオブジェクトになってしまう。
+      console.log(device)
+      output.textContent = device.name
     } catch (error) {
       output.textContent = error.message
     }
+  },
+  clearDevices: () => {
+    document.getElementById('service-name').value = ''
+    const output = document.querySelector('.service-filter .output')
+    output.textContent = ''
   }
 }
 
 const init = () => {
-  const main = document.querySelector('main')
-  main.addEventListener('click', event => {
+  document.querySelector('main').addEventListener('click', event => {
     const { eventFunction } = event.target.dataset
-    eventFunctions[eventFunction]?.()
+    if (typeof eventFunctions[eventFunction] === 'function') {
+      event.stopPropagation()
+      eventFunctions[eventFunction]()
+    }
   })
 }
 
