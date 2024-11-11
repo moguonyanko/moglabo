@@ -19,9 +19,7 @@ const loadDeviceInfo = services => {
       args.filters = [{ services }]
     }
     navigator.bluetooth.requestDevice(args)
-    .then(device => {
-      resolve(JSON.stringify(device))
-    })
+    .then(resolve)
     .catch(reject)
   })
 }
@@ -33,11 +31,11 @@ const eventFunctions = {
     const output = document.querySelector('.service-filter .output')
     try {
       const device = await loadDeviceInfo(services)
-      // TODO: 取得結果が空のオブジェクトになってしまう。
-      console.log(device)
-      output.textContent = device.name
+      output.innerHTML = `${device.name}<br />`
+      const server = await device.gatt.connect() // ERROR
+      output.innerHTML += `${server}<br />`
     } catch (error) {
-      output.textContent = error.message
+      output.innerHTML += `${error.message}<br />`
     }
   },
   clearDevices: () => {
