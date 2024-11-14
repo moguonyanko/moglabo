@@ -32,7 +32,7 @@ const eventFunctions = {
     try {
       const device = await loadDeviceInfo(services)
       output.innerHTML = `${device.name}<br />`
-      const server = await device.gatt.connect() // ERROR
+      const server = await device.gatt.connect() // TODO: デバイスに接続できずエラーになる。
       output.innerHTML += `${server}<br />`
     } catch (error) {
       output.innerHTML += `${error.message}<br />`
