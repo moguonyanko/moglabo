@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+#enableApi {
+  font-size: 120%;
+  font-weight: bold;
+  color: red;
+}
+
+#enableApi.enable {
+  color: blue;
+}
+
+.sourceText {
+  width: 20rem;
+  height: 10rem;
+}

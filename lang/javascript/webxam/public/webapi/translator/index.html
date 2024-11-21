@@ -7,6 +7,7 @@
   <title>Translator API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
   <script type="module" src="main.js" defer></script>
 </head>
 
@@ -18,10 +19,26 @@
   </header>
 
   <main>
-    <div>Translator API enabled:<span id="enable-api"></span></div>
     <section>
-      <h2>対象言語のサポート状況を確認する</h2>
-      作成中
+      <h2>Translator APIが使えるか調べる</h2>
+      <div>Translator API enabled:<span id="enableApi"></span></div>
+    </section>
+    <section class="canTranslate">
+      <h2>ある言語が目的の言語に翻訳できるか調べる</h2>
+      <label for="sourceLanguage">sourceLanguage</label>
+      <input type="text" id="sourceLanguage" class="sourceLanguage" value="ja" />
+      <label for="targetLanguage">targetLanguage</label>
+      <input type="text" id="targetLanguage" class="targetLanguage" value="en" />
+      <button id="canTranslate">run</button>
+      <div class="output"></div>
+    </section>
+    <section class="translate">
+      <h2>翻訳ツールを作成して翻訳する</h2>
+      <textarea class="sourceText">Hello, world</textarea>
+      <label>sourceLanguage<input type="text" class="sourceLanguage" value="en" /></label>
+      <label>targetLanguage<input type="text" class="targetLanguage" value="ja" /></label>      
+      <button id="translate">run</button>
+      <div class="output"></div>
     </section>
   </main>
 
