@@ -20,8 +20,8 @@
 
   <main>
     <section>
-      <h2>Translator APIが使えるか調べる</h2>
-      <div>Translator API enabled:<span id="enableApi"></span></div>
+      <h2>Translator APIとDetector APIが使えるか調べる</h2>
+      <div>API enabled:<span id="enableApi"></span></div>
     </section>
     <section class="canTranslate">
       <h2>ある言語が目的の言語に翻訳できるか調べる</h2>
@@ -40,12 +40,22 @@
       <button id="translate">run</button>
       <div class="output"></div>
     </section>
+    <section class="detector">
+      <h2>Language Detector API</h2>
+      <p>翻訳元の言語を検出してから翻訳する。</p>
+      <textarea class="sourceText">
+Japan is renowned for its captivating four seasons, each offering unique experiences. Spring, marked by the blossoming of cherry blossoms, is a time of renewal and celebration. Summers are hot and humid, providing opportunities for outdoor activities and festivals. Autumn, or fall, paints the landscape in vibrant hues of red and gold as leaves change color. Winters bring crisp air, snow in many regions, and traditional festivities like New Year's.
+      </textarea>
+      <button id="translateWithDetection">和訳する</button>
+      <div class="output"></div>
+    </section>
   </main>
 
   <footer>
     <p>参考</p>
     <ul>
       <li><a href="https://developer.chrome.com/docs/ai/translator-api?hl=ja">AI を組み込んだ翻訳</a></li>
+      <li><a href="https://developer.chrome.com/docs/ai/language-detection?hl=ja">Chrome に組み込まれた AI による言語検出</a></li>
     </ul>
   </footer>
 
