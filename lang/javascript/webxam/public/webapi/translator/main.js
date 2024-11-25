@@ -6,17 +6,29 @@
 /* eslint-disable no-undef */
 
 const translate = async ({sourceText, sourceLanguage, targetLanguage}) => {
-  const translator = await translation.createTranslator({
-    sourceLanguage,
-    targetLanguage
-  })
-  translator.ondownloadprogress = progressEvent => {
-    // TODO: ProgressEventが発生していない？
-    console.log(progressEvent.loaded, progressEvent.total)
+  try {
+    const translator = await translation.createTranslator({
+      sourceLanguage,
+      targetLanguage
+    })
+    translator.ondownloadprogress = progressEvent => {
+      // TODO: ProgressEventが発生していない？
+      console.log(progressEvent.loaded, progressEvent.total)
+    }
+  
+    const result = await translator.translate(sourceText)
+    return result  
+  } catch (err) {
+    const msgs = [
+      `sourceLanguage:${sourceLanguage}`, 
+      `targetLanguage:${targetLanguage}`,
+      err.message
+    ]
+    const evt = new CustomEvent('translationerror', {
+      detail: msgs.join('\n')
+    })
+    self.dispatchEvent(evt)
   }
-
-  const result = await translator.translate(sourceText)
-  return result
 }
 
 const funcs = {
@@ -74,6 +86,10 @@ const addListener = () => {
       await funcs[id]()
     }
   }) 
+
+  self.addEventListener('translationerror', evt => {
+    alert(evt.detail)
+  })
 }
 
 const enableTranslatorApi = () => {
