@@ -1,0 +1,14 @@
+@charset "UTF-8";
+
+textarea {
+  width: 30rem;
+  height: 10rem;
+}
+
+.enable-api {
+  color: red;
+}
+
+.enable {
+  color: blue;
+}
