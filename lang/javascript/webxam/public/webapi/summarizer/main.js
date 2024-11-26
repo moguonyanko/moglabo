@@ -53,6 +53,7 @@ const initSampleSummrizer = async () => {
   try {
     summarizer = await createSummrizer({
       downloadprogress: e => {
+        console.log(e)
         output.textContent = `ダウンロード:${e.loaded} of ${e.total} bytes.`
       }
     })
