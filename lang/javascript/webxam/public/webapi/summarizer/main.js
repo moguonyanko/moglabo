@@ -39,12 +39,34 @@ let summarizer
 
 const funcs = {
   summarize: async () => {
-    const sampleText = document.querySelector('.sample-text').value
+    const sampleText = document.querySelector('.summarize .sample-text').value
     // TODO: 英語で要約されてしまう。英語しか対応されていない？
     const summary = await summarizer.summarize(sampleText)
-    const output = document.querySelector('.summarizer-create .output')
+    const output = document.querySelector('.summarize .output')
     output.innerHTML += `<p>${summary}</p>`
-  } 
+  },
+  summarizeStreaming: async () => {
+    const sampleText = document.querySelector('.summarizeStreaming .sample-text').value
+    if (!sampleText) {
+      return
+    }
+    const output = document.querySelector('.summarizeStreaming .output')
+    output.innerHTML = ''
+    try {
+      const stream = await summarizer.summarizeStreaming(sampleText)
+      let result = '';
+      let previousLength = 0;
+      for await (const segment of stream) {
+        const newContent = segment.slice(previousLength)
+        output.innerHTML += `${newContent}<br />`
+        previousLength = segment.length
+        result += newContent
+      }   
+      output.innerHTML = `<p>${result}</p>`  
+    } catch (err) {
+      output.innerHTML = `<p>${err.message}</p>`  
+    }
+  }
 }
 
 const initSampleSummrizer = async () => {
