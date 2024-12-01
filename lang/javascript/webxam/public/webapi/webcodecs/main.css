@@ -1,2 +1,6 @@
 @charset "UTF-8";
 
+canvas.output {
+  width: auto;
+  height: auto;
+}

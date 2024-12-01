@@ -19,6 +19,15 @@
   </header>
 
   <main>
+    <section class="imageDecoder">
+      <h2>ImageDecoder</h2>
+      <label for="decodeTargetImage">Sample Image</label>
+      <input id="decodeTargetImage" type="file" accept="image/*" />
+      <button data-event-function="decodeImage">decodeImage</button>
+      <div>
+        <canvas class="output"></canvas>
+      </div>
+    </section>
   </main>
 
   <footer>
