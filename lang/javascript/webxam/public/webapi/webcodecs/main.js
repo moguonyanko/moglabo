@@ -19,12 +19,21 @@ const fileToUint8Array = file => {
   })
 }
 
+let timeoutId
+
+const getSampleCanvas = () => {
+  const canvas = document.querySelector('.imageDecoder .output')
+  const canvasContext = canvas.getContext('2d')
+  return {
+    canvas, canvasContext
+  }
+}
+
 /**
  * TODO: 読み込んだ画像が元の画像と同じサイズで描画されない。
  */
 const renderImage = (result, imageDecoder, imageIndex) => {
-  const canvas = document.querySelector('.imageDecoder .output')
-  const canvasContext = canvas.getContext('2d')
+  const { canvasContext } = getSampleCanvas()
   canvasContext.drawImage(result.image, 0, 0)
 
   const track = imageDecoder.tracks.selectedTrack
@@ -43,7 +52,7 @@ const renderImage = (result, imageDecoder, imageIndex) => {
 
   imageDecoder.decode({ frameIndex: ++imageIndex })
     .then((nextResult) =>
-      setTimeout(() => {
+      timeoutId = setTimeout(() => {
         renderImage(nextResult, imageDecoder, imageIndex)
       }, result.image.duration / speed)
     )
@@ -64,12 +73,24 @@ const funcs = {
     if (selectedFiles.length === 0) {
       return
     }
+    if (timeoutId) { // 描画済み
+      return
+    }
     const file = selectedFiles[0]
     const uint8Array = await fileToUint8Array(file)
     const imageDecoder = new ImageDecoder({ data: uint8Array, type: file.type })
     const imageIndex = 0
-    imageDecoder.decode({ frameIndex: imageIndex })
-      .then((result => renderImage(result, imageDecoder, imageIndex)))
+    const result = await imageDecoder.decode({ frameIndex: imageIndex })
+    renderImage(result, imageDecoder, imageIndex)
+  },
+  clearImage: () => {
+    if (!timeoutId) {
+      return
+    }
+    clearTimeout(timeoutId)
+    timeoutId = null
+    const { canvas, canvasContext } = getSampleCanvas()
+    canvasContext.clearRect(0, 0, canvas.clientWidth, canvas.height)  
   }
 }
 
