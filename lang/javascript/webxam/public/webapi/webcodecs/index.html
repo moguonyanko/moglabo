@@ -23,6 +23,11 @@
       <h2>ImageDecoder</h2>
       <label for="decodeTargetImage">Sample Image</label>
       <input id="decodeTargetImage" type="file" accept="image/*" />
+      <div>
+        <label><input type="radio" name="animationSpeed" value="1000.0" />等速</label>
+        <label><input type="radio" name="animationSpeed" value="2000.0" />2倍速</label>
+        <label><input type="radio" name="animationSpeed" value="3000.0" checked />3等速</label>
+      </div>
       <button data-event-function="decodeImage">decodeImage</button>
       <button data-event-function="clearImage">clearImage</button>
       <div>

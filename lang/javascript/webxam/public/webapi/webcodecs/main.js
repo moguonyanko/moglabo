@@ -32,7 +32,7 @@ const getSampleCanvas = () => {
 /**
  * TODO: 読み込んだ画像が元の画像と同じサイズで描画されない。
  */
-const renderImage = (result, imageDecoder, imageIndex) => {
+const renderImage = (result, imageDecoder, imageIndex, speed) => {
   const { canvasContext } = getSampleCanvas()
   canvasContext.drawImage(result.image, 0, 0)
 
@@ -48,19 +48,17 @@ const renderImage = (result, imageDecoder, imageIndex) => {
     }
   }
 
-  const speed = 3000.0 // 大きくするほどGIFアニメの速度が増す。1000.0では等速になる。
-
   imageDecoder.decode({ frameIndex: ++imageIndex })
     .then((nextResult) =>
       timeoutId = setTimeout(() => {
-        renderImage(nextResult, imageDecoder, imageIndex)
+        renderImage(nextResult, imageDecoder, imageIndex, speed)
       }, result.image.duration / speed)
     )
     .catch((err) => {
       if (err instanceof RangeError) {
         imageIndex = 0
         imageDecoder.decode({ frameIndex: imageIndex })
-          .then(result => renderImage(result, imageDecoder, imageIndex))
+          .then(result => renderImage(result, imageDecoder, imageIndex, speed))
       } else {
         throw err
       }
@@ -73,15 +71,15 @@ const funcs = {
     if (selectedFiles.length === 0) {
       return
     }
-    if (timeoutId) { // 描画済み
-      return
-    }
+    funcs.clearImage()
     const file = selectedFiles[0]
     const uint8Array = await fileToUint8Array(file)
     const imageDecoder = new ImageDecoder({ data: uint8Array, type: file.type })
     const imageIndex = 0
     const result = await imageDecoder.decode({ frameIndex: imageIndex })
-    renderImage(result, imageDecoder, imageIndex)
+    const speedEles = document.getElementsByName('animationSpeed')
+    const speed = parseFloat(Array.from(speedEles).filter(ele => ele.checked)[0].value)
+    renderImage(result, imageDecoder, imageIndex, speed)
   },
   clearImage: () => {
     if (!timeoutId) {
