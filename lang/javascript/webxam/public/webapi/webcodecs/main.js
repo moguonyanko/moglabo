@@ -32,7 +32,7 @@ const getSampleCanvas = () => {
 /**
  * TODO: 読み込んだ画像が元の画像と同じサイズで描画されない。
  */
-const renderImage = (result, imageDecoder, imageIndex, speed) => {
+const renderImage = async (result, imageDecoder, imageIndex, speed) => {
   const { canvasContext } = getSampleCanvas()
   canvasContext.drawImage(result.image, 0, 0)
 
@@ -48,21 +48,21 @@ const renderImage = (result, imageDecoder, imageIndex, speed) => {
     }
   }
 
-  imageDecoder.decode({ frameIndex: ++imageIndex })
-    .then((nextResult) =>
-      timeoutId = setTimeout(() => {
-        renderImage(nextResult, imageDecoder, imageIndex, speed)
-      }, result.image.duration / speed)
-    )
-    .catch((err) => {
-      if (err instanceof RangeError) {
-        imageIndex = 0
-        imageDecoder.decode({ frameIndex: imageIndex })
-          .then(result => renderImage(result, imageDecoder, imageIndex, speed))
-      } else {
-        throw err
-      }
-    })  
+  const nextResult = await imageDecoder.decode({ frameIndex: ++imageIndex })
+  try {
+    // requestAnimationFrame単体ではアニメーションの繰り返し速度を調整できない。
+    timeoutId = setTimeout(async () => {
+      await renderImage(nextResult, imageDecoder, imageIndex, speed)
+    }, result.image.duration / speed)  
+  } catch (err) {
+    if (err instanceof RangeError) {
+      imageIndex = 0
+      const result = imageDecoder.decode({ frameIndex: imageIndex })
+      await renderImage(result, imageDecoder, imageIndex, speed)
+    } else {
+      throw err
+    }
+  }
 }
 
 const funcs = {
@@ -79,7 +79,7 @@ const funcs = {
     const result = await imageDecoder.decode({ frameIndex: imageIndex })
     const speedEles = document.getElementsByName('animationSpeed')
     const speed = parseFloat(Array.from(speedEles).filter(ele => ele.checked)[0].value)
-    renderImage(result, imageDecoder, imageIndex, speed)
+    await renderImage(result, imageDecoder, imageIndex, speed)
   },
   clearImage: () => {
     if (!timeoutId) {
