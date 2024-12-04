@@ -29,9 +29,6 @@ const getSampleCanvas = () => {
   }
 }
 
-/**
- * TODO: 読み込んだ画像が元の画像と同じサイズで描画されない。
- */
 const renderImage = async (result, imageDecoder, imageIndex, speed) => {
   const { canvasContext } = getSampleCanvas()
   canvasContext.drawImage(result.image, 0, 0)
@@ -65,6 +62,25 @@ const renderImage = async (result, imageDecoder, imageIndex, speed) => {
   }
 }
 
+const getImageSize = file => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+
+    reader.onload = evt => {
+      const img = new Image()
+      img.onload = () => {
+        const width = img.naturalWidth
+        const height = img.naturalHeight
+        resolve({ width, height })
+      }
+      img.onerror = reject
+      img.src = evt.target.result
+    }
+
+    reader.readAsDataURL(file)
+  })
+}
+
 const funcs = {
   decodeImage: async () => {
     const selectedFiles = document.getElementById('decodeTargetImage').files
@@ -72,7 +88,14 @@ const funcs = {
       return
     }
     funcs.clearImage()
+
+    // canvasのサイズに画像サイズを適用しないと画像の一部分しか描画されない。
     const file = selectedFiles[0]
+    const { width, height } = await getImageSize(file)
+    const { canvas } = getSampleCanvas()
+    canvas.width = width
+    canvas.height = height
+
     const uint8Array = await fileToUint8Array(file)
     const imageDecoder = new ImageDecoder({ data: uint8Array, type: file.type })
     const imageIndex = 0
@@ -88,7 +111,7 @@ const funcs = {
     clearTimeout(timeoutId)
     timeoutId = null
     const { canvas, canvasContext } = getSampleCanvas()
-    canvasContext.clearRect(0, 0, canvas.clientWidth, canvas.height)  
+    canvasContext.clearRect(0, 0, canvas.width, canvas.height)  
   }
 }
 
