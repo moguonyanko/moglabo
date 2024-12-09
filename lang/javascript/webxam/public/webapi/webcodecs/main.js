@@ -112,6 +112,9 @@ const funcs = {
     timeoutId = null
     const { canvas, canvasContext } = getSampleCanvas()
     canvasContext.clearRect(0, 0, canvas.width, canvas.height)  
+  },
+  decodeVideo: () => {
+    // TODO: implement
   }
 }
 
