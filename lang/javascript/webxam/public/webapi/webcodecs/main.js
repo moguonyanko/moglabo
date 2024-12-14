@@ -121,7 +121,9 @@ const funcs = {
     ctx.fillText('作成中', 0, 48)
   },
   encodeVideo: async () => {
-    // TODO: implement
+    const sampleVideo = document.querySelector('.encodeSampleVideo')
+    const frameFromCanvas = new VideoFrame(sampleVideo, { timestamp: 0 })
+    console.log(frameFromCanvas)
   }
 }
 
