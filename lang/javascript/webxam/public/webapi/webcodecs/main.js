@@ -114,6 +114,13 @@ const funcs = {
     canvasContext.clearRect(0, 0, canvas.width, canvas.height)  
   },
   decodeVideo: () => {
+    const output = document.querySelector('.VideoDecoder .output')
+    const ctx = output.getContext('2d')
+    ctx.clearRect(0, 0, output.width, output.height)
+    ctx.font = '48px serif';
+    ctx.fillText('作成中', 0, 48)
+  },
+  encodeVideo: async () => {
     // TODO: implement
   }
 }
