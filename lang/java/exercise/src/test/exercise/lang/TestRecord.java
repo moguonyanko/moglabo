@@ -16,6 +16,43 @@ import static org.junit.Assert.*;
 // クラス内にネストして宣言することは可能。
 record SampleRecordItem(String name, int price) {}
 
+class SampleMember {
+    
+    private String name;
+    private int age;
+    
+    /**
+     * ネストクラスはCheckerのようにエンクロージングクラスのインスタンスを参照しないなら
+     * staticにしないとメモリを浪費することになる。
+     */
+    private class Checker {
+        
+        boolean isAdult() {
+            return age < 20;
+        }
+        
+    }
+    
+    private static class StaticChecker {
+        
+        boolean isAdult() {
+//            return age < 20;
+            throw new UnsupportedOperationException();
+        }
+        
+    }
+    
+    /**
+     * StaticCheckerと同じ。recordを使う方がstatic忘れを回避しやすい。
+     */
+    private record RecordChecker() {
+        boolean isAdult() {
+//            return age < 20;
+            throw new UnsupportedOperationException();
+        }
+    }
+}
+
 public class TestRecord {
 
     @Test
