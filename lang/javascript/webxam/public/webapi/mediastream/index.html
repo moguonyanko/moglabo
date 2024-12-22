@@ -19,15 +19,20 @@
   </header>
 
   <main>
-    <section>
-      <h2>画面キャプチャAPI</h2>
+    <section class="basicCaptureSample">
+      <h2>選択したウインドウををキャプチャする</h2>
+      <button data-event-listener="startCapture">Start Capture</button>
+      <button data-event-listener="stopCapture">Stop Capture</button>
+      <video class="captureResult output" autoplay></video>
+      <textarea class="captureInfo" readonly></textarea>
     </section>
   </main>
 
   <footer>
     <p>参考</p>
     <ul>
-      <li><a href="https://developer.mozilla.org/ja/docs/Web/API/Screen_Capture_API/Using_Screen_Capture">画面キャプチャ API の使用</a></li>
+      <li><a href="https://developer.mozilla.org/ja/docs/Web/API/Screen_Capture_API/Using_Screen_Capture">画面キャプチャ API
+          の使用</a></li>
     </ul>
   </footer>
 
