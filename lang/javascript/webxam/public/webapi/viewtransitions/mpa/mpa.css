@@ -1,0 +1,24 @@
+@charset "UTF-8";
+
+@view-transition {
+  navigation: auto;
+}
+
+/* ページ遷移アニメーションの速度を制御する。 */
+/* たまにアニメーションしないことがある。ブラウザの不具合か？ */
+/*
+::view-transition-group(root) {
+  animation-duration: 1.0s;
+}
+*/
+
+/* 特定の要素にアニメーションを設定することもできる。 */
+/* しかし反映されてないように思われる。 */
+
+figcaption {
+  view-transition-name: figure-caption;
+}
+
+::view-transition-group(figure-caption) {
+  height: 100%;
+}
