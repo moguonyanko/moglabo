@@ -8,7 +8,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../../common.css" />
   <link rel="stylesheet" href="../viewtransition.css" />
-  <script src="spa.js" type="module"></script>
+  <!-- このサンプルでは効果が分かりにくいが以下はページ遷移前にページの状態を安定させる書き方とされる。 -->
+  <script async src="spa.js" type="module" blocking="render"></script>
+  <link rel="expect" href="#page1" blocking="render" />
+  <link rel="expect" href="#page2" blocking="render" />
+  <link rel="expect" href="#page3" blocking="render" />
 </head>
 
 <body>

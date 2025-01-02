@@ -9,6 +9,9 @@
   <link rel="stylesheet" href="../../../common.css" />
   <link rel="stylesheet" href="../viewtransition.css" />
   <link rel="stylesheet" href="mpa.css" />
+  <!-- blocking="render"を付与することでページ遷移のイベントに関連した処理が確実に実行されるようになる。 -->
+  <!-- ページ遷移アニメーションも確実に実行されるようになる。 -->
+  <script src="mpa.js" type="module" blocking="render"></script>
 </head>
 
 <body>
@@ -27,6 +30,7 @@
     <section id="page1" class="page">
       <h2>Page1</h2>
       <figcaption>SAMPLE</figcaption>
+      <div id="urlInfo"></div>
     </section>
   </main>
 
