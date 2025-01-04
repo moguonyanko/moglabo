@@ -6,7 +6,7 @@
 
 /* ページ遷移アニメーションの速度を制御する。 */
 ::view-transition-group(root) {
-  animation-duration: 1.0s;
+  animation-duration: 2.0s;
 }
 
 /* 特定の要素にアニメーションを設定することもできる。 */

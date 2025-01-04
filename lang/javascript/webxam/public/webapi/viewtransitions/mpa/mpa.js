@@ -28,7 +28,9 @@ const init = () => {
       `
 
       await event.viewTransition.ready
-      console.log('ページ遷移のアニメーションが始まろうとしている状態')
+      // ページ遷移のアニメーションが始まろうとしている状態
+      const figcaption = document.querySelector('figcaption')
+      figcaption.textContent = 'pagereveal ready'
     }
   })
 
@@ -49,8 +51,10 @@ const init = () => {
       `}
 
       await event.viewTransition.finished
-      console.log('ページ遷移のアニメーションが完了し新しいページをユーザーが操作可能になっている状態')
+      // ページ遷移のアニメーションが完了し新しいページをユーザーが操作可能になっている状態
       // ViewTransition.finishedはViewTransition.readyよりは後の状態を示す。
+      const figcaption = document.querySelector('figcaption')
+      figcaption.textContent = 'pageswap finished'
     })
 }
 
