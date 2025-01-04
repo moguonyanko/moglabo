@@ -5,7 +5,42 @@
  * https://mdn.github.io/dom-examples/view-transitions/spa/#
  */
 
-const updateView = event => {
+let lastClick = {}
+
+const getX = () => lastClick.x ?? innerWidth / 2
+
+const getY = () => lastClick.y ?? innerHeight / 2
+
+const getEndRadius = () => {
+  const x = getX()
+  const y = getY()
+  const endRadius = Math.hypot(
+    Math.max(x, innerWidth - x),
+    Math.max(y, innerHeight - y),
+  )
+  return endRadius
+}
+
+const doCustomTransition = () => {
+  document.documentElement.animate(
+    {
+      clipPath: [
+        `circle(0 at ${getX()}px ${getY()}px)`,
+        `circle(${getEndRadius()}px at ${getX()}px ${getY()}px)`,
+      ],
+    },
+    {
+      duration: 500,
+      easing: 'ease-in',
+      pseudoElement: '::view-transition-new(root)',
+    },
+  )
+}
+
+const updateView = async event => {
+  lastClick.x = event.clientX
+  lastClick.y = event.clientY
+
   if (event.target.className === 'navlink') {
     event.stopPropagation()
 
@@ -17,20 +52,16 @@ const updateView = event => {
         if (page.id !== targetId) {
           page.classList.add('invisible')
         }
-      })  
+      })
     }
 
     /**
      * startViewTransitionを挟むことでページ更新にアニメーションが加わる。
      */
     const transition = document.startViewTransition(() => displayNewPage())
-    console.log(transition)
+    await transition.ready
+    doCustomTransition()
   }
 }
 
-const init = () => {
-  const main = document.querySelector('main')
-  main.addEventListener('click', updateView)
-}
-
-init()
+document.querySelector('main').addEventListener('click', updateView)
