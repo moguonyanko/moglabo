@@ -410,5 +410,36 @@ public class TestCollection {
             Spliterator.ORDERED;
         assertTrue(actual4 != 0);
     }
+    
+    /**
+     * 参考:
+     * https://www.baeldung.com/java-21-sequenced-collections
+     */
+    @Test
+    public void SequencedSetで順序づけられたSetを生成できる() {
+        // JDK21以降LinkedHashSetがSequencedSetになっておりgetFirstやgetLastが実装されている。
+        var sampleSet = new LinkedHashSet<String>();
+        sampleSet.add("Mike");
+        sampleSet.add("Ami");
+        sampleSet.add("Joe");
+        
+        assertSame("Mike", sampleSet.getFirst());
+        assertSame("Joe", sampleSet.getLast());  
+    }
+    
+    @Test
+    public void SequencedMapで順序づけられたMapを生成できる() {
+        var sampleMap = new LinkedHashMap<String, Integer>();
+        sampleMap.put("Mike", 21);
+        sampleMap.put("Ami", 19);
+        sampleMap.put("Joe", 33);
+        
+        var revMap = sampleMap.reversed();
+        
+        var first = revMap.firstEntry();
+        assertSame(33, first.getValue());
+        var last = revMap.lastEntry();        
+        assertSame(21, last.getValue());
+    }
 
 }
