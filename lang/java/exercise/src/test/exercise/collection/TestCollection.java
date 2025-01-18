@@ -1,5 +1,7 @@
 package test.exercise.collection;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.util.stream.Collectors.*;
@@ -440,6 +442,51 @@ public class TestCollection {
         assertSame(33, first.getValue());
         var last = revMap.lastEntry();        
         assertSame(21, last.getValue());
+    }
+    
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = 
+            new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+    
+    private Comparator getIllegalComparator() {
+        Comparator<String> comparator = (String o1, String o2) -> {
+            if (o1 == null && o2 == null) {
+                return 0;
+            }
+            if (o1 == null) {
+                return 1;
+            }
+            if (o2 == null) {
+                return -1;
+            }
+            try {
+                var first = SIMPLE_DATE_FORMAT.parse(o1);
+                var second = SIMPLE_DATE_FORMAT.parse(o2);
+                return first.compareTo(second);
+            } catch (ParseException ignored) {
+                return 0;
+            }
+
+        };
+        return comparator;
+    }
+    
+    /**
+     * @todo
+     * 例外が発生しない。
+     * 参考
+     * https://stackoverflow.com/questions/31556639/illegalargumentexception-on-collections-sort-method
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void 推移的でないComparatorを使ったときにIlleagalArgumantExceptionが発生する() {
+        var first = "2024/01/01 10:00:00";
+        var second = "2025/01/01 10:00:00";
+        var invalidDate = "InvalidFormatDate";
+        
+        var dates = Arrays.asList(invalidDate, second, first);
+        System.out.println(dates);
+        Collections.sort(dates, getIllegalComparator());
+        System.out.println(dates);
+        fail("IllegalArgumantExceptionが発生しなかった。");
     }
 
 }
