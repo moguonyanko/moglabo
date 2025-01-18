@@ -170,7 +170,7 @@ const funcs = {
 
     const noTryPromise = func => {
       // Promise.try()と同じことをする。new Promise(func)やnew Promise(func)では
-      // 非同期関数を渡された時にthenやcatthで処理することができない。
+      // 非同期関数を渡された時にthenやcatchで処理することができない。
       // これを分かりやすくしたのがPromise.try()である。
       new Promise(resolve => resolve(func()))
         // new Promise(func, func)
