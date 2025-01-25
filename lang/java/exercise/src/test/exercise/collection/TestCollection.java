@@ -443,32 +443,38 @@ public class TestCollection {
         var last = revMap.lastEntry();        
         assertSame(21, last.getValue());
     }
+      
+    private record MyNode(String id, MyNode parent) {
+
+        @Override
+        public String toString() {
+            return id;
+        }
+    }
     
-    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = 
-            new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-    
-    private Comparator getIllegalComparator() {
-        Comparator<String> comparator = (String o1, String o2) -> {
-            if (o1 == null && o2 == null) {
-                return 0;
-            }
-            if (o1 == null) {
-                return 1;
-            }
-            if (o2 == null) {
+    /**
+     * このComparator自体が正しくソートを行えていない。ただしここでは期待した例外がスローされるか
+     * どうかを確認することを優先する。
+     * 参考:
+     * https://stackoverflow.com/questions/8327514/comparison-method-violates-its-general-contract
+     */
+    private Comparator getIllegalMyNodeComparator() {
+        Comparator<MyNode> comparator = (MyNode n1, MyNode n2) -> {
+            if (n1.parent == null || n2.parent == null) {
                 return -1;
             }
-            try {
-                var first = SIMPLE_DATE_FORMAT.parse(o1);
-                var second = SIMPLE_DATE_FORMAT.parse(o2);
-                return first.compareTo(second);
-            } catch (ParseException ignored) {
-                return 0;
+            if (n1.parent.equals(n2)) {
+                return 1;
             }
-
+            if (n2.parent.equals(n1)) {
+                return -1;
+            }
+            return 0;
+//            return n1.id().compareTo(n2.id());
         };
         return comparator;
     }
+    
     
     /**
      * @todo
@@ -478,14 +484,15 @@ public class TestCollection {
      */
     @Test(expected = IllegalArgumentException.class)
     public void 推移的でないComparatorを使ったときにIlleagalArgumantExceptionが発生する() {
-        var first = "2024/01/01 10:00:00";
-        var second = "2025/01/01 10:00:00";
-        var invalidDate = "InvalidFormatDate";
-        
-        var dates = Arrays.asList(invalidDate, second, first);
-        System.out.println(dates);
-        Collections.sort(dates, getIllegalComparator());
-        System.out.println(dates);
+        var n1 = new MyNode("fruit", null);
+        var n2 = new MyNode("apple", n1);
+        var n3 = new MyNode("orange", n1);
+        var n4 = new MyNode("sanfuji", n2);
+        var n5 = new MyNode("arita", n3);
+        var nodes = Arrays.asList(n4, n5, n2, n1, n3);
+        System.out.println(nodes);
+        Collections.sort(nodes, getIllegalMyNodeComparator());
+        System.out.println(nodes);
         fail("IllegalArgumantExceptionが発生しなかった。");
     }
 
