@@ -1,0 +1,17 @@
+@charset "UTF-8";
+
+:root {
+  --default-color: red;
+}
+
+[data-sample-message]::after {
+  content: " " attr(data-sample-message) " World";
+}
+
+[data-sample-font-size] {
+  font-size: attr(data-sample-font-size px);
+}
+
+[data-sample-color] {
+  background-color: attr(data-sample-color type(<color>), var(--default-color));
+}
