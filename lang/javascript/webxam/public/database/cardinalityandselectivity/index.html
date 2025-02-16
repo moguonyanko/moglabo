@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>カーディナリティ</title>
+  <title>カーディナリティと選択率</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
   <link rel="stylesheet" href="main.css" />
@@ -24,6 +24,17 @@
       <label for="cardinalityColumn">対象列名</label>
       <input id="cardinalityColumn" type="text" value="postal_code" />
       <button data-event-listener="getCardinality">run</button>
+      <div class="output"></div>
+    </section>
+    <section class="selectivity">      
+      <h2>選択率を求める</h2>
+      <label for="selectivityTable">対象テーブル名</label>
+      <input id="selectivityTable" type="text" value="postal_codes" />
+      <label for="selectivityColumn">対象列名</label>
+      <input id="selectivityColumn" type="text" value="postal_code" />
+      <label for="selectivityCondition">選択条件</label>
+      <input id="selectivityCondition" type="text" value="" />
+      <button data-event-listener="getSelectivity">run</button>
       <div class="output"></div>
     </section>
   </main>
