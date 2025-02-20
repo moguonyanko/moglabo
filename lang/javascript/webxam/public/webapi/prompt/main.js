@@ -2,6 +2,7 @@
  * @fileoverview Prompt APIを試すためのスクリプトです。
  * 参考:
  * https://web.dev/articles/ai-chatbot-promptapi?hl=ja
+ * https://github.com/webmachinelearning/prompt-api
  */
 
 // DOM
@@ -18,6 +19,19 @@ const listeners = {
     const result = await session.prompt(prt)
     const output = section.querySelector('.output')
     output.textContent = result
+  },
+  doPromptStreaming: async () => {
+    const section = document.querySelector('.promptStreamingExample')
+    const output = section.querySelector('.output')
+    output.textContent = ''
+    const session = await self.ai.languageModel.create({
+      systemPrompt
+    })
+    const prt = section.querySelector('.prompt').value
+    const stream = await session.promptStreaming(prt)
+    for await (const chunk of stream) {
+      output.textContent += result
+    }
   }
 }
 
