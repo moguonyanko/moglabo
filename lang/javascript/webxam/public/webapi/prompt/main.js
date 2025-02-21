@@ -5,33 +5,51 @@
  * https://github.com/webmachinelearning/prompt-api
  */
 
-// DOM
-
 const systemPrompt = 'You are an excellent assistant. I will answer questions about work and study.'
 
-const listeners = {
-  doPrompt: async () => {
-    const section = document.querySelector('.promptExample')
+const funcs = {
+  prompt: async ({ text }) => {
     const session = await self.ai.languageModel.create({
       systemPrompt
     })
-    const prt = section.querySelector('.prompt').value
-    const result = await session.prompt(prt)
-    const output = section.querySelector('.output')
-    output.textContent = result
+    const result = await session.prompt(text)
+    return result
   },
-  doPromptStreaming: async () => {
-    const section = document.querySelector('.promptStreamingExample')
-    const output = section.querySelector('.output')
-    output.textContent = ''
+  promptStreaming: async ({ text }) => {
     const session = await self.ai.languageModel.create({
       systemPrompt
     })
-    const prt = section.querySelector('.prompt').value
-    const stream = await session.promptStreaming(prt)
+    const stream = await session.promptStreaming(text)
+    const results = [] // 本当はyieldなどを使いたい。
     for await (const chunk of stream) {
-      output.textContent += result
+      results.push(chunk)
     }
+    return results.join('')
+  }
+}
+
+// DOM
+
+class MyPrompt extends HTMLElement {
+  constructor() {
+    super()
+    const template = document.getElementById('my-prompt').content
+    const shadowRoot = this.attachShadow({ mode: 'open' })
+    shadowRoot.appendChild(template.cloneNode(true))
+  }
+
+  connectedCallback() {
+    const root = this.shadowRoot
+    const type = this.getAttribute('type')
+    root.addEventListener('click', async event => {
+      if (event.target.id === 'doPrompt') {
+        event.stopPropagation()
+        const text = root.querySelector('.prompt').value
+        const result = await funcs[type]?.({ text })
+        const output = root.querySelector('.output')
+        output.textContent = result
+      }
+    })
   }
 }
 
@@ -39,8 +57,9 @@ const init = () => {
   const main = document.querySelector('main')
   main.addEventListener('click', async event => {
     const { eventListener } = event.target.dataset
-    await listeners[eventListener]?.()
+    await funcs[eventListener]?.()
   })
+  customElements.define('my-prompt', MyPrompt)
 }
 
 init()

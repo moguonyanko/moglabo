@@ -19,15 +19,11 @@
   <main>
     <section class="promptExample">
       <h2>prompt()</h2>
-      <textarea class="prompt">Please tell me about tail call optimization.</textarea>
-      <button data-event-listener="doPrompt">run</button>
-      <div class="output"></div>
+      <my-prompt type="prompt"></my-prompt>
     </section>
     <section class="promptStreamingExample">
       <h2>promptStreaming()</h2>
-      <textarea class="prompt">Please tell me about tail call optimization.</textarea>
-      <button data-event-listener="doPromptStreaming">run</button>
-      <div class="output"></div>
+      <my-prompt type="promptStreaming"></my-prompt>
     </section>
   </main>
 
@@ -35,10 +31,25 @@
     <h3>参考</h3>
     <ul>
       <li><a href="https://developer.chrome.com/docs/ai/built-in?hl=ja">組み込みの AI </a></li>
-      <li><a href="https://web.dev/articles/ai-chatbot-promptapi?hl=ja">Prompt API を使用してローカルおよびオフライン対応の chatbot を作成する</a></li>
+      <li><a href="https://web.dev/articles/ai-chatbot-promptapi?hl=ja">Prompt API を使用してローカルおよびオフライン対応の chatbot
+          を作成する</a></li>
       <li><a href="https://github.com/webmachinelearning/prompt-api">Explainer for the Prompt API</a></li>
     </ul>
   </footer>
+
+  <template id="my-prompt">
+    <style>
+      .output,
+      .prompt {
+        width: 100%;
+        height: 5em;
+        border: solid 1px black;
+      }
+    </style>
+    <textarea class="prompt">Please tell me about tail call optimization.</textarea>
+    <button id="doPrompt">run</button>
+    <div class="output"></div>
+  </template>
 </body>
 
 </html>
