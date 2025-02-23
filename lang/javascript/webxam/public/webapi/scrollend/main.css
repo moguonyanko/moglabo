@@ -1,2 +1,13 @@
 @charset "UTF-8";
 
+.samplearea {
+  width: 100%;
+  height: 200px;
+  background-color: beige;
+  border: solid 1px darkgray;
+  overflow-y: scroll;
+}
+
+.samplearea p {
+  height: 1500px;
+}
