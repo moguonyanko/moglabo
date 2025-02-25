@@ -1,0 +1,24 @@
+@charset "UTF-8";
+
+/* anchor style */
+
+.anchor-button {
+  anchor-name: --anchor-el;
+}
+
+.anchored-notice {
+  position-anchor: --anchor-el;
+  /* absolutely position the positioned element */
+  position: absolute;
+  /* position the right of the positioned element at the right edge of the anchor */
+  right: anchor(right);
+  /* position the bottom of the positioned element at the top edge of the anchor */
+  bottom: anchor(top);
+}
+
+/* not anchor style */
+
+.anchored-notice {
+  border: 1px solid darkgrey;
+  background-color: whitesmoke;
+}
