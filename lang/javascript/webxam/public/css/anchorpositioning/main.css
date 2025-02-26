@@ -1,24 +1,61 @@
 @charset "UTF-8";
 
-/* anchor style */
-
-.anchor-button {
+/* The demo */
+.anchor {
   anchor-name: --anchor-el;
 }
 
 .anchored-notice {
-  position-anchor: --anchor-el;
-  /* absolutely position the positioned element */
   position: absolute;
-  /* position the right of the positioned element at the right edge of the anchor */
-  right: anchor(right);
-  /* position the bottom of the positioned element at the top edge of the anchor */
+  /*  anchor reference  */
+  position-anchor: --anchor-el;
+  /*  Position bottom of anchored elem at top of anchor  */
   bottom: anchor(top);
+  left: anchor(right);
 }
 
-/* not anchor style */
+/* Misc styling */
+
+.anchor {
+  font-family: monospace;
+  background: linear-gradient(45deg, blueviolet, blue);
+  font-size: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 100%;
+  aspect-ratio: 1 / 1;
+  width: 4rem;
+  line-height: 0;
+  margin-top: 30dvh;
+  
+  p {
+    filter: brightness(2);
+  }
+}
 
 .anchored-notice {
-  border: 1px solid darkgrey;
-  background-color: whitesmoke;
+  font-family: system-ui, sans-serif;
+  background: #333;
+  border-radius: 0.75rem;
+  color: white;
+  padding: 1rem;
+  max-width: 250px;
+  line-height: 1.5;
+}
+
+code {
+  font-family: monospace;
+  background: dimgray;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  border: 1px solid gray;
+}
+
+.anchor-area {
+  border: 1px solid black;
+  background-color: oldlace;
+  display: grid;
+  grid-template-rows: 1fr;
+  justify-content: center;
+  /* height: 30vh; */
 }
