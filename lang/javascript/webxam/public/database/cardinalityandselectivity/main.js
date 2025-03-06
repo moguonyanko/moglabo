@@ -3,7 +3,7 @@
  */
 
 const getStat = async ({ statName, tableInfo }) => {
-  const response = await fetch(`/brest/gis/${statName}/`, {
+  const response = await fetch(`/brest/dbapi/${statName}/`, {
     method: 'POST',
     mode: 'cors',
     headers: {

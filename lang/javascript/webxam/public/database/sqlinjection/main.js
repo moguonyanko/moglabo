@@ -3,7 +3,7 @@
  */
 
 const requestSql = async sql => {
-  const response = await fetch('/brest/gis/injectsql/', {
+  const response = await fetch('/brest/dbapi/injectsql/', {
     method: 'POST',
     mode: 'cors',
     headers: {
