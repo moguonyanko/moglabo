@@ -18,7 +18,16 @@
   </header>
 
   <main>
-    <div>Enable FileSystemObserver:<span id="enableFileSystemObserver"></span></div>
+    <section>
+      <h2>FileSystemObserverは利用可能か？</h2>
+      <span id="enableFileSystemObserver"></span>
+    </section>
+    <section class="callbackFunction">
+      <h2>保存したファイルの変更を監視する</h2>
+      <button data-event-listener="connect">connect</button>
+      <button data-event-listener="disconnect">disconnect</button>
+      <div class="output"></div>
+    </section>
   </main>
 
   <footer>
