@@ -41,12 +41,21 @@ const listenres = {
     directoryObserver.disconnect()
     const output = document.querySelector('.observeDirectory .output')
     output.textContent = ''
-  }
+  },
+  writeFile: async () => {
+    const sampleText = 
+      document.querySelector('.fileSystemWritableFileStream .sampleTextArea').value
+    const textBlob = new Blob([sampleText], { type: 'text/plain' })
+    const handle = await showSaveFilePicker()
+    const writableStream = await handle.createWritable()
+    await writableStream.write(textBlob)
+    await writableStream.close()
+  } 
 }
 
 const init = () => {
   document.getElementById('enableFileSystemObserver').textContent = 
-  enableFileSystemObserver()
+    enableFileSystemObserver()
 
   const main = document.querySelector('main')
   main.addEventListener('click', async event => {

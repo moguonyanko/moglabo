@@ -1,2 +1,7 @@
 @charset "UTF-8";
 
+.sampleTextArea {
+  max-width: 500px;
+  width: 100%;
+  height: 5rem;
+}
