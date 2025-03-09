@@ -50,7 +50,17 @@ const listenres = {
     const writableStream = await handle.createWritable()
     await writableStream.write(textBlob)
     await writableStream.close()
-  } 
+  },
+  resolvePath: async () => {
+    const directoryHandle = await showDirectoryPicker()
+    const fileHandle = await self.showOpenFilePicker()
+    // TODO: NotAllowedErrorになる。
+    const relativePaths = await directoryHandle.resolve(fileHandle)
+    const output = document.querySelector('.resolveRelativePaths .output')
+    relativePaths.forEach(path => {
+      output.innerHTML = `${path}<br />`
+    })    
+  }
 }
 
 const init = () => {
