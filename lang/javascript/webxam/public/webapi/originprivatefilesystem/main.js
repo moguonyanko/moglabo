@@ -57,9 +57,28 @@ const listenres = {
     // TODO: NotAllowedErrorになる。
     const relativePaths = await directoryHandle.resolve(fileHandle)
     const output = document.querySelector('.resolveRelativePaths .output')
+    output.textContent = ''
     relativePaths.forEach(path => {
-      output.innerHTML = `${path}<br />`
+      output.innerHTML += `${path}<br />`
     })    
+  },
+  writeFile: async () => {
+    const root = await navigator.storage.getDirectory() 
+    const message = document.querySelector('.readAndWriteFileSample .sampleTextArea').value
+    const output = document.querySelector('.readAndWriteFileSample .output')
+    const worker = new Worker('./writeFileWorker.js')
+    worker.onmessage = event => {
+      output.textContent = JSON.stringify(event.data)
+    }
+    worker.postMessage(message)
+  },
+  readFile: async () => {
+    const root = await navigator.storage.getDirectory() 
+    // TODO: witeFileで書き込んだファイルが取得できていない。
+    const existingFileHandle = await root.getFileHandle('samplememo.txt')
+    const file = await existingFileHandle.getFile()   
+    const output = document.querySelector('.readAndWriteFileSample .output')
+    output.textContent = JSON.stringify(file)
   }
 }
 

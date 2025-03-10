@@ -4,7 +4,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Origin Private File System</title>
+  <title>File System API and Origin Private File System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
   <link rel="stylesheet" href="main.css" />
@@ -14,7 +14,7 @@
 <body>
   <header>
     <a href="../../">home</a>
-    <h1>Origin Private File System</h1>
+    <h1>File System API and Origin Private File System</h1>
   </header>
 
   <main>
@@ -45,6 +45,13 @@
     <section class="resolveRelativePaths">
       <h2>相対パスを求める</h2>
       <button data-event-listener="resolvePath">resolve</button>
+      <div class="output"></div>
+    </section>
+    <section class="readAndWriteFileSample">
+      <h2>OPFSにファイルを書き込んで取得する</h2>
+      <textarea class="sampleTextArea">サンプルメッセージ</textarea>
+      <button data-event-listener="writeFile">writeFile</button>
+      <button data-event-listener="readFile">readFile</button>
       <div class="output"></div>
     </section>
   </main>
