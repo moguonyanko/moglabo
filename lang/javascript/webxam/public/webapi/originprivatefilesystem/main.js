@@ -18,6 +18,7 @@ const getObserveDumpFunc = output => {
 }
 
 let fileObserver, directoryObserver;
+const sampleFileName = 'samplememo'
 
 const listenres = {
   connectFile: async () => {
@@ -63,22 +64,33 @@ const listenres = {
     })    
   },
   writeFile: async () => {
-    const root = await navigator.storage.getDirectory() 
     const message = document.querySelector('.readAndWriteFileSample .sampleTextArea').value
     const output = document.querySelector('.readAndWriteFileSample .output')
     const worker = new Worker('./writeFileWorker.js')
     worker.onmessage = event => {
       output.textContent = JSON.stringify(event.data)
     }
-    worker.postMessage(message)
+    worker.postMessage({
+      message, fileName: sampleFileName
+    })
   },
   readFile: async () => {
     const root = await navigator.storage.getDirectory() 
-    // TODO: witeFileで書き込んだファイルが取得できていない。
-    const existingFileHandle = await root.getFileHandle('samplememo.txt')
-    const file = await existingFileHandle.getFile()   
     const output = document.querySelector('.readAndWriteFileSample .output')
-    output.textContent = JSON.stringify(file)
+    try {
+      const existingFileHandle = await root.getFileHandle(sampleFileName)
+      const file = await existingFileHandle.getFile()   
+      output.textContent = await file.text()  
+    } catch (err) {
+      output.textContent = err.message 
+    }
+  },
+  removeFile: async () => {
+    const root = await navigator.storage.getDirectory() 
+    const existingFileHandle = await root.getFileHandle(sampleFileName)
+    await existingFileHandle.remove()
+    const output = document.querySelector('.readAndWriteFileSample .output')
+    output.textContent = ''
   }
 }
 

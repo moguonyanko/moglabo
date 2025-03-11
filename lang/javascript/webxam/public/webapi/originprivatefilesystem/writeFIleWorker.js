@@ -1,8 +1,7 @@
 onmessage = async event => {
-  const message = event.data
+  const { message, fileName } = event.data
   console.log(message)
   const handle = await navigator.storage.getDirectory() 
-  const fileName = 'samplememo.txt'
   const fileHandle = await handle.getFileHandle(fileName, {
     create: true
   })
