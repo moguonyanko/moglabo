@@ -91,6 +91,36 @@ const listenres = {
     await existingFileHandle.remove()
     const output = document.querySelector('.readAndWriteFileSample .output')
     output.textContent = ''
+  },
+  dumpDirectories: async () => {
+    const frag = document.createDocumentFragment()
+    const root = await navigator.storage.getDirectory() 
+    // このサンプルではhandleがFileSystemDirectoryHandleでもその中を走査していない。
+    // そのため最初の階層のファイルとディレクトリしか表示されない。
+    for await (let [name, handle] of root) {
+      console.log(name, handle)
+      frag.appendChild(document.createTextNode(`${name}`))
+      frag.appendChild(document.createElement('br'))
+    }
+    const output = document.querySelector('.dumpDirecotriesSample .output')
+    output.textContent = ''
+    output.appendChild(frag)
+  },
+  createSampleDirectories: async () => {
+    const opfsRoot = await navigator.storage.getDirectory() 
+    const directoryHandle = await opfsRoot.getDirectoryHandle(
+      "Parent Dir", 
+      { create: true }
+    )
+    const nestedFileHandle = await directoryHandle.getFileHandle(
+      "Child File",
+      { create: true }
+    )
+    const nestedDirectoryHandle = await directoryHandle.getDirectoryHandle(
+      "Child Dir",
+      { create: true }
+    )
+    console.log(nestedDirectoryHandle)
   }
 }
 
