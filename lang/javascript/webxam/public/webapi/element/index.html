@@ -121,6 +121,15 @@
       </select>
       <button data-event-target="doPick">pick</button>
     </section>
+    <section>
+      <h2>moveBefore</h2>
+      <p>要素が別の要素内に移動されても動画の再生状態等の「要素の状態」がリセットされない。</p>
+      <button data-event-target="doMoveBefore">move</button>
+      <div class="output target-1">
+        <video class="sampleMoveTarget" src="../../movie/samplenote.m4v" controls loop></video>
+      </div>
+      <div class="output target-2"></div>
+    </section>
   </main>
   <div class="dialogContainer">
     <dialog id="inertTestDialog">
@@ -137,6 +146,7 @@
       <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/animate">Element: animate() method</a></li>
       <li><a href="https://developer.chrome.com/docs/css-ui/exclusive-accordion">Exclusive Accordion</a></li>
       <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/showPicker">HTMLSelectElement: showPicker() method</a></li>
+      <li><a href="https://developer.chrome.com/blog/movebefore-api?hl=ja">moveBefore() を使用して DOM ミューテーション中に状態を保持する</a></li>
     </ul>
   </footer>
 </body>

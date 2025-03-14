@@ -58,3 +58,7 @@ dialog {
   border: solid 1px red;
   cursor: pointer;  
 }
+
+.sampleMoveTarget {
+  width: 300px;
+}
