@@ -60,9 +60,26 @@
         popover切り替え
       </button>
       <div id="togglePopover" popover>
-        <button commandfor="togglePopover" command="hide-popover">閉じる</button>
-        サンプル
-      </div>      
+        <button commandfor="togglePopover" command="hide-popover">非表示</button>
+        <button commandfor="togglePopover" command="--change-popover-bg-color">背景色変更</button>
+        <p>サンプル</p>
+        <p>表示切り替えは組み込みコマンドで実現できるためJavaScript不要。
+          背景色変更はカスタムコマンドで実現している。</p>
+      </div>
+    </section>
+    <section>
+      <h2>commandForElement</h2>
+      <my-dialog>
+        <template shadowrootmode=open>
+          <button command="show-popover">表示</button>
+          <slot></slot><!-- slotがないとpopoverが表示されない。 -->
+        </template>
+        <!-- 以下がslotに差し込まれる。 -->
+        <div id="custom-popover" popover>
+          <button commandfor="custom-popover" command="hide-popover">非表示</button>
+          <p>CustomElementでのpopover</p>
+        </div>
+      </my-dialog>
     </section>
   </main>
 
@@ -70,6 +87,8 @@
     <h3>参考</h3>
     <ul>
       <li><a href="https://developer.chrome.com/blog/introducing-popover-api/">Introducing the popover API</a></li>
+      <li><a href="https://developer.chrome.com/blog/command-and-commandfor?hl=ja">command と commandfor の導入</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Invoker_Commands_API">Invoker Commands API</a></li>
     </ul>
   </footer>
 </body>
