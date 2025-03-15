@@ -54,6 +54,16 @@
         <div>サンプル</div>
       </dialog>
     </section>
+    <section>
+      <h2>command と commandfor</h2>
+      <button commandfor="togglePopover" command="toggle-popover">
+        popover切り替え
+      </button>
+      <div id="togglePopover" popover>
+        <button commandfor="togglePopover" command="hide-popover">閉じる</button>
+        サンプル
+      </div>      
+    </section>
   </main>
 
   <footer>

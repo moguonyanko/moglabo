@@ -2,6 +2,20 @@
  * @fileoverview HTML要素の調査用スクリプト
  */
 
+// DOM
+
+const toggleMoveTarget = type => {
+  const funcName = type.toLowerCase() === 'move' ? 'moveBefore' : 'insertBefore'
+  const target1 = document.querySelector('.output.target-1 .sampleMoveTarget')
+  const target2 = document.querySelector('.output.target-2 .sampleMoveTarget')
+  if (target1) {
+    // 第2引数はmoveBeforeでもinsertBeforeでも省略不可能。
+    document.querySelector('.output.target-2')[funcName](target1, null)
+  } else {
+    document.querySelector('.output.target-1')[funcName](target2, null)
+  }
+}
+
 const funcs = {
   openDialog: () => {
     const dialog = document.getElementById('inertTestDialog');
@@ -41,14 +55,10 @@ const funcs = {
     sourceSelect.showPicker()
   },
   doMoveBefore: () => {
-    const target1 = document.querySelector('.output.target-1 .sampleMoveTarget')
-    const target2 = document.querySelector('.output.target-2 .sampleMoveTarget')
-    if (target1) {
-      // 第2引数はnullを渡すとしても必須である。
-      document.querySelector('.output.target-2').moveBefore(target1, null)
-    } else {
-      document.querySelector('.output.target-1').moveBefore(target2, null)
-    }
+    toggleMoveTarget('moveBefore')
+  },
+  doInsertBefore: () => {
+    toggleMoveTarget('insertBefore')
   }
 };
 
