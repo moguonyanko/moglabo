@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>テキスト生成</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script src="main.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>テキスト生成</h1>
+  </header>
+
+  <main>
+    <section class="simple-generation-text-sample">
+      <h2>シンプルなテキスト生成</h2>
+      <textarea class="sample-text">あなたは誰ですか？</textarea>
+      <button data-event-listener="sendContents">送信</button>
+      <div class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://ai.google.dev/gemini-api/docs/text-generation?lang=python">Text generation</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
