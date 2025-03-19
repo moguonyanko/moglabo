@@ -9,7 +9,7 @@ const listeners = {
     if (!contents) {
       return
     }
-    const response = await fetch(`/brest/generate/text/`, {
+    const response = await fetch(`/brest/genaiapi/generate/text/`, {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -23,7 +23,7 @@ const listeners = {
       throw new Error(`ERROR: ${response.statusText}`)
     }
     const json = await response.json()
-    const output = document.querySelector('.imple-generation-text-sample .output')
+    const output = document.querySelector('.simple-generation-text-sample .output')
     output.textContent = json.results
   }
 }

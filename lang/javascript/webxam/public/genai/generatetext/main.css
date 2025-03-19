@@ -1,6 +1,7 @@
 @charset "UTF-8";
 
 .sample-text {
-  width: 10rem;
+  width: 100vw;
+  max-width: 500px;
   height: 5rem;
 }
