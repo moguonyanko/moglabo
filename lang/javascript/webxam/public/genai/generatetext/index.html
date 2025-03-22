@@ -22,7 +22,13 @@
       <h2>シンプルなテキスト生成</h2>
       <textarea class="sample-text">あなたは誰ですか？</textarea>
       <button data-event-listener="sendContents">送信</button>
-      <div class="output"></div>
+      <div><textarea class="output" readonly></textarea></div>
+    </section>
+    <section class="generation-text-by-image">
+      <h2>画像からテキスト生成</h2>
+      <label>対象画像<input class="selected-file" type="file" accept="image/*" /></label>
+      <button type="button" data-event-listener="sendImage">送信</button>
+      <div></div><textarea class="output" readonly></textarea></div>
     </section>
   </main>
 
