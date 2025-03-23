@@ -28,7 +28,14 @@
       <h2>画像からテキスト生成</h2>
       <label>対象画像<input class="selected-file" type="file" accept="image/*" /></label>
       <button type="button" data-event-listener="sendImage">送信</button>
-      <div></div><textarea class="output" readonly></textarea></div>
+      <div><textarea class="output" readonly></textarea></div>
+    </section>
+    <section class="talk-to-generative-ai">
+      <h2>マルチターンの会話生成</h2>
+      <div><textarea class="sample-text">おはようございます。</textarea></div>
+      <button data-event-listener="sendMessage">送信</button>
+      <button data-event-listener="closeTalk">会話終了</button>
+      <div><textarea class="output" readonly></textarea></div>
     </section>
   </main>
 

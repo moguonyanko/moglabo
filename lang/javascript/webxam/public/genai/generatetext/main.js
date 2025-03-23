@@ -4,6 +4,8 @@
 
 // DOM
 
+let talkingWebSocket
+
 const listeners = {
   sendContents: async () => {
     const contents = document.querySelector('.simple-generation-text-sample .sample-text')
@@ -29,14 +31,43 @@ const listeners = {
   },
   sendImage: async () => {
     const contents = new FormData()
-    const selectedFile = document.querySelector(".generation-text-by-image .selected-file")
-    contents.append("file", selectedFile.files[0])
+    const selectedFile = document.querySelector('.generation-text-by-image .selected-file')
+    contents.append('file', selectedFile.files[0])
     const response = await fetch('/brest/genaiapi/generate/text-from-image/', {
       method: 'POST',
       body: contents
-    })    
+    })
     const output = document.querySelector('.generation-text-by-image .output')
     output.textContent = (await response.json()).text
+  },
+  sendMessage: () => {
+    const output = document.querySelector('.talk-to-generative-ai .output')
+    const message = document.querySelector('.talk-to-generative-ai .sample-text').value
+    if (!talkingWebSocket) {
+      talkingWebSocket = new WebSocket('ws://localhost:9003/generate/talk/')
+      talkingWebSocket.addEventListener('open', () => {
+        talkingWebSocket.send(message)
+      })
+
+      talkingWebSocket.addEventListener('message', event => {
+        output.textContent = event.data
+      })
+
+      talkingWebSocket.addEventListener('error', event => {
+        output.textContent = event.message
+        talkingWebSocket.close()
+        talkingWebSocket = null
+      })
+    } else {
+      talkingWebSocket.send(message)
+    }
+  },
+  closeTalk: () => {
+    if (talkingWebSocket) {
+      talkingWebSocket.close()
+      const output = document.querySelector('.talk-to-generative-ai .output')
+        .textContent = ''  
+    }
   }
 }
 
