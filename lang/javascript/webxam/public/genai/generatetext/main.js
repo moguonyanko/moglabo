@@ -45,6 +45,7 @@ const listeners = {
     const message = document.querySelector('.talk-to-generative-ai .sample-text').value
     if (!talkingWebSocket) {
       talkingWebSocket = new WebSocket('ws://localhost:9003/generate/talk/')
+
       talkingWebSocket.addEventListener('open', () => {
         talkingWebSocket.send(message)
       })
@@ -53,8 +54,8 @@ const listeners = {
         output.textContent = event.data
       })
 
-      talkingWebSocket.addEventListener('error', event => {
-        output.textContent = event.message
+      talkingWebSocket.addEventListener('error', error => {
+        output.textContent = error.message
         talkingWebSocket.close()
         talkingWebSocket = null
       })
@@ -64,9 +65,10 @@ const listeners = {
   },
   closeTalk: () => {
     if (talkingWebSocket) {
-      talkingWebSocket.close()
       const output = document.querySelector('.talk-to-generative-ai .output')
-        .textContent = ''  
+      output.textContent = ''
+      talkingWebSocket.close()
+      talkingWebSocket = null
     }
   }
 }
