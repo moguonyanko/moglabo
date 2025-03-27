@@ -17,11 +17,11 @@ const getGeneratedImageBlob = async contents => {
     const message = await response.text()
     throw new Error(message)
   }
-  const contentType = response.headers['COntent-Type']
+  const contentType = response.headers.get('Content-Type')
   if (contentType.startsWith('image')) {
     return await response.blob()    
   } else {
-    return new Blob(await response.text(), { type: contentType })
+    throw new Error(await response.text())
   }
 }
 
@@ -31,13 +31,13 @@ const listeners = {
   generateImage: async () => {
     const contents = document.querySelector('.prompt').value
     const output = document.querySelector('.simple-generation-image .output')
+    output.textContent = ''
     try {
       const blob = await getGeneratedImageBlob(contents)
       const imgUrl = URL.createObjectURL(blob)
       const img = new Image()
       img.onload = () => {
         URL.revokeObjectURL(imgUrl)
-        output.textContent = ''
         output.appendChild(img)
       }
       img.src = imgUrl  
@@ -47,7 +47,6 @@ const listeners = {
         detail: err.message
       })
       window.dispatchEvent(evt)
-      return
     }
   }
 }
