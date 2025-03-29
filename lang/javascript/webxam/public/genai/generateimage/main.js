@@ -29,7 +29,7 @@ const getGeneratedImageBlob = async contents => {
 
 const listeners = {
   generateImage: async () => {
-    const contents = document.querySelector('.prompt').value
+    const contents = document.querySelector('.prompt').textContent
     const output = document.querySelector('.simple-generation-image .output')
     output.textContent = ''
     try {
