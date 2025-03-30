@@ -36,3 +36,8 @@ footer {
 .description {
     white-space: pre-line;
 }
+
+.prompt {
+    border: 1px solid silver;
+  }
+  

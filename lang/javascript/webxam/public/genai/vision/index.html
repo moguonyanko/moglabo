@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>ビジョン</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>ビジョン</h1>
+  </header>
+
+  <main>
+    <section class="generation-text-from-url">
+      <h2>URLが指す画像の説明</h2>
+      <p>公開されているURLからテキストを生成する。</p>
+      <span>URL:</span><div id="image-url" contenteditable="plaintext-only" class="prompt">https://ai.google.dev/static/gemini-api/docs/images/fuzzy-bunnies.png</div>
+      <button data-event-listener="generateText">生成</button>
+      <div contenteditable="plaintext-only" class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://ai.google.dev/gemini-api/docs/image-generation?hl=ja">画像を生成する</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
