@@ -29,6 +29,18 @@ const listsners = {
     const text = await getTextFromUrl(url)
     const output = document.querySelector('.generation-text-from-url .output')
     output.textContent = text
+  },
+  generateBbox: async () => {
+    const contents = new FormData()
+    const selectedFile = document.querySelector('.generate-bbox-from-image .selected-file')
+    contents.append('file', selectedFile.files[0])
+    const response = await fetch('/brest/genaiapi/generate/bouding-box-from-image/', {
+      method: 'POST',
+      body: contents
+    })
+    const output = document.querySelector('.generate-bbox-from-image .output')
+    const json = await response.json()
+    output.textContent = JSON.stringify(JSON.parse(json))
   }
 }
 
