@@ -26,10 +26,16 @@
       <div contenteditable="plaintext-only" class="output"></div>
     </section>
     <section class="generate-bbox-from-image">
-      <h2>画像の境界を得る。</h2>
+      <h2>画像の境界を得る</h2>
       <p>内部で画像境界を得るプロンプトを送信している。[ymin, xmin, ymax, xmax]の形式で得られる。</p>
       <label>対象画像<input class="selected-file" type="file" accept="image/*" /></label>
       <button data-event-listener="generateBbox">生成</button>
+      <div contenteditable="plaintext-only" class="output"></div>
+    </section>
+    <section class="generate-transcription-inline-movie">
+      <h2>短い動画の要約を得る</h2>
+      <label>対象動画<input class="selected-file" type="file" accept="movie/*" /></label>
+      <button type="button" data-event-listener="sendShortMovie">送信</button>
       <div contenteditable="plaintext-only" class="output"></div>
     </section>
   </main>

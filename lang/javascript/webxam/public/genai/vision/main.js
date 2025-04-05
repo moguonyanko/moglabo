@@ -41,6 +41,27 @@ const listsners = {
     const output = document.querySelector('.generate-bbox-from-image .output')
     const json = await response.json()
     output.textContent = JSON.stringify(JSON.parse(json))
+  },
+  sendShortMovie: async () => {
+    const output = document.querySelector('.generate-transcription-inline-movie .output')
+    output.textContent = ''
+    
+    const contents = new FormData()
+    const selectedFile = document.querySelector('.generate-transcription-inline-movie .selected-file')
+    contents.append('file', selectedFile.files[0])
+    const response = await fetch('/brest/genaiapi/generate/transcription-inline-from-movie/', {
+      method: 'POST',
+      body: contents
+    })
+    const json = await response.json()
+    if (!response.ok) {
+      const { detail } = json
+      window.dispatchEvent(new CustomEvent('generationerror', {
+        detail
+      }))
+      return
+    }
+    output.textContent = JSON.stringify(JSON.parse(json))
   }
 }
 
@@ -48,6 +69,9 @@ const init = () => {
   document.body.addEventListener('click', async event => {
     const { eventListener } = event.target.dataset
     await listsners[eventListener]?.()
+  })
+  window.addEventListener('generationerror', e => {
+    alert(e.detail)
   })
 }
 
