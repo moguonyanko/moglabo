@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>音声の理解</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>音声の理解</h1>
+  </header>
+
+  <main>
+    <section class="generation-text-from-short-audio">
+      <h2>音声ファイルの文字起こしと要約を生成</h2>
+      <p>インラインでアップロードする。ファイルサイズ上限は20MBである。</p>
+      <label>対象音声ファイル<input class="selected-file" type="file" accept="audio/*" /></label>
+      <button data-event-listener="sendShortAudio">生成</button>
+      <div contenteditable="plaintext-only" class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://ai.google.dev/gemini-api/docs/audio?hl=ja&lang=python">Gemini API を使用した音声機能の詳細</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>

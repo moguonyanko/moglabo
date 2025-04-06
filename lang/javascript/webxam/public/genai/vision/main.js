@@ -61,7 +61,7 @@ const listsners = {
       }))
       return
     }
-    output.textContent = JSON.stringify(json.result)
+    output.textContent = JSON.stringify(json)
   }
 }
 
