@@ -22,15 +22,14 @@ const listsners = {
     if (response.ok) {
       output.textContent = text
     } else {
-      const { detail } = json
       window.dispatchEvent(new CustomEvent('generationerror', {
-        detail
+        detail: text
       }))
     }
   }
 }
 
-const init = () => {
+const init = ({ listeners }) => {
   document.body.addEventListener('click', async event => {
     const { eventListener } = event.target.dataset
     await listsners[eventListener]?.()
