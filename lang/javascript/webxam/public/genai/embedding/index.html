@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>エンベディング</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>エンベディング</h1>
+  </header>
+
+  <main>
+    <section class="generation-text-similarity">
+      <h2>文字列の類似度計算</h2>
+      <sample-text value="Hello, World"><span slot="sample-text-title">対象文字列1</span></sample-text>
+      <sample-text value="こんにちは、世界"><span slot="sample-text-title">対象文字列2</span></sample-text>
+      <button data-event-listener="calculateSimilarity">実行</button>
+      <div contenteditable="plaintext-only" class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://ai.google.dev/gemini-api/docs/embeddings?hl=ja">エンベディング</a></li>
+    </ul>
+  </footer>
+
+  <template id="sample-text-template">
+    <div>
+      <label for="sample-text"><slot name="sample-text-title">タイトル</slot></label>
+      <input type="text" id="sample-text" />
+    </div>
+  </template>
+</body>
+
+</html>
