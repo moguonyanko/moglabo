@@ -115,7 +115,6 @@ const clipImageListener = {
         size: image 
       });
       // ClipboardItemがESLintで認識されるようになったら以下の行は削除する。
-      // eslint-disable-next-line no-undef
       const item = new ClipboardItem({
         [type]: blob
       });
