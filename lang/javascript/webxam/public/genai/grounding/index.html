@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>グラウンディング</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>グラウンディング</h1>
+  </header>
+
+  <main>
+    <section class="generation-text-with-grounding">
+      <h2>Google検索を用いたグラウンディング</h2>
+      <p>ある製品の将来の価格を予想する。</p>
+      <div>
+        <label for="item-name">品名</label>
+        <input id="item-name" class="item-param" type="text" value="米" />
+        <label for="item-period">期間</label>
+        <input id="item-period" class="item-param" type="text" value="3ヶ月" />
+        <label for="item-unit">金額の単位</label>
+        <input id="item-unit" class="item-param" type="text" value="円" />  
+      </div>
+      <button data-event-listener="predictPrice">予想実行</button>
+      <div contenteditable="plaintext-only" class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://ai.google.dev/gemini-api/docs/grounding?hl=ja&lang=python">Google 検索によるグラウンディング</a></li>
+    </ul>
+  </footer>
+
+  <template id="sample-text-template">
+    <div>
+      <label for="sample-text"><slot name="sample-text-title">タイトル</slot></label>
+      <input type="text" id="sample-text" />
+    </div>
+  </template>
+</body>
+
+</html>
