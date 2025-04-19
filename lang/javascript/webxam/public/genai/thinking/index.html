@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Thinking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Thinking</h1>
+  </header>
+
+  <main>
+    <section class="generation-travel-project">
+      <div>
+        <label for="position-start">出発地</label>
+        <input id="position-start" type="text" value="横浜" />
+        <label for="position-end">目的地</label>
+        <input id="position-end" type="text" value="仙台" />
+      </div>
+      <div>
+        <label for="period-start">開始日:</label>
+        <input type="date" id="period-start" value="2025-05-05" />
+        <label for="period-end">終了日:</label>
+        <input type="date" id="period-end" value="2025-05-07" />
+      </div>
+      <div>
+        <p>目的</p>
+        <div contenteditable="plaintext-only" id="purpose">美味しいものが食べたい,かえるのピクルスのグッズを買いたい,有名な建物を見に行きたい
+        </div>
+      </div>
+      <button data-event-listener="generateText">実行</button>
+      <div contenteditable="plaintext-only" class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://ai.google.dev/gemini-api/docs/thinking?hl=ja">Gemini の思考</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
