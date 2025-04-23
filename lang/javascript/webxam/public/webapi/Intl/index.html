@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Intl</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Intl</h1>
+  </header>
+
+  <main>
+    <section class="intl-datetime-numbe-format-example">
+      <h2>Intl.DateTimeFormatとIntl.NumberFormat</h2>
+      <div>
+        <label for="src-datetime">日時</label>
+        <input id="src-datetime" type="datetime-local" value="2025-04-24T00:10:30.005" />
+        <label for="src-count">数値表現</label>
+        <input id="src-count" type="number" value="123456789" />
+        <div>
+          <label for="dist-locale">ロケール</label>
+          <select id="dist-locale">
+            <option value="en-US" selected>en-US</option>
+            <option value="de-DE">de-DE</option>
+            <option value="ja-JP">ja-JP</option>
+            <option value="zh-Hans-CN">zh-Hans-CN</option>
+          </select>
+        </div>
+        <button data-event-listener="formatValues">run</button>
+      </div>
+      <div contenteditable="plaintext-only" class="output"></div>
+    </section>
+    <section class="intl-duration-format-example">
+      <h2>Intl.DurationForamt</h2>
+      実装中
+    </section>
+  </main>
+
+  <footer>
+    <ul>
+      <li><a
+          href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat">Intl.DurationFormat</a>
+      </li>
+      <li><a href="https://web.dev/blog/intl-durationformat-baseline?hl=ja">Intl.DurationFormat がベースラインに追加されました</a></li>
+      <li><a href="https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry">指定できるロケール一覧</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
