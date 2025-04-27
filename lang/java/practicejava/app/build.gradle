@@ -29,6 +29,12 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.17.2'
+
+    // https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-core
+    implementation group: 'org.springframework.ai', name: 'spring-ai-core', version: '1.0.0-M6'
+
+    // https://mvnrepository.com/artifact/org.springframework/spring-web
+    implementation group: 'org.springframework', name: 'spring-web', version: '7.0.0-M4'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
