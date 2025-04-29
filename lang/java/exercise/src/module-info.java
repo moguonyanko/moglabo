@@ -16,7 +16,6 @@ open module exercise.base {
     requires java.json.bind;
     requires java.net.http;
     requires java.rmi;
-    //requires jdk.incubator.foreign;
     requires mysql.connector.java;
     requires mongo.java.driver;
     requires checker;
@@ -25,7 +24,6 @@ open module exercise.base {
     requires org.apache.logging.log4j;
     requires kuromoji.ipadic;
     requires lucene.core;
-    //requires lucene.analyzers.common;
     requires lucene.analyzers.kuromoji.ipadic.neologd;
     requires org.apache.httpcomponents.client5.httpclient5;
     exports exercise.rmi to java.rmi;
