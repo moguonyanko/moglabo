@@ -18,7 +18,7 @@ const listeners = {
     const [startP, goalP] = startGoalLayerGroup.getLayers().map(layer => layer.getLatLng())
     const bounds = L.latLngBounds(startP, goalP)
     const bbox = [
-      bounds.getNorth(), bounds.getSouth(), bounds.getEast(), bounds.getWest()
+      bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()
     ]
     const response = await fetch('/brest/gis/routesearch/', {
       method: 'POST',
