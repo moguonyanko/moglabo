@@ -47,5 +47,6 @@ package.json
 **/*target
 *.gml
 .DS_Store
+**/webcise
 
 
