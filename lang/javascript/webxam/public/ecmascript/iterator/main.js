@@ -89,16 +89,25 @@ const throwError = detail => {
   window.dispatchEvent(evt)
 }
 
+const logChunk = chunk => {
+  console.log(`'chunk':${new Date().toString()}`, chunk)
+}
+
 async function iterateWithGenerator(file, callback) {
   try {
     const stream = file.stream()
-    const generator = await streamToImageChunks(stream)
+    const asyncGenerator = await streamToImageChunks(stream)
     // const generator = await streamToImageChunksBySizeBYOB(stream)
 
-    // TODO: イテレータヘルパーメソッドを使うサンプルコード追加
+    // イテレータヘルパーメソッドを使ってみるテストためのコード
+    try {
+      asyncGenerator.forEach(logChunk)
+    } catch (err) {
+      console.error('AsyncGeneratorにはイテレータヘルパーメソッドが実装されていない。', err)
+    }
 
     // ジェネレータからデータを順次取得して処理
-    for await (const chunk of generator) {
+    for await (const chunk of asyncGenerator) {
       callback(chunk)
     }
   } catch (err) {
@@ -188,6 +197,7 @@ const addListener = () => {
     }
   })
   window.addEventListener('iteratorerror', err => {
+    console.error(err)
     alert(err.detail)
   })
 }
