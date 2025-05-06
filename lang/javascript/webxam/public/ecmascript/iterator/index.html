@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Iterator</title>
+  <link rel="stylesheet" href="../../common.css" />
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Iterator</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>イテレータヘルパー</h2>
+      <p>イテレータヘルパーはイテレータを使って配列を操作するための関数群です。</p>
+      <section class="filter-sample">
+        <h3>filter</h3>
+        <p>イテレータを使って配列をフィルタリングします。</p>
+        <div>
+          <ol class="sample-filter-list">
+            <li>Java</li>
+            <li>JavaScript</li>
+            <li>Rust</li>
+            <li>C#</li>
+            <li>Swift</li>
+          </ol>
+        </div>
+        <button data-event-target="filter">Javaから始まる要素を抽出する</button>
+        <div contenteditable="plaintext-only" class="output"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <p>参考サイト</p>
+    <ul>
+      <li><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Iterator">Iterator</a></li>
+      <li><a href="https://web.dev/blog/baseline-iterator-helpers?hl=ja">イテレータ ヘルパーがベースラインに新規に追加されました</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
