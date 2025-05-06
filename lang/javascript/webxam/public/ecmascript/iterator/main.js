@@ -11,16 +11,47 @@ async function* streamToImageChunks(stream, chunkSize = 1024 * 5) {
       if (done) {
         break
       }
-      // 全てのチャンクを返す場合
-      // yield value // Uint8Array のチャンクを yield
+      // サイズを指定せずにチャンクを返す。全てのチャンクが一度に返されるわけではない。
+      yield value // Uint8Array のチャンクを yield
 
-      // 5KBごとに分割して yield
+      // chunkSizeごとに分割して yield
+      // 大きな画像の場合ブラウザが固まってしまう。
+      // if (value) {
+      //   for (let i = 0; i < value.byteLength; i += chunkSize) {
+      //     const chunk = value.slice(i, i + chunkSize)
+      //     yield chunk
+      //   }
+      // }      
+    }
+  } finally {
+    reader.releaseLock()
+  }
+}
+
+/**
+ * @deprecated チャンクを分けて読み込む。しかしこちらもブラウザが固まってエラーになってしまう。
+ */
+async function* streamToImageChunksBySizeBYOB(stream, chunkSize = 1024 * 5) {
+  const reader = stream.getReader({ mode: 'byob' })
+  let buffer = new ArrayBuffer(chunkSize)
+  let view = new Uint8Array(buffer)
+
+  try {
+    while (true) {
+      const { done, value } = await reader.read(view)
+      if (done) {
+        break;
+      }
+
       if (value) {
-        for (let i = 0; i < value.byteLength; i += chunkSize) {
-          const chunk = value.slice(i, i + chunkSize)
-          yield chunk
-        }
-      }      
+        yield value.slice(0, value.byteLength) // 実際に読み込まれた部分だけ yield
+      }
+
+      // 次の読み込みのために同じバッファを再利用 (必要に応じて新しいバッファを作成)
+      if (view.byteLength !== chunkSize) {
+        buffer = new ArrayBuffer(chunkSize)
+        view = new Uint8Array(buffer)
+      }
     }
   } finally {
     reader.releaseLock()
@@ -33,6 +64,7 @@ async function iterateWithGenerator(file, callback) {
   try {
     const stream = file.stream()
     const generator = await streamToImageChunks(stream)
+    // const generator = await streamToImageChunksBySizeBYOB(stream)
 
     // TODO: イテレータヘルパーメソッドを使うサンプルコード追加
 
@@ -71,22 +103,25 @@ const funcs = {
   },
   generateIterator: async () => {
     const file = document.getElementById('target-image').files[0]
-    console.log(file)
     const output = document.querySelector('.generator-sample .output')
 
     /**
-     * 結局チャンクを全てメモリ上に抱えているのであまり旨味がない。
+     * 結局チャンクを全てメモリ上（receivedChunks）に抱えているのであまり旨味がない。
      * ただしストリームを使うことでファイルの読み込みが完了するまで待たずに
-     * 画像を表示することができる。
-     * 返されるチャンクごとに画像を描画するには描画位置を正しく算出してやり必要がある。
+     * 画像を描画し始めることはできる。
+     * 返されるチャンクごとに画像を追加していくように描画するには描画位置を正しく算出してやる必要がある。
      */
     const receivedChunks = []
     await iterateWithGenerator(file, chunk => {
+      console.log(chunk) // チャンクの数だけログ出力される。
+
       receivedChunks.push(chunk)
       const currentBlob = new Blob(receivedChunks, { type: file.type })
       const imageUrl = URL.createObjectURL(currentBlob)
       const img = new Image()
       img.onload = () => {
+        img.width = img.naturalWidth
+        img.height = img.naturalHeight
         URL.revokeObjectURL(imageUrl)
       }
       img.src = imageUrl
