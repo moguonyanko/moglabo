@@ -40,7 +40,10 @@
         <h3>ジェネレータへの適用</h3>
         <label for="target-image">画像選択</label>
         <input id="target-image" type="file" accept="image/*" />
+        <label for="divisor">画像を</label>
+        <input id="divisor" type="number" value="9" min="1" required />分の1で表示
         <button data-event-target="generateIterator">run</button>
+        <div class="info"></div>
         <div class="output"></div>
       </section>
     </section>

@@ -2,16 +2,34 @@
  * @fileoverview Iterator関連のAPIを試すサンプルコード
  */
 
+/**
+ * ジェネレータを用いたイテレーションが終了した時の情報をユーザーに提供するための例外クラス
+ * 例外を使わずに表現できるのが理想だが、ここではPythonなどを真似て例外で表現している。
+ */
+class StopItration extends Error {
+  constructor(message, { count, allSize }) {
+    super(message)
+    this.name = 'StopIteration'
+    this.count = count
+    this.allSize = allSize
+  }
+}
+
 async function* streamToImageChunks(stream, chunkSize = 1024 * 5) {
   const reader = stream.getReader()
 
   try {
+    let count = 0
+    let allSize = 0
     while (true) {
       const { done, value } = await reader.read()
       if (done) {
         break
       }
+      count += 1
+      allSize += value.byteLength
       // サイズを指定せずにチャンクを返す。全てのチャンクが一度に返されるわけではない。
+      // いくつのチャンクに分割されるかはその時によって変わる。
       yield value // Uint8Array のチャンクを yield
 
       // chunkSizeごとに分割して yield
@@ -23,6 +41,10 @@ async function* streamToImageChunks(stream, chunkSize = 1024 * 5) {
       //   }
       // }      
     }
+    throw new StopItration('ストリームの読み込みが完了しました。', {
+      count,
+      allSize
+    })
   } finally {
     reader.releaseLock()
   }
@@ -40,7 +62,7 @@ async function* streamToImageChunksBySizeBYOB(stream, chunkSize = 1024 * 5) {
     while (true) {
       const { done, value } = await reader.read(view)
       if (done) {
-        break;
+        break
       }
 
       if (value) {
@@ -60,6 +82,13 @@ async function* streamToImageChunksBySizeBYOB(stream, chunkSize = 1024 * 5) {
 
 // DOM
 
+const throwError = detail => {
+  const evt = new CustomEvent('iteratorerror', {
+    detail
+  })
+  window.dispatchEvent(evt)
+}
+
 async function iterateWithGenerator(file, callback) {
   try {
     const stream = file.stream()
@@ -73,10 +102,11 @@ async function iterateWithGenerator(file, callback) {
       callback(chunk)
     }
   } catch (err) {
-    const evt = new CustomEvent('iteratorerror', {
-      detail: `ストリームの取得に失敗しました: ${err.message}`
-    })
-    window.dispatchEvent(evt)
+    if (err instanceof StopItration) {
+      callback(err)
+    } else {
+      throwError(`ストリームの取得に失敗しました: ${err.message}`)
+    }
   }
 }
 
@@ -103,25 +133,41 @@ const funcs = {
   },
   generateIterator: async () => {
     const file = document.getElementById('target-image').files[0]
+    if (!file) {
+      throwError('ファイルが選択されていません。')
+      return
+    }
+    const divisor = Math.sqrt(parseInt(document.getElementById('divisor').value))
+    if (isNaN(divisor) || divisor < 1) {
+      throwError('最小値は1以上の整数でなければなりません。')
+      return
+    }
     const output = document.querySelector('.generator-sample .output')
+    output.innerHTML = ''
+    const info = document.querySelector('.generator-sample .info')
+    info.textContent = ''
 
     /**
-     * 結局チャンクを全てメモリ上（receivedChunks）に抱えているのであまり旨味がない。
+     * 結局チャンクを全てメモリ上（receivedChunks）に抱えているのでメモリ効率の点では利点がない。
      * ただしストリームを使うことでファイルの読み込みが完了するまで待たずに
-     * 画像を描画し始めることはできる。
+     * 画像を描画し始めることはできる。つまりプログレッシブな処理とネットワーク負荷軽減の点では効果がある。
      * 返されるチャンクごとに画像を追加していくように描画するには描画位置を正しく算出してやる必要がある。
      */
     const receivedChunks = []
     await iterateWithGenerator(file, chunk => {
-      console.log(chunk) // チャンクの数だけログ出力される。
+      if (chunk instanceof StopItration) {
+        const { count, allSize } = chunk
+        info.textContent = `ストリームの読み込みが完了しました。チャンク数: ${count}, サイズ: ${allSize}`
+        return
+      }
 
       receivedChunks.push(chunk)
       const currentBlob = new Blob(receivedChunks, { type: file.type })
       const imageUrl = URL.createObjectURL(currentBlob)
       const img = new Image()
       img.onload = () => {
-        img.width = img.naturalWidth
-        img.height = img.naturalHeight
+        img.width = img.naturalWidth / divisor
+        img.height = img.naturalHeight / divisor
         URL.revokeObjectURL(imageUrl)
       }
       img.src = imageUrl
