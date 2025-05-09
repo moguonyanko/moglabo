@@ -31,7 +31,6 @@
 **/*.class
 **/*.jar
 **/*-runtime
-**/*.vscode
 **/.rustc_info.json
 .gitignore.swp
 .env
