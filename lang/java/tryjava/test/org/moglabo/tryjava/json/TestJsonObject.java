@@ -2,7 +2,7 @@
 //DEPS jakarta.json:jakarta.json-api:2.1.3
 //DEPS org.eclipse.parsson:parsson:1.1.7
 
-package org.moglabo.tryjava;
+package test.org.moglabo.tryjava.json;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

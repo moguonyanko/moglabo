@@ -1,6 +1,6 @@
 //DEPS org.junit.jupiter:junit-jupiter-api:5.10.0
 
-package org.moglabo.tryjava;
+package test.org.moglabo.tryjava;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
