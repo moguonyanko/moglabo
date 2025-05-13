@@ -1,0 +1,18 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "JBang Run with Preview",
+            "type": "shell",
+            "command": "jbang",
+            "args": [
+                "--enable-preview",
+                "${file}"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

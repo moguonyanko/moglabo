@@ -1,3 +1,5 @@
+//DEPS org.junit.jupiter:junit-jupiter-api:5.10.0
+
 package test.org.moglabo.tryjava.concurrent;
 
 import java.util.*;
@@ -5,8 +7,8 @@ import java.util.concurrent.*;
 import java.util.concurrent.StructuredTaskScope.Subtask;
 import java.util.stream.*;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * ### 参考
