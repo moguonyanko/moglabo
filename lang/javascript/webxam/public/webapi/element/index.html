@@ -37,10 +37,14 @@
       <h2>ruby要素</h2>
       <p class="description">
         <ruby>
-          東京都千代田区外神田１<rp>(</rp><rt>とうきょうとみなとくそとかんだ</rt><rp>)</rp>
+          東京都千代田区外神田１<rp>(</rp>
+          <rt>とうきょうとみなとくそとかんだ</rt>
+          <rp>)</rp>
         </ruby>
         <ruby>
-          𩸽を𠮟る𠮷野家<rp>(</rp><rt>ほっけをしかるよしのや</rt><rp>)</rp>
+          𩸽を𠮟る𠮷野家<rp>(</rp>
+          <rt>ほっけをしかるよしのや</rt>
+          <rp>)</rp>
         </ruby>
       </p>
     </section>
@@ -132,6 +136,34 @@
       </div>
       <div class="output target-2"></div>
     </section>
+    <section>
+      <h2>requestClose()</h2>
+      <div class="sample-dialog-container">
+        <dialog id="favDialog">
+          <form method="dialog">
+            <button type="button" id="closeButton" aria-label="close" formnovalidate>
+              閉じる
+            </button>
+            <section>
+              <label for="favlang">好きな言語:</label>
+              <select id="favlang" name="favlang">
+                <option selected></option>
+                <option>Java</option>
+                <option>Python</option>
+                <option>JavaScript</option>
+              </select>
+            </section>
+            <input id="closeableDialog" type="checkbox" checked />
+            <label for="closeableDialog">type=submitの確認ボタンで閉じられる</label>
+            <menu>
+              <button type="reset">元に戻す</button>
+              <button type="submit">確認</button>
+            </menu>
+          </form>
+        </dialog>
+        <button data-event-target="showDialog">ダイアログ表示</button>
+      </div>
+    </section>
   </main>
   <div class="dialogContainer">
     <dialog id="inertTestDialog">
@@ -144,11 +176,16 @@
     <ul>
       <li><a href="https://developer.chrome.com/blog/inert/">Introducing inert</a></li>
       <li><a href="https://web.dev/creative-list-styling/">Creative list styling</a></li>
-      <li><a href="https://developer.chrome.com/articles/scroll-driven-animations/">Animate elements on scroll with Scroll-driven animations</a></li>
+      <li><a href="https://developer.chrome.com/articles/scroll-driven-animations/">Animate elements on scroll with
+          Scroll-driven animations</a></li>
       <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/animate">Element: animate() method</a></li>
       <li><a href="https://developer.chrome.com/docs/css-ui/exclusive-accordion">Exclusive Accordion</a></li>
-      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/showPicker">HTMLSelectElement: showPicker() method</a></li>
-      <li><a href="https://developer.chrome.com/blog/movebefore-api?hl=ja">moveBefore() を使用して DOM ミューテーション中に状態を保持する</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/showPicker">HTMLSelectElement:
+          showPicker() method</a></li>
+      <li><a href="https://developer.chrome.com/blog/movebefore-api?hl=ja">moveBefore() を使用して DOM ミューテーション中に状態を保持する</a>
+      </li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/requestClose">HTMLDialogElement:
+          requestClose() method</a></li>
     </ul>
   </footer>
 </body>

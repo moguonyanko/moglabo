@@ -59,6 +59,36 @@ const funcs = {
   },
   doInsertBefore: () => {
     toggleMoveTarget('insertBefore')
+  },
+  showDialog: () => {
+    const dialog = document.getElementById('favDialog')
+    dialog.showModal()
+
+    const submitButton = dialog.querySelector(`button[type=submit]`)
+    dialog.addEventListener('cancel', event => {
+      const closeableDialog = document.getElementById('closeableDialog').checked
+      if (!closeableDialog) {
+        event.preventDefault()
+      }
+    })
+
+    const closeButton = dialog.querySelector('#closeButton')
+    closeButton.addEventListener('click', () => {
+      const selectedLang = dialog.querySelector('#favlang').value
+      if (selectedLang) {
+        // closeイベントを発生させてからダイアログを閉じることができる。
+        dialog.requestClose("request close")
+      } else {
+        alert("Please select a language.")
+      }
+    })
+
+    dialog.addEventListener('close', event => {
+      console.log(event)
+      if (event.reason) {
+        console.log(`Dialog closed with reason: ${event.reason}`)
+      }
+    })
   }
 };
 
