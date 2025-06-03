@@ -88,9 +88,9 @@ const funcs = {
       }
       const baseMessage = 'cancelイベント発生'
       const selectedLang = dialog.querySelector('#favlang').value
-      if (selectedLang) {
+      if (selectedLang) { // cancelせずダイアログのcloseへ移行する。
         appendCancelEventMessage(selectedLang)
-      } else {
+      } else { // ダイアログのcloseをcancelする。
         event.preventDefault()
         appendCancelEventMessage('言語を何か選択して下さい')
         dialog.dispatchEvent(new Event('dialogcloseerror', {
