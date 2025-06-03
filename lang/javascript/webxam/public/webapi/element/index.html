@@ -136,7 +136,9 @@
       </div>
       <div class="output target-2"></div>
     </section>
-    <section>
+    <section class="request-close">
+      <p class="description">HTMLDialogElement.requestClose()メソッドはダイアログを閉じるためのメソッドである。
+        ダイアログが閉じられるとcloseイベントが発火する。</p>
       <h2>requestClose()</h2>
       <div class="sample-dialog-container">
         <dialog id="favDialog">
@@ -153,8 +155,6 @@
                 <option>JavaScript</option>
               </select>
             </section>
-            <input id="closeableDialog" type="checkbox" checked />
-            <label for="closeableDialog">type=submitの確認ボタンで閉じられる</label>
             <menu>
               <button type="reset">元に戻す</button>
               <button type="submit">確認</button>
@@ -162,6 +162,7 @@
           </form>
         </dialog>
         <button data-event-target="showDialog">ダイアログ表示</button>
+        <div class="output"></div>
       </div>
     </section>
   </main>

@@ -45,10 +45,10 @@ const funcs = {
       // { transform: 'rotate(0) scale(1)' }, // 開始状態の指定は必須ではない。
       { transform: 'rotate(360deg) scale(0)' }
     ],
-    {
-      duration: 1000,
-      iterations: 1
-    })
+      {
+        duration: 1000,
+        iterations: 1
+      })
   },
   doPick: () => {
     const sourceSelect = document.querySelector('select[data-event-pick-source="doPick"]')
@@ -61,33 +61,57 @@ const funcs = {
     toggleMoveTarget('insertBefore')
   },
   showDialog: () => {
+    const output = document.querySelector('.request-close .output')
+    output.textContent = ''
+
     const dialog = document.getElementById('favDialog')
     dialog.showModal()
 
-    const submitButton = dialog.querySelector(`button[type=submit]`)
+    const appendDialogEventMessage = message => {
+      const langInfo = document.createTextNode(message)
+      output.appendChild(langInfo)
+      output.appendChild(document.createElement('br'))
+    }
+
+    const appendCancelEventMessage = message => {
+      appendDialogEventMessage(`cancelイベント発生:${message}`)
+    }
+
+    // submit以外が指定されたボタンをクリックした時に、requestCloseが呼び出されると
+    // cancelイベントが発生する。ただし2025/06/03時点のFirefoxNightlyでは、
+    // cancelイベントは発生しない。
+    // cancelするかどうかを決定できるイベントなのでcancelableイベントの方が妥当な名称なのではないか？
     dialog.addEventListener('cancel', event => {
-      const closeableDialog = document.getElementById('closeableDialog').checked
-      if (!closeableDialog) {
+      console.log(event)
+      if (!event.cancelable) {
+        return
+      }
+      const baseMessage = 'cancelイベント発生'
+      const selectedLang = dialog.querySelector('#favlang').value
+      if (selectedLang) {
+        appendCancelEventMessage(selectedLang)
+      } else {
         event.preventDefault()
+        appendCancelEventMessage('言語を何か選択して下さい')
+        dialog.dispatchEvent(new Event('dialogcloseerror', {
+          detail: {
+            message: '言語を何か選択して下さい'
+          }
+        }))
       }
     })
 
+    // dialog.getElementByIdは未定義である。
     const closeButton = dialog.querySelector('#closeButton')
     closeButton.addEventListener('click', () => {
-      const selectedLang = dialog.querySelector('#favlang').value
-      if (selectedLang) {
-        // closeイベントを発生させてからダイアログを閉じることができる。
-        dialog.requestClose("request close")
-      } else {
-        alert("Please select a language.")
-      }
+      // cancelイベントを発生させた後、closeイベントを発生させてダイアログを閉じることができる。
+      // ただし引数に渡した値がcloseイベントに渡されることはない。
+      dialog.requestClose("request close")
     })
 
     dialog.addEventListener('close', event => {
       console.log(event)
-      if (event.reason) {
-        console.log(`Dialog closed with reason: ${event.reason}`)
-      }
+      appendDialogEventMessage('closeイベント完了')
     })
   }
 };
@@ -101,6 +125,10 @@ const init = () => {
         funcs[eventTarget]();
       }
     }
+
+    window.addEventListener('dialogcloseerror', event => {
+      alert(event.detail.message)
+    })
   });
 
   // TODO: beforematchイベントを発生させることができていない。
