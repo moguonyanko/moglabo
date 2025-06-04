@@ -141,26 +141,7 @@
         ダイアログが閉じられるとcloseイベントが発火する。</p>
       <h2>requestClose()</h2>
       <div class="sample-dialog-container">
-        <dialog id="favDialog">
-          <form method="dialog">
-            <button type="button" id="closeButton" aria-label="close" formnovalidate>
-              閉じる
-            </button>
-            <section>
-              <label for="favlang">好きな言語:</label>
-              <select id="favlang" name="favlang">
-                <option selected></option>
-                <option>Java</option>
-                <option>Python</option>
-                <option>JavaScript</option>
-              </select>
-            </section>
-            <menu>
-              <button type="reset">元に戻す</button>
-              <button type="submit">確認</button>
-            </menu>
-          </form>
-        </dialog>
+        <fav-lang-dialog id="favDialog"></fav-lang-dialog>
         <button data-event-target="showDialog">ダイアログ表示</button>
         <div class="output"></div>
       </div>
@@ -189,6 +170,29 @@
           requestClose() method</a></li>
     </ul>
   </footer>
+
+  <template id="fav-lang-dialog">
+    <dialog id="favDialog">
+      <form method="dialog">
+        <button type="button" id="closeButton" aria-label="close" formnovalidate>
+          閉じる
+        </button>
+        <section>
+          <label for="favlang">好きな言語:</label>
+          <select id="favlang" name="favlang">
+            <option selected></option>
+            <option>Java</option>
+            <option>Python</option>
+            <option>JavaScript</option>
+          </select>
+        </section>
+        <menu>
+          <button type="reset">元に戻す</button>
+          <button type="submit">確認</button>
+        </menu>
+      </form>
+    </dialog>
+  </template>
 </body>
 
 </html>
