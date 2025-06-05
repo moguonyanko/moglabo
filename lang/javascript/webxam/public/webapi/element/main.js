@@ -34,7 +34,14 @@ class FavLangDialog extends HTMLElement {
     }
   }
 
-  static createCustomDialogEvent({ type, value, reason }) {
+  /**
+   * ダイアログのCustomEventを作成するためのメソッド。
+   * クラス外から参照される必要がないためprivateとして宣言している。
+   * @param {Object} type, value, reasonを含むオブジェクト
+   * typeはイベントの名称、valueは選択された言語、reasonはダイアログ終了時のエラー原因です。
+   * @returns CustomEvent
+   */
+  static #createCustomDialogEvent({ type, value, reason }) {
     return new CustomEvent(`dialog${type}`, {
       composed: true,
       bubbles: true,
@@ -64,7 +71,7 @@ class FavLangDialog extends HTMLElement {
   }
 
   connectedCallback() {
-    this.dispatchEvent(FavLangDialog.createCustomDialogEvent({
+    this.dispatchEvent(FavLangDialog.#createCustomDialogEvent({
       type: 'append'
     }))
 
@@ -81,13 +88,13 @@ class FavLangDialog extends HTMLElement {
       const baseMessage = 'cancelイベント発生'
       const selectedLang = dialog.querySelector('#favlang').value
       if (selectedLang) { // cancelせずダイアログのcloseへ移行する。
-        this.dispatchEvent(FavLangDialog.createCustomDialogEvent({
+        this.dispatchEvent(FavLangDialog.#createCustomDialogEvent({
           type: 'closestart',
           value: selectedLang
         }))
       } else { // ダイアログのcloseをcancelする。
         event.preventDefault()
-        this.dispatchEvent(FavLangDialog.createCustomDialogEvent({
+        this.dispatchEvent(FavLangDialog.#createCustomDialogEvent({
           type: 'closecancel',
           reason: '言語を選択してください'
         }))
@@ -103,14 +110,14 @@ class FavLangDialog extends HTMLElement {
     })
 
     dialog.addEventListener('close', event => {
-      this.dispatchEvent(FavLangDialog.createCustomDialogEvent({
+      this.dispatchEvent(FavLangDialog.#createCustomDialogEvent({
         type: 'closeend'
       }))
     })
   }
 
   disconnectedCallback() {
-    this.dispatchEvent(FavLangDialog.createCustomDialogEvent({
+    this.dispatchEvent(FavLangDialog.#createCustomDialogEvent({
       type: 'remove'
     }))
   }

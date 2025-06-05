@@ -141,7 +141,7 @@
       <p class="description">HTMLDialogElement.requestClose()メソッドはcancelイベントを経由してダイアログを閉じるためのメソッドである。
         cancelイベント内でダイアログを閉じるかどうかの判定ができる。</p>
       <p>ダイアログが閉じられるとcloseイベントが発生する。</p>
-      <p>type=submitのbuttonを押した時はcancelイベントを発生させることができない。</p>
+      <p>type=submitのbuttonを押した時はcancelイベントを発生させることができない。requestCloseを使う方が柔軟にダイアログ終了時の処理を制御できる。</p>
       <div class="sample-dialog-container">
         <button data-event-target="showDialog">ダイアログ表示</button>
         <div class="output"></div>
