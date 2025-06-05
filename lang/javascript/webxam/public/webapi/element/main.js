@@ -30,18 +30,19 @@ class FavLangDialog extends HTMLElement {
       const clone = template.content.cloneNode(true)
       shadow.appendChild(clone)
     } else {
-      console.warn('fav-lang-dialog template not found')
+      throw new Error('Template for fav-lang-dialog not found')
     }
   }
 
-  appendDialogEventMessage(message) {
-    const langInfo = document.createTextNode(message)
-    this.output.appendChild(langInfo)
-    this.output.appendChild(document.createElement('br'))
-  }
-
-  appendCancelEventMessage(message) {
-    this.appendDialogEventMessage(`cancelイベント発生:${message}`)
+  static createCustomDialogEvent({ type, value, reason }) {
+    return new CustomEvent(`dialog${type}`, {
+      composed: true,
+      bubbles: true,
+      detail: {
+        value,
+        reason
+      }
+    })
   }
 
   // built-inのCustomElementではないので、showModalは独自に実装する必要がある。
@@ -58,29 +59,17 @@ class FavLangDialog extends HTMLElement {
     if (dialog) {
       dialog.showModal()
     } else {
-      console.error('Dialog element not found in shadow DOM')
+      throw new Error('Dialog element not found in shadow DOM')
     }
   }
 
-  // close() {
-  //   const dialog = this.shadowRoot.querySelector('dialog')
-  //   if (dialog) {
-  //     dialog.close()
-  //   } else {
-  //     console.error('Dialog element not found in shadow DOM')
-  //   }
-  // }
-
-  // requestClose(reason) {
-  //   const dialog = this.shadowRoot.querySelector('dialog')
-  //   if (dialog) {
-  //     dialog.requestClose(reason)
-  //   } else {
-  //     console.error('Dialog element not found in shadow DOM')
-  //   }
-  // }
-
   connectedCallback() {
+    // TODO: ここでイベントを委譲しても、このCustomElementへのイベントリスナー登録が間に合っていないので
+    // CustomElement利用側でイベントを補足して処理を行うことはできない。利用側にイベントを伝える方法はあるか？
+    this.dispatchEvent(FavLangDialog.createCustomDialogEvent({
+      type: 'append'
+    }))
+
     const dialog = this.shadowRoot.querySelector('dialog')
 
     // submit以外が指定されたボタンをクリックした時に、requestCloseが呼び出されると
@@ -88,23 +77,21 @@ class FavLangDialog extends HTMLElement {
     // cancelイベントは発生しない。
     // cancelするかどうかを決定できるイベントなのでcancelableイベントの方が妥当な名称なのではないか？
     dialog.addEventListener('cancel', event => {
-      console.log(event)
       if (!event.cancelable) {
         return
       }
       const baseMessage = 'cancelイベント発生'
       const selectedLang = dialog.querySelector('#favlang').value
       if (selectedLang) { // cancelせずダイアログのcloseへ移行する。
-        this.appendCancelEventMessage(selectedLang)
+        this.dispatchEvent(FavLangDialog.createCustomDialogEvent({
+          type: 'closestart',
+          value: selectedLang
+        }))
       } else { // ダイアログのcloseをcancelする。
         event.preventDefault()
-        this.appendCancelEventMessage('言語を何か選択して下さい')
-        this.dispatchEvent(new CustomEvent('dialogcloseerror', {
-          composed: true,
-          bubbles: true,
-          detail: {
-            message: '言語を何か選択して下さい'
-          }
+        this.dispatchEvent(FavLangDialog.createCustomDialogEvent({
+          type: 'closecancel',
+          reason: '言語を選択してください'
         }))
       }
     })
@@ -118,22 +105,18 @@ class FavLangDialog extends HTMLElement {
     })
 
     dialog.addEventListener('close', event => {
-      console.log(event)
-      this.appendDialogEventMessage('closeイベント完了')
-
-      this.dispatchEvent(new CustomEvent('dialogclose', {
-        composed: true,
-        bubbles: true,
-        detail: {
-          message: 'ダイアログが閉じられました'
-        }
+      this.dispatchEvent(FavLangDialog.createCustomDialogEvent({
+        type: 'closeend'
       }))
     })
   }
 
   disconnectedCallback() {
-    // ダイアログが削除された時の処理
-    console.log('FavLangDialog disconnected')
+    // TODO: このCustomElementが削除されているため、removeイベントを委譲したところで
+    // CustomElement利用側でイベントを補足して処理を行うことはできない。行えるようにする方法はあるか？
+    this.dispatchEvent(FavLangDialog.createCustomDialogEvent({
+      type: 'remove'
+    }))
   }
 }
 
@@ -181,23 +164,50 @@ const funcs = {
   doInsertBefore: () => {
     toggleMoveTarget('insertBefore')
   },
-  showDialog: () => { 
+  showDialog: () => {
     const base = document.querySelector('.request-close')
     const output = base.querySelector('.output')
     output.textContent = ''
     const dialog = document.createElement('fav-lang-dialog')
+
+    const appendDialogEventMessage = message => {
+      const langInfo = document.createTextNode(message)
+      output.appendChild(langInfo)
+      output.appendChild(document.createElement('br'))
+    }
+
+    // appendは伝播してこない。
+    dialog.addEventListener('append', event => {
+      console.log(event)
+      appendDialogEventMessage('ダイアログが追加されました')
+    })
+
+    // removeは伝播してこない。
+    dialog.addEventListener('remove', event => {
+      console.log(event)
+      appendDialogEventMessage('ダイアログが削除されました')
+    })
+
+    dialog.addEventListener('dialogclosestart', event => {
+      console.log(event)
+      appendDialogEventMessage(`選択言語:${event.detail.value}`)
+      appendDialogEventMessage('ダイアログのcloseが開始されました')
+    })
+
+    dialog.addEventListener('dialogcloseend', event => {
+      console.log(event)
+      appendDialogEventMessage('ダイアログのcloseが完了しました')
+    })
+
+    dialog.addEventListener('dialogclosecancel', event => {
+      console.log(event)
+      const {reason} = event.detail
+      appendDialogEventMessage(`cancelイベント発生:${reason}`)
+      alert(reason)
+    })
+
     base.appendChild(dialog)
-    
-    dialog.addEventListener('dialogclose', event => {
-      base.removeChild(dialog)
-      // output.textContent = event.detail.message
-    })
-
-    dialog.addEventListener('dialogcloseerror', event => {
-      alert(event.detail.message)
-    })
-
-    dialog.showModal(output)
+    dialog.showModal()
   }
 };
 
