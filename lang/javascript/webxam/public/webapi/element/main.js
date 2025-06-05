@@ -64,8 +64,6 @@ class FavLangDialog extends HTMLElement {
   }
 
   connectedCallback() {
-    // TODO: ここでイベントを委譲しても、このCustomElementへのイベントリスナー登録が間に合っていないので
-    // CustomElement利用側でイベントを補足して処理を行うことはできない。利用側にイベントを伝える方法はあるか？
     this.dispatchEvent(FavLangDialog.createCustomDialogEvent({
       type: 'append'
     }))
@@ -112,8 +110,6 @@ class FavLangDialog extends HTMLElement {
   }
 
   disconnectedCallback() {
-    // TODO: このCustomElementが削除されているため、removeイベントを委譲したところで
-    // CustomElement利用側でイベントを補足して処理を行うことはできない。行えるようにする方法はあるか？
     this.dispatchEvent(FavLangDialog.createCustomDialogEvent({
       type: 'remove'
     }))
@@ -176,14 +172,12 @@ const funcs = {
       output.appendChild(document.createElement('br'))
     }
 
-    // appendは伝播してこない。
-    dialog.addEventListener('append', event => {
+    dialog.addEventListener('dialogappend', event => {
       console.log(event)
       appendDialogEventMessage('ダイアログが追加されました')
     })
 
-    // removeは伝播してこない。
-    dialog.addEventListener('remove', event => {
+    dialog.addEventListener('dialogremove', event => {
       console.log(event)
       appendDialogEventMessage('ダイアログが削除されました')
     })
@@ -196,6 +190,7 @@ const funcs = {
 
     dialog.addEventListener('dialogcloseend', event => {
       console.log(event)
+      base.removeChild(dialog)
       appendDialogEventMessage('ダイアログのcloseが完了しました')
     })
 
@@ -206,6 +201,8 @@ const funcs = {
       alert(reason)
     })
 
+    // dialogappendイベントを補足するにはイベントリスナーを追加した後にCustomElementを
+    // DOMに追加する必要がある。
     base.appendChild(dialog)
     dialog.showModal()
   }
