@@ -26,7 +26,7 @@ class GenaiRequest {
         detail: text
       }))
     }
-    return text  
+    return text
   }
 }
 
@@ -36,7 +36,7 @@ class GenaiTextRequest extends GenaiRequest {
   }
 
   async execute({ contents }) {
-    return await super.execute({ 
+    return await super.execute({
       contents: JSON.stringify({ contents }),
       contentType: 'application/json'
     })
@@ -71,20 +71,21 @@ const createGenaiRequest = ({ type, api_url }) => {
   }
 }
 
-const requestByFileUpload = async ({ api_url, selectedFile }) => {
+const requestByFileUpload = async ({ api_url, selectedFile, type = 'text' }) => {
   const contents = new FormData()
   contents.append('file', selectedFile.files[0])
   const response = await fetch(api_url, {
     method: 'POST',
     body: contents
   })
-  const text = await response.text()
-  if (!response.ok) {
+  const responseBody = await response[type]()
+  if (response.ok) {
+    return responseBody
+  } else {
     window.dispatchEvent(new CustomEvent('generationerror', {
-      detail: text
+      detail: await response.text() // エラー時はtypeによらずエラーメッセージを取得する。
     }))
   }
-  return text
 }
 
 const requestByText = async ({ api_url, contents }) => {
@@ -102,7 +103,7 @@ const requestByText = async ({ api_url, contents }) => {
 }
 
 const commonErrorHandler = e => {
-  alert(e.detail)  
+  alert(e.detail)
 }
 
 const initPage = ({ listeners, errrorHandler = commonErrorHandler }) => {
