@@ -71,6 +71,29 @@ const createGenaiRequest = ({ type, api_url }) => {
   }
 }
 
+/**
+ * dispatchEventではなくdispatchErrorが欲しい。エラーに処理を委譲した瞬間、
+ * 処理が中止されてほしいのである。
+ */
+const dispatchGenAIError = reason => {
+  window.dispatchEvent(new CustomEvent('generationerror', {
+    detail: reason
+  }))
+}
+
+class GenAIError extends Error {
+  constructor(reason) {
+    super(reason)
+  }
+}
+
+class GenAIHttpError extends GenAIError {
+  constructor(reason, statusCode) {
+    super(reason)
+    this.statusCode = statusCode
+  }
+}
+
 const requestByFileUpload = async ({ api_url, selectedFile, type = 'text' }) => {
   const contents = new FormData()
   contents.append('file', selectedFile.files[0])
@@ -121,5 +144,8 @@ export {
   createGenaiRequest,
   initPage,
   requestByText,
-  requestByFileUpload
+  requestByFileUpload,
+  dispatchGenAIError,
+  GenAIError,
+  GenAIHttpError
 }

@@ -3,7 +3,7 @@
  * 
  */
 
-import { initPage } from "../genai.js"
+import { initPage, GenAIHttpError, dispatchGenAIError } from "../genai.js"
 
 class GeneratedSpeech {
   #speech
@@ -47,21 +47,25 @@ const textfileToSpeech = async file => {
     body: contents
   })
   const contentType = response.headers.get('Content-Type')
-  if (!response.ok) {
-    throw new Error(`${response.statusText}:${await response.text()}`)
+  if (response.ok) {
+    return new GeneratedSpeech(await response.blob(), contentType)
+  } else {
+    throw new GenAIHttpError(response.statusText, response.status)
   }
-  return new GeneratedSpeech(await response.blob(), contentType)
 }
 
 const listeners = {
   sendDocument: async () => {
     const output = document.querySelector(`.generation-speech-by-one-person .output`)
     output.textContent = ''
-
     const selectedFile = document.getElementById('selected-file')
-    const genSpeech = await textfileToSpeech(selectedFile.files[0])
-    const audioElement = genSpeech.createSpeechElement()
-    output.appendChild(audioElement)    
+    try {
+      const genSpeech = await textfileToSpeech(selectedFile.files[0])
+      const audioElement = genSpeech.createSpeechElement()
+      output.appendChild(audioElement)    
+    } catch (error) {
+      dispatchGenAIError(error.message)
+    }
   }
 }
 
