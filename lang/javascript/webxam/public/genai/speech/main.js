@@ -3,28 +3,65 @@
  * 
  */
 
-import { initPage, requestByFileUpload } from "../genai.js"
+import { initPage } from "../genai.js"
+
+class GeneratedSpeech {
+  #speech
+  #contentType
+
+  constructor(speech, contentType) {
+    this.#speech = speech
+    this.#contentType = contentType
+  }
+
+  /**
+   * 生成されたスピーチを再生するためのaudio要素を返します。
+   * このメソッドをGeneratedSpeechクラス内に実装することで、
+   * #speechや#contentTypeに対するsetter、getterの作成を避けることができます。
+   * ただしcreateSpeechElementをGeneratedSpeechクラス外に静的な関数として実装することで、
+   * #speechや#contentTypeを参照し、変更しうる関数を減らすこともできます。
+   */
+  createSpeechElement() {
+    const url = URL.createObjectURL(this.#speech)
+    const audioElement = document.createElement('audio')
+    audioElement.controls = true
+    audioElement.onended = () => {
+      URL.revokeObjectURL(url) // 再度再生はできなくなる？
+    }
+
+    const sourceElement = document.createElement('source')
+    sourceElement.src = url
+    sourceElement.type = this.#contentType
+    audioElement.appendChild(sourceElement)
+
+    return audioElement
+  }
+}
+
+const textfileToSpeech = async file => {
+  const api_url = '/brest/genaiapi/generate/speech-generation/'
+  const contents = new FormData()
+  contents.append('file', file)
+  const response = await fetch(api_url, {
+    method: 'POST',
+    body: contents
+  })
+  const contentType = response.headers.get('Content-Type')
+  if (!response.ok) {
+    throw new Error(`${response.statusText}:${await response.text()}`)
+  }
+  return new GeneratedSpeech(await response.blob(), contentType)
+}
 
 const listeners = {
   sendDocument: async () => {
-    const baseClass = '.generation-speech-by-one-person'
-    const output = document.querySelector(`${baseClass} .output`)
+    const output = document.querySelector(`.generation-speech-by-one-person .output`)
     output.textContent = ''
 
     const selectedFile = document.getElementById('selected-file')
-    const api_url = '/brest/genaiapi/generate/speech-generation/'
-
-    const audio = await requestByFileUpload({
-      api_url, selectedFile, type: 'blob'
-    })
-    const url = URL.createObjectURL(audio)
-
-    const audioElement = document.createElement('audio')
-    audioElement.onload = () => {
-      URL.revokeObjectURL(url)
-      output.appendChild(audioElement)
-    }
-    audioElement.src = url
+    const genSpeech = await textfileToSpeech(selectedFile.files[0])
+    const audioElement = genSpeech.createSpeechElement()
+    output.appendChild(audioElement)    
   }
 }
 
