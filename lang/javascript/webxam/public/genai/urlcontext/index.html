@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>UrlContext</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>UrlContext</h1>
+  </header>
+
+  <main>
+    <section class="inspect-url-context-sample">
+      <h2>指定されたURLの内容を解析する</h2>
+      <label for="target-url">URL</label>
+      <input id="target-url" type="url" value="https://www.infoq.com/" required />
+      <label for="operation">URL</label>
+      <input id="operation" type="text" value="要約してください" required />
+      <button data-event-listener="sendUrl">run</button>
+      <div contenteditable="plaintext-only" class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://web.dev/blog/json-imports-baseline-newly-available?hl=en">JSON module scripts are now
+          Baseline Newly available</a>
+      </li>
+    </ul>
+  </footer>
+
+</body>
+
+</html>
