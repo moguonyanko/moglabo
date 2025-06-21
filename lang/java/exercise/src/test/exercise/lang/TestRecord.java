@@ -1,5 +1,7 @@
 package test.exercise.lang;
 
+import exercise.lang.record.EarthLocation;
+import exercise.lang.record.UnknownLocation;
 import java.time.LocalDateTime;
 
 import org.junit.Test;
@@ -161,4 +163,16 @@ public class TestRecord {
 //            assertEquals(2, y);
 //        }
 //    }
+    
+    @Test
+    public void インターフェースを実装したrecordから値を取得できる() {
+        var unknownLocation = new UnknownLocation();
+        var earthLocation = new EarthLocation(0.0d, 0.0d);
+        
+        assertNull(unknownLocation.getLongitude());
+        assertNull(unknownLocation.getLatitude());
+        assertNotNull(earthLocation.getLongitude());
+        assertNotNull(earthLocation.getLatitude());
+    }
+    
 }
