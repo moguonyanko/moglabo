@@ -38,6 +38,13 @@ const runTest = () => {
 
 // DOM
 
+async function* asyncTimeoutValueGenerator(items) {
+  for (const item of items) {
+    await new Promise(resolve => setTimeout(resolve, 500))
+    yield item
+  }
+}
+
 const funcs = {
   getArrayElement: () => {
     const elements = document.querySelectorAll('.sample-list li');
@@ -60,6 +67,17 @@ const funcs = {
     const output = document.querySelector(`*[data-event-output='arrayWith']`)
     // oldArrayに副作用が発生しておらず元の値がそのまま出力される。
     output.textContent = `${oldArray} -> ${newArray}`
+  },
+  fromAsyncExampleClicked: async () => {
+    const items = [1, 2, 3, 4, 5];
+    const promises = asyncTimeoutValueGenerator(items)
+
+    // for await ofを使わなくても、Array.fromAsyncを使うことで
+    // 非同期イテレータから配列を生成できる。
+    const result = await Array.fromAsync(promises)
+
+    const output = document.querySelector('.from-async-example .output')
+    output.textContent = result.join(',')
   }
 };
 
