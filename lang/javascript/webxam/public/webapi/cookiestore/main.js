@@ -45,8 +45,7 @@ const funcs = {
         cookie: await cm.getCookie('number'),
         query
       });
-      // Cookieの値が変化していなくてもchangeイベントは発生する。
-      // setが行われたかどうかだけで判定されているようだ。
+      // Cookieの値が変化していなければchangeイベントは発生しない。
       cm.store.addEventListener('change', event => {
         for (const cookie of event.changed) {
           if (cookie.name === name) {
