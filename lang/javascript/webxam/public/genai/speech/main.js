@@ -26,7 +26,7 @@ class GeneratedSpeech {
     const audioElement = document.createElement('audio')
     audioElement.controls = true
     audioElement.onended = () => {
-      URL.revokeObjectURL(url) // 再度再生はできなくなる？
+      URL.revokeObjectURL(url) // revokeObjectURLが実行されても音声を再度再生できる。
     }
 
     const sourceElement = document.createElement('source')

@@ -1,2 +1,6 @@
 @charset "UTF-8";
 
+textarea {
+  width: 20rem;
+  height: 10rem;
+}

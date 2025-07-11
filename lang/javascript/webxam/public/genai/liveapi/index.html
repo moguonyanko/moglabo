@@ -18,9 +18,11 @@
   </header>
 
   <main>
-    <section class="generation-speech-by-one-person">
+    <section class="generation-speech-by-text">
       <h2>テキストに対して音声による回答を生成する</h2>
-      <p>実装中</p>
+      <textarea id="user-input">少子高齢化対策について考えてください。</textarea>
+      <button data-event-listener="onsendmessagebutton">send</button>
+      <div contenteditable="plaintext-only" class="output"></div>
     </section>
   </main>
 
