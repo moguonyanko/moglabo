@@ -22,7 +22,9 @@ class GeneratedSpeech {
     return this.#url
   }
 
-  // 
+  // Explicit Resource Managementによりこのクラスのインスタンスが
+  // スコープを抜けた時に自動的に以下のメソッドが呼び出されてリソースが解放される。
+  // 参考:https://v8.dev/features/explicit-resource-management
   [Symbol.dispose]() {
     URL.revokeObjectURL(this.#url)
     console.log(`Revoked Audio URL:${this.#url}`)
