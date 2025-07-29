@@ -8,34 +8,39 @@ import { initPage, GenAIHttpError, dispatchGenAIError } from "../genai.js"
 class GeneratedSpeech {
   #speech
   #contentType
+  #url
 
   constructor(speech, contentType) {
     this.#speech = speech
     this.#contentType = contentType
   }
 
-  /**
-   * 生成されたスピーチを再生するためのaudio要素を返します。
-   * このメソッドをGeneratedSpeechクラス内に実装することで、
-   * #speechや#contentTypeに対するsetter、getterの作成を避けることができます。
-   * ただしcreateSpeechElementをGeneratedSpeechクラス外に静的な関数として実装することで、
-   * #speechや#contentTypeを参照し、変更しうる関数を減らすこともできます。
-   */
-  createSpeechElement() {
-    const url = URL.createObjectURL(this.#speech)
-    const audioElement = document.createElement('audio')
-    audioElement.controls = true
-    audioElement.onended = () => {
-      URL.revokeObjectURL(url) // revokeObjectURLが実行されても音声を再度再生できる。
+  get url() {
+    if (!this.#url) {
+      this.#url = URL.createObjectURL(this.#speech)
     }
-
-    const sourceElement = document.createElement('source')
-    sourceElement.src = url
-    sourceElement.type = this.#contentType
-    audioElement.appendChild(sourceElement)
-
-    return audioElement
+    return this.#url
   }
+
+  // 
+  [Symbol.dispose]() {
+    URL.revokeObjectURL(this.#url)
+    console.log(`Revoked Audio URL:${this.#url}`)
+    this.#url = null
+  }
+}
+
+const createSpeechElement = generatedSpeech => {
+  using genSpeech = generatedSpeech
+
+  const audioElement = document.createElement('audio')
+  audioElement.controls = true
+  const sourceElement = document.createElement('source')
+  sourceElement.src = genSpeech.url
+  sourceElement.type = generatedSpeech.contentType
+  audioElement.appendChild(sourceElement)
+
+  return audioElement
 }
 
 const textfileToSpeech = async file => {
@@ -61,8 +66,9 @@ const listeners = {
     const selectedFile = document.getElementById('selected-file')
     try {
       const genSpeech = await textfileToSpeech(selectedFile.files[0])
-      const audioElement = genSpeech.createSpeechElement()
-      output.appendChild(audioElement)    
+      // const audioElement = genSpeech.createSpeechElement()
+      const audioElement = createSpeechElement(genSpeech)
+      output.appendChild(audioElement)
     } catch (error) {
       dispatchGenAIError(error.message)
     }
