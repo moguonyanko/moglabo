@@ -22,23 +22,39 @@ class GeneratedSpeech {
     return this.#url
   }
 
+  get contentType() {
+    return this.#contentType
+  }
+
   // Explicit Resource Managementによりこのクラスのインスタンスが
   // スコープを抜けた時に自動的に以下のメソッドが呼び出されてリソースが解放される。
+  // 音声の再生が実行されるより前に呼び出されてしまうと音声が正常に再生できない状態になる。
+  // 一度音声を再生した後はBlobURLがrevokeされていても再度音声を再生できる。
   // 参考:https://v8.dev/features/explicit-resource-management
   [Symbol.dispose]() {
-    URL.revokeObjectURL(this.#url)
-    console.log(`Revoked Audio URL:${this.#url}`)
+    console.log(`Dispose Audio Blob URL:${this.#url}`)
+    URL.revokeObjectURL(this.#url) // nullを渡してもエラーにならない。
     this.#url = null
   }
 }
 
+/**
+ * 引数のGeneratedSpeechが保持する音声データを再生できるaudio要素を生成して返します。
+ * @param {GeneratedSpeech} generatedSpeech 
+ * @returns AudioElement
+ */
 const createSpeechElement = generatedSpeech => {
-  using genSpeech = generatedSpeech
-
   const audioElement = document.createElement('audio')
+
+  // 一度再生が終わったところでリソース解放を試みる。
+  // usingのスコープをonendedないに作成することで、onended終了時にリソース解放が行われるようにしている。
+  audioElement.onended = () => {
+    using _ = generatedSpeech
+  }
+
   audioElement.controls = true
   const sourceElement = document.createElement('source')
-  sourceElement.src = genSpeech.url
+  sourceElement.src = generatedSpeech.url
   sourceElement.type = generatedSpeech.contentType
   audioElement.appendChild(sourceElement)
 
@@ -67,9 +83,8 @@ const listeners = {
     output.textContent = ''
     const selectedFile = document.getElementById('selected-file')
     try {
-      const genSpeech = await textfileToSpeech(selectedFile.files[0])
-      // const audioElement = genSpeech.createSpeechElement()
-      const audioElement = createSpeechElement(genSpeech)
+      const generatedSpeech = await textfileToSpeech(selectedFile.files[0])
+      const audioElement = createSpeechElement(generatedSpeech)
       output.appendChild(audioElement)
     } catch (error) {
       dispatchGenAIError(error.message)
