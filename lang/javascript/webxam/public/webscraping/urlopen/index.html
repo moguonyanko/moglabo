@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>URLを指定して接続する</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>URLを指定して接続する</h1>
+  </header>
+
+  <main>
+    <section class="hello-webscraping">
+      <h2>Hello brest webscraping Context</h2>
+      <div contenteditable="plaintext-only" class="output"></div>
+    </section>
+    <section class="get-page-contents-sample">
+      <h2>指定したURLの内容を得る</h2>
+      <label for="page-context-target-url">URL</label>
+      <input id="page-context-target-url" value="http://localhost/" type="url" />
+      <button data-event-listener="onGetPageContentsClick">run</button>
+      <div contenteditable="plaintext-only" class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://www.oreilly.co.jp/books/9784814401222/">PythonによるWebスクレイピング 第3版</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
