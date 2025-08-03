@@ -5,6 +5,19 @@
 
 const BASE_URL = '/brest/webscraping/'
 
+class WSError extends Error {
+  constructor(message) {
+    super(message)
+  }
+}
+
+class WSHttpError extends WSError {
+  constructor(resourceName, status) {
+    super(`WebScraping API [${resourceName}] Http Error ${status}`)
+    this.resourceName = resourceName
+  }
+}
+
 const appendParams = (apiUrl, params) => {
   if (params && Object.keys(params).length > 0) {
     return `${apiUrl}?` + Object.entries(params)
@@ -21,12 +34,17 @@ const wsGet = async ({resourceName, params, propName}) => {
     method: 'GET'
   })
   if (!response.ok) {
-    throw new Error(`HTTP REQUEST ERROR:${response.statusText}`)
+    throw new WSHttpError(resourceName, response.status)
   }
   const json = await response.json()
   return json[propName]
 }
 
+const wsInit = (initFuncs) => {
+  Object.values(initFuncs).forEach(async listener => await listener())
+}
+
 export {
+  wsInit,
   wsGet
 }
