@@ -5,40 +5,41 @@
 
 import { wsInit, wsGet } from "../webscraping.js"
 
+const executeUrlAction = async ({ outputSelector, urlSelector,
+  resourceName, propName }) => {
+  const output = document.querySelector(outputSelector)
+  output.textContent = ''
+
+  const url = document.querySelector(urlSelector).value
+  if (!url) {
+    return
+  }
+  const contents = await wsGet({
+    resourceName,
+    params: {
+      url
+    },
+    propName
+  })
+  output.textContent = contents
+}
+
 const onClick = {
   onGetPageContentsClick: async () => {
-    const output = document.querySelector('.get-page-contents-sample .output')
-    output.textContent = ''
-
-    const url = document.getElementById('page-context-target-url').value
-    if (!url) {
-      return
-    }
-    const contents = await wsGet({
+    await executeUrlAction({
+      outputSelector: '.get-page-contents-sample .output',
+      urlSelector: '#page-context-target-url',
       resourceName: 'pagecontents',
-      params: {
-        url
-      },
       propName: 'contents'
     })
-    output.textContent = contents
   },
   onGetPageTitleClick: async () => {
-    const output = document.querySelector('.get-page-title-sample .output')
-    output.textContent = ''
-
-    const url = document.getElementById('page-title-target-url').value
-    if (!url) {
-      return
-    }
-    const title = await wsGet({
+    await executeUrlAction({
+      outputSelector: '.get-page-title-sample .output',
+      urlSelector: '#page-title-target-url',
       resourceName: 'pagetitle',
-      params: {
-        url
-      },
       propName: 'title'
     })
-    output.textContent = title
   }
 }
 
