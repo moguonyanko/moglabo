@@ -42,14 +42,19 @@ const onClick = {
     })
   },
   onGetImgSrcListClick: async () => {
-    const output = document.querySelector('.get-page-image-src-list .output')
+    const baseClass = '.get-page-image-src-list '
+    const output = document.querySelector(`${baseClass}.output`)
     output.textContent = ''
-    
-    const url = document.querySelector('.get-page-image-src-list .target-url').value
+
+    const url = document.querySelector(`${baseClass}.target-url`).value
+    const format =
+      document.querySelector(`${baseClass}.target-image-format`).value
+
     const srclist = await wsGet({
       resourceName: 'pageimgsrclist',
       params: {
-        url
+        url,
+        format
       },
       propName: 'imgsrclist'
     })
