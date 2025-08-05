@@ -1,6 +1,5 @@
 /**
- * @fileoverview WebスクレイピングのAPIを提供するWebサービスが
- * 正常に動作しているかどうかを確認するためのスクリプト
+ * @fileoverview 指定したURLで参照されるページの内容を取得するサンプルスクリプトです。
  */
 
 import { wsInit, wsGet } from "../webscraping.js"
