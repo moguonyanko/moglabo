@@ -40,6 +40,28 @@ const onClick = {
       resourceName: 'pagetitle',
       propName: 'title'
     })
+  },
+  onGetImgSrcListClick: async () => {
+    const output = document.querySelector('.get-page-image-src-list .output')
+    output.textContent = ''
+    
+    const url = document.querySelector('.get-page-image-src-list .target-url').value
+    const srclist = await wsGet({
+      resourceName: 'pageimgsrclist',
+      params: {
+        url
+      },
+      propName: 'imgsrclist'
+    })
+    const fragment = srclist.map(src => {
+      const img = new Image()
+      img.src = src
+      return img
+    }).reduce((acc, current) => {
+      acc.appendChild(current)
+      return acc
+    }, document.createDocumentFragment())
+    output.appendChild(fragment)
   }
 }
 
