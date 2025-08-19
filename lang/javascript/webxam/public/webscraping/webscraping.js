@@ -28,7 +28,7 @@ const appendParams = (apiUrl, params) => {
   }
 }
 
-const wsGet = async ({resourceName, params, propName}) => {
+const wsGet = async ({ resourceName, params, propName }) => {
   const apiUrl = `${BASE_URL}/${resourceName}/`
   const response = await fetch(appendParams(apiUrl, params), {
     method: 'GET'
@@ -44,7 +44,29 @@ const wsInit = (initFuncs) => {
   Object.values(initFuncs).forEach(async listener => await listener())
 }
 
+// DOM
+
+const executeGetAction = async ({ outputSelector, urlSelector,
+  resourceName, propName }) => {
+  const output = document.querySelector(outputSelector)
+  output.textContent = ''
+
+  const url = document.querySelector(urlSelector).value
+  if (!url) {
+    return
+  }
+  const contents = await wsGet({
+    resourceName,
+    params: {
+      url
+    },
+    propName
+  })
+  output.textContent = contents
+}
+
 export {
   wsInit,
-  wsGet
+  wsGet,
+  executeGetAction
 }

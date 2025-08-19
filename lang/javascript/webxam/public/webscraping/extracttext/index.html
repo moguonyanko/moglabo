@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>テキスト抽出</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>テキスト抽出</h1>
+  </header>
+
+  <main>
+    <section class="extract-image-from-image-url-sample">
+      <h2>指定したURLの内容を得る</h2>
+      <label for="extract-image-from-image-url">URL</label>
+      <input id="extract-image-from-image-url" value="http://localhost/webxam/image/hello.png" type="url" />
+      <button data-event-listener="onGetTextFromImageUrl">run</button>
+      <div contenteditable="plaintext-only" class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://www.oreilly.co.jp/books/9784814401222/">PythonによるWebスクレイピング 第3版</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
