@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../../common.css" />
     <link rel="stylesheet" href="exam.css" />
+    <script type="module" src="exam.js"></script>
 </head>
 
 <body>
@@ -28,6 +29,16 @@
             <button data-event-target="constructUrl">run</button>
             <div class="output"></div>
         </section>
+        <section class="example">
+            <h2>URLパターン</h2>
+            <label for="test-target-url">test url</label>
+            <input id="test-target-url" class="param" type="url" data-param-name="url" value="https://localhost/samplesite/" />
+            <select data-param-name="pathname">
+                <option class="param" value="/books/:id" selected>/books/:id</option>
+            </select>
+            <button data-event-target="testUrl">test</button>
+            <div class="output"></div>
+        </section>
     </main>
     <footer>
         <p>参考サイト</p>
@@ -35,9 +46,9 @@
             <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/URL">URL(MDN)</a></li>
             <li><a href="https://nodejs.org/dist/latest-v12.x/docs/api/">Node.js v12.2.0 Documentation</a></li>
             <li><a href="https://www.w3schools.com/nodejs/nodejs_http.asp">w3schools</a></li>
+            <li><a href="https://developer.mozilla.org/ja/docs/Web/API/URL_Pattern_API">URL パターン API</a></li>
         </ul>
     </footer>
-    <script type="module" src="exam.js"></script>
 </body>
 
 </html>

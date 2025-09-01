@@ -36,6 +36,14 @@ const funcs = {
         } catch (err) {
             return err.message;
         }
+    },
+    testUrl: ({ url, pathname }) => {
+        const pattern = new URLPattern({ pathname })
+        
+        return JSON.stringify({
+            test: pattern.test(url),
+            exec: pattern.exec(url).pathname.groups
+        })
     }
 };
 
