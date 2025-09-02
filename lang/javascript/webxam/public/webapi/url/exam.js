@@ -40,8 +40,15 @@ const funcs = {
     testUrl: ({ url, protocol, username, password, hostname,
         port, pathname, search, hash }) => {
         const pattern = new URLPattern({
-            protocol, username, password, hostname,
-            port, pathname, search, hash
+            protocol,
+            username,
+            password,
+            hostname,
+            port,  // 443でマッチさせるにはprotocolがhttpである必要がある。理由は不明。
+            // pathnameに/:testpathなどを指定した場合、パスに続く文字があるとマッチしない。*にすればマッチする。
+            pathname, 
+            search,
+            hash
         }, {
             ignoreCase: true
         })

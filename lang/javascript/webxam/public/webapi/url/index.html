@@ -33,25 +33,25 @@
             <h2>URLパターン</h2>
             <label for="test-target-url">test url</label>
             <input id="test-target-url" class="param" type="url" data-param-name="url"
-                value="https://testuser:testpass@localhost/testpath/?myshop=testshop#infomation" />
+                value="http://testuser:testpass@localhost:443/testpath/index.html?myshop=testshop#infomation" />
             <div class="url-patern-parameters">
                 <label>プロトコル
                     <input type="text" class="param" data-param-name="protocol" value="http{s}?" />
                 </label>
                 <label>ユーザー名
-                    <input type="text" class="param" data-param-name="username" value="testuser" />
+                    <input type="text" class="param" data-param-name="username" value=":testuser" />
                 </label>
                 <label>パスワード
-                    <input type="text" class="param" data-param-name="password" value="testpass" />
+                    <input type="text" class="param" data-param-name="password" value=":testpass" />
                 </label>
                 <label>ホスト名
-                    <input type="text" class="param" data-param-name="hostname" value="localhost" />
+                    <input type="text" class="param" data-param-name="hostname" value=":localhost" />
                 </label>
                 <label>ポート番号
                     <input type="text" class="param" data-param-name="port" value=":port(80|443)" />
                 </label>
                 <label>Path
-                    <input type="text" class="param" data-param-name="pathname" value="/:testpath" />
+                    <input type="text" class="param" data-param-name="pathname" value="*" />
                 </label>
                 <label>Search
                     <input type="text" class="param" data-param-name="search" value="*" />
