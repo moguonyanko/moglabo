@@ -37,12 +37,21 @@ const funcs = {
             return err.message;
         }
     },
-    testUrl: ({ url, pathname }) => {
-        const pattern = new URLPattern({ pathname })
-        
+    testUrl: ({ url, protocol, username, password, hostname,
+        port, pathname, search, hash }) => {
+        const pattern = new URLPattern({
+            protocol, username, password, hostname,
+            port, pathname, search, hash
+        }, {
+            ignoreCase: true
+        })
+
+        const testResult = pattern.test(url),
+            execResult = pattern.exec(url)
+
         return JSON.stringify({
             test: pattern.test(url),
-            exec: pattern.exec(url).pathname.groups
+            exec: execResult?.pathname ? execResult.pathname.groups : ""
         })
     }
 };

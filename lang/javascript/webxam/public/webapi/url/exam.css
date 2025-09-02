@@ -8,3 +8,8 @@ button {
     display: flex;
     flex-direction: column;
 }
+
+.url-patern-parameters {
+    display: flex;
+    flex-flow: column;
+}
