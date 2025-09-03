@@ -52,6 +52,7 @@ const funcs = {
             // *にすればマッチする。例えばindex.htmlまでマッチさせたいなら、:/testpath/index.htmlまで
             // 記述すること。search（クエリ文字列）やhash（フラグメント識別子）
             pathname,
+            // searchとhashも意図通りにはマッチしない。
             search,
             hash,
             // 以下のようなプロパティは存在しない。
@@ -65,13 +66,21 @@ const funcs = {
             ignoreCase
         })
 
-        const testResult = pattern.test(url),
-            execResult = pattern.exec(url)
-
-        return JSON.stringify({
-            test: pattern.test(url),
-            exec: execResult?.pathname ? execResult.pathname.groups : ""
-        })
+        if (pattern.test(url)) {
+            const execResult = pattern.exec(url)
+            console.log(execResult)
+            const groups = Object.keys(execResult).map(key => {
+                return {
+                    [key]: {
+                        "input": execResult[key].input,
+                        "groups": execResult[key].groups
+                    }
+                }
+            })
+            return JSON.stringify(groups)
+        } else {
+            return JSON.stringify({})
+        }
     }
 };
 
@@ -98,6 +107,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 if (typeof func === 'function') {
                     const params = getParams(root);
                     const output = root.querySelector('.output');
+                    output.textContent = ''
                     try {
                         const result = await func(params);
                         output.appendChild(document.createTextNode(result));
