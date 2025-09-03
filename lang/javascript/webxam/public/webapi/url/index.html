@@ -51,7 +51,7 @@
                     <input type="text" class="param" data-param-name="port" value=":port(80|443)" />
                 </label>
                 <label>Path
-                    <input type="text" class="param" data-param-name="pathname" value="*" />
+                    <input type="text" class="param" data-param-name="pathname" value="/:testpath/index.html" />
                 </label>
                 <label>Search
                     <input type="text" class="param" data-param-name="search" value="*" />
@@ -60,6 +60,10 @@
                     <input type="text" class="param" data-param-name="hash" value="*" />
                 </label>
             </div>
+            <label>
+                <input class="param" data-param-name="ignoreCase" type="checkbox" checked />
+                大文字小文字を無視する
+            </label>
             <button data-event-target="testUrl">test</button>
             <div class="output"></div>
         </section>

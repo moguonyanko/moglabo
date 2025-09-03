@@ -38,19 +38,31 @@ const funcs = {
         }
     },
     testUrl: ({ url, protocol, username, password, hostname,
-        port, pathname, search, hash }) => {
+        port, pathname, search, hash, ignoreCase }) => {
         const pattern = new URLPattern({
+            // httpsはどうやってもマッチさせられない。
             protocol,
             username,
             password,
             hostname,
-            port,  // 443でマッチさせるにはprotocolがhttpである必要がある。理由は不明。
-            // pathnameに/:testpathなどを指定した場合、パスに続く文字があるとマッチしない。*にすればマッチする。
-            pathname, 
+            // 443でマッチさせる場合でもprotocolはhttpである必要がある。
+            // protocolだからか？schemeでマッチさせることはできないようだ。
+            port,
+            // pathnameに/:testpathなどを指定した場合、パスに続く文字があるとマッチしない。
+            // *にすればマッチする。例えばindex.htmlまでマッチさせたいなら、:/testpath/index.htmlまで
+            // 記述すること。search（クエリ文字列）やhash（フラグメント識別子）
+            pathname,
             search,
-            hash
+            hash,
+            // 以下のようなプロパティは存在しない。
+            // scheme: "https",
         }, {
-            ignoreCase: true
+            // URLのマッチを試みるので大文字小文字の区別はするべきでない。
+            // 真偽値の規定値をtrueにしたくないのは分かるが、これに関しては規定値を
+            // trueにしてもよかったのではないか？
+            // しかしパスから先は大文字小文字を区別するらしい。それならばignoreCaseの規定値が
+            // trueになっていないのは妥当と思われる。
+            ignoreCase
         })
 
         const testResult = pattern.test(url),
@@ -68,10 +80,11 @@ const funcs = {
 const getParams = root => {
     const paramEles = root.querySelectorAll('.param[data-param-name]');
     return Array.from(paramEles).map(ele => {
-        const param = {
-            [ele.dataset.paramName]: ele.value
-        };
-        return param;
+        // checked属性の有無ではtype=textのinputを弾けない。
+        return {
+            [ele.dataset.paramName]: ele.type === 'checkbox' ?
+                ele.checked : ele.value
+        }
     }).reduce((acc, current) => Object.assign(acc, current), {});
 };
 
