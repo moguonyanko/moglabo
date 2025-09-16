@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>ファイルの認識</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../../common.css" />
+  <script src="main.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>ファイルの認識</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>アップロードされたファイルの内容の概要を取得する</h2>
+      <label>
+        対象ファイル
+        <input class="selected-file" type="file" accept="application/pdf, image/*"  />
+      </label>
+      <button data-event-listener="onSummaryButtonClicked">run</button>
+      <div class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://cloud.google.com/code/docs/vscode/setup-local-functions-dev-environment?hl=ja">Functions
+          Framework を使用してローカルで実行する</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
