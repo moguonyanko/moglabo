@@ -8,11 +8,14 @@ const listeners = {
     const url = 'https://localhost/mycloudfunctions/filerecognition/'
     const selectedFile = document.querySelector('.selected-file')
 
-    const contents = new FormData()
-    contents.append('file', selectedFile.files[0])
+    const body = new FormData()
+    for (let i = 0; i < selectedFile.files.length; i++) {
+      body.append('files', selectedFile.files[i])
+    }
+    
     const response = await fetch(url, {
       method: 'POST',
-      body: contents
+      body
     })
 
     const text = await response.text()
