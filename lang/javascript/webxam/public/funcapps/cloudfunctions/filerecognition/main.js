@@ -5,6 +5,9 @@
 
 const listeners = {
   onSummaryButtonClicked: async () => {
+    const output = document.querySelector('.output')
+    output.textContent = ''
+
     const url = 'https://localhost/mycloudfunctions/filerecognition/'
     const selectedFile = document.querySelector('.selected-file')
 
@@ -12,16 +15,15 @@ const listeners = {
     for (let i = 0; i < selectedFile.files.length; i++) {
       body.append('files', selectedFile.files[i])
     }
-    
+
     const response = await fetch(url, {
       method: 'POST',
       body
     })
 
-    const text = await response.text()
+    const { text } = await response.text()
     console.log(text)
 
-    const output = document.querySelector('.output')
     output.textContent = text
   }
 }
