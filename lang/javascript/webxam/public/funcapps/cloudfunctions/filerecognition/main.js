@@ -21,9 +21,7 @@ const listeners = {
       body
     })
 
-    const { text } = await response.text()
-    console.log(text)
-
+    const { text } = await response.json()
     output.textContent = text
   }
 }
@@ -32,7 +30,12 @@ const addListener = () => {
   document.body.addEventListener('click', async event => {
     const { eventListener } = event.target.dataset
     if (eventListener in listeners) {
-      await listeners[eventListener]()
+      try {
+        event.target.setAttribute('disabled', 'disabled')
+        await listeners[eventListener]()
+      } finally {
+        event.target.removeAttribute('disabled')
+      }
     }
   })
 }
