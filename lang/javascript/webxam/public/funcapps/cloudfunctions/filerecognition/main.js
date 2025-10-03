@@ -8,7 +8,16 @@ const listeners = {
     const output = document.querySelector('.output')
     output.textContent = ''
 
+    // ホストのnginx経由でホストあるいはDockerコンテナのCloudFunctionsを呼び出す場合
+    // 開発環境ではnginxの設定をホスト上に集約したいので、こちらのURLで動作する状態が望ましい。
     const url = 'https://localhost/mycloudfunctions/filerecognition/'
+
+    // ホストで起動したCloudFunctionsかDockerコンテナで起動しているCloudFunctionsを直接呼び出す場合
+    // const url = 'http://localhost:10001/'
+
+    // Dockderコンテナのnginx経由でDockerコンテナのCloudFunctionsを呼び出す場合
+    // const url = 'http://localhost:8080/mycloudfunctions/filerecognition/'
+
     const selectedFile = document.querySelector('.selected-file')
 
     const body = new FormData()
