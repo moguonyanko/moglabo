@@ -3,6 +3,28 @@
  * 解析したり、概要を取得したりするためのサンプルスクリプトです。
  */
 
+const viewSelectedImage = (target, file) => {
+  const url = URL.createObjectURL(file)
+  const img = new Image
+  img.onload = () => {
+    target.appendChild(img)
+    URL.revokeObjectURL(url)
+  }
+  img.src = url
+}
+
+const changeListeners = {
+  onSelectedFile: () => {
+    const imgView = document.querySelector('.selected-file-image')
+    imgView.innerHTML = ''
+
+    const selectedFile = document.querySelector('.selected-file')
+    for (let i = 0; i < selectedFile.files.length; i++) {
+      viewSelectedImage(imgView, selectedFile.files[0])
+    }
+  }
+}
+
 const listeners = {
   onSummaryButtonClicked: async () => {
     const output = document.querySelector('.output')
@@ -12,7 +34,8 @@ const listeners = {
     // 開発環境ではnginxの設定をホスト上に集約したいので、こちらのURLで動作する状態が望ましい。
     const url = 'https://localhost/mycloudfunctions/filerecognition/'
 
-    // ホストで起動したCloudFunctionsかDockerコンテナで起動しているCloudFunctionsを直接呼び出す場合
+    // nginxを経由することなく、ホストで起動したCloudFunctionsかDockerコンテナで起動している
+    // CloudFunctionsを直接呼び出す場合
     // const url = 'http://localhost:10001/'
 
     // Dockderコンテナのnginx経由でDockerコンテナのCloudFunctionsを呼び出す場合
@@ -22,7 +45,8 @@ const listeners = {
 
     const body = new FormData()
     for (let i = 0; i < selectedFile.files.length; i++) {
-      body.append('files', selectedFile.files[i])
+      const file = selectedFile.files[i]
+      body.append('files', file)
     }
 
     const response = await fetch(url, {
@@ -46,6 +70,10 @@ const addListener = () => {
         event.target.removeAttribute('disabled')
       }
     }
+  })
+
+  document.body.addEventListener('change', event => {
+    Object.values(changeListeners).forEach(listener => listener())
   })
 }
 
