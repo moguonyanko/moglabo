@@ -24,6 +24,11 @@
         対象ファイル
         <input class="selected-file" type="file" accept="application/pdf, image/*" multiple />
       </label>
+      <div>
+        <label><input type="radio" name="web-server-mode" value="useHostWebServer" checked />ホストのWebサーバ利用</label>
+        <label><input type="radio" name="web-server-mode" value="useFuncAppWebServer" />関数アプリのWebサーバ直接利用</label>
+        <label><input type="radio" name="web-server-mode" value="useContainerWebServer" />コンテナのWebサーバ利用</label>
+      </div>
       <button data-event-listener="onSummaryButtonClicked">run</button>
       <div class="output"></div>
       <div class="selected-file-image"></div>
