@@ -22,7 +22,7 @@
       <h2>アップロードされたファイルのテキストを抽出する</h2>
       <label>
         対象ファイル
-        <input class="selected-file" type="file" accept="application/pdf, image/*" multiple />
+        <input class="selected-file" data-event-listener="onChangeSelectedFile" type="file" accept="application/pdf, image/*" multiple />
       </label>
       <div>
         <label><input type="radio" name="web-server-mode" value="useHostWebServer" checked />ホストのWebサーバ利用</label>

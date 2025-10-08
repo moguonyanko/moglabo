@@ -18,7 +18,7 @@ const viewSelectedImage = (imgView, file) => {
 }
 
 const changeListeners = {
-  onSelectedFile: () => {
+  onChangeSelectedFile: () => {
     const imgView = document.querySelector('.selected-file-image')
     imgView.innerHTML = ''
 
@@ -92,8 +92,7 @@ const listeners = {
   }
 }
 
-const addListener = () => {
-  document.body.addEventListener('click', async event => {
+const dispatchEvent = async (event, listeners) => {
     const { eventListener } = event.target.dataset
     if (eventListener in listeners) {
       try {
@@ -103,10 +102,15 @@ const addListener = () => {
         event.target.removeAttribute('disabled')
       }
     }
+}
+
+const addListener = () => {
+  document.body.addEventListener('click', async event => {
+    await dispatchEvent(event, listeners)
   })
 
-  document.body.addEventListener('change', event => {
-    Object.values(changeListeners).forEach(listener => listener())
+  document.body.addEventListener('change', async event => {
+    await dispatchEvent(event, changeListeners)
   })
 }
 
