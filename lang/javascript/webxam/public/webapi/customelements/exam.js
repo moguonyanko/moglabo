@@ -118,14 +118,6 @@ class CustomFavoritesLanguage extends HTMLElement {
     return this.shadowRoot.querySelector('select')
   }
 
-  get name() {
-    return this.getAttribute('name')
-  }
-
-  set name(selectedName) {
-    this.setAttribute('name', selectedName)
-  }  
-
   connectedCallback() {
     this.#selectElement().addEventListener('change', event => {
       this.#updateValue(this.#selectElement().value)
