@@ -106,6 +106,7 @@ class CustomFavoritesLanguage extends HTMLElement {
     shadow.appendChild(template.cloneNode(true).content)
 
     // プロパティにElementInternalsを設定する。
+    // built-inのCustomElementsではattachInternalsを呼び出した時にNotSupportedErrorとなる。
     this.internals_ = this.attachInternals()
     this.#updateValue(this.#selectElement().value)
   }  
