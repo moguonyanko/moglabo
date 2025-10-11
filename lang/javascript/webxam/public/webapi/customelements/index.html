@@ -58,6 +58,20 @@
         <span slot="my-favorite">散歩</span>
       </custom-profile>
     </section>
+    <section class="attach-internals-sample">
+      <h2>CustomElementsをフォームに参加させる</h2>
+      <form id="sample-form">
+        <label for="sample-form-name">name</label>
+        <input id="sample-form-name" name="sample-custom-name" type="text" value="Taro" />
+        <label for="sample-form-age">age</label>
+        <input id="sample-form-age" name="sample-custom-age" type="number" min="0" max="150" value="25" />
+        <!-- labelの効果はCustomElements内の要素には影響を与えない。つまりクリックしやすくならない。 -->
+        <label for="sample-form-select">favorite language</label>
+        <custom-favorites-language id="sample-form-select" name="sample-custom-select"></custom-favorites-language>
+        <button type="submit" data-event-listener="onSampleDummySubmit">送信テスト</button>
+      </form>
+      <div class="output"></div>
+    </section>
   </main>
   <footer>
     <p>参考サイト</p>
@@ -68,6 +82,8 @@
           コンポーネント</a></li>
       <li><a href="https://developers.google.com/web/updates/2019/02/rendering-on-the-web">Rendering on the Web -
           Web上のレンダリング</a></li>
+      <li><a href="https://developer.mozilla.org/ja/docs/Web/API/HTMLElement/attachInternals">HTMLElement:
+          attachInternals() メソッド</a></li>
     </ul>
   </footer>
 </body>
@@ -96,4 +112,12 @@
   <p>趣味：<slot name="my-favorite">無趣味</slot></p>
 </template>
 
+<template id="custom-favorites-language">
+  <select>
+    <option value=""></option>
+    <option value="java" selected>Java</option>
+    <option value="rust">Rust</option>
+    <option value="python">Python</option>
+  </select>
+</template>
 </html>
