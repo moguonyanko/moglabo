@@ -7,6 +7,7 @@
   <title>PushEvent</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
   <script type="module" src="main.js"></script>
 </head>
 
@@ -20,13 +21,18 @@
     <section>
       <h2>ServiceWorkerにPushEventを発生させる</h2>
       <p>自己署名証明書ではServiceWorker読み込み時にSecurityErrorになる。</p>
+      <button data-event-listener="clearOutput">clear</button>
       <div class="output"></div>
     </section>
   </main>
 
   <footer>
     <h3>参考サイト</h3>
-    <a href="https://developer.mozilla.org/ja/docs/Web/API/PushEvent">PushEvent(MDN)</a>
+    <ul>
+      <li><a href="https://developer.mozilla.org/ja/docs/Web/API/PushEvent">PushEvent(MDN)</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Clients/matchAll">Clients: matchAll() method</a></li>
+      <li><a href="https://developer.mozilla.org/ja/docs/Web/API/Clients/openWindow">Clients: openWindow() method</a></li>
+    </ul>    
   </footer>
 </body>
 

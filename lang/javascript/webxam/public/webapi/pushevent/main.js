@@ -67,17 +67,36 @@ const subscribe = async registration => {
   }
 }
 
+const clickListeners = {
+  clearOutput: () => {
+    const outputElement = document.querySelector('main .output')
+    if (outputElement) {
+      outputElement.innerHTML = ''
+    }
+  }
+}
+
+const addListener = () => {
+  const main = document.querySelector('main')
+  main.addEventListener('click', event => {
+    const { eventListener } = event.target.dataset
+    clickListeners[eventListener]?.()
+  })
+
+  navigator.serviceWorker.addEventListener('message', event => {
+    const { data } = event
+    outputMessage(data)
+  })
+}
+
 const init = async () => {
+  addListener()
+
   try {
     const registration = await navigator.serviceWorker.register('serviceworker.js')
     outputMessage('Service Worker 登録成功', registration)
 
     subscribe(registration)
-
-    navigator.serviceWorker.addEventListener('message', event => {
-      const { data } = event
-      outputMessage(data)
-    })
   } catch (err) {
     outputMessage('Service Worker 登録失敗', err)
   }

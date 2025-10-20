@@ -9,17 +9,15 @@
  * @return {Promise<void>}
  */
 const sendMessageToMain = async message => {
-  // Service Workerが制御している全てのクライアント（タブ）を取得
+  // 現在のServiceWorkerによって制御されているクライアントのみを取得する。
+  // 照合するクライアントはwindow（規定値）とする。
   const clients = await self.clients.matchAll({
-    includeUncontrolled: true,
     type: 'window'
   })
-  if (clients && clients.length) {
-    // 見つかったすべてのクライアントにメッセージを送信
-    clients.forEach(client => {
-      client.postMessage(message)
-    })
-  }
+  // 見つかった全てのクライアントにメッセージを送信
+  clients.forEach(client => {
+    client.postMessage(message)
+  })
 }
 
 const pushListener = event => {
@@ -30,7 +28,7 @@ const pushListener = event => {
   sendMessageToMain(`[Service Worker] ペイロード（データ）: ${pushData}`)
 
   // データがない場合のデフォルト値
-  let title = '新しい通知'
+  let title = '通知テスト'
   let body = pushData
 
   try {
@@ -51,15 +49,13 @@ const pushListener = event => {
     data: {
       dateOfArrival: Date.now(),
       primaryKey: '2',
-      // 通知クリック時に開きたいURLなど
-      // ひとまずこのserviceworker.jsを読み込んだページを指定している。
-      url: 'https://localhost/webxam/webapi/pushevent/'
+      // 通知クリック時に開きたいURL
+      url: '/webxam/webapi/pushevent/nortification.html'
     }
   }
 
   /**
-   * @todo PushEventの後に通知を試みているがブラウザ上に表示されない。
-   * 調査中。
+   * @todo PushEventの後に通知を試みているが通知ポップアップがブラウザ上に表示されない。
    */
 
   // event.waitUntil() は、通知の表示が完了するまでサービスワーカーをアクティブに保ちます。
@@ -74,15 +70,22 @@ const pushListener = event => {
 const addListener = () => {
   self.addEventListener('push', pushListener)
 
-  // 通知がクリックされたときの処理
+  // 通知ポップアップがクリックされたときの処理
   self.addEventListener('notificationclick', event => {
-    sendMessageToMain('[Service Worker] 通知がクリックされました。')
-    event.notification.close() // クリックされた通知を閉じる
-
-    // クリック時のアクションを非同期で実行
-    const clickActionPromise = clients.openWindow(event.notification.data.url || '/')
-
-    event.waitUntil(clickActionPromise)
+    event.notification.close() // クリックされた通知ポップアップを閉じる
+    event.waitUntil(
+      clients.matchAll({ type: "window" }).then(clientList => {
+        sendMessageToMain('[Service Worker] 通知がクリックされました。')
+        for (const client of clientList) {
+          // 既に開かれているウィンドウがあればそれをフォーカスする
+          if (client.url === event.notification.data.url && 'focus' in client) {
+            return client.focus()
+          }
+        }
+        // 開かれているウィンドウがなければ新しく開く
+        return clients.openWindow(event.notification.data.url)
+      })
+    )
   })
 
   // Service Worker のインストール時
