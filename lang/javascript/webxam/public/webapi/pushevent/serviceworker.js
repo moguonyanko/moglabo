@@ -19,20 +19,28 @@ const pushListener = event => {
     title = data.title || title
     body = data.body || body
   } catch (e) {
-    // JSON形式ではない場合は、そのまま本文として使用
+    // レスポンスがJSON形式でないなどの理由によりJSON解析に失敗した場合は
+    // そのままテキストを本文として使用する。
   }
 
   const options = {
-    body: body,
-    icon: '/image/sampleblock.png', // 通知に表示されるアイコンのパス
-    badge: '/image/hello.png', // モバイルで通知数を示すバッジ
+    body,
+    icon: '/webxam/image/sampleicon.png', // 通知に表示されるアイコンのパス
+    badge: '/webxam/image/samplebadge.png', // モバイルで通知数を示すバッジ
     vibrate: [200, 100, 200], // バイブレーションパターン
     data: {
       dateOfArrival: Date.now(),
       primaryKey: '2',
-      url: 'https://localhost/webxam/webapi/pushevent/' // 通知クリック時に開きたいURLなど
+      // 通知クリック時に開きたいURLなど
+      // ひとまずこのserviceworker.jsを読み込んだページを指定している。
+      url: 'https://localhost/webxam/webapi/pushevent/' 
     }
   }
+
+  /**
+   * @todo PushEventの後に通知を試みているがブラウザ上に表示されない。
+   * 調査中。
+   */
 
   // event.waitUntil() は、通知の表示が完了するまでサービスワーカーをアクティブに保ちます。
   // これが PushEvent を非同期で処理するための重要な手順です。
