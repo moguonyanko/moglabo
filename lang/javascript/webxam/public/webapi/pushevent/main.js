@@ -5,15 +5,20 @@
 
 import config from './config.json' with { type: "json" }
 
-const log = (text, obj = '') => {
+const outputMessage = (message, obj = '') => {
   const outputElement = document.querySelector('main .output')
   if (outputElement) {
-    outputElement.innerHTML += `${text}:${obj}<br />`
+    outputElement.innerHTML += `${message}`
+    if (obj) {
+      outputElement.innerHTML += `:${obj}<br />`
+    } else {
+      outputElement.innerHTML += `<br />`
+    }
   }
   if (obj instanceof Error) {
     console.error(obj)
   } else {
-    console.log(text, obj)
+    console.log(message, obj)
   }
 }
 
@@ -53,11 +58,11 @@ const subscribe = async registration => {
 
   try {
     const subscription = await registration.pushManager.subscribe(options)
-    log('ユーザー購読成功', subscription)
+    outputMessage('ユーザー購読成功', subscription)
   } catch (err) {
-    log('ユーザー購読失敗', err)
+    outputMessage('ユーザー購読失敗', err)
     if (Notification.permission === 'denied') {
-      log('プッシュ通知はブロックされました。')
+      outputMessage('プッシュ通知はブロックされました。')
     }
   }
 }
@@ -65,11 +70,16 @@ const subscribe = async registration => {
 const init = async () => {
   try {
     const registration = await navigator.serviceWorker.register('serviceworker.js')
-    log('Service Worker 登録成功', registration)
+    outputMessage('Service Worker 登録成功', registration)
 
     subscribe(registration)
+
+    navigator.serviceWorker.addEventListener('message', event => {
+      const { data } = event
+      outputMessage(data)
+    })
   } catch (err) {
-    log('Service Worker 登録失敗', err)
+    outputMessage('Service Worker 登録失敗', err)
   }
 }
 

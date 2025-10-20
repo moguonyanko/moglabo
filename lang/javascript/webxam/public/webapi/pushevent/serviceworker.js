@@ -2,12 +2,32 @@
  * PushEventが発生したときの処理を記述します。
  * PushEventオブジェクトは、サーバーから送られたデータを含んでいます。
  */
+
+/**
+ * SercieWorkerからメインスレッドにメッセージを送信する関数
+ * @param {string} message メッセージ本文
+ * @return {Promise<void>}
+ */
+const sendMessageToMain = async message => {
+  // Service Workerが制御している全てのクライアント（タブ）を取得
+  const clients = await self.clients.matchAll({
+    includeUncontrolled: true,
+    type: 'window'
+  })
+  if (clients && clients.length) {
+    // 見つかったすべてのクライアントにメッセージを送信
+    clients.forEach(client => {
+      client.postMessage(message)
+    })
+  }
+}
+
 const pushListener = event => {
-  console.log('[Service Worker] プッシュ通知を受信しました。')
+  sendMessageToMain('[Service Worker] プッシュ通知を受信しました。')
   console.log(`[Service Worker] PushEventオブジェクト:`, event)
 
   const pushData = event.data ? event.data.text() : ''
-  console.log(`[Service Worker] ペイロード（データ）: ${pushData}`)
+  sendMessageToMain(`[Service Worker] ペイロード（データ）: ${pushData}`)
 
   // データがない場合のデフォルト値
   let title = '新しい通知'
@@ -33,7 +53,7 @@ const pushListener = event => {
       primaryKey: '2',
       // 通知クリック時に開きたいURLなど
       // ひとまずこのserviceworker.jsを読み込んだページを指定している。
-      url: 'https://localhost/webxam/webapi/pushevent/' 
+      url: 'https://localhost/webxam/webapi/pushevent/'
     }
   }
 
@@ -56,7 +76,7 @@ const addListener = () => {
 
   // 通知がクリックされたときの処理
   self.addEventListener('notificationclick', event => {
-    console.log('[Service Worker] 通知がクリックされました。')
+    sendMessageToMain('[Service Worker] 通知がクリックされました。')
     event.notification.close() // クリックされた通知を閉じる
 
     // クリック時のアクションを非同期で実行
@@ -67,12 +87,12 @@ const addListener = () => {
 
   // Service Worker のインストール時
   self.addEventListener('install', event => {
-    console.log('[Service Worker] インストールされました')
+    sendMessageToMain('[Service Worker] インストールされました')
   })
 
   // Service Worker の有効化時
   self.addEventListener('activate', event => {
-    console.log('[Service Worker] 有効化されました')
+    sendMessageToMain('[Service Worker] 有効化されました')
   })
 }
 
