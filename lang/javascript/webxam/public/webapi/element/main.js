@@ -203,7 +203,7 @@ const funcs = {
 
     dialog.addEventListener('dialogclosecancel', event => {
       console.log(event)
-      const {reason} = event.detail
+      const { reason } = event.detail
       appendDialogEventMessage(`cancelイベント発生:${reason}`)
       alert(reason)
     })
@@ -214,6 +214,38 @@ const funcs = {
     dialog.showModal()
   }
 };
+
+const addOutputListener = () => {
+  const sampleForm = document.querySelector('.sample-form')
+  sampleForm.addEventListener('input', event => {
+    const num1 = parseFloat(sampleForm.querySelector('#input-num1').value) || 0
+    const num2 = parseFloat(sampleForm.querySelector('#input-num2').value) || 0
+    const operator = sampleForm.querySelector('input[name="output-operator"]:checked').value
+    let result = 0
+    switch (operator) {
+      case '+':
+        result = num1 + num2
+        break
+      case '-':
+        result = num1 - num2
+        break
+      case '*':
+        result = num1 * num2
+        break
+      case '/':
+        result = num2 !== 0 ? num1 / num2 : 'Infinity'
+        break
+      default:
+        result = NaN
+    }
+    const output = document.querySelector('#output-result')
+    if ('value' in output) {
+      output.value = result
+    } else {
+      output.textContent = result
+    }
+  })  
+}
 
 const init = () => {
   document.body.addEventListener('click', event => {
@@ -233,6 +265,8 @@ const init = () => {
   });
 
   customElements.define('fav-lang-dialog', FavLangDialog)
-};
+
+  addOutputListener()
+}
 
 init();
