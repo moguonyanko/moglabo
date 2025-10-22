@@ -25,6 +25,9 @@
         <input class="selected-file" data-event-listener="onChangeSelectedFile" type="file" accept="application/pdf, image/*" multiple />
       </label>
       <div>
+        <textarea id="prompt">画像の説明をしてください</textarea>
+      </div>
+      <div>
         <label><input type="radio" name="web-server-mode" value="useHostWebServer" checked />ホストのWebサーバ利用</label>
         <label><input type="radio" name="web-server-mode" value="useFuncAppWebServer" />関数アプリのWebサーバ直接利用</label>
         <label><input type="radio" name="web-server-mode" value="useContainerWebServer" />コンテナのWebサーバ利用</label>

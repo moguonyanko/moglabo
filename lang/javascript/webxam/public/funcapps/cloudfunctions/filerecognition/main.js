@@ -81,6 +81,7 @@ const listeners = {
       const file = selectedFile.files[i]
       body.append('files', file)
     }
+    body.append('prompt', document.getElementById('prompt').value)
 
     const response = await fetch(getApiUrl(), {
       method: 'POST',
