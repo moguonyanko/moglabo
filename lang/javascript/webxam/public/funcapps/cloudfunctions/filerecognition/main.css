@@ -8,3 +8,17 @@
 .selected-file-image {
   border: 1px solid whitesmoke;
 }
+
+.description {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.description::before {
+  content: "";
+  display: block
+}
+
+.web-server-mode-options {
+  margin: 1rem;
+}
