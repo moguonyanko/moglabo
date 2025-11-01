@@ -31,21 +31,21 @@ const changeListeners = {
 
 const apiUrls = {
   /**
-   * ホストのnginx経由でホストあるいはDockerコンテナのCloudFunctionsを呼び出す場合
-   * 開発環境ではnginxの設定をホスト上に集約したいので、こちらのURLで動作する状態が望ましい。
+   * ホストのWebサーバー経由でホストあるいはDockerコンテナのCloudFunctionsを呼び出す場合
+   * 開発環境ではWebサーバーの設定をホスト上に集約したいので、こちらのURLで動作する状態が望ましい。
    * つまりこのプロパティは「develop」相当となる。
    */
   useHostWebServer: 'https://localhost/mycloudfunctions/filerecognition/',
   /**
-   * nginxを経由することなく、ホストで起動したCloudFunctionsかDockerコンテナで起動している
+   * ホストのWebサーバーを経由することなく、ホストで起動したCloudFunctionsかDockerコンテナで起動している
    * CloudFunctionsを直接呼び出す場合
-   * 関数アプリの組み込みWebサーバを使って本番運用することは原則ない。
+   * 関数アプリの組み込みWebサーバーが使われることになるが、これを本番環境で運用することは好ましくない。
    * つまりこのプロパティも「develop」相当となる。
    */
   useFuncAppWebServer: 'http://localhost:10001/',
   /**
-   * Dockderコンテナのnginx経由でDockerコンテナのCloudFunctionsを呼び出す場合
-   * Dockerコンテナでnginxも動作させるマルチコンテナ管理は本番運用時を想定している。
+   * DockderコンテナのWebサーバー経由でDockerコンテナのCloudFunctionsを呼び出す場合
+   * DockerコンテナでWebサーバーも動作させるマルチコンテナ管理は本番運用時を想定している。
    * つまりこのプロパティは「production」相当となる。
    */
   useContainerWebServer: 'http://localhost:8080/mycloudfunctions/filerecognition/'
