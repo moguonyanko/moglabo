@@ -19,11 +19,13 @@
     <section class="detect-objects-example">
       <h2>画像からオブジェクトを検出する</h2>
       <label for="selected-files">対象画像</label>
-      <input id="selected-files" type="file" accept="image/*" multiple />
+      <input id="selected-files" type="file" accept="image/*" multiple 
+        data-event-listener="selectedImage" />
       <label for="targets">目的のオブジェクト</label>
       <input id="targets" type="text" value="apple" />
       <button type="button" data-event-listener="detectObjects">run</button>
       <div contenteditable="plaintext-only" class="output"></div>
+      <div id="selected-image"></div>
     </section>
   </main>
 
