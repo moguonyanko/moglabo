@@ -9,7 +9,7 @@ class GenaiRequest {
     this.#api_url = api_url
   }
 
-  async execute({ contents, contentType }) {
+  async execute({ contents, contentType, responseType = 'text' }) {
     const info = {
       method: 'POST',
       body: contents
@@ -20,7 +20,7 @@ class GenaiRequest {
       }
     }
     const response = await fetch(this.#api_url, info)
-    const text = await response.text()
+    const text = await response[responseType.toLowerCase()]()
     if (!response.ok) {
       window.dispatchEvent(new CustomEvent('generationerror', {
         detail: text
@@ -43,9 +43,15 @@ class GenaiTextRequest extends GenaiRequest {
   }
 }
 
-const getFileUploadContents = selectedFile => {
-  const contents = new FormData()
-  contents.append('file', selectedFile.files[0])
+const getFileUploadContents = (selectedFile, params) => {
+  const formData = new FormData()
+  formData.append('file', selectedFile.files[0])
+
+  const contents = params.reduce((acc, cur) => {
+    acc.append(cur.name, cur.value)
+    return acc
+  }, formData)
+
   return contents
 }
 
@@ -54,9 +60,9 @@ class GenaiFileUploadRequest extends GenaiRequest {
     super({ api_url })
   }
 
-  async execute({ selectedFile }) {
-    const contents = getFileUploadContents(selectedFile)
-    return await super.execute({ contents })
+  async execute({ selectedFile, params = [], responseType }) {
+    const contents = getFileUploadContents(selectedFile, params)
+    return await super.execute({ contents, responseType })
   }
 }
 

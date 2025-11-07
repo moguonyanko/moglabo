@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>ロボット工学</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>ロボット工学</h1>
+  </header>
+
+  <main>
+    <section class="detect-objects-example">
+      <h2>画像からオブジェクトを検出する</h2>
+      <label for="selected-files">対象画像</label>
+      <input id="selected-files" type="file" accept="image/*" multiple />
+      <label for="targets">目的のオブジェクト</label>
+      <input id="targets" type="text" value="apple" />
+      <button type="button" data-event-listener="detectObjects">run</button>
+      <div contenteditable="plaintext-only" class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://web.dev/blog/json-imports-baseline-newly-available?hl=en">JSON module scripts are now
+          Baseline Newly available</a>
+      </li>
+    </ul>
+  </footer>
+
+</body>
+
+</html>
