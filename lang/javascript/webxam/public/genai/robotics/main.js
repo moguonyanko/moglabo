@@ -23,13 +23,30 @@ class ImageDisplay {
     this.ctx.lineWidth = 2
     bouding_box_list.forEach(box => {
       const [ymin, xmin, ymax, xmax] = box
-      this.ctx.strokeRect(ymin, xmin, xmax - xmin, ymax - ymin)
+
+      const width = xmax - xmin
+      const height = ymax - ymin
+
+      this.ctx.strokeRect(xmin, ymin, width, height)
     })
   }
 }
 
 let imageDisplay = null
 let previewResult = null
+
+const updateOutput = result => {
+  const output = document.querySelector('.detect-objects-example .output')
+  if (result) {
+    output.textContent = JSON.stringify(result)
+  } else {
+    output.textContent = ''
+  }
+}
+
+const clearOutput = () => {
+  updateOutput()
+}
 
 const changeListeners = {
   selectedImage: () => {
@@ -51,8 +68,7 @@ const changeListeners = {
 
 const updateDisplayListeners = {
   updateBoundingBox: (result) => {
-    const output = document.querySelector('.detect-objects-example .output')
-    output.textContent = JSON.stringify(result)
+    updateOutput(result)
     const bbox_list = []
     for (let name in result) {
       const res = result[name]
@@ -68,6 +84,7 @@ const clearDisplayListeners = {
   clearBoundingBox: () => {
     imageDisplay.clear()
     previewResult = null
+    clearOutput()
   }
 }
 
@@ -87,12 +104,16 @@ const clickListeners = {
       formData.append('files', file.files[i])
     }
     formData.append('targets', JSON.stringify(targets))
-    const response = await fetch(api_url, {
-      method: 'POST',
-      body: formData
-    })
-    previewResult = await response.json()
-    window.dispatchEvent(new CustomEvent('updatedisplay', { detail: previewResult }))
+    try {
+      const response = await fetch(api_url, {
+        method: 'POST',
+        body: formData
+      })
+      previewResult = await response.json()
+      window.dispatchEvent(new CustomEvent('updatedisplay', { detail: previewResult }))
+    } catch (e) {
+      window.dispatchEvent(new CustomEvent('genaierror', { detail: e }))
+    }
   },
   redrawBbox: () => {
     window.dispatchEvent(new CustomEvent('updatedisplay', { detail: previewResult }))
@@ -132,6 +153,10 @@ const init = () => {
   window.addEventListener('cleardisplay', () => {
     Object.values(clearDisplayListeners)
       .forEach(listener => listener())
+  })
+
+  window.addEventListener('genaierror', event => {
+    alert(event.detail.message)
   })
 }
 

@@ -19,9 +19,13 @@
     <section class="detect-objects-example">
       <h2>画像からオブジェクトを検出する</h2>
       <label for="selected-files">対象画像</label>
-      <input id="selected-files" type="file" accept="image/*" multiple data-event-listener="selectedImage" />
+      <!-- 
+        API側は複数の画像アップロード（multiple属性）に対応しているが、
+        サンプルをシンプルにするため一つしかアップロードできないようにする。 
+      -->
+      <input id="selected-files" type="file" accept="image/*" data-event-listener="selectedImage" />
       <label for="targets">目的のオブジェクト</label>
-      <input id="targets" type="text" value="apple" />
+      <input id="targets" type="text" value="person" />
       <button type="button" data-event-listener="detectObjects">detect</button>
       <button type="button" data-event-listener="redrawBbox">redraw bbox</button>
       <div contenteditable="plaintext-only" class="output"></div>
