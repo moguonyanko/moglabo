@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+.canvas-container {
+  /* 親要素を相対位置指定（relative）にする */
+  /* 子要素（canvas）を絶対位置指定（absolute）で配置するための基準点になります */
+  position: relative; 
+  /* 必要に応じてコンテナのサイズを設定しますが、ここではcanvasのサイズに合わせます */
+  width: 400px;
+  height: 300px;
+}
+
+.layer {
+  /* canvas要素を絶対位置指定（absolute）にする */
+  /* これにより、親要素の左上（top: 0; left: 0;）に完全に重ねて配置されます */
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#bounding-box-layer {
+  /* z-indexを使用して、rectをimageよりも手前に配置します */
+  /* z-indexの値が大きいほど手前に表示されます */
+  z-index: 2; 
+}
+
+#selected-image {
+  /* imageはrectより奥に配置します */
+  z-index: 1; 
+}

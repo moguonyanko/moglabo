@@ -2,7 +2,11 @@
  * @fileoverview ロボット工学系APIを確認するためのサンプルスクリプト
  */
 
-class ImageDisplay {
+let imageLayer = null
+let bboxLayer = null
+let previewResult = null
+
+class AbstractLayer {
   constructor(canvas) {
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')
@@ -11,14 +15,38 @@ class ImageDisplay {
   clear() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
   }
+}
 
-  drawImage(img) {
+class SelectedImageLayer extends AbstractLayer {
+  constructor(canvas) {
+    super(canvas)
+  }
+
+  draw(img) {
     this.canvas.width = img.width
     this.canvas.height = img.height
     this.ctx.drawImage(img, 0, 0)
   }
 
-  drawBoundingBoxes(bouding_box_list = []) {
+  get size() {
+    return {
+      width: this.canvas.width,
+      height: this.canvas.height
+    }
+  }
+}
+
+class BoundingBoxLayer extends AbstractLayer {
+  constructor(canvas) {
+    super(canvas)
+  }
+
+  draw(bouding_box_list = []) {
+    // 画像レイヤにサイズを合わせる。そうしないと矩形が正しいサイズで描画できない。
+    const { width, height } = imageLayer.size
+    this.canvas.width = width
+    this.canvas.height = height
+
     this.ctx.strokeStyle = 'red'
     this.ctx.lineWidth = 2
     bouding_box_list.forEach(box => {
@@ -31,9 +59,6 @@ class ImageDisplay {
     })
   }
 }
-
-let imageDisplay = null
-let previewResult = null
 
 const updateOutput = result => {
   const output = document.querySelector('.detect-objects-example .output')
@@ -52,14 +77,12 @@ const changeListeners = {
   selectedImage: () => {
     window.dispatchEvent(new CustomEvent('cleardisplay'))
     const fileInput = document.getElementById('selected-files')
-    const display = document.getElementById('selected-image')
-    display.textContent = ''
     Array.from(fileInput.files).forEach(file => {
       const img = document.createElement('img')
       img.src = URL.createObjectURL(file)
       img.onload = () => {
-        imageDisplay.clear()
-        imageDisplay.drawImage(img)
+        imageLayer.clear()
+        imageLayer.draw(img)
         URL.revokeObjectURL(img.src)
       }
     })
@@ -67,8 +90,9 @@ const changeListeners = {
 }
 
 const updateDisplayListeners = {
-  updateBoundingBox: (result) => {
+  updateBoundingBox: result => {
     updateOutput(result)
+    bboxLayer.clear()
     const bbox_list = []
     for (let name in result) {
       const res = result[name]
@@ -76,13 +100,14 @@ const updateDisplayListeners = {
         bbox_list.push(res[i].bounding_box)
       }
     }
-    imageDisplay.drawBoundingBoxes(bbox_list)
+    bboxLayer.draw(bbox_list)
   }
 }
 
 const clearDisplayListeners = {
   clearBoundingBox: () => {
-    imageDisplay.clear()
+    bboxLayer.clear()
+    imageLayer.clear()
     previewResult = null
     clearOutput()
   }
@@ -126,8 +151,11 @@ const listeners = {
 }
 
 const init = () => {
-  imageDisplay = new ImageDisplay(
+  imageLayer = new SelectedImageLayer(
     document.getElementById('selected-image')
+  )
+  bboxLayer = new BoundingBoxLayer(
+    document.getElementById('bounding-box-layer')
   )
 
   const main = document.querySelector('main')
