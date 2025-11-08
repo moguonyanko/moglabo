@@ -2,21 +2,72 @@
  * @fileoverview ロボット工学系APIを確認するためのサンプルスクリプト
  */
 
+class ImageDisplay {
+  constructor(canvas) {
+    this.canvas = canvas
+    this.ctx = canvas.getContext('2d')
+  }
+
+  clear() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+  }
+
+  drawImage(img) {
+    this.canvas.width = img.width
+    this.canvas.height = img.height
+    this.ctx.drawImage(img, 0, 0)
+  }
+
+  drawBoundingBoxes(bouding_box_list = []) {
+    this.ctx.strokeStyle = 'red'
+    this.ctx.lineWidth = 2
+    bouding_box_list.forEach(box => {
+      const [ymin, xmin, ymax, xmax] = box
+      this.ctx.strokeRect(ymin, xmin, xmax - xmin, ymax - ymin)
+    })
+  }
+}
+
+let imageDisplay = null
+let previewResult = null
+
 const changeListeners = {
   selectedImage: () => {
+    window.dispatchEvent(new CustomEvent('cleardisplay'))
     const fileInput = document.getElementById('selected-files')
     const display = document.getElementById('selected-image')
     display.textContent = ''
     Array.from(fileInput.files).forEach(file => {
       const img = document.createElement('img')
-      // img.style.maxWidth = '100px'
-      // img.style.marginRight = '10px'
       img.src = URL.createObjectURL(file)
       img.onload = () => {
-        display.appendChild(img)
+        imageDisplay.clear()
+        imageDisplay.drawImage(img)
         URL.revokeObjectURL(img.src)
       }
     })
+  }
+}
+
+const updateDisplayListeners = {
+  updateBoundingBox: (result) => {
+    const output = document.querySelector('.detect-objects-example .output')
+    output.textContent = JSON.stringify(result)
+    const bbox_list = []
+    for (let name in result) {
+      const res = result[name]
+      for (let i = 0; i < res.length; i++) {
+        bbox_list.push(res[i].bounding_box)
+      }
+    }
+    imageDisplay.drawBoundingBoxes(bbox_list)
+  }
+}
+
+const clearDisplayListeners = {
+  clearBoundingBox: () => {
+    imageDisplay.clear()
+    previewResult = null
   }
 }
 
@@ -40,9 +91,11 @@ const clickListeners = {
       method: 'POST',
       body: formData
     })
-    const result = await response.json()
-    const output = document.querySelector('.detect-objects-example .output')
-    output.textContent = JSON.stringify(result)
+    previewResult = await response.json()
+    window.dispatchEvent(new CustomEvent('updatedisplay', { detail: previewResult }))
+  },
+  redrawBbox: () => {
+    window.dispatchEvent(new CustomEvent('updatedisplay', { detail: previewResult }))
   }
 }
 
@@ -52,6 +105,10 @@ const listeners = {
 }
 
 const init = () => {
+  imageDisplay = new ImageDisplay(
+    document.getElementById('selected-image')
+  )
+
   const main = document.querySelector('main')
   Object.keys(listeners).forEach(eventType => {
     main.addEventListener(eventType, async event => {
@@ -65,6 +122,16 @@ const init = () => {
         }
       }
     })
+  })
+
+  window.addEventListener('updatedisplay', event => {
+    Object.values(updateDisplayListeners)
+      .forEach(listener => listener(event.detail))
+  })
+
+  window.addEventListener('cleardisplay', () => {
+    Object.values(clearDisplayListeners)
+      .forEach(listener => listener())
   })
 }
 
