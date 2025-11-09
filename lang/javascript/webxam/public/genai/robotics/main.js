@@ -145,11 +145,6 @@ const clickListeners = {
   }
 }
 
-const listeners = {
-  click: clickListeners,
-  change: changeListeners
-}
-
 const init = () => {
   imageLayer = new SelectedImageLayer(
     document.getElementById('selected-image')
@@ -159,18 +154,24 @@ const init = () => {
   )
 
   const main = document.querySelector('main')
-  Object.keys(listeners).forEach(eventType => {
-    main.addEventListener(eventType, async event => {
-      const { eventListener } = event.target.dataset
-      if (typeof listeners[eventType][eventListener] === 'function') {
-        try {
-          event.target.setAttribute('disabled', 'true')
-          await listeners[eventType][eventListener]()
-        } finally {
-          event.target.removeAttribute('disabled')
-        }
+
+  main.addEventListener('click', async event => {
+    const { eventListener } = event.target.dataset
+    if (typeof clickListeners[eventListener] === 'function') {
+      try {
+        event.target.setAttribute('disabled', 'true')
+        await clickListeners[eventListener]()
+      } finally {
+        event.target.removeAttribute('disabled')
       }
-    })
+    }
+  })
+
+  main.addEventListener('change', event => {
+    const { eventListener } = event.target.dataset
+    if (typeof changeListeners[eventListener] === 'function') {
+      changeListeners[eventListener]()
+    }
   })
 
   window.addEventListener('updatedisplay', event => {
