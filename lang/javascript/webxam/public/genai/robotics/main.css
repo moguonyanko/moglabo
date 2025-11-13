@@ -4,9 +4,6 @@
   /* 親要素を相対位置指定（relative）にする */
   /* 子要素（canvas）を絶対位置指定（absolute）で配置するための基準点になります */
   position: relative; 
-  /* 必要に応じてコンテナのサイズを設定しますが、ここではcanvasのサイズに合わせます */
-  /* width: 400px;
-  height: 300px; */
 }
 
 .layer {
