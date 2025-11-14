@@ -50,24 +50,11 @@ class BoundingBoxLayer extends AbstractLayer {
     this.ctx.strokeStyle = 'red'
     this.ctx.lineWidth = 2
 
-    // APIが1000スケールの正規化座標を返していると仮定し、スケーリング処理を追加
-    const NORMALIZATION_SCALE = 1000
-
     bouding_box_list.forEach(box => {
-      // APIからの正規化座標を受け取る (例: [433, 225, 509, 294])
-      const [ymin_norm, xmin_norm, ymax_norm, xmax_norm] = box
-
-      // ★ピクセル座標に変換する
-      // (正規化座標/1000 * 画像解像度)
-      const xmin = (xmin_norm / NORMALIZATION_SCALE) * imgWidth
-      const ymin = (ymin_norm / NORMALIZATION_SCALE) * imgHeight
-      const xmax = (xmax_norm / NORMALIZATION_SCALE) * imgWidth
-      const ymax = (ymax_norm / NORMALIZATION_SCALE) * imgHeight
-
+      const [ymin, xmin, ymax, xmax] = box
       const width = xmax - xmin
       const height = ymax - ymin
 
-      // スケーリング後のピクセル座標で描画
       this.ctx.strokeRect(xmin, ymin, width, height)
     })
   }
