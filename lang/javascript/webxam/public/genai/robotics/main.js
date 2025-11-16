@@ -61,7 +61,7 @@ class BoundingBoxLayer extends AbstractLayer {
 }
 
 const updateOutput = result => {
-  const output = document.querySelector('.detect-objects-example .output')
+  const output = document.querySelector('.result-container .output')
   if (result) {
     output.textContent = JSON.stringify(result)
   } else {
