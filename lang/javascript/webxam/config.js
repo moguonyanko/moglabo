@@ -7,8 +7,8 @@
 const config = {
   path: {
     certificate: {
-      key: '/usr/local/etc/nginx/cert2.key',
-      cert: '/usr/local/etc/nginx/cert2.crt'
+      key: '/opt/homebrew/etc/nginx/cert2.key',
+      cert: '/opt/homebrew/etc/nginx/cert2.crt'
     }
   },
   port: {
