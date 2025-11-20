@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>expr-eval</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>expr-eval</h1>
+  </header>
+
+  <main>
+    <p>expr-evalパッケージの脆弱性をシンプルなサンプルで調査する。</p>
+    <section class="expr-eval-evil-simple-sample">
+      <h2>脆弱性の動作確認</h2>
+      <textarea class="sample-expression">2*3+sqrt(16);ls -l /</textarea>
+      <button data-event-listener="onEvilAction">run</button>
+      <div class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li><a href="https://www.npmjs.com/package/expr-eval-fork">JavaScript Expression Evaluator</a></li>
+      <li><a href="https://github.com/silentmatt/expr-eval/issues/289">Report security vulnerability #289</a></li>
+    </ul>
+  </footer>
+
+</body>
+
+</html>

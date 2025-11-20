@@ -18,6 +18,10 @@ const Certs = require('../../function/certs');
 const CreateImage = require('../../function/createimage');
 const Inouts = require('../../function/inouts');
 
+const Parser = require('expr-eval-fork').Parser;
+const childProcess = require('child_process');
+const fs = require('fs');
+
 const app = express();
 // signed cookieを使用するにはsecret指定が必須
 app.use(cookieParser('secret'));
@@ -186,9 +190,60 @@ app.get(`${practiceNodeRoot}imagebuffer`, cors(corsCheck),
     const ctx = canvas.getContext('2d');
     ctx.fillRect(100, 100, 200, 200);
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    response.send(imageData.data); 
+    response.send(imageData.data);
   });
- 
+
+/**
+ * expr-evalのサンプル
+ * https://www.npmjs.com/package/expr-eval-fork
+ * URLパラメータで与えられた数式を評価して結果を返す。
+ * 例: /expr-eval?expression=2*3+sqrt(16)
+ * 結果: {"result":14}
+ * 対応する演算子や関数は上記URLを参照のこと。
+ * 参考:
+ * https://github.com/silentmatt/expr-eval/issues/289
+ */
+app.get(`${practiceNodeRoot}expr-eval-evil`, cors(corsCheck),
+  async (request, response) => {
+    response.setHeader('Cache-Control', 'no-cache')
+    response.setHeader('Content-Type', 'application/json')
+    const { expression } = request.query
+    const [valid_expr, invalid_expr] = expression.split(';')
+
+    const evilFunc = expr => {
+      fs.writeFileSync('./apps/practicenode/expr-eval-evil.txt', expr)
+      return childProcess.execSync(expr).toString()
+    }
+
+    const context = {
+      write: evilFunc,
+      cmd: cmd => console.log('Executing:', invalid_expr),
+      exec: childProcess.execSync
+    }
+
+    const contextWrapper = {
+      wrapper: context
+    }
+
+    const illegal_parser = new Parser()
+    const evil_expr = `wrapper.write("${invalid_expr}");`
+    const illegal_result = illegal_parser.evaluate(evil_expr, contextWrapper)
+    // 以下は実行時エラーとなる。
+    // const evil_expr = `context.write("${invalid_expr}");`
+    // const illegal_result = illegal_parser.evaluate(evil_expr, context)
+    console.log(illegal_result)
+
+    const parser = new Parser()
+    const parsed_expr = parser.parse(valid_expr)
+    const result = parsed_expr.evaluate()
+    console.log(result)
+
+    return response.json({
+      result,
+      illegal_result
+    })
+  })
+
 app.use(`${practiceNodeRoot}public`, express.static(__dirname + `/public`))
 
 const main = () => {
