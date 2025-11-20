@@ -17,7 +17,9 @@ const listeners = {
     const json = await response.json()
 
     const output = document.querySelector(`${base} .output`)
-    output.innerHTML = JSON.stringify(json).replaceAll('\\n', '<br/>')
+    const { legal_result, illegal_result } = json
+    output.innerHTML = `<p>Legal Result: ${legal_result}</p>
+    <p>Illegal Result: ${illegal_result}</p>`
   }
 }
 
@@ -32,7 +34,7 @@ const init = () => {
         await listeners[eventListener]()
       } finally {
         event.target.removeAttribute('disabled')
-      } 
+      }
     }
   })
 }

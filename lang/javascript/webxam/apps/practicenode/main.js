@@ -194,12 +194,9 @@ app.get(`${practiceNodeRoot}imagebuffer`, cors(corsCheck),
   });
 
 /**
- * expr-evalのサンプル
+ * expr-evalの脆弱性を調査するためのサンプル
  * https://www.npmjs.com/package/expr-eval-fork
- * URLパラメータで与えられた数式を評価して結果を返す。
- * 例: /expr-eval?expression=2*3+sqrt(16)
- * 結果: {"result":14}
- * 対応する演算子や関数は上記URLを参照のこと。
+ * URLパラメータで与えられた数式とコマンドを評価して結果を返す。
  * 参考:
  * https://github.com/silentmatt/expr-eval/issues/289
  */
@@ -208,38 +205,37 @@ app.get(`${practiceNodeRoot}expr-eval-evil`, cors(corsCheck),
     response.setHeader('Cache-Control', 'no-cache')
     response.setHeader('Content-Type', 'application/json')
     const { expression } = request.query
-    const [valid_expr, invalid_expr] = expression.split(';')
+    const [legal_expr, illegal_expr] = expression.split(';').map(expr => expr.trim())
 
+    // 正しい使い方
+    const legal_parser = new Parser()
+    const legal_result = legal_parser.evaluate(legal_expr)
+    console.log(legal_result)
+
+    // 悪意のある使い方
     const evilFunc = expr => {
       fs.writeFileSync('./apps/practicenode/expr-eval-evil.txt', expr)
       return childProcess.execSync(expr).toString()
     }
 
+    // 実際にParserを介して実行される関数を保持したオブジェクト
     const context = {
-      write: evilFunc,
-      cmd: cmd => console.log('Executing:', invalid_expr),
-      exec: childProcess.execSync
+      func: evilFunc
     }
 
+    // 悪意のあるコードを別のオブジェクトでラップすることでチェックを回避できる。
+    // ラップしない場合はevaluateで実行時エラーになる。
     const contextWrapper = {
-      wrapper: context
+      context
     }
 
     const illegal_parser = new Parser()
-    const evil_expr = `wrapper.write("${invalid_expr}");`
+    const evil_expr = `context.func("${illegal_expr}");`
     const illegal_result = illegal_parser.evaluate(evil_expr, contextWrapper)
-    // 以下は実行時エラーとなる。
-    // const evil_expr = `context.write("${invalid_expr}");`
-    // const illegal_result = illegal_parser.evaluate(evil_expr, context)
     console.log(illegal_result)
 
-    const parser = new Parser()
-    const parsed_expr = parser.parse(valid_expr)
-    const result = parsed_expr.evaluate()
-    console.log(result)
-
     return response.json({
-      result,
+      legal_result,
       illegal_result
     })
   })
