@@ -30,9 +30,12 @@
       <button type="button" data-event-listener="detectObjects">detect</button>
       <button type="button" data-event-listener="redrawBbox">redraw bbox</button>
     </section>
-    <section>
+    <section class="orchestration-example">
       <h2>オーケストレーション</h2>
-      <p>開発中</p>
+      <input id="orchestration-target-file" type="file" accept="image/*" data-event-listener="selectedImage" />
+      <label for="task-source">タスク内容</label>
+      <input id="task-source" type="text" value="分解する" />
+      <button type="button" data-event-listener="onClickOrchestration">run</button>
     </section>
     <div class="result-container">
       <div contenteditable="plaintext-only" class="output"></div>

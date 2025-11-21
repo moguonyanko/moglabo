@@ -74,9 +74,8 @@ const clearOutput = () => {
 }
 
 const changeListeners = {
-  selectedImage: () => {
+  selectedImage: fileInput => {
     window.dispatchEvent(new CustomEvent('cleardisplay'))
-    const fileInput = document.getElementById('selected-files')
     Array.from(fileInput.files).forEach(file => {
       const img = document.createElement('img')
       img.src = URL.createObjectURL(file)
@@ -142,6 +141,31 @@ const clickListeners = {
   },
   redrawBbox: () => {
     window.dispatchEvent(new CustomEvent('updatedisplay', { detail: previewResult }))
+  },
+  onClickOrchestration: async () => {
+    const fileInput = document.getElementById('orchestration-target-file')
+    if (!fileInput.files.length) {
+      return
+    }
+    const taskSource = document.getElementById('task-source').value
+
+    // ひとまず一つのファイルからタスクの説明を生成させる。
+    const file = fileInput.files[0]
+    const formData = new FormData()
+    formData.append('files', file)
+    formData.append('task_source', JSON.stringify([taskSource]))
+    const api_url = '/brest/genaiapi/generate/robotics/task-orchestration'
+    
+    try {
+      const response = await fetch(api_url, {
+        method: 'POST',
+        body: formData
+      })
+      const result = await response.json()
+      updateOutput(result)
+    } catch (e) {
+      window.dispatchEvent(new CustomEvent('genaierror', { detail: e }))
+    }
   }
 }
 
@@ -170,7 +194,7 @@ const init = () => {
   main.addEventListener('change', event => {
     const { eventListener } = event.target.dataset
     if (typeof changeListeners[eventListener] === 'function') {
-      changeListeners[eventListener]()
+      changeListeners[eventListener](event.target)
     }
   })
 
