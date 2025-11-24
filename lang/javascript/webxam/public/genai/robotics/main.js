@@ -36,7 +36,7 @@ class SelectedImageLayer extends AbstractLayer {
   }
 }
 
-class BoundingBoxLayer extends AbstractLayer {
+class DrawingLayer extends AbstractLayer {
   constructor(canvas) {
     super(canvas)
   }
@@ -173,7 +173,7 @@ const init = () => {
   imageLayer = new SelectedImageLayer(
     document.getElementById('selected-image')
   )
-  bboxLayer = new BoundingBoxLayer(
+  bboxLayer = new DrawingLayer(
     document.getElementById('bounding-box-layer')
   )
 
