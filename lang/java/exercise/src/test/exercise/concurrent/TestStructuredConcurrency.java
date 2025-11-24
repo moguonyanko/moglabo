@@ -2,6 +2,7 @@ package test.exercise.concurrent;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.StructuredTaskScope.*;
 import java.util.stream.*;
 
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class TestStructuredConcurrency {
 
     private static class SCRandomTasks {
 
-        public Integer randomTask(int maxDuration, int threshold)
+        public int randomTask(int maxDuration, int threshold)
                 throws InterruptedException, TooSlowException {
             var t = new Random().nextInt(maxDuration);
 
@@ -36,33 +37,46 @@ public class TestStructuredConcurrency {
 
             Thread.sleep(t);
 
-            return Integer.valueOf(t);
+            return t;
+        }
+
+        private int getResult(List<Subtask<Integer>> subtasks) {
+            var totalDuration = subtasks.stream()
+                    .map(t -> t.get())
+                    .reduce(0, Integer::sum);
+
+            return totalDuration;
         }
 
         void handleShutdownOnFailure() throws ExecutionException, InterruptedException {
-            try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+            try (var scope = StructuredTaskScope.open()) {
                 // var t = new SCRandomTasks();
                 var subtasks = IntStream.range(0, 5)
                         .mapToObj(i -> scope.fork(() -> randomTask(1000, 850)))
                         .toList();
 
-                scope.join().throwIfFailed();
+                if (scope.isCancelled()) {
+                    throw new InterruptedException("タスクはキャンセルされました。");
+                }
 
-                var totalDuration = subtasks.stream()
-                        .map(t -> t.get())
-                        .reduce(0, Integer::sum);
+                scope.join();
 
-                System.out.println("Total duration: " + totalDuration);
+                var totalDuration = getResult(subtasks);
+
+                System.out.println("handleShutdownOnFailure task to finish: " + totalDuration);
             }
         }
 
         void handleShutdownOnSuccess() throws ExecutionException, InterruptedException {
-            try (var scope = new StructuredTaskScope.ShutdownOnSuccess()) {
-                IntStream.range(0, 5)
+            try (var scope = StructuredTaskScope.open()) {
+                var subtasks = IntStream.range(0, 5)
                         .mapToObj(i -> scope.fork(() -> randomTask(1000, 850)))
                         .toList();
                 scope.join();
-                System.out.println("First task to finish: " + scope.result());
+
+                var totalDuration = getResult(subtasks);
+
+                System.out.println("handleShutdownOnSuccess task to finish: " + totalDuration);
             }
         }
 
