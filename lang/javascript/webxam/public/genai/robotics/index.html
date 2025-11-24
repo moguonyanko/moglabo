@@ -36,12 +36,13 @@
       <label for="task-source">タスク内容</label>
       <input id="task-source" type="text" value="分解する" />
       <button type="button" data-event-listener="onClickOrchestration">run</button>
+      <button type="button" data-event-listener="redrawObjects">redraw objects</button>
     </section>
     <div class="result-container">
       <div contenteditable="plaintext-only" class="output"></div>
       <div class="canvas-container">
         <canvas class="layer" id="selected-image"></canvas>
-        <canvas class="layer" id="bounding-box-layer"></canvas>
+        <canvas class="layer" id="drawing-layer"></canvas>
       </div>
     </div>
   </main>

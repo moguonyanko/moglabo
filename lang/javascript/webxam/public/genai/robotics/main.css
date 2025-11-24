@@ -14,7 +14,7 @@
   left: 0;
 }
 
-#bounding-box-layer {
+#drawing-layer {
   /* z-indexを使用して、rectをimageよりも手前に配置します */
   /* z-indexの値が大きいほど手前に表示されます */
   z-index: 2; 

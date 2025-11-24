@@ -3,8 +3,7 @@
  */
 
 let imageLayer = null
-let bboxLayer = null
-let previewResult = null
+let drawingLayer = null
 
 class AbstractLayer {
   constructor(canvas) {
@@ -58,6 +57,28 @@ class DrawingLayer extends AbstractLayer {
       this.ctx.strokeRect(xmin, ymin, width, height)
     })
   }
+
+  drawPoints(objects = []) {
+    const { width: imgWidth, height: imgHeight } = imageLayer.size
+    this.canvas.width = imgWidth
+    this.canvas.height = imgHeight
+
+    this.ctx.lineWidth = 2
+    this.ctx.font = 'bold 0.8rem serif'
+
+    objects.forEach(obj => {
+      const { point, action, index, label } = obj
+      const [y, x] = point
+      this.ctx.beginPath()
+      this.ctx.fillStyle = 'blue'
+      this.ctx.arc(x, y, 10, 0, 2 * Math.PI)
+      this.ctx.fill()
+      this.ctx.fillStyle = 'red'
+      if (label && action) {
+        this.ctx.fillText(`[${index}]${label}:${action}`, x + 8, y - 8)
+      }
+    })
+  }
 }
 
 const updateOutput = result => {
@@ -91,7 +112,7 @@ const changeListeners = {
 const updateDisplayListeners = {
   updateBoundingBox: result => {
     updateOutput(result)
-    bboxLayer.clear()
+    drawingLayer.clear()
     const bbox_list = []
     for (let name in result) {
       const res = result[name]
@@ -99,15 +120,33 @@ const updateDisplayListeners = {
         bbox_list.push(res[i].bounding_box)
       }
     }
-    bboxLayer.draw(bbox_list)
+    drawingLayer.draw(bbox_list)
   }
 }
 
+const updateObjectsDisplayListeners = {
+  updateObjects: objects => {
+    updateOutput(objects)
+    drawingLayer.clear()
+    const objs = Object.values(objects).flat().map((obj, index) => {
+      /**
+       * ここでobjectsのプロパティを変更すると、元のオブジェクトも変更されてしまうため、
+       * 新しいオブジェクトを生成してからindexを追加している。
+       */
+      return Object.assign({ index }, obj)
+    })
+    drawingLayer.drawPoints(objs)
+  }
+}
+
+let previewBoxList, previewObjectList = {}
+
 const clearDisplayListeners = {
   clearBoundingBox: () => {
-    bboxLayer.clear()
+    previewBoxList = {}
+    previewObjectList = {}
+    drawingLayer.clear()
     imageLayer.clear()
-    previewResult = null
     clearOutput()
   }
 }
@@ -133,14 +172,16 @@ const clickListeners = {
         method: 'POST',
         body: formData
       })
-      previewResult = await response.json()
-      window.dispatchEvent(new CustomEvent('updatedisplay', { detail: previewResult }))
+      previewBoxList = await response.json()
+      window.dispatchEvent(new CustomEvent('updatedisplay', 
+        { detail: previewBoxList }))
     } catch (e) {
       window.dispatchEvent(new CustomEvent('genaierror', { detail: e }))
     }
   },
   redrawBbox: () => {
-    window.dispatchEvent(new CustomEvent('updatedisplay', { detail: previewResult }))
+    window.dispatchEvent(new CustomEvent('updatedisplay', 
+      { detail: previewBoxList }))
   },
   onClickOrchestration: async () => {
     const fileInput = document.getElementById('orchestration-target-file')
@@ -155,17 +196,22 @@ const clickListeners = {
     formData.append('files', file)
     formData.append('task_source', JSON.stringify([taskSource]))
     const api_url = '/brest/genaiapi/generate/robotics/task-orchestration'
-    
+
     try {
       const response = await fetch(api_url, {
         method: 'POST',
         body: formData
       })
-      const result = await response.json()
-      updateOutput(result)
+      previewObjectList = await response.json()
+      window.dispatchEvent(new CustomEvent('updateobjects', 
+        { detail: previewObjectList }))
     } catch (e) {
       window.dispatchEvent(new CustomEvent('genaierror', { detail: e }))
     }
+  },
+  redrawObjects: () => {
+    window.dispatchEvent(new CustomEvent('updateobjects', 
+      { detail: previewObjectList }))
   }
 }
 
@@ -173,8 +219,8 @@ const init = () => {
   imageLayer = new SelectedImageLayer(
     document.getElementById('selected-image')
   )
-  bboxLayer = new DrawingLayer(
-    document.getElementById('bounding-box-layer')
+  drawingLayer = new DrawingLayer(
+    document.getElementById('drawing-layer')
   )
 
   const main = document.querySelector('main')
@@ -200,6 +246,11 @@ const init = () => {
 
   window.addEventListener('updatedisplay', event => {
     Object.values(updateDisplayListeners)
+      .forEach(listener => listener(event.detail))
+  })
+
+  window.addEventListener('updateobjects', event => {
+    Object.values(updateObjectsDisplayListeners)
       .forEach(listener => listener(event.detail))
   })
 
