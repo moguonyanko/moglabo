@@ -5,6 +5,10 @@
 let imageLayer = null
 let drawingLayer = null
 
+let previewBoxList = {}
+let previewPointList = {}
+
+
 class AbstractLayer {
   constructor(canvas) {
     this.canvas = canvas
@@ -96,7 +100,7 @@ const clearOutput = () => {
 
 const changeListeners = {
   selectedImage: fileInput => {
-    window.dispatchEvent(new CustomEvent('cleardisplay'))
+    window.dispatchEvent(new CustomEvent('clear'))
     Array.from(fileInput.files).forEach(file => {
       const img = document.createElement('img')
       img.src = URL.createObjectURL(file)
@@ -109,8 +113,8 @@ const changeListeners = {
   }
 }
 
-const updateDisplayListeners = {
-  updateBoundingBox: result => {
+const updateBboxListeners = {
+  updateBbox: result => {
     updateOutput(result)
     drawingLayer.clear()
     const bbox_list = []
@@ -124,8 +128,8 @@ const updateDisplayListeners = {
   }
 }
 
-const updateObjectsDisplayListeners = {
-  updateObjects: objects => {
+const updatePointsListeners = {
+  updatePoints: objects => {
     updateOutput(objects)
     drawingLayer.clear()
     const objs = Object.values(objects).flat().map((obj, index) => {
@@ -139,12 +143,10 @@ const updateObjectsDisplayListeners = {
   }
 }
 
-let previewBoxList, previewObjectList = {}
-
-const clearDisplayListeners = {
-  clearBoundingBox: () => {
+const clearListeners = {
+  clearAll: () => {
     previewBoxList = {}
-    previewObjectList = {}
+    previewPointList = {}
     drawingLayer.clear()
     imageLayer.clear()
     clearOutput()
@@ -173,14 +175,14 @@ const clickListeners = {
         body: formData
       })
       previewBoxList = await response.json()
-      window.dispatchEvent(new CustomEvent('updatedisplay', 
+      window.dispatchEvent(new CustomEvent('updatebbox',
         { detail: previewBoxList }))
     } catch (e) {
       window.dispatchEvent(new CustomEvent('genaierror', { detail: e }))
     }
   },
   redrawBbox: () => {
-    window.dispatchEvent(new CustomEvent('updatedisplay', 
+    window.dispatchEvent(new CustomEvent('updatebbox',
       { detail: previewBoxList }))
   },
   onClickOrchestration: async () => {
@@ -202,16 +204,16 @@ const clickListeners = {
         method: 'POST',
         body: formData
       })
-      previewObjectList = await response.json()
-      window.dispatchEvent(new CustomEvent('updateobjects', 
-        { detail: previewObjectList }))
+      previewPointList = await response.json()
+      window.dispatchEvent(new CustomEvent('updatepoints',
+        { detail: previewPointList }))
     } catch (e) {
       window.dispatchEvent(new CustomEvent('genaierror', { detail: e }))
     }
   },
   redrawObjects: () => {
-    window.dispatchEvent(new CustomEvent('updateobjects', 
-      { detail: previewObjectList }))
+    window.dispatchEvent(new CustomEvent('updatepoints',
+      { detail: previewPointList }))
   }
 }
 
@@ -244,18 +246,18 @@ const init = () => {
     }
   })
 
-  window.addEventListener('updatedisplay', event => {
-    Object.values(updateDisplayListeners)
+  window.addEventListener('updatebbox', event => {
+    Object.values(updateBboxListeners)
       .forEach(listener => listener(event.detail))
   })
 
-  window.addEventListener('updateobjects', event => {
-    Object.values(updateObjectsDisplayListeners)
+  window.addEventListener('updatepoints', event => {
+    Object.values(updatePointsListeners)
       .forEach(listener => listener(event.detail))
   })
 
-  window.addEventListener('cleardisplay', () => {
-    Object.values(clearDisplayListeners)
+  window.addEventListener('clear', () => {
+    Object.values(clearListeners)
       .forEach(listener => listener())
   })
 
