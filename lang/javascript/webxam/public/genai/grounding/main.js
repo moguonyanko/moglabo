@@ -30,7 +30,7 @@ const listeners = {
     const baseClass = '.generation-text-with-grounding'
     const output = document.querySelector(`${baseClass} .output`)
     output.textContent = ''
-    const api_url = '/brest/genaiapi/generate/price-prediction/'
+    const api_url = '/brest/genaiapi/generate/price-prediction'
 
     const contents = getRequestItemJson()
     const req = createGenaiRequest({ api_url })
