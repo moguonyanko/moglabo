@@ -22,6 +22,8 @@ const Parser = require('expr-eval-fork').Parser;
 const childProcess = require('child_process');
 const fs = require('fs');
 
+const forge = require('node-forge')
+
 const app = express();
 // signed cookieを使用するにはsecret指定が必須
 app.use(cookieParser('secret'));
@@ -238,6 +240,43 @@ app.get(`${practiceNodeRoot}expr-eval-evil`, cors(corsCheck),
       legal_result,
       illegal_result
     })
+  })
+
+/**
+ * 参考:
+ * https://github.com/digitalbazaar/forge/issues/1116
+ */
+app.get(`${practiceNodeRoot}forge-inspection`, cors(corsCheck),
+  async (request, response) => {
+    response.setHeader('Cache-Control', 'no-cache')
+    response.setHeader('Content-Type', 'application/json')
+
+    const str_to_bytes  = (str) => {
+      let encoder = new TextEncoder('utf-8');
+      return encoder.encode(str);
+    }
+
+    const bytes_to_str = (bytes) => { // new Uint8Array([...
+      let decoder = new TextDecoder('utf-8');
+      return decoder.decode(bytes);
+    }
+
+    const key = bytes_to_str(new Uint8Array([34, 74, 12, 214, 126, 234, 101, 147, 13, 32, 244, 185, 45, 217, 142, 33, 213, 116, 63, 179, 84, 23, 138, 187, 134, 130, 234, 54, 48, 66, 20, 152]));
+    const iv = bytes_to_str(new Uint8Array([62, 133, 213, 219, 194, 200, 76, 142, 202, 16, 12, 237, 163, 147, 65, 93]));
+    
+    var cipher = forge.cipher.createCipher('AES-CBC', key);
+    cipher.start({iv: iv});
+    cipher.update(forge.util.createBuffer("12345678"));
+    cipher.finish();
+    var encrypted = cipher.output;
+    console.log('encrypted = ', encrypted.data);
+    console.log('encrypted = ', str_to_bytes(encrypted.data));
+
+    const result = {
+      encrypted: str_to_bytes(encrypted.data)
+    }
+
+    return response.json(result)
   })
 
 app.use(`${practiceNodeRoot}public`, express.static(__dirname + `/public`))
