@@ -3,15 +3,14 @@
  */
 
 const listeners = {
-  onExecuteButtonClicked: async () => {
-    const url = '/webxam/apps/practicenode/forge-inspection'
+  onCipherErrorButtonClicked: async () => {
+    const url = '/webxam/apps/practicenode/forge-cipher-error-with-aescbc'
 
     const response = await fetch(url)
     const result = await response.json()
 
-    const output = document.querySelector('.forge-sample .output')
+    const output = document.querySelector('.forge-simple-sample .output')
     output.textContent = JSON.stringify(result)
-
   }
 }
 
