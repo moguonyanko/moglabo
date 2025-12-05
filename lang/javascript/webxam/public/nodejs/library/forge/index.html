@@ -11,15 +11,22 @@
 
 <body>
   <header>
-    <a href="../../">home</a>
+    <a href="../../../">home</a>
     <h1>forge</h1>
   </header>
 
   <main>
     <section class="forge-simple-sample">
       <h2>脆弱性の動作確認</h2>
-      <button data-event-listener="onCipherErrorButtonClicked">AES-CBC指定時にエラーになる</button>
-      <button data-event-listener="onCipherInvalidValueClicked">AES-CBC指定時に生成される値が正しくない</button>
+      <div>
+        <label for="source-text">暗号化対象のテキスト</label>
+        <input id="source-text" type="text" value="12345678" />
+      </div>
+      <div>
+        <button data-event-listener="onCipherErrorButtonClicked">AES-CBC指定時にエラーになる</button>
+        <button data-event-listener="onCipherInvalidValueClicked">AES-CBC指定時に生成される値が正しくない</button>
+        <button data-event-listener="onCipherWebCryptoApiClicked">AES-CBCをWebCryptoAPIで使う</button>
+      </div>
       <div class="output"></div>
     </section>
   </main>
@@ -27,7 +34,8 @@
   <footer>
     <h3>参考</h3>
     <ul>
-      <li><a href="https://github.com/digitalbazaar/forge/issues/1116">looks like AES256_CBC works invalid or not works at all #1116</a></li>
+      <li><a href="https://github.com/digitalbazaar/forge/issues/1116">looks like AES256_CBC works invalid or not works
+          at all #1116</a></li>
       <li><a href="https://www.npmjs.com/package/node-forge?activeTab=readme">node-forge</a></li>
     </ul>
   </footer>

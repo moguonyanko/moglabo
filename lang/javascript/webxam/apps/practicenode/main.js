@@ -23,6 +23,9 @@ const childProcess = require('child_process');
 const fs = require('fs');
 
 const forge = require('node-forge');
+const { webcrypto } = require('node:crypto');
+const subtle = webcrypto.subtle;
+
 const e = require('express');
 
 const app = express();
@@ -244,16 +247,18 @@ app.get(`${practiceNodeRoot}expr-eval-evil`, cors(corsCheck),
   })
 
 const str_to_bytes = str => {
-  const encoder = new TextEncoder('utf-8')
+  // UTF-8エンコードで文字列をバイト列に変換
+  const encoder = new TextEncoder()
   return encoder.encode(str)
 }
 
-function throw_error_with_forge_aescbc() {
-  const bytes_to_str = bytes => {
-    const decoder = new TextDecoder('utf-8')
-    return decoder.decode(bytes)
-  }
+const bytes_to_str = bytes => {
+  // バイト列をUTF-8デコードで文字列に変換
+  const decoder = new TextDecoder()
+  return decoder.decode(bytes)
+}
 
+function throw_error_with_forge_aescbc() {
   const key = bytes_to_str(new Uint8Array([34, 74, 12, 214, 126, 234, 101, 147, 13, 32, 244, 185, 45, 217, 142, 33, 213, 116, 63, 179, 84, 23, 138, 187, 134, 130, 234, 54, 48, 66, 20, 152]))
   const initialVector = bytes_to_str(new Uint8Array([62, 133, 213, 219, 194, 200, 76, 142, 202, 16, 12, 237, 163, 147, 65, 93]))
 
@@ -292,21 +297,52 @@ app.get(`${practiceNodeRoot}forge-cipher-error-with-aescbc`, cors(corsCheck),
     }
   })
 
-const get_invalid_value_with_forge_aescbc = () => {
+const get_invalid_value_with_forge_aescbc = sourceText => {
   // 32バイトの鍵
   const key = forge.util.createBuffer(new Uint8Array([34, 74, 12, 214, 126, 234, 101, 147, 13, 32, 244, 185, 45, 217, 142, 33, 213, 116, 63, 179, 84, 23, 138, 187, 134, 130, 234, 54, 48, 66, 20, 152]))
   // 16バイトのIV
   const iv = forge.util.createBuffer(new Uint8Array([62, 133, 213, 219, 194, 200, 76, 142, 202, 16, 12, 237, 163, 147, 65, 93]))
   const cipher = forge.cipher.createCipher('AES-CBC', key)
   cipher.start({ iv })
-  cipher.update(forge.util.createBuffer("12345678"))
+  cipher.update(forge.util.createBuffer(sourceText))
   cipher.finish()
   const encrypted = cipher.output
 
-  console.log('encrypted = ', encrypted.data)
-  console.log('encrypted = ', str_to_bytes(encrypted.data))
-
   return encrypted
+}
+
+async function encrypt_with_webcrypto(sourceText) {
+  // 1. 鍵とIVの準備
+  // 文字列変換を経由せず、Uint8Array（バイナリ）のまま扱います
+  const keyRaw = new Uint8Array([34, 74, 12, 214, 126, 234, 101, 147, 13, 32, 244, 185, 45, 217, 142, 33, 213, 116, 63, 179, 84, 23, 138, 187, 134, 130, 234, 54, 48, 66, 20, 152]);
+  const iv = new Uint8Array([62, 133, 213, 219, 194, 200, 76, 142, 202, 16, 12, 237, 163, 147, 65, 93]);
+
+  const dataToEncrypt = str_to_bytes(sourceText);
+
+  // 2. 鍵のインポート
+  // 生のバイト列からCryptoKeyオブジェクトを作成します
+  const key = await subtle.importKey(
+    "raw",
+    keyRaw,
+    { name: "AES-CBC" },
+    false, // 鍵のエクスポートを許可するか
+    ["encrypt"]
+  );
+
+  // 3. 暗号化の実行
+  // 自動的にPKCS#7パディングが適用されます
+  const encryptedBuffer = await subtle.encrypt(
+    {
+      name: "AES-CBC",
+      iv: iv
+    },
+    key,
+    dataToEncrypt
+  )
+
+  const encryptedBytes = new Uint8Array(encryptedBuffer)
+
+  return encryptedBytes;
 }
 
 app.get(`${practiceNodeRoot}forge-cipher-invalid-value-with-aescbc`, cors(corsCheck),
@@ -314,8 +350,13 @@ app.get(`${practiceNodeRoot}forge-cipher-invalid-value-with-aescbc`, cors(corsCh
     response.setHeader('Cache-Control', 'no-cache')
     response.setHeader('Content-Type', 'application/json')
 
+    const { source } = request.query
+
     try {
-      const encrypted = get_invalid_value_with_forge_aescbc()
+      const encrypted = get_invalid_value_with_forge_aescbc(source)
+      console.log('encrypted (bytes) = ', encrypted.data)
+      console.log('encrypted (length) = ', str_to_bytes(encrypted.data))
+
       const encryptedBytes = str_to_bytes(encrypted.data)
       const result = {
         encryptedBytes,
@@ -332,6 +373,32 @@ app.get(`${practiceNodeRoot}forge-cipher-invalid-value-with-aescbc`, cors(corsCh
     }
   })
 
+app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
+  async (request, response) => {
+    response.setHeader('Cache-Control', 'no-cache')
+    response.setHeader('Content-Type', 'application/json')
+
+    const { source } = request.query
+
+    try {
+      const encryptedBytes = await encrypt_with_webcrypto(source)
+
+      console.log('encrypted (bytes) = ', encryptedBytes)
+      console.log('encrypted (length) = ', encryptedBytes.length)
+
+      const result = {
+        encryptedBytes: Array.from(encryptedBytes),
+        encryptedLength: encryptedBytes.length
+      }
+      return response.json(result)
+    } catch (err) {
+      console.error(err)
+      response.status(500)
+      return response.json({
+        error: err.message
+      })
+    }
+  })
 
 app.use(`${practiceNodeRoot}public`, express.static(__dirname + `/public`))
 
