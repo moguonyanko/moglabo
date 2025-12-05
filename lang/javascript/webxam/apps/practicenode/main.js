@@ -22,7 +22,8 @@ const Parser = require('expr-eval-fork').Parser;
 const childProcess = require('child_process');
 const fs = require('fs');
 
-const forge = require('node-forge')
+const forge = require('node-forge');
+const e = require('express');
 
 const app = express();
 // signed cookieを使用するにはsecret指定が必須
@@ -242,12 +243,12 @@ app.get(`${practiceNodeRoot}expr-eval-evil`, cors(corsCheck),
     })
   })
 
-function throw_error_with_forge_aescbc() {
-  const str_to_bytes = str => {
-    const encoder = new TextEncoder('utf-8')
-    return encoder.encode(str)
-  }
+const str_to_bytes = str => {
+  const encoder = new TextEncoder('utf-8')
+  return encoder.encode(str)
+}
 
+function throw_error_with_forge_aescbc() {
   const bytes_to_str = bytes => {
     const decoder = new TextDecoder('utf-8')
     return decoder.decode(bytes)
@@ -288,8 +289,49 @@ app.get(`${practiceNodeRoot}forge-cipher-error-with-aescbc`, cors(corsCheck),
       return response.json({
         error: err.message
       })
-    } 
+    }
   })
+
+const get_invalid_value_with_forge_aescbc = () => {
+  // 32バイトの鍵
+  const key = forge.util.createBuffer(new Uint8Array([34, 74, 12, 214, 126, 234, 101, 147, 13, 32, 244, 185, 45, 217, 142, 33, 213, 116, 63, 179, 84, 23, 138, 187, 134, 130, 234, 54, 48, 66, 20, 152]))
+  // 16バイトのIV
+  const iv = forge.util.createBuffer(new Uint8Array([62, 133, 213, 219, 194, 200, 76, 142, 202, 16, 12, 237, 163, 147, 65, 93]))
+  const cipher = forge.cipher.createCipher('AES-CBC', key)
+  cipher.start({ iv })
+  cipher.update(forge.util.createBuffer("12345678"))
+  cipher.finish()
+  const encrypted = cipher.output
+
+  console.log('encrypted = ', encrypted.data)
+  console.log('encrypted = ', str_to_bytes(encrypted.data))
+
+  return encrypted
+}
+
+app.get(`${practiceNodeRoot}forge-cipher-invalid-value-with-aescbc`, cors(corsCheck),
+  async (request, response) => {
+    response.setHeader('Cache-Control', 'no-cache')
+    response.setHeader('Content-Type', 'application/json')
+
+    try {
+      const encrypted = get_invalid_value_with_forge_aescbc()
+      const encryptedBytes = str_to_bytes(encrypted.data)
+      const result = {
+        encryptedBytes,
+        // AES-CBCなのに16バイトになっていない不正な値になっている。
+        encryptedLength: str_to_bytes(encrypted.data).length
+      }
+      return response.json(result)
+    } catch (err) {
+      console.error(err)
+      response.status(500)
+      return response.json({
+        error: err.message
+      })
+    }
+  })
+
 
 app.use(`${practiceNodeRoot}public`, express.static(__dirname + `/public`))
 

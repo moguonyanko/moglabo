@@ -11,6 +11,17 @@ const listeners = {
 
     const output = document.querySelector('.forge-simple-sample .output')
     output.textContent = JSON.stringify(result)
+  },
+  onCipherInvalidValueClicked: async () => {
+    const url = '/webxam/apps/practicenode/forge-cipher-invalid-value-with-aescbc'
+    
+    const response = await fetch(url)
+    const result = await response.json()
+    console.log(result)
+    const { encryptedLength } = result
+
+    const output = document.querySelector('.forge-simple-sample .output')
+    output.textContent = `16バイトになるはずだが、${encryptedLength}バイトになっている。`
   }
 }
 
