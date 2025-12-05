@@ -311,40 +311,6 @@ const get_invalid_value_with_forge_aescbc = sourceText => {
   return encrypted
 }
 
-async function encrypt_with_webcrypto(sourceText) {
-  // 1. 鍵とIVの準備
-  // 文字列変換を経由せず、Uint8Array（バイナリ）のまま扱います
-  const keyRaw = new Uint8Array([34, 74, 12, 214, 126, 234, 101, 147, 13, 32, 244, 185, 45, 217, 142, 33, 213, 116, 63, 179, 84, 23, 138, 187, 134, 130, 234, 54, 48, 66, 20, 152]);
-  const iv = new Uint8Array([62, 133, 213, 219, 194, 200, 76, 142, 202, 16, 12, 237, 163, 147, 65, 93]);
-
-  const dataToEncrypt = str_to_bytes(sourceText);
-
-  // 2. 鍵のインポート
-  // 生のバイト列からCryptoKeyオブジェクトを作成します
-  const key = await subtle.importKey(
-    "raw",
-    keyRaw,
-    { name: "AES-CBC" },
-    false, // 鍵のエクスポートを許可するか
-    ["encrypt"]
-  );
-
-  // 3. 暗号化の実行
-  // 自動的にPKCS#7パディングが適用されます
-  const encryptedBuffer = await subtle.encrypt(
-    {
-      name: "AES-CBC",
-      iv: iv
-    },
-    key,
-    dataToEncrypt
-  )
-
-  const encryptedBytes = new Uint8Array(encryptedBuffer)
-
-  return encryptedBytes;
-}
-
 app.get(`${practiceNodeRoot}forge-cipher-invalid-value-with-aescbc`, cors(corsCheck),
   async (request, response) => {
     response.setHeader('Cache-Control', 'no-cache')
@@ -359,7 +325,8 @@ app.get(`${practiceNodeRoot}forge-cipher-invalid-value-with-aescbc`, cors(corsCh
 
       const encryptedBytes = str_to_bytes(encrypted.data)
       const result = {
-        encryptedBytes,
+        encryptedBytes: Array.from(encryptedBytes),
+        encryptedBuffer: bytesToBase64(encryptedBytes),
         // AES-CBCなのに16バイトになっていない不正な値になっている。
         encryptedLength: str_to_bytes(encrypted.data).length
       }
@@ -373,6 +340,57 @@ app.get(`${practiceNodeRoot}forge-cipher-invalid-value-with-aescbc`, cors(corsCh
     }
   })
 
+const bytesToBase64 = bytes => {
+  // Uint8ArrayからBufferを作成し、Base64形式で文字列化
+  return Buffer.from(bytes).toString('base64')
+}
+
+const base64ToUint8Array = base64 => {
+  // 1. Bufferを使ってBase64デコードし、Bufferオブジェクトを得る
+  const buffer = Buffer.from(base64, 'base64')
+  // 2. Bufferの内部メモリを共有してUint8Arrayを作成（効率的）
+  return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength)
+}
+
+const webcryptoConfig = {
+  keyRaw: new Uint8Array([34, 74, 12, 214, 126, 234, 101, 147, 13, 32, 244, 185, 45, 217, 142, 33, 213, 116, 63, 179, 84, 23, 138, 187, 134, 130, 234, 54, 48, 66, 20, 152]),
+  iv: new Uint8Array([62, 133, 213, 219, 194, 200, 76, 142, 202, 16, 12, 237, 163, 147, 65, 93]),
+  name: "AES-CBC"
+}
+
+const encryptWithWebCryptoApi = async sourceText => {
+  // 1. 鍵とIVの準備
+  // 文字列変換を経由せず、Uint8Array（バイナリ）のまま扱います
+  const { keyRaw, iv, name } = webcryptoConfig
+
+  const dataToEncrypt = str_to_bytes(sourceText);
+
+  // 2. 鍵のインポート
+  // 生のバイト列からCryptoKeyオブジェクトを作成します
+  const key = await subtle.importKey(
+    "raw",
+    keyRaw,
+    { name },
+    false, // 鍵のエクスポートを許可するか
+    ["encrypt"]
+  )
+
+  // 3. 暗号化の実行
+  // 自動的にPKCS#7パディングが適用されます
+  const encryptedBuffer = await subtle.encrypt(
+    {
+      name: "AES-CBC",
+      iv: iv
+    },
+    key,
+    dataToEncrypt
+  )
+
+  const encryptedBytes = new Uint8Array(encryptedBuffer)
+
+  return encryptedBytes
+}
+
 app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
   async (request, response) => {
     response.setHeader('Cache-Control', 'no-cache')
@@ -381,13 +399,14 @@ app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
     const { source } = request.query
 
     try {
-      const encryptedBytes = await encrypt_with_webcrypto(source)
+      const encryptedBytes = await encryptWithWebCryptoApi(source)
 
       console.log('encrypted (bytes) = ', encryptedBytes)
       console.log('encrypted (length) = ', encryptedBytes.length)
 
       const result = {
         encryptedBytes: Array.from(encryptedBytes),
+        encryptedBuffer: bytesToBase64(encryptedBytes),
         encryptedLength: encryptedBytes.length
       }
       return response.json(result)
@@ -399,6 +418,56 @@ app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
       })
     }
   })
+
+const decryptWithWebCryptoApi = async encryptedBuffer => {
+  const { keyRaw, iv, name } = webcryptoConfig
+
+  const key = await subtle.importKey(
+    "raw",
+    keyRaw,
+    { name },
+    false,
+    ["encrypt", "decrypt"] // 権限に "decrypt" を追加
+  )
+
+  // 復号の実行
+  const decryptedBuffer = await subtle.decrypt(
+    { name, iv }, // 暗号化時と全く同じアルゴリズムとIVを使用
+    key,
+    encryptedBuffer // 暗号化されたバイト列
+  )
+
+  const decryptedBytes = new Uint8Array(decryptedBuffer)
+  const originalText = bytes_to_str(decryptedBytes)
+
+  return originalText;
+}
+
+app.post(`${practiceNodeRoot}webcryptoapi-decipher-with-aescbc`, cors(corsCheck),
+  async (request, response) => {
+    response.setHeader('Cache-Control', 'no-cache')
+    response.setHeader('Content-Type', 'application/json')
+
+    const source = request.body.source
+    const encryptedBuffer = base64ToUint8Array(source)
+
+    try {
+      const decryptedText = await decryptWithWebCryptoApi(encryptedBuffer)
+      console.log('Original Text:', decryptedText)
+
+      const result = {
+        decryptedText
+      }
+      return response.json(result)
+    } catch (err) {
+      console.error(err)
+      response.status(500)
+      return response.json({
+        error: err.message
+      })
+    }
+  })
+
 
 app.use(`${practiceNodeRoot}public`, express.static(__dirname + `/public`))
 
