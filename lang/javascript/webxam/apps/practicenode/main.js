@@ -356,7 +356,9 @@ const base64ToUint8Array = base64 => {
 }
 
 const webcryptoConfig = {
-  name: "AES-CBC"
+  name: "AES-GCM",
+  ivLength: 12,
+  tagLength: 128
 }
 
 // 秘密鍵は環境変数で管理している。KMSで管理するのが理想的と思われる。
@@ -400,8 +402,7 @@ const initWebCryptoApiSecretKey = async () => {
 }
 
 const getInitialVector = () => {
-  // このサンプルではAES-CBCを使うので16バイトで固定。
-  return webcrypto.getRandomValues(new Uint8Array(16))
+  return webcrypto.getRandomValues(new Uint8Array(webcryptoConfig.ivLength))
 }
 
 const encryptWithWebCryptoApi = async sourceText => {
@@ -412,11 +413,12 @@ const encryptWithWebCryptoApi = async sourceText => {
   const dataToEncrypt = str_to_bytes(sourceText)
 
   // 2. 暗号化の実行
-  // 自動的にPKCS#7パディングが適用されます
+  // AES-GCMはブロック暗号ではなくストリーム暗号なのでPKCS#7パディングが適用されません。
   const encryptedBuffer = await subtle.encrypt(
     {
       name: webcryptoConfig.name,
-      iv
+      iv,
+      tagLength: webcryptoConfig.tagLength
     },
     WEBCRYPTOAPI_SECRET_KEY,
     dataToEncrypt
@@ -459,7 +461,11 @@ app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
 const decryptWithWebCryptoApi = async (encryptedBuffer, iv) => {
   // 復号の実行
   const decryptedBuffer = await subtle.decrypt(
-    { name: webcryptoConfig.name, iv }, // 暗号化時と全く同じアルゴリズムとIVを使用
+    { 
+      name: webcryptoConfig.name, 
+      iv, // 暗号化時と全く同じアルゴリズムとIVを使用
+      tagLength: webcryptoConfig.tagLength
+    },
     WEBCRYPTOAPI_SECRET_KEY,
     encryptedBuffer // 暗号化されたバイト列
   )

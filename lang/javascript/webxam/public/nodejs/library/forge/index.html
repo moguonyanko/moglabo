@@ -32,13 +32,14 @@
         <button data-event-listener="onCipherErrorButtonClicked">AES-CBC指定時にエラーになる</button>
         <button data-event-listener="onCipherInvalidValueClicked">AES-CBC指定時に生成される値が正しくない</button>
       </div>
+      <p>WebCryptoAPIではAES-CBCやAES-GCMが問題なく扱える。</p>
       <div>
         <p>暗号化(WebCryptoAPI)</p>
-        <button data-event-listener="onCipherWebCryptoApiClicked">AES-CBCをWebCryptoAPIで使う</button>
+        <button data-event-listener="onCipherWebCryptoApiClicked">AES-GCMをWebCryptoAPIで使う</button>
       </div>
       <div>
         <p>復号化(WebCryptoAPI)</p>
-        <button data-event-listener="onDeCipherWebCryptoApiClicked">AES-CBCをWebCryptoAPIで使う</button>
+        <button data-event-listener="onDeCipherWebCryptoApiClicked">AES-GCMをWebCryptoAPIで使う</button>
       </div>
       <div class="output"></div>
     </section>
