@@ -373,7 +373,20 @@ const generateSecretKeyBytes = async name => {
 }
 
 const initWebCryptoApiSecretKey = async () => {
-  const keyRaw = await generateSecretKeyBytes(webcryptoConfig.name)
+  const keyBase64 = process.env.WEBCRYPTOAPI_ENCRYPTION_KEY
+  if (!keyBase64) {
+    throw new Error('WEBCRYPTOAPI_ENCRYPTION_KEYが環境変数から得られませんでした。')
+  }
+
+  // 環境変数から取得するので内部の関数で生成する必要は無い。
+  // const keyRaw = await generateSecretKeyBytes(webcryptoConfig.name)
+
+  const keyRaw = Buffer.from(keyBase64, 'base64')
+
+  if (keyRaw.length !== 32) {
+    // AES-256 (32バイト) の鍵長チェック
+    throw new Error(`FATAL ERROR: 鍵の長さが不正です。期待される長さ: 32バイト, 実際の長さ: ${keyRaw.length}バイト`)
+  }
 
   WEBCRYPTOAPI_SECRET_KEY = await subtle.importKey(
     "raw",
@@ -382,6 +395,8 @@ const initWebCryptoApiSecretKey = async () => {
     false,
     ["encrypt", "decrypt"] // 鍵の用途を全て許可してインポート
   )
+
+  console.log(`${webcryptoConfig.name}の秘密鍵作成完了`)
 }
 
 const getInitialVector = () => {
@@ -487,12 +502,11 @@ app.post(`${practiceNodeRoot}webcryptoapi-decipher-with-aescbc`, cors(corsCheck)
 app.use(`${practiceNodeRoot}public`, express.static(__dirname + `/public`))
 
 const main = async () => {
-  Certs.getOptions().then(options => {
-    http2.createSecureServer(options, app).listen(port);
-    console.info(`My Practice Node Application On Port ${port}`);
-  })
-
   await initWebCryptoApiSecretKey()
+
+  const options = await Certs.getOptions()
+  http2.createSecureServer(options, app).listen(port);
+  console.info(`My Practice Node Application On Port ${port}`);
 }
 
-main().then()
+main().then().catch(e => console.error(e))
