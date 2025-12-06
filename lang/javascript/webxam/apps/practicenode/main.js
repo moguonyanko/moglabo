@@ -379,6 +379,9 @@ const webcryptoConfig = {
   name: "AES-CBC"
 }
 
+// 秘密鍵は環境変数やKMSで管理する方が好ましい。
+let WEBCRYPTOAPI_SECRET_KEY = null
+
 const getInitialVector = () => {
   // このサンプルではAES-CBCを使うので16バイトで固定。
   return webcrypto.getRandomValues(new Uint8Array(16))
@@ -388,7 +391,6 @@ const encryptWithWebCryptoApi = async sourceText => {
   // 1. 鍵とIVの準備
   // 文字列変換を経由せず、Uint8Array（バイナリ）のまま扱います
   const { name } = webcryptoConfig
-  const keyRaw = await generateAndExportSecretKey(name)
   const iv = getInitialVector()
 
   const dataToEncrypt = str_to_bytes(sourceText);
@@ -397,7 +399,7 @@ const encryptWithWebCryptoApi = async sourceText => {
   // 生のバイト列からCryptoKeyオブジェクトを作成します
   const key = await subtle.importKey(
     "raw",
-    keyRaw,
+    WEBCRYPTOAPI_SECRET_KEY,
     { name },
     false, // 鍵のエクスポートを許可するか
     ["encrypt"]
@@ -450,11 +452,10 @@ app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
 
 const decryptWithWebCryptoApi = async (encryptedBuffer, iv) => {
   const { name } = webcryptoConfig
-  const keyRaw = await generateAndExportSecretKey(name)
 
   const key = await subtle.importKey(
     "raw",
-    keyRaw,
+    WEBCRYPTOAPI_SECRET_KEY,
     { name },
     false,
     ["encrypt", "decrypt"] // 権限に "decrypt" を追加
@@ -502,11 +503,13 @@ app.post(`${practiceNodeRoot}webcryptoapi-decipher-with-aescbc`, cors(corsCheck)
 
 app.use(`${practiceNodeRoot}public`, express.static(__dirname + `/public`))
 
-const main = () => {
+const main = async () => {
   Certs.getOptions().then(options => {
     http2.createSecureServer(options, app).listen(port);
     console.info(`My Practice Node Application On Port ${port}`);
-  });
-};
+  })
 
-main();
+  WEBCRYPTOAPI_SECRET_KEY = await generateAndExportSecretKey(webcryptoConfig.name)
+}
+
+main().then()
