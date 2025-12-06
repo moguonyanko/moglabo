@@ -359,7 +359,7 @@ const webcryptoConfig = {
   name: "AES-CBC"
 }
 
-// 秘密鍵は環境変数やKMSで管理する方が好ましい。ここでは簡単のためグローバルに保持する。
+// 秘密鍵は環境変数で管理している。KMSで管理するのが理想的と思われる。
 let WEBCRYPTOAPI_SECRET_KEY = null
 
 const generateSecretKeyBytes = async name => {
@@ -407,16 +407,15 @@ const getInitialVector = () => {
 const encryptWithWebCryptoApi = async sourceText => {
   // 1. 鍵とIVの準備
   // 文字列変換を経由せず、Uint8Array（バイナリ）のまま扱います
-  const { name } = webcryptoConfig
   const iv = getInitialVector()
 
-  const dataToEncrypt = str_to_bytes(sourceText);
+  const dataToEncrypt = str_to_bytes(sourceText)
 
   // 2. 暗号化の実行
   // 自動的にPKCS#7パディングが適用されます
   const encryptedBuffer = await subtle.encrypt(
     {
-      name,
+      name: webcryptoConfig.name,
       iv
     },
     WEBCRYPTOAPI_SECRET_KEY,
@@ -458,11 +457,9 @@ app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
   })
 
 const decryptWithWebCryptoApi = async (encryptedBuffer, iv) => {
-  const { name } = webcryptoConfig
-
   // 復号の実行
   const decryptedBuffer = await subtle.decrypt(
-    { name, iv }, // 暗号化時と全く同じアルゴリズムとIVを使用
+    { name: webcryptoConfig.name, iv }, // 暗号化時と全く同じアルゴリズムとIVを使用
     WEBCRYPTOAPI_SECRET_KEY,
     encryptedBuffer // 暗号化されたバイト列
   )
