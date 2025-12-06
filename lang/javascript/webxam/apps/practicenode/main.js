@@ -340,6 +340,9 @@ app.get(`${practiceNodeRoot}forge-cipher-invalid-value-with-aescbc`, cors(corsCh
     }
   })
 
+// WebCryptoAPIの検証用コード
+// Forgeで起きている問題が発生しない。
+
 const bytesToBase64 = bytes => {
   // Uint8ArrayからBufferを作成し、Base64形式で文字列化
   return Buffer.from(bytes).toString('base64')
@@ -352,9 +355,27 @@ const base64ToUint8Array = base64 => {
   return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength)
 }
 
+const generateAndExportSecretKey = async name => {
+    // 1. CryptoKeyオブジェクトを生成
+    const keyObject = await subtle.generateKey(
+        {
+            name,
+            length: 256 // 鍵長を256ビットに指定 (32バイト)
+        },
+        true, // エクスポート可能 (exportable: true) に設定
+        ["encrypt", "decrypt"] // 用途を指定
+    )
+
+    // 2. CryptoKeyオブジェクトから生のバイト列 (Uint8Array) を取り出す
+    const keyBytes = await subtle.exportKey(
+        "raw",
+        keyObject
+    )
+
+    return new Uint8Array(keyBytes)
+}
+
 const webcryptoConfig = {
-  keyRaw: new Uint8Array([34, 74, 12, 214, 126, 234, 101, 147, 13, 32, 244, 185, 45, 217, 142, 33, 213, 116, 63, 179, 84, 23, 138, 187, 134, 130, 234, 54, 48, 66, 20, 152]),
-  iv: new Uint8Array([62, 133, 213, 219, 194, 200, 76, 142, 202, 16, 12, 237, 163, 147, 65, 93]),
   name: "AES-CBC"
 }
 
@@ -366,8 +387,8 @@ const getInitialVector = () => {
 const encryptWithWebCryptoApi = async sourceText => {
   // 1. 鍵とIVの準備
   // 文字列変換を経由せず、Uint8Array（バイナリ）のまま扱います
-  const { keyRaw, name } = webcryptoConfig
-
+  const { name } = webcryptoConfig
+  const keyRaw = await generateAndExportSecretKey(name)
   const iv = getInitialVector()
 
   const dataToEncrypt = str_to_bytes(sourceText);
@@ -386,7 +407,7 @@ const encryptWithWebCryptoApi = async sourceText => {
   // 自動的にPKCS#7パディングが適用されます
   const encryptedBuffer = await subtle.encrypt(
     {
-      name: "AES-CBC",
+      name,
       iv
     },
     key,
@@ -428,7 +449,8 @@ app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
   })
 
 const decryptWithWebCryptoApi = async (encryptedBuffer, iv) => {
-  const { keyRaw, name } = webcryptoConfig
+  const { name } = webcryptoConfig
+  const keyRaw = await generateAndExportSecretKey(name)
 
   const key = await subtle.importKey(
     "raw",

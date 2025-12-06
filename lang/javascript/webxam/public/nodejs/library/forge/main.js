@@ -69,6 +69,10 @@ const listeners = {
     const buffer = document.getElementById('encrypted-text').value
     const ivBase64 = ivs[buffer]
 
+    if (!ivBase64) {
+      return
+    }
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
