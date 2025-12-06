@@ -355,32 +355,34 @@ const base64ToUint8Array = base64 => {
   return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength)
 }
 
-const generateAndExportSecretKey = async name => {
-    // 1. CryptoKeyオブジェクトを生成
-    const keyObject = await subtle.generateKey(
-        {
-            name,
-            length: 256 // 鍵長を256ビットに指定 (32バイト)
-        },
-        true, // エクスポート可能 (exportable: true) に設定
-        ["encrypt", "decrypt"] // 用途を指定
-    )
-
-    // 2. CryptoKeyオブジェクトから生のバイト列 (Uint8Array) を取り出す
-    const keyBytes = await subtle.exportKey(
-        "raw",
-        keyObject
-    )
-
-    return new Uint8Array(keyBytes)
-}
-
 const webcryptoConfig = {
   name: "AES-CBC"
 }
 
-// 秘密鍵は環境変数やKMSで管理する方が好ましい。
+// 秘密鍵は環境変数やKMSで管理する方が好ましい。ここでは簡単のためグローバルに保持する。
 let WEBCRYPTOAPI_SECRET_KEY = null
+
+const generateSecretKeyBytes = async name => {
+  const keyObject = await subtle.generateKey(
+    { name, length: 256 }, true, ["encrypt", "decrypt"]
+  )
+
+  const keyBytes = await subtle.exportKey("raw", keyObject)
+
+  return new Uint8Array(keyBytes)
+}
+
+const initWebCryptoApiSecretKey = async () => {
+  const keyRaw = await generateSecretKeyBytes(webcryptoConfig.name)
+
+  WEBCRYPTOAPI_SECRET_KEY = await subtle.importKey(
+    "raw",
+    keyRaw,
+    { name: webcryptoConfig.name },
+    false,
+    ["encrypt", "decrypt"] // 鍵の用途を全て許可してインポート
+  )
+}
 
 const getInitialVector = () => {
   // このサンプルではAES-CBCを使うので16バイトで固定。
@@ -395,30 +397,20 @@ const encryptWithWebCryptoApi = async sourceText => {
 
   const dataToEncrypt = str_to_bytes(sourceText);
 
-  // 2. 鍵のインポート
-  // 生のバイト列からCryptoKeyオブジェクトを作成します
-  const key = await subtle.importKey(
-    "raw",
-    WEBCRYPTOAPI_SECRET_KEY,
-    { name },
-    false, // 鍵のエクスポートを許可するか
-    ["encrypt"]
-  )
-
-  // 3. 暗号化の実行
+  // 2. 暗号化の実行
   // 自動的にPKCS#7パディングが適用されます
   const encryptedBuffer = await subtle.encrypt(
     {
       name,
       iv
     },
-    key,
+    WEBCRYPTOAPI_SECRET_KEY,
     dataToEncrypt
   )
 
   const encryptedBytes = new Uint8Array(encryptedBuffer)
 
-  return {encryptedBytes, iv}
+  return { encryptedBytes, iv }
 }
 
 app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
@@ -429,7 +421,7 @@ app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
     const { source } = request.query
 
     try {
-      const {encryptedBytes, iv} = await encryptWithWebCryptoApi(source)
+      const { encryptedBytes, iv } = await encryptWithWebCryptoApi(source)
 
       console.log('encrypted (bytes) = ', encryptedBytes)
       console.log('encrypted (length) = ', encryptedBytes.length)
@@ -453,18 +445,10 @@ app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
 const decryptWithWebCryptoApi = async (encryptedBuffer, iv) => {
   const { name } = webcryptoConfig
 
-  const key = await subtle.importKey(
-    "raw",
-    WEBCRYPTOAPI_SECRET_KEY,
-    { name },
-    false,
-    ["encrypt", "decrypt"] // 権限に "decrypt" を追加
-  )
-
   // 復号の実行
   const decryptedBuffer = await subtle.decrypt(
     { name, iv }, // 暗号化時と全く同じアルゴリズムとIVを使用
-    key,
+    WEBCRYPTOAPI_SECRET_KEY,
     encryptedBuffer // 暗号化されたバイト列
   )
 
@@ -479,7 +463,7 @@ app.post(`${practiceNodeRoot}webcryptoapi-decipher-with-aescbc`, cors(corsCheck)
     response.setHeader('Cache-Control', 'no-cache')
     response.setHeader('Content-Type', 'application/json')
 
-    const {source, ivBase64} = request.body
+    const { source, ivBase64 } = request.body
     const encryptedBuffer = base64ToUint8Array(source)
     const iv = base64ToUint8Array(ivBase64)
 
@@ -500,7 +484,6 @@ app.post(`${practiceNodeRoot}webcryptoapi-decipher-with-aescbc`, cors(corsCheck)
     }
   })
 
-
 app.use(`${practiceNodeRoot}public`, express.static(__dirname + `/public`))
 
 const main = async () => {
@@ -509,7 +492,7 @@ const main = async () => {
     console.info(`My Practice Node Application On Port ${port}`);
   })
 
-  WEBCRYPTOAPI_SECRET_KEY = await generateAndExportSecretKey(webcryptoConfig.name)
+  await initWebCryptoApiSecretKey()
 }
 
 main().then()
