@@ -28,15 +28,18 @@
         <textarea id="encrypted-text" type="text">31bSN8DwkDKfBO62q7lQMA==</textarea>
       </div>
       <div>
-        <p>暗号化</p>
+        <p>暗号化(Forge)</p>
         <button data-event-listener="onCipherErrorButtonClicked">AES-CBC指定時にエラーになる</button>
         <button data-event-listener="onCipherInvalidValueClicked">AES-CBC指定時に生成される値が正しくない</button>
+      </div>
+      <div>
+        <p>暗号化(WebCryptoAPI)</p>
         <button data-event-listener="onCipherWebCryptoApiClicked">AES-CBCをWebCryptoAPIで使う</button>
       </div>
       <div>
-        <p>暗号化</p>
+        <p>復号化(WebCryptoAPI)</p>
         <button data-event-listener="onDeCipherWebCryptoApiClicked">AES-CBCをWebCryptoAPIで使う</button>
-      </div>      
+      </div>
       <div class="output"></div>
     </section>
   </main>

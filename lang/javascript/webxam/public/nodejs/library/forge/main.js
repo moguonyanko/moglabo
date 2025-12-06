@@ -27,6 +27,8 @@ const arrayBufferToBase64 = buffer => {
   return btoa(binary);
 }
 
+const ivs = {}
+
 const listeners = {
   onCipherErrorButtonClicked: async () => {
     const url = '/webxam/apps/practicenode/forge-cipher-error-with-aescbc'
@@ -54,7 +56,9 @@ const listeners = {
     const response = await fetch(`${url}?source=${getSourceText()}`)
     const result = await response.json()
     console.log(result)
-    const { encryptedBytes } = result
+    const { encryptedBytes, encryptedBuffer, ivBase64 } = result
+    document.getElementById('encrypted-text').value = encryptedBuffer
+    ivs[encryptedBuffer] = ivBase64
 
     const output = document.querySelector('.forge-simple-sample .output')
     output.textContent = JSON.stringify(encryptedBytes)
@@ -63,7 +67,7 @@ const listeners = {
     const url = '/webxam/apps/practicenode/webcryptoapi-decipher-with-aescbc'
 
     const buffer = document.getElementById('encrypted-text').value
-    // const source = arrayBufferToBase64(buffer)
+    const ivBase64 = ivs[buffer]
 
     const response = await fetch(url, {
       method: 'POST',
@@ -71,7 +75,8 @@ const listeners = {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        source: buffer
+        source: buffer,
+        ivBase64
       })
     })
     const result = await response.json()

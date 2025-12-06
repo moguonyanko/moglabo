@@ -358,10 +358,17 @@ const webcryptoConfig = {
   name: "AES-CBC"
 }
 
+const getInitialVector = () => {
+  // このサンプルではAES-CBCを使うので16バイトで固定。
+  return webcrypto.getRandomValues(new Uint8Array(16))
+}
+
 const encryptWithWebCryptoApi = async sourceText => {
   // 1. 鍵とIVの準備
   // 文字列変換を経由せず、Uint8Array（バイナリ）のまま扱います
-  const { keyRaw, iv, name } = webcryptoConfig
+  const { keyRaw, name } = webcryptoConfig
+
+  const iv = getInitialVector()
 
   const dataToEncrypt = str_to_bytes(sourceText);
 
@@ -380,7 +387,7 @@ const encryptWithWebCryptoApi = async sourceText => {
   const encryptedBuffer = await subtle.encrypt(
     {
       name: "AES-CBC",
-      iv: iv
+      iv
     },
     key,
     dataToEncrypt
@@ -388,7 +395,7 @@ const encryptWithWebCryptoApi = async sourceText => {
 
   const encryptedBytes = new Uint8Array(encryptedBuffer)
 
-  return encryptedBytes
+  return {encryptedBytes, iv}
 }
 
 app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
@@ -399,7 +406,7 @@ app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
     const { source } = request.query
 
     try {
-      const encryptedBytes = await encryptWithWebCryptoApi(source)
+      const {encryptedBytes, iv} = await encryptWithWebCryptoApi(source)
 
       console.log('encrypted (bytes) = ', encryptedBytes)
       console.log('encrypted (length) = ', encryptedBytes.length)
@@ -407,7 +414,8 @@ app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
       const result = {
         encryptedBytes: Array.from(encryptedBytes),
         encryptedBuffer: bytesToBase64(encryptedBytes),
-        encryptedLength: encryptedBytes.length
+        encryptedLength: encryptedBytes.length,
+        ivBase64: bytesToBase64(iv)
       }
       return response.json(result)
     } catch (err) {
@@ -419,8 +427,8 @@ app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
     }
   })
 
-const decryptWithWebCryptoApi = async encryptedBuffer => {
-  const { keyRaw, iv, name } = webcryptoConfig
+const decryptWithWebCryptoApi = async (encryptedBuffer, iv) => {
+  const { keyRaw, name } = webcryptoConfig
 
   const key = await subtle.importKey(
     "raw",
@@ -448,11 +456,12 @@ app.post(`${practiceNodeRoot}webcryptoapi-decipher-with-aescbc`, cors(corsCheck)
     response.setHeader('Cache-Control', 'no-cache')
     response.setHeader('Content-Type', 'application/json')
 
-    const source = request.body.source
+    const {source, ivBase64} = request.body
     const encryptedBuffer = base64ToUint8Array(source)
+    const iv = base64ToUint8Array(ivBase64)
 
     try {
-      const decryptedText = await decryptWithWebCryptoApi(encryptedBuffer)
+      const decryptedText = await decryptWithWebCryptoApi(encryptedBuffer, iv)
       console.log('Original Text:', decryptedText)
 
       const result = {
