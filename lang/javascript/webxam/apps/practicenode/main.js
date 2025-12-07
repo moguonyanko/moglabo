@@ -17,6 +17,12 @@ const MyCookie = require('./cookie');
 const Certs = require('../../function/certs');
 const CreateImage = require('../../function/createimage');
 const Inouts = require('../../function/inouts');
+const { 
+  bytes_to_str, 
+  str_to_bytes, 
+  base64ToUint8Array, 
+  bytesToBase64 
+} = require('../../function/codeconv')
 
 const Parser = require('expr-eval-fork').Parser;
 const childProcess = require('child_process');
@@ -25,6 +31,10 @@ const fs = require('fs');
 const forge = require('node-forge');
 const { webcrypto } = require('node:crypto');
 const subtle = webcrypto.subtle;
+const os = require('os')
+const { resolve } = require('path')
+const Piscina = require('piscina')
+const webcryptoConfig = require('./config/webcryptoconfig')
 
 const e = require('express');
 
@@ -246,18 +256,6 @@ app.get(`${practiceNodeRoot}expr-eval-evil`, cors(corsCheck),
     })
   })
 
-const str_to_bytes = str => {
-  // UTF-8エンコードで文字列をバイト列に変換
-  const encoder = new TextEncoder()
-  return encoder.encode(str)
-}
-
-const bytes_to_str = bytes => {
-  // バイト列をUTF-8デコードで文字列に変換
-  const decoder = new TextDecoder()
-  return decoder.decode(bytes)
-}
-
 function throw_error_with_forge_aescbc() {
   const key = bytes_to_str(new Uint8Array([34, 74, 12, 214, 126, 234, 101, 147, 13, 32, 244, 185, 45, 217, 142, 33, 213, 116, 63, 179, 84, 23, 138, 187, 134, 130, 234, 54, 48, 66, 20, 152]))
   const initialVector = bytes_to_str(new Uint8Array([62, 133, 213, 219, 194, 200, 76, 142, 202, 16, 12, 237, 163, 147, 65, 93]))
@@ -307,8 +305,9 @@ const get_invalid_value_with_forge_aescbc = sourceText => {
   cipher.update(forge.util.createBuffer(sourceText))
   cipher.finish()
   const encrypted = cipher.output
+  const ivBase64 = Buffer.from(iv.data, 'binary').toString('base64')
 
-  return encrypted
+  return {encrypted, ivBase64}
 }
 
 app.get(`${practiceNodeRoot}forge-cipher-invalid-value-with-aescbc`, cors(corsCheck),
@@ -319,7 +318,7 @@ app.get(`${practiceNodeRoot}forge-cipher-invalid-value-with-aescbc`, cors(corsCh
     const { source } = request.query
 
     try {
-      const encrypted = get_invalid_value_with_forge_aescbc(source)
+      const {encrypted, ivBase64} = get_invalid_value_with_forge_aescbc(source)
       console.log('encrypted (bytes) = ', encrypted.data)
       console.log('encrypted (length) = ', str_to_bytes(encrypted.data))
 
@@ -328,7 +327,8 @@ app.get(`${practiceNodeRoot}forge-cipher-invalid-value-with-aescbc`, cors(corsCh
         encryptedBytes: Array.from(encryptedBytes),
         encryptedBuffer: bytesToBase64(encryptedBytes),
         // AES-CBCなのに16バイトになっていない不正な値になっている。
-        encryptedLength: str_to_bytes(encrypted.data).length
+        encryptedLength: str_to_bytes(encrypted.data).length,
+        ivBase64
       }
       return response.json(result)
     } catch (err) {
@@ -343,27 +343,14 @@ app.get(`${practiceNodeRoot}forge-cipher-invalid-value-with-aescbc`, cors(corsCh
 // WebCryptoAPIの検証用コード
 // Forgeで起きている問題が発生しない。
 
-const bytesToBase64 = bytes => {
-  // Uint8ArrayからBufferを作成し、Base64形式で文字列化
-  return Buffer.from(bytes).toString('base64')
-}
+let CRYPTO_THREAD_POOL = null
+let ENCRYPTION_KEY_RAW_BYTES = null
 
-const base64ToUint8Array = base64 => {
-  // 1. Bufferを使ってBase64デコードし、Bufferオブジェクトを得る
-  const buffer = Buffer.from(base64, 'base64')
-  // 2. Bufferの内部メモリを共有してUint8Arrayを作成（効率的）
-  return new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength)
-}
-
-const webcryptoConfig = {
-  name: "AES-GCM",
-  ivLength: 12,
-  tagLength: 128
-}
-
-// 秘密鍵は環境変数で管理している。KMSで管理するのが理想的と思われる。
-let WEBCRYPTOAPI_SECRET_KEY = null
-
+/**
+ * 内部で秘密鍵を生成する必要がある場合に使う関数です。
+ * @param {*} name 
+ * @returns 
+ */
 const generateSecretKeyBytes = async name => {
   const keyObject = await subtle.generateKey(
     { name, length: 256 }, true, ["encrypt", "decrypt"]
@@ -375,6 +362,7 @@ const generateSecretKeyBytes = async name => {
 }
 
 const initWebCryptoApiSecretKey = async () => {
+  // 秘密鍵は環境変数で管理している。KMSで管理するのが理想的と思われる。
   const keyBase64 = process.env.WEBCRYPTOAPI_ENCRYPTION_KEY
   if (!keyBase64) {
     throw new Error('WEBCRYPTOAPI_ENCRYPTION_KEYが環境変数から得られませんでした。')
@@ -390,43 +378,22 @@ const initWebCryptoApiSecretKey = async () => {
     throw new Error(`FATAL ERROR: 鍵の長さが不正です。期待される長さ: 32バイト, 実際の長さ: ${keyRaw.length}バイト`)
   }
 
-  WEBCRYPTOAPI_SECRET_KEY = await subtle.importKey(
+  const originalKey = await subtle.importKey(
     "raw",
     keyRaw,
     { name: webcryptoConfig.name },
-    false,
+    true, // Workerのためにこの後鍵をエクスポートするのでtrueにしておく必要がある。
     ["encrypt", "decrypt"] // 鍵の用途を全て許可してインポート
   )
 
-  console.log(`${webcryptoConfig.name}の秘密鍵作成完了`)
+  // Workerのために鍵をエクスポートする。
+  ENCRYPTION_KEY_RAW_BYTES = await subtle.exportKey("raw", originalKey)
+
+  console.log(`${webcryptoConfig.name}の秘密鍵準備完了`)
 }
 
 const getInitialVector = () => {
   return webcrypto.getRandomValues(new Uint8Array(webcryptoConfig.ivLength))
-}
-
-const encryptWithWebCryptoApi = async sourceText => {
-  // 1. 鍵とIVの準備
-  // 文字列変換を経由せず、Uint8Array（バイナリ）のまま扱います
-  const iv = getInitialVector()
-
-  const dataToEncrypt = str_to_bytes(sourceText)
-
-  // 2. 暗号化の実行
-  // AES-GCMはブロック暗号ではなくストリーム暗号なのでPKCS#7パディングが適用されません。
-  const encryptedBuffer = await subtle.encrypt(
-    {
-      name: webcryptoConfig.name,
-      iv,
-      tagLength: webcryptoConfig.tagLength
-    },
-    WEBCRYPTOAPI_SECRET_KEY,
-    dataToEncrypt
-  )
-
-  const encryptedBytes = new Uint8Array(encryptedBuffer)
-
-  return { encryptedBytes, iv }
 }
 
 app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
@@ -435,19 +402,27 @@ app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
     response.setHeader('Content-Type', 'application/json')
 
     const { source } = request.query
+    const iv = getInitialVector()
 
     try {
-      const { encryptedBytes, iv } = await encryptWithWebCryptoApi(source)
+      const { encryptedBuffer, iv: worker_iv } = await CRYPTO_THREAD_POOL.run(
+        {
+          source: source,
+          iv,
+          keyRaw: ENCRYPTION_KEY_RAW_BYTES
+        },
+        { name: 'encrypt' } // worker.jsで定義する関数名
+      )
 
-      console.log('encrypted (bytes) = ', encryptedBytes)
-      console.log('encrypted (length) = ', encryptedBytes.length)
-
+      // ArrayBufferで返却されるので、再度Uint8Arrayに変換してBase64化
+      const encryptedBytes = new Uint8Array(encryptedBuffer)
       const result = {
         encryptedBytes: Array.from(encryptedBytes),
-        encryptedBuffer: bytesToBase64(encryptedBytes),
         encryptedLength: encryptedBytes.length,
-        ivBase64: bytesToBase64(iv)
+        encryptedBuffer: bytesToBase64(encryptedBytes),
+        ivBase64: bytesToBase64(worker_iv)
       }
+
       return response.json(result)
     } catch (err) {
       console.error(err)
@@ -457,24 +432,6 @@ app.get(`${practiceNodeRoot}webcryptoapi-cipher-with-aescbc`, cors(corsCheck),
       })
     }
   })
-
-const decryptWithWebCryptoApi = async (encryptedBuffer, iv) => {
-  // 復号の実行
-  const decryptedBuffer = await subtle.decrypt(
-    { 
-      name: webcryptoConfig.name, 
-      iv, // 暗号化時と全く同じアルゴリズムとIVを使用
-      tagLength: webcryptoConfig.tagLength
-    },
-    WEBCRYPTOAPI_SECRET_KEY,
-    encryptedBuffer // 暗号化されたバイト列
-  )
-
-  const decryptedBytes = new Uint8Array(decryptedBuffer)
-  const originalText = bytes_to_str(decryptedBytes)
-
-  return originalText;
-}
 
 app.post(`${practiceNodeRoot}webcryptoapi-decipher-with-aescbc`, cors(corsCheck),
   async (request, response) => {
@@ -486,12 +443,18 @@ app.post(`${practiceNodeRoot}webcryptoapi-decipher-with-aescbc`, cors(corsCheck)
     const iv = base64ToUint8Array(ivBase64)
 
     try {
-      const decryptedText = await decryptWithWebCryptoApi(encryptedBuffer, iv)
-      console.log('Original Text:', decryptedText)
+      // 復号処理をWorker Poolに委譲する
+      const { decryptedText } = await CRYPTO_THREAD_POOL.run(
+        {
+          source: encryptedBuffer,
+          iv,
+          keyRaw: ENCRYPTION_KEY_RAW_BYTES
+        },
+        { name: 'decrypt' }
+      )
 
-      const result = {
-        decryptedText
-      }
+      const result = { decryptedText }
+
       return response.json(result)
     } catch (err) {
       console.error(err)
@@ -506,6 +469,11 @@ app.use(`${practiceNodeRoot}public`, express.static(__dirname + `/public`))
 
 const main = async () => {
   await initWebCryptoApiSecretKey()
+
+  CRYPTO_THREAD_POOL = new Piscina({
+    filename: resolve(__dirname, 'worker.js'),
+    maxThreads: os.cpus().length
+  })
 
   const options = await Certs.getOptions()
   http2.createSecureServer(options, app).listen(port);
