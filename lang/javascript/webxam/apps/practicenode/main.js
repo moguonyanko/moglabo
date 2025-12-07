@@ -34,7 +34,7 @@ const subtle = webcrypto.subtle;
 const os = require('os')
 const { resolve } = require('path')
 const Piscina = require('piscina')
-const webcryptoConfig = require('./config/webcryptoconfig')
+const webcryptoConfig = require('./webcrypto/webcryptoconfig')
 
 const e = require('express');
 
@@ -471,7 +471,7 @@ const main = async () => {
   await initWebCryptoApiSecretKey()
 
   CRYPTO_THREAD_POOL = new Piscina({
-    filename: resolve(__dirname, 'worker.js'),
+    filename: resolve(__dirname, './webcrypto/worker.js'),
     maxThreads: os.cpus().length
   })
 

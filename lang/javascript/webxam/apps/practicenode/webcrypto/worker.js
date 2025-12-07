@@ -1,8 +1,8 @@
 const { parentPort, workerData } = require('worker_threads');
 const { webcrypto } = require('node:crypto');
 const subtle = webcrypto.subtle;
-const { str_to_bytes, bytes_to_str } = require('../../function/codeconv')
-const webcryptoConfig = require('./config/webcryptoconfig')
+const { str_to_bytes, bytes_to_str } = require('../../../function/codeconv')
+const webcryptoConfig = require('./webcryptoconfig')
 
 let KEY_CACHE = null;
 
