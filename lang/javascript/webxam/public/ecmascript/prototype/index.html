@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Prototype</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script src="main.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Prototype</h1>
+  </header>
+
+  <main>
+    <p>Prototypeの特性を調べる。</p>
+    <section class="prototype-pollution-sample">
+      <h2>プロトタイプ汚染</h2>
+      <p>__proto__を汚染する。</p>
+      <label for="polluted-text">汚染確認テキスト</label>
+      <input type="text" id="polluted-text" value="𩸽を𠮟る𠮷野家" />
+      <div contenteditable="plaintext-only" class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考資料</h3>
+    <ul>
+      <li><a href="https://securitylabs.datadoghq.com/articles/cve-2025-55182-react2shell-remote-code-execution-react-server-components/">CVE-2025-55182 (React2Shell): Remote code execution in React Server Components and Next.js</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
