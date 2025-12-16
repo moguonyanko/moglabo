@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>React2Shell</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script src="main.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>React2Shell</h1>
+  </header>
+
+  <main>
+    <p>React2Shellの特性を調べ脆弱性に対処するための手掛かりとする。</p>
+    <section class="react2shell-sample">
+      <h2>RCE</h2>
+      <p>悪意のあるReactコンポーネントをレンダリングする。</p>
+      <div>
+        <p>対象選択</p>
+        <input type="radio" id="simple-rse-app-check" name="rce-target-app" value="SimpleRseApp" checked />
+        <label for="simple-rse-app-check">simple-rse-app</label>
+      </div>
+      <label for="rce-command">実行コマンド</label>
+      <input type="text" id="rce-command" value="ls -la" />
+      <button data-event-listener="onExecuteRce">実行</button>
+      <div class="output"></div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考資料</h3>
+    <ul>
+      <li><a
+          href="https://react.dev/blog/2025/12/03/critical-security-vulnerability-in-react-server-components">Critical
+          Security Vulnerability in React Server Components</a></li>
+      <li><a href="https://nextjs.org/blog/CVE-2025-66478">Security Advisory: CVE-2025-66478</a></li>
+      <li><a
+          href="https://react.dev/blog/2025/12/03/critical-security-vulnerability-in-react-server-components">Critical
+          Security Vulnerability in React Server Components</a></li>
+      <li><a
+          href="https://securitylabs.datadoghq.com/articles/cve-2025-55182-react2shell-remote-code-execution-react-server-components/">CVE-2025-55182
+          (React2Shell): Remote code execution in React Server Components and Next.js</a></li>
+      <li><a href="https://github.com/ejpir/CVE-2025-55182-research?tab=readme-ov-file">CVE-2025-55182-research</a></li>
+      <li><a href="https://github.com/msanft/CVE-2025-55182">CVE-2025-55182</a></li>
+    </ul>
+  </footer>
+
+</body>
+
+</html>
