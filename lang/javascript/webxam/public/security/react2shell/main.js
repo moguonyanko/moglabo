@@ -20,7 +20,7 @@ const clicks = {
       return
     }
 
-    const url = `${SERVICE_BASE_URL}/command/`
+    const url = `${SERVICE_BASE_URL}command/`
     const response = await fetch(url, {
       method: 'POST',
       headers: {
