@@ -6,7 +6,7 @@ const rceTargetServers = {
   SimpleRseApp: 'http://localhost:8081/',
 }
 
-const SERVICE_BASE_URL = 'https://localhost/brest/security/react2shell/'
+const SERVICE_BASE_URL = '/brest/security/poc/react2shell/'
 
 const clicks = {
   onExecuteRce: async () => {
