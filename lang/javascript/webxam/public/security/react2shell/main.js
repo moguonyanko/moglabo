@@ -28,6 +28,7 @@ const clicks = {
       },
       body: JSON.stringify({
         url: rceTargetUrl,
+        getenv: document.getElementById('getenv').checked,
         command: rceCommand
       })
     })
