@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>htmx Click to Edit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>htmx Click to Edit</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>htmxを利用したClick to Editのサンプル</h2>
+      <p>outerHTMLにレスポンスのテキストを表示する。</p>
+      <div hx-target="this" hx-swap="outerHTML">
+        <button hx-get="/brest/echo/hello" class="btn primary">
+          Hello
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考資料</h3>
+    <ul>
+      <li><a href="https://htmx.org/examples/click-to-edit/">Click to Edit</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
