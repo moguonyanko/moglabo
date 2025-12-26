@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>UI Examples</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>UI Examples</h1>
+  </header>
+
+  <main>
+    <section>
+      <h2>Click to Edit</h2>
+      <p>outerHTMLにレスポンスのテキストを表示する。</p>
+      <div hx-target="this" hx-swap="outerHTML">
+        <button hx-get="/brest/echo/hello" class="btn primary">
+          Hello
+        </button>
+      </div>
+    </section>
+    <section>
+      <h2>Bulk Update</h2>
+      <p>一括更新時の表示を制御する。</p>
+      <form hx-post="/brest/testusers/" 
+            hx-swap="innerHTML settle:3s" 
+            hx-target="#toast">
+        <table>
+          <thead>
+            <tr>
+              <th>名前</th>
+              <th>Eメール</th>
+              <th>有効化</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>東京太郎</td>
+              <td>taro@example.org</td>
+              <td><input type="checkbox" name="data" value="1:taro@example.org"></td>
+            </tr>
+            <tr>
+              <td>名古屋二郎</td>
+              <td>jiro@example.org</td>
+              <td><input type="checkbox" name="data" value="2:jiro@example.org"></td>
+            </tr>
+          </tbody>
+        </table>
+        <input type="submit">
+        <output id="toast"></output>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <h3>参考資料</h3>
+    <ul>
+      <li><a href="https://htmx.org/examples/">Examples</a></li>
+    </ul>
+  </footer>
+</body>
+
+</html>
