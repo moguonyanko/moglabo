@@ -1,0 +1,16 @@
+@charset "UTF-8";
+
+.worker-label div {
+  background-color: white;
+  border: 2px solid #333;
+  border-radius: 50%;
+  /* 円形にする */
+  color: #333;
+  font-weight: bold;
+  text-align: center;
+  line-height: 26px;
+  /* iconSizeに合わせて調整 */
+  width: 26px;
+  height: 26px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
