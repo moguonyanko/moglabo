@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>クラスタリング</title>
+  <link rel="stylesheet" href="../../common.css" />
+  <link href="../leaflet_common.css" rel="stylesheet" />
+  <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" rel="stylesheet" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script type="module" src="main.js"></script>
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>クラスタリング</h1>
+  </header>
+  <main>
+    <div id="map"></div>
+    <label for="cluster-count">分割数(K)</label>
+    <input id="cluster-count" type="number" value="3" min="1" />
+    <button data-event-name="onExecuteClustering">実行</button>
+    <button data-event-name="onReset">リセット</button>
+  </main>
+</body>
+
+</html>
