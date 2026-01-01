@@ -19,14 +19,14 @@ const listeners = {
   },
   onExecuteClustering: async () => {
     reset()
-    const k = document.getElementById('cluster-count').value
+    const clusterCount = document.getElementById('cluster-count').value
 
     const response = await fetch('/brest/gis/cluster/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        features: clusteringTargetPoints, 
-        k 
+        geojson: clusteringTargetPoints, 
+        k: Number(clusterCount) 
       })
     })
 
