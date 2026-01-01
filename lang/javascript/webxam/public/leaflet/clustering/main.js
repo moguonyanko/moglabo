@@ -25,9 +25,9 @@ const listeners = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        type: "FeatureCollection",
         features: clusteringTargetPoints, 
-        k })
+        k 
+      })
     })
 
     const geojsonData = await response.json()
