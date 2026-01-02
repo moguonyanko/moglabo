@@ -5,7 +5,11 @@
 
 import { initMap, loadJson } from '../leaflet_util.js'
 
-let map, clusteringTargetPoints, clusteringPolygonLayer, labelLayerGroup
+let map,
+  clusteringTargetPoints,
+  clusteringPolygonLayer,
+  labelLayerGroup,
+  selectedLayer
 
 const reset = () => {
   if (clusteringPolygonLayer) {
@@ -17,6 +21,18 @@ const reset = () => {
 // あらかじめ視認性の良い色のリストを用意（担当者が増えてもループするようにする）
 const clusterColors = ["#E63946", "#457B9D", "#1D3557", "#06D6A0",
   "#F4A261", "#8338EC", "#FF006E"]
+
+
+// 強調表示の関数
+const highlightPolygon = target => {
+  // すでに選択されているものがあれば元に戻す
+  if (selectedLayer && selectedLayer !== target) {
+    clusteringPolygonLayer.resetStyle(selectedLayer)
+  }
+  // 新しいターゲットを強調
+  target.setStyle({ fillOpacity: 0.7, weight: 5 })
+  selectedLayer = target;
+}
 
 
 const listeners = {
@@ -51,11 +67,17 @@ const listeners = {
         }
       },
       onEachFeature: (feature, layer) => {
-        // 1. ポップアップの設定
+        // ポップアップの設定
         layer.bindPopup(`<strong>担当者 ${feature.properties.worker_id}</strong><br>` +
           `巡回拠点数: ${feature.properties.point_count}件`)
 
-        // 2. 重心にラベル（担当者番号）を表示
+        // デバイスを問わずクリックされたポリゴンを強調する
+        layer.on('click', e => {
+          highlightPolygon(e.target)
+          L.DomEvent.stopPropagation(e) // 地図へのクリックイベント伝搬を止める
+        })
+
+        // 重心にラベル（担当者番号）を表示
         // getBounds().getCenter() でポリゴンの中心座標を取得
         const center = layer.getBounds().getCenter()
 
@@ -69,15 +91,6 @@ const listeners = {
           interactive: false // ラベル自体はクリック不可にする（下のポリゴンを邪魔しない）
         })
         label.addTo(labelLayerGroup)
-
-        // マウス操作で強調する
-        layer.on('mouseover', e => {
-          e.target.setStyle({ fillOpacity: 0.6 })
-        })
-
-        layer.on('mouseout', e => {
-          e.target.setStyle({ fillOpacity: 0.3 })
-        })
       }
     }).addTo(map)
   }
