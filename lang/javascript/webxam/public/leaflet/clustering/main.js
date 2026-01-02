@@ -119,7 +119,7 @@ const main = async () => {
 
   clusteringTargetPoints = await loadJson('points.json')
   const markerStyle = {
-    radius: 16,
+    radius: 5,
     fillColor: 'blue',
     color: 'black',
     weight: 1,
