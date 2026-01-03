@@ -110,6 +110,16 @@ const addListener = (map, points) => {
   })
 }
 
+// 高度(m)を受け取って色(Hex)を返す関数
+const getAltitudeColor = alt => {
+  return alt > 100 ? '#78350f' : // 100m以上: 濃い茶
+         alt > 50  ? '#92400e' : // 50m以上: 茶
+         alt > 20  ? '#d97706' : // 20m以上: オレンジ
+         alt > 10  ? '#f59e0b' : // 10m以上: 黄
+         alt > 5   ? '#10b981' : // 5m以上: 緑
+                     '#3b82f6';   // それ以下: 青
+}
+
 const main = async () => {
   map = initMap({
     lat: 35.652969988398745, lng: 139.7564792633057
@@ -118,17 +128,20 @@ const main = async () => {
   labelLayerGroup = L.layerGroup().addTo(map)
 
   clusteringTargetPoints = await loadJson('points.json')
-  const markerStyle = {
-    radius: 5,
-    fillColor: 'blue',
-    color: 'black',
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.8
-  }
 
   L.geoJSON([clusteringTargetPoints], {
     pointToLayer: (feature, latlng) => {
+      const alt = feature.properties.altitude || (feature.geometry.coordinates[2] ?? 0)
+      const color = getAltitudeColor(alt)
+      const markerStyle = {
+        radius: 8,
+        fillColor: color,
+        color: '#ffffff',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      }
+
       return L.circleMarker(latlng, markerStyle)
     }
   }).addTo(map)
