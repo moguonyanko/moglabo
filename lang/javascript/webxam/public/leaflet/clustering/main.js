@@ -120,6 +120,37 @@ const getAltitudeColor = alt => {
                      '#3b82f6';   // それ以下: 青
 }
 
+const addLegend = () => {
+  // 凡例コントロールの作成
+  const legend = L.control({ position: 'bottomright' })
+
+  legend.onAdd = map => {
+      const div = L.DomUtil.create('div', 'info legend')
+      const grades = [0, 5, 10, 20, 50, 100]
+      
+      // タイトル部分
+      div.innerHTML = '<div style="margin-bottom: 8px;"><strong>高度 (m)</strong></div>'
+
+      // 各項目をループで生成
+      for (let i = 0; i < grades.length; i++) {
+          const from = grades[i]
+          const to = grades[i + 1]
+          const color = getAltitudeColor(from + 1)
+
+          // 新しい行要素を作成
+          const item = L.DomUtil.create('div', 'legend-item', div)
+          item.innerHTML = `
+              <span style="background:${color}"></span>
+              ${from}${to ? '&ndash;' + to + 'm' : 'm +'}
+          `
+      }
+
+      return div
+  }
+
+  legend.addTo(map)
+}
+
 const main = async () => {
   map = initMap({
     lat: 35.652969988398745, lng: 139.7564792633057
@@ -145,6 +176,8 @@ const main = async () => {
       return L.circleMarker(latlng, markerStyle)
     }
   }).addTo(map)
+
+  addLegend()
 
   addListener()
 }

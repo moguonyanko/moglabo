@@ -14,3 +14,31 @@
   height: 26px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
+
+/* 凡例全体 */
+.legend {
+    line-height: 1.5;
+    color: #555;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 10px;
+}
+
+/* 各行の入れ物 */
+.legend-item {
+    display: flex;
+    align-items: center; /* 垂直方向の中央揃え */
+    margin-bottom: 4px;  /* 行間の調整 */
+}
+
+/* 色のボックス（span） */
+.legend-item span {
+    display: inline-block;
+    width: 3rem;         /* 5remだと少し長すぎるかもしれないので適宜調整してください */
+    height: 18px;
+    margin-right: 10px;
+    opacity: 0.7;
+    border: 1px solid #ccc;
+    flex-shrink: 0;      /* 幅が潰れないように固定 */
+}
