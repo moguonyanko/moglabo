@@ -47,3 +47,41 @@
     border: 1px solid #ccc;
     flex-shrink: 0;      /* 幅が潰れないように固定 */
 }
+
+/* ポップアップ内のコンテナ */
+.poi-popup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* 項目間の余白 */
+    min-width: 140px;
+    font-family: sans-serif;
+}
+
+/* タイトル部分 */
+.poi-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #eee; /* hrの代わりの下線 */
+    padding-bottom: 4px;
+    color: #333;
+}
+
+/* 各データ行 */
+.poi-row {
+    display: flex;
+    justify-content: space-between; /* ラベルと値を左右に振り分け */
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+/* ラベル（緯度、経度など） */
+.poi-label {
+    color: #666;
+    font-weight: 500;
+}
+
+/* 値（数値） */
+.poi-value {
+    font-family: 'Courier New', Courier, monospace; /* 数値を見やすく */
+    color: #222;
+}

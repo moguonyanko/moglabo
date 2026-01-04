@@ -113,11 +113,11 @@ const addListener = (map, points) => {
 // 高度(m)を受け取って色(Hex)を返す関数
 const getAltitudeColor = alt => {
   return alt > 100 ? '#78350f' : // 100m以上: 濃い茶
-         alt > 50  ? '#92400e' : // 50m以上: 茶
-         alt > 20  ? '#d97706' : // 20m以上: オレンジ
-         alt > 10  ? '#f59e0b' : // 10m以上: 黄
-         alt > 5   ? '#10b981' : // 5m以上: 緑
-                     '#3b82f6';   // それ以下: 青
+    alt > 50 ? '#92400e' : // 50m以上: 茶
+      alt > 20 ? '#d97706' : // 20m以上: オレンジ
+        alt > 10 ? '#f59e0b' : // 10m以上: 黄
+          alt > 5 ? '#10b981' : // 5m以上: 緑
+            '#3b82f6';   // それ以下: 青
 }
 
 const addLegend = () => {
@@ -125,27 +125,27 @@ const addLegend = () => {
   const legend = L.control({ position: 'bottomright' })
 
   legend.onAdd = map => {
-      const div = L.DomUtil.create('div', 'info legend')
-      const grades = [0, 5, 10, 20, 50, 100]
-      
-      // タイトル部分
-      div.innerHTML = '<div style="margin-bottom: 8px;"><strong>高度 (m)</strong></div>'
+    const div = L.DomUtil.create('div', 'info legend')
+    const grades = [0, 5, 10, 20, 50, 100]
 
-      // 各項目をループで生成
-      for (let i = 0; i < grades.length; i++) {
-          const from = grades[i]
-          const to = grades[i + 1]
-          const color = getAltitudeColor(from + 1)
+    // タイトル部分
+    div.innerHTML = '<div style="margin-bottom: 8px;"><strong>高度 (m)</strong></div>'
 
-          // 新しい行要素を作成
-          const item = L.DomUtil.create('div', 'legend-item', div)
-          item.innerHTML = `
+    // 各項目をループで生成
+    for (let i = 0; i < grades.length; i++) {
+      const from = grades[i]
+      const to = grades[i + 1]
+      const color = getAltitudeColor(from + 1)
+
+      // 新しい行要素を作成
+      const item = L.DomUtil.create('div', 'legend-item', div)
+      item.innerHTML = `
               <span style="background:${color}"></span>
               ${from}${to ? '&ndash;' + to + 'm' : 'm +'}
           `
-      }
+    }
 
-      return div
+    return div
   }
 
   legend.addTo(map)
@@ -174,8 +174,40 @@ const main = async () => {
       }
 
       return L.circleMarker(latlng, markerStyle)
+    },
+    onEachFeature: (feature, layer) => {
+      const lat = feature.geometry.coordinates[1]
+      const lng = feature.geometry.coordinates[0]
+      const alt = feature.properties.altitude || (feature.geometry.coordinates[2] ?? 0)
+
+      // ポップアップの内容を構築
+      const popupContent = `
+        <div class="poi-popup">
+          <div class="poi-title">地点情報</div>
+          
+          <div class="poi-row">
+            <span class="poi-label">緯度</span>
+            <span class="poi-value">${lat.toFixed(6)}</span>
+          </div>
+          
+          <div class="poi-row">
+            <span class="poi-label">経度</span>
+            <span class="poi-value">${lng.toFixed(6)}</span>
+          </div>
+          
+          <div class="poi-row">
+            <span class="poi-label">高度</span>
+            <span class="poi-value" style="color: ${getAltitudeColor(alt)}; font-weight: bold;">
+              ${alt.toFixed(1)}m
+            </span>
+          </div>
+        </div>
+      `
+
+      layer.bindPopup(popupContent)
     }
   }).addTo(map)
+
 
   addLegend()
 
