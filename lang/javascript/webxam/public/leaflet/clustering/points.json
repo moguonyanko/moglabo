@@ -1,85 +1,41 @@
 {
   "type": "FeatureCollection",
   "features": [
-    {
-      "type": "Feature",
-      "properties": { "altitude": 15.5 },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [139.75306090083097, 35.65465334975107, 15.5]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "altitude": 18.2 },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [139.75638843384098, 35.65527421320071, 18.2]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "altitude": 5.1 },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [139.7570785888363, 35.650417330006434, 5.1]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "altitude": 7.4 },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [139.7581138213285, 35.65163908925017, 7.4]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "altitude": 12.8 },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [139.75490953028208, 35.65376210184603, 12.8]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "altitude": 14.0 },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [139.75641308223345, 35.65328142469099, 14.0]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "altitude": 10.5 },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [139.75699231946209, 35.652760687841194, 10.5]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "altitude": 6.8 },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [139.75506974483358, 35.65184939018542, 6.8]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "altitude": 4.2 },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [139.75320879118703, 35.651388730271734, 4.2]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "altitude": 16.9 },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [139.7589518666784, 35.6534616789628, 16.9]
-      }
-    }
+    { "type": "Feature", "properties": { "altitude": 15.5 }, "geometry": { "type": "Point", "coordinates": [139.75306090083097, 35.65465334975107, 15.5] } },
+    { "type": "Feature", "properties": { "altitude": 18.2 }, "geometry": { "type": "Point", "coordinates": [139.75638843384098, 35.65527421320071, 18.2] } },
+    { "type": "Feature", "properties": { "altitude": 5.1 }, "geometry": { "type": "Point", "coordinates": [139.7570785888363, 35.650417330006434, 5.1] } },
+    { "type": "Feature", "properties": { "altitude": 7.4 }, "geometry": { "type": "Point", "coordinates": [139.7581138213285, 35.65163908925017, 7.4] } },
+    { "type": "Feature", "properties": { "altitude": 12.8 }, "geometry": { "type": "Point", "coordinates": [139.75490953028208, 35.65376210184603, 12.8] } },
+    { "type": "Feature", "properties": { "altitude": 14.0 }, "geometry": { "type": "Point", "coordinates": [139.75641308223345, 35.65328142469099, 14.0] } },
+    { "type": "Feature", "properties": { "altitude": 10.5 }, "geometry": { "type": "Point", "coordinates": [139.75699231946209, 35.652760687841194, 10.5] } },
+    { "type": "Feature", "properties": { "altitude": 6.8 }, "geometry": { "type": "Point", "coordinates": [139.75506974483358, 35.65184939018542, 6.8] } },
+    { "type": "Feature", "properties": { "altitude": 4.2 }, "geometry": { "type": "Point", "coordinates": [139.75320879118703, 35.651388730271734, 4.2] } },
+    { "type": "Feature", "properties": { "altitude": 16.9 }, "geometry": { "type": "Point", "coordinates": [139.7589518666784, 35.6534616789628, 16.9] } },
+    
+    { "type": "Feature", "properties": { "altitude": 42.5 }, "geometry": { "type": "Point", "coordinates": [139.7512, 35.6565, 42.5] } },
+    { "type": "Feature", "properties": { "altitude": 38.1 }, "geometry": { "type": "Point", "coordinates": [139.7525, 35.6572, 38.1] } },
+    { "type": "Feature", "properties": { "altitude": 45.0 }, "geometry": { "type": "Point", "coordinates": [139.7505, 35.6558, 45.0] } },
+    { "type": "Feature", "properties": { "altitude": 35.2 }, "geometry": { "type": "Point", "coordinates": [139.7538, 35.6568, 35.2] } },
+    { "type": "Feature", "properties": { "altitude": 30.8 }, "geometry": { "type": "Point", "coordinates": [139.7518, 35.6552, 30.8] } },
+    
+    { "type": "Feature", "properties": { "altitude": 25.4 }, "geometry": { "type": "Point", "coordinates": [139.7545, 35.6548, 25.4] } },
+    { "type": "Feature", "properties": { "altitude": 28.9 }, "geometry": { "type": "Point", "coordinates": [139.7552, 35.6555, 28.9] } },
+    { "type": "Feature", "properties": { "altitude": 8.5 }, "geometry": { "type": "Point", "coordinates": [139.7554, 35.6545, 8.5] } },
+    { "type": "Feature", "properties": { "altitude": 9.2 }, "geometry": { "type": "Point", "coordinates": [139.7562, 35.6540, 9.2] } },
+    
+    { "type": "Feature", "properties": { "altitude": 2.1 }, "geometry": { "type": "Point", "coordinates": [139.7585, 35.6495, 2.1] } },
+    { "type": "Feature", "properties": { "altitude": 3.5 }, "geometry": { "type": "Point", "coordinates": [139.7592, 35.6508, 3.5] } },
+    { "type": "Feature", "properties": { "altitude": 2.8 }, "geometry": { "type": "Point", "coordinates": [139.7540, 35.6502, 2.8] } },
+    { "type": "Feature", "properties": { "altitude": 3.9 }, "geometry": { "type": "Point", "coordinates": [139.7525, 35.6505, 3.9] } },
+    { "type": "Feature", "properties": { "altitude": 1.5 }, "geometry": { "type": "Point", "coordinates": [139.7605, 35.6515, 1.5] } },
+    { "type": "Feature", "properties": { "altitude": 4.8 }, "geometry": { "type": "Point", "coordinates": [139.7555, 35.6492, 4.8] } },
+    { "type": "Feature", "properties": { "altitude": 5.5 }, "geometry": { "type": "Point", "coordinates": [139.7588, 35.6522, 5.5] } },
+    
+    { "type": "Feature", "properties": { "altitude": 22.1 }, "geometry": { "type": "Point", "coordinates": [139.7612, 35.6545, 22.1] } },
+    { "type": "Feature", "properties": { "altitude": 20.4 }, "geometry": { "type": "Point", "coordinates": [139.7600, 35.6552, 20.4] } },
+    { "type": "Feature", "properties": { "altitude": 19.8 }, "geometry": { "type": "Point", "coordinates": [139.7620, 35.6538, 19.8] } },
+    { "type": "Feature", "properties": { "altitude": 15.2 }, "geometry": { "type": "Point", "coordinates": [139.7608, 35.6528, 15.2] } },
+    { "type": "Feature", "properties": { "altitude": 11.3 }, "geometry": { "type": "Point", "coordinates": [139.7598, 35.6518, 11.3] } },
+    { "type": "Feature", "properties": { "altitude": 24.5 }, "geometry": { "type": "Point", "coordinates": [139.7625, 35.6555, 24.5] } }
   ]
 }
