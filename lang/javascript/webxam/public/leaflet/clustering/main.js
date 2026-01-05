@@ -151,21 +151,18 @@ const addLegend = () => {
   legend.addTo(map)
 }
 
-const main = async () => {
-  map = initMap({
-    lat: 35.652969988398745, lng: 139.7564792633057
-  })
-
-  labelLayerGroup = L.layerGroup().addTo(map)
-
-  clusteringTargetPoints = await loadJson('points.json')
+const drawInitialPoints = (map, clusteringTargetPoints) => {
+  // 地図初期化時にポイント専用のペインを作成し、z-indexを上げる
+  map.createPane('pointsPane')
+  map.getPane('pointsPane').style.zIndex = 650
 
   L.geoJSON([clusteringTargetPoints], {
     pointToLayer: (feature, latlng) => {
       const alt = feature.properties.altitude || (feature.geometry.coordinates[2] ?? 0)
       const color = getAltitudeColor(alt)
       const markerStyle = {
-        radius: 8,
+        pane: 'pointsPane',
+        radius: 12,
         fillColor: color,
         color: '#ffffff',
         weight: 1,
@@ -176,38 +173,53 @@ const main = async () => {
       return L.circleMarker(latlng, markerStyle)
     },
     onEachFeature: (feature, layer) => {
-      const lat = feature.geometry.coordinates[1]
-      const lng = feature.geometry.coordinates[0]
-      const alt = feature.properties.altitude || (feature.geometry.coordinates[2] ?? 0)
+      const props = feature.properties
+      const coords = feature.geometry.coordinates
+      const alt = props.altitude || (coords[2] ?? 0)
+      const workerId = props.worker_id || "未割当" // IDを取得
 
-      // ポップアップの内容を構築
       const popupContent = `
-        <div class="poi-popup">
-          <div class="poi-title">地点情報</div>
-          
-          <div class="poi-row">
-            <span class="poi-label">緯度</span>
-            <span class="poi-value">${lat.toFixed(6)}</span>
+          <div class="poi-popup">
+            <div class="poi-title">地点情報</div>
+            
+            <div class="poi-row">
+              <span class="poi-label">担当者ID</span>
+              <span class="poi-worker-id">ID: ${workerId}</span>
+            </div>
+
+            <div class="poi-row">
+              <span class="poi-label">緯度</span>
+              <span class="poi-value">${coords[1].toFixed(6)}</span>
+            </div>
+            
+            <div class="poi-row">
+              <span class="poi-label">経度</span>
+              <span class="poi-value">${coords[0].toFixed(6)}</span>
+            </div>
+            
+            <div class="poi-row">
+              <span class="poi-label">高度</span>
+              <span class="poi-value" style="color: ${getAltitudeColor(alt)}; font-weight: bold;">
+                ${alt.toFixed(1)}m
+              </span>
+            </div>
           </div>
-          
-          <div class="poi-row">
-            <span class="poi-label">経度</span>
-            <span class="poi-value">${lng.toFixed(6)}</span>
-          </div>
-          
-          <div class="poi-row">
-            <span class="poi-label">高度</span>
-            <span class="poi-value" style="color: ${getAltitudeColor(alt)}; font-weight: bold;">
-              ${alt.toFixed(1)}m
-            </span>
-          </div>
-        </div>
-      `
+        `
 
       layer.bindPopup(popupContent)
     }
-  }).addTo(map)
+  }).addTo(map)  
+}
 
+const main = async () => {
+  map = initMap({
+    lat: 35.652969988398745, lng: 139.7564792633057
+  })
+
+  labelLayerGroup = L.layerGroup().addTo(map)
+
+  clusteringTargetPoints = await loadJson('points.json')
+  drawInitialPoints(map, clusteringTargetPoints)
 
   addLegend()
 
