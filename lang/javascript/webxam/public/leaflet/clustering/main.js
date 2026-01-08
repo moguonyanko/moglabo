@@ -5,17 +5,75 @@
 
 import { initMap, loadJson } from '../leaflet_util.js'
 
+let clusteringTargetPointsGeoJson
+
 let map,
-  clusteringTargetPoints,
   clusteringPolygonLayer,
   labelLayerGroup,
-  selectedLayer
+  selectedLayer,
+  targetPointsLayer
 
-const reset = () => {
-  if (clusteringPolygonLayer) {
-    clusteringPolygonLayer.remove()
-    labelLayerGroup.clearLayers()
-  }
+let pointLayers
+
+const POINTS_PANE = 'pointsPane'
+
+const initTargetPoints = (clusteringTargetPoints) => {
+  // API呼び出し時に渡すためにポイントのGeoJSONを保持しておく。
+  clusteringTargetPointsGeoJson = clusteringTargetPoints
+  pointLayers = []
+
+  // L.geoJSONの結果を保持
+  targetPointsLayer = L.geoJSON(clusteringTargetPoints, {
+    pointToLayer: (feature, latlng) => {
+      const alt = feature.properties.altitude || (feature.geometry.coordinates[2] ?? 0)
+      return L.circleMarker(latlng, {
+        pane: POINTS_PANE,
+        radius: 12,
+        fillColor: getAltitudeColor(alt),
+        color: '#ffffff',
+        weight: 1,
+        fillOpacity: 0.8
+      })
+    },
+    onEachFeature: (feature, layer) => {
+      // 初期化
+      updatePopup(layer, feature, "未割当")
+      // レイヤーを配列に保存（APIのlabelsのインデックスと一致させるため）
+      pointLayers.push(layer)
+    }
+  }).addTo(map)
+}
+
+const updatePopup = (layer, feature, workerId) => {
+  const coords = feature.geometry.coordinates
+  const alt = feature.properties.altitude || (coords[2] ?? 0)
+
+  const popupContent = `
+    <div class="poi-popup">
+      <div class="poi-title">地点情報</div>
+      <div class="poi-row">
+        <span class="poi-label">担当者ID</span>
+        <span class="poi-worker-id">ID: ${workerId}</span>
+      </div>
+      <div class="poi-row"><span class="poi-label">緯度</span><span class="poi-value">${coords[1].toFixed(6)}</span></div>
+      <div class="poi-row"><span class="poi-label">経度</span><span class="poi-value">${coords[0].toFixed(6)}</span></div>
+      <div class="poi-row">
+        <span class="poi-label">高度</span>
+        <span class="poi-value" style="color: ${getAltitudeColor(alt)}; font-weight: bold;">${alt.toFixed(1)}m</span>
+      </div>
+    </div>`;
+  layer.bindPopup(popupContent)
+}
+
+const loadTargetPoints = async () => {
+  return await loadJson('points.json')
+}
+
+const reset = async () => {
+  labelLayerGroup?.clearLayers()
+  clusteringPolygonLayer?.remove()
+  targetPointsLayer?.remove()
+  initTargetPoints(await loadTargetPoints())
 }
 
 // あらかじめ視認性の良い色のリストを用意（担当者が増えてもループするようにする）
@@ -34,25 +92,54 @@ const highlightPolygon = target => {
   selectedLayer = target;
 }
 
+const addLabelToPolygon = (layer, feature) => {
+  // 重心にラベル（担当者番号）を表示
+  // getBounds().getCenter() でポリゴンの中心座標を取得
+  const center = layer.getBounds().getCenter()
+
+  const label = L.marker(center, {
+    icon: L.divIcon({
+      className: 'worker-label', // CSSでスタイルを指定するためのクラス名
+      html: `<div>${feature.properties.worker_id}</div>`,
+      iconSize: [30, 30],
+      iconAnchor: [15, 15] // 中心に配置
+    }),
+    interactive: false // ラベル自体はクリック不可にする（下のポリゴンを邪魔しない）
+  })
+  label.addTo(labelLayerGroup)
+}
 
 const listeners = {
-  onReset: () => {
-    reset()
+  onReset: async () => {
+    await reset()
   },
   onExecuteClustering: async () => {
-    reset()
+    await reset()
     const clusterCount = document.getElementById('cluster-count').value
 
     const response = await fetch('/brest/gis/cluster/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        geojson: clusteringTargetPoints,
+        geojson: clusteringTargetPointsGeoJson,
         k: Number(clusterCount)
       })
     })
 
     const geojsonData = await response.json()
+
+    if (geojsonData.labels && pointLayers.length > 0) {
+      geojsonData.labels.forEach((clusterIndex, i) => {
+        const layer = pointLayers[i];
+        if (layer) {
+          const workerId = clusterIndex + 1; // 1-indexed
+          // ポイントのfeatureプロパティを更新
+          layer.feature.properties.worker_id = workerId
+          // ポップアップを再生成
+          updatePopup(layer, layer.feature, workerId)
+        }
+      })
+    }
 
     clusteringPolygonLayer = L.geoJSON(geojsonData, {
       style: feature => {
@@ -77,20 +164,7 @@ const listeners = {
           L.DomEvent.stopPropagation(e) // 地図へのクリックイベント伝搬を止める
         })
 
-        // 重心にラベル（担当者番号）を表示
-        // getBounds().getCenter() でポリゴンの中心座標を取得
-        const center = layer.getBounds().getCenter()
-
-        const label = L.marker(center, {
-          icon: L.divIcon({
-            className: 'worker-label', // CSSでスタイルを指定するためのクラス名
-            html: `<div>${feature.properties.worker_id}</div>`,
-            iconSize: [30, 30],
-            iconAnchor: [15, 15] // 中心に配置
-          }),
-          interactive: false // ラベル自体はクリック不可にする（下のポリゴンを邪魔しない）
-        })
-        label.addTo(labelLayerGroup)
+        addLabelToPolygon(layer, feature)
       }
     }).addTo(map)
   }
@@ -151,77 +225,21 @@ const addLegend = () => {
   legend.addTo(map)
 }
 
-const drawInitialPoints = (map, clusteringTargetPoints) => {
-  // 地図初期化時にポイント専用のペインを作成し、z-indexを上げる
-  map.createPane('pointsPane')
-  map.getPane('pointsPane').style.zIndex = 650
-
-  L.geoJSON([clusteringTargetPoints], {
-    pointToLayer: (feature, latlng) => {
-      const alt = feature.properties.altitude || (feature.geometry.coordinates[2] ?? 0)
-      const color = getAltitudeColor(alt)
-      const markerStyle = {
-        pane: 'pointsPane',
-        radius: 12,
-        fillColor: color,
-        color: '#ffffff',
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
-      }
-
-      return L.circleMarker(latlng, markerStyle)
-    },
-    onEachFeature: (feature, layer) => {
-      const props = feature.properties
-      const coords = feature.geometry.coordinates
-      const alt = props.altitude || (coords[2] ?? 0)
-      const workerId = props.worker_id || "未割当" // IDを取得
-
-      const popupContent = `
-          <div class="poi-popup">
-            <div class="poi-title">地点情報</div>
-            
-            <div class="poi-row">
-              <span class="poi-label">担当者ID</span>
-              <span class="poi-worker-id">ID: ${workerId}</span>
-            </div>
-
-            <div class="poi-row">
-              <span class="poi-label">緯度</span>
-              <span class="poi-value">${coords[1].toFixed(6)}</span>
-            </div>
-            
-            <div class="poi-row">
-              <span class="poi-label">経度</span>
-              <span class="poi-value">${coords[0].toFixed(6)}</span>
-            </div>
-            
-            <div class="poi-row">
-              <span class="poi-label">高度</span>
-              <span class="poi-value" style="color: ${getAltitudeColor(alt)}; font-weight: bold;">
-                ${alt.toFixed(1)}m
-              </span>
-            </div>
-          </div>
-        `
-
-      layer.bindPopup(popupContent)
-    }
-  }).addTo(map)  
-}
-
 const main = async () => {
   map = initMap({
     lat: 35.652969988398745, lng: 139.7564792633057
   })
 
-  labelLayerGroup = L.layerGroup().addTo(map)
-
-  clusteringTargetPoints = await loadJson('points.json')
-  drawInitialPoints(map, clusteringTargetPoints)
+  clusteringTargetPointsGeoJson = await loadTargetPoints()
+  // ポリゴン描画後もポイントをクリックできるように専用のPaneを作成してzIndexを大きくしておく。
+  map.createPane(POINTS_PANE)
+  map.getPane(POINTS_PANE).style.zIndex = 650
+  initTargetPoints(await loadTargetPoints())
 
   addLegend()
+
+  // 割り当てられたIDを表示するラベルのためのレイヤーグループ
+  labelLayerGroup = L.layerGroup().addTo(map)
 
   addListener()
 }
