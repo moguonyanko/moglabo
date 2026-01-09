@@ -61,7 +61,7 @@ const updatePopup = (layer, feature, workerId) => {
         <span class="poi-label">高度</span>
         <span class="poi-value" style="color: ${getAltitudeColor(alt)}; font-weight: bold;">${alt.toFixed(1)}m</span>
       </div>
-    </div>`;
+    </div>`
   layer.bindPopup(popupContent)
 }
 
@@ -89,7 +89,7 @@ const highlightPolygon = target => {
   }
   // 新しいターゲットを強調
   target.setStyle({ fillOpacity: 0.7, weight: 5 })
-  selectedLayer = target;
+  selectedLayer = target
 }
 
 const addLabelToPolygon = (layer, feature) => {
