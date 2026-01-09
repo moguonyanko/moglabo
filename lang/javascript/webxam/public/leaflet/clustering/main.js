@@ -112,9 +112,9 @@ const addLabelToPolygon = (layer, feature) => {
 const updateWorkerIds = labels => {
   if (labels && pointLayers.length > 0) {
     labels.forEach((clusterIndex, i) => {
-      const layer = pointLayers[i];
+      const layer = pointLayers[i]
       if (layer) {
-        const workerId = clusterIndex + 1; // 1-indexed
+        const workerId = clusterIndex + 1 // 1-indexed
         // ポイントのfeatureプロパティを更新
         layer.feature.properties.worker_id = workerId
         // ポップアップを再生成
@@ -207,7 +207,7 @@ const getAltitudeColor = alt => {
       alt > 20 ? '#d97706' : // 20m以上: オレンジ
         alt > 10 ? '#f59e0b' : // 10m以上: 黄
           alt > 5 ? '#10b981' : // 5m以上: 緑
-            '#3b82f6';   // それ以下: 青
+            '#3b82f6'   // それ以下: 青
 }
 
 const addLegend = () => {
