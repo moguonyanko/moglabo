@@ -126,6 +126,14 @@ const listeners = {
       })
     })
 
+    if (!response.ok) {
+      const { detail } = await response.json()
+      window.dispatchEvent(new CustomEvent('clustererror', {
+        detail
+      }))
+      return
+    }
+
     const geojsonData = await response.json()
 
     if (geojsonData.labels && pointLayers.length > 0) {
@@ -181,6 +189,10 @@ const addListener = (map, points) => {
         event.target.removeAttribute('disabled')
       }
     }
+  })
+
+  window.addEventListener('clustererror', event => {
+    alert(`クラスタリング中にエラーが発生しました: ${event.detail}`)
   })
 }
 
