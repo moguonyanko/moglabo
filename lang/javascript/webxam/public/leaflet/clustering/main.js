@@ -109,6 +109,21 @@ const addLabelToPolygon = (layer, feature) => {
   label.addTo(labelLayerGroup)
 }
 
+const updateWorkerIds = labels => {
+  if (labels && pointLayers.length > 0) {
+    labels.forEach((clusterIndex, i) => {
+      const layer = pointLayers[i];
+      if (layer) {
+        const workerId = clusterIndex + 1; // 1-indexed
+        // ポイントのfeatureプロパティを更新
+        layer.feature.properties.worker_id = workerId
+        // ポップアップを再生成
+        updatePopup(layer, layer.feature, workerId)
+      }
+    })
+  }
+}
+
 const listeners = {
   onReset: async () => {
     await reset()
@@ -136,18 +151,7 @@ const listeners = {
 
     const geojsonData = await response.json()
 
-    if (geojsonData.labels && pointLayers.length > 0) {
-      geojsonData.labels.forEach((clusterIndex, i) => {
-        const layer = pointLayers[i];
-        if (layer) {
-          const workerId = clusterIndex + 1; // 1-indexed
-          // ポイントのfeatureプロパティを更新
-          layer.feature.properties.worker_id = workerId
-          // ポップアップを再生成
-          updatePopup(layer, layer.feature, workerId)
-        }
-      })
-    }
+    updateWorkerIds(geojsonData.labels)
 
     clusteringPolygonLayer = L.geoJSON(geojsonData, {
       style: feature => {
