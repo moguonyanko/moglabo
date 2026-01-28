@@ -836,7 +836,7 @@ public class TestFunctions {
 
     @Test(expected = StackOverflowError.class)
     public void 再帰の回数が多いとスタックオーバーフローが起きる() {
-        int n = 20000;
+        int n = 50000;
         BigInteger result = factorialTCO(n);
         System.out.println("n = " + n + ", result = " + result);
     }
