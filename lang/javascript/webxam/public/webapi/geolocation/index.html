@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../../common.css" />
     <link rel="stylesheet" href="exam.css" />
+    <script src="exam.js" type="module"></script>
   </head>
   <body>
     <header>
@@ -27,13 +28,26 @@
             <h2>移動のエミュレート</h2>
             <p>作業中…</p>
         </section>
+        <section class="geolocation-element">
+          <h2>geolocation要素</h2>
+          <p>初回は位置情報取得のためのプロンプトが表示される。</p>
+          <div>
+            <geolocation id="sample-geolocation"
+              autolocate
+              accuracymode="precise">
+              この文章が表示されるブラウザではgeolocation要素がサポートされていません。
+              ここにはgeolocation要素と同等の機能を提供する要素が記述されるべきです。
+            </geolocation>
+            <div class="output"></div>
+          </div>
+        </section>
     </main>
     <footer>
       <p>参考サイト</p>
       <ul>
-          <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API">Geolocation API(MDN)          </a></li>
+          <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API">Geolocation API(MDN)</a></li>
+          <li><a href="https://developer.chrome.com/blog/geolocation-html-element?authuser=3&hl=ja">&lt;geolocation&gt;HTML 要素の導入</a></li>
       </ul>
     </footer>
-    <script src="exam.js" type="module"></script>
   </body>
 </html>

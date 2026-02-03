@@ -95,3 +95,22 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+const addGeolocationListener = () => {
+    const output = document.querySelector('.geolocation-element .output')
+    if ('HTMLGeolocationElement' in window) {
+        const geolocEle = document.getElementById('sample-geolocation')
+        geolocEle.addEventListener('location', event => {
+            const { position, error } = event.target
+            if (position) {
+                output.textContent = JSON.stringify(position)
+            } else if (error) {
+                output.textContent = JSON.stringify(error)
+            }
+        })
+    } else {
+        output.textContent = 'geolocation要素はサポートされていません。'
+    }
+}
+
+addGeolocationListener()
