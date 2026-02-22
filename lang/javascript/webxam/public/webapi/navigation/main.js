@@ -18,6 +18,9 @@ const fetchPageContent = async url => {
 const renderContent = async content => {
   const rendaringArea = document.getElementById('rendering-area')
   rendaringArea.innerHTML = content
+  // 履歴をページのルートに戻しておくことでリロードされてもSPAの断片だけ表示されるのは防げる。
+  // ただしユーザーが進む、戻るをした時に意図しない結果を表示してしまうかもしれないので好ましくない。
+  // history.replaceState(null, '', '/')
 }
 
 const navigationListeners = {
@@ -26,6 +29,7 @@ const navigationListeners = {
 
     // URLが更新される。
     // 更新後の状態でリロードすると更新先URLのコンテンツだけが表示された状態になってしまう。
+    // サーバー側でリロードされた状況に応じて適切にファイルを返すような調整をするのが妥当か。
     event.intercept({
       async handler() {
         const content = await fetchPageContent(url)
@@ -63,6 +67,14 @@ const addListeners = () => {
         // 呼び出して問題がある場合は即エラーにしてしまった方が良い。
         navigationListeners[navigationName](event)
       }
+    }
+  })
+
+  document.querySelector('main').addEventListener('click', event => {
+    const { navigationName } = event.target.dataset
+    if (navigationName && !event.target.hasAttribute('href')) {
+      //これだと断片のページに丸ごと遷移してしまう。
+      navigation.navigate('./dashboard.html')
     }
   })
 

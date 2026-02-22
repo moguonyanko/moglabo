@@ -1,43 +1,50 @@
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Navigation API</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../../common.css" />
-    <link rel="stylesheet" href="main.css" />
-    <script src="main.js" type="module"></script>
-  </head>
-  <body>
-    <header>
-        <a href="//localhost/webxam/">home</a>
-        <h1>Navigation API</h1>
-    </header>
-    <main>
-      <section>
-        <h2>ナビゲーション</h2>
-        <ul>
-          <li>
-            <a href="dashboard.html" data-navigation-name="simpleNavigate">ダッシュボード</a>
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h2>startViewTransition</h2>
-        <p>トランジションを伴って描画が行われる。</p>
-        <ul>
-          <li>
-            <a href="dashboard.html" data-navigation-name="navigateWithTransition">ダッシュボード</a>
-          </li>
-        </ul>
-      </section>
-      <div id="rendering-area"></div>
-    </main>
-    <footer>
-      <p>参考サイト</p>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Navigation API</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="main.js" type="module"></script>
+</head>
+
+<body>
+  <header>
+    <a href="/webxam/">home</a>
+    <h1>Navigation API</h1>
+  </header>
+  <main>
+    <section>
+      <h2>ナビゲーション</h2>
       <ul>
-        <li><a href="https://web.dev/blog/baseline-navigation-api?hl=en&authuser=3">Navigation API - a better way to navigate, is now Baseline Newly Available</a></li>
+        <li>
+          <a href="dashboard.html" data-navigation-name="simpleNavigate">ダッシュボード</a>
+        </li>
       </ul>
-    </footer>
-  </body>
+      <button data-navigation-name="simpleNavigate">ダッシュボード(丸ごとページ遷移してしまうボタン)</button>
+    </section>
+    <section>
+      <h2>startViewTransition</h2>
+      <p>トランジションを伴って描画が行われる。</p>
+      <ul>
+        <li>
+          <a href="dashboard.html" data-navigation-name="navigateWithTransition">ダッシュボード</a>
+        </li>
+      </ul>
+    </section>
+    <div id="rendering-area" class="output"></div>
+  </main>
+  <footer>
+    <p>参考サイト</p>
+    <ul>
+      <li><a href="https://web.dev/blog/baseline-navigation-api?hl=en&authuser=3">Navigation API - a better way to
+          navigate, is now Baseline Newly Available</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigation/navigate_event">Navigation: navigate
+          event</a></li>
+    </ul>
+  </footer>
+</body>
+
 </html>

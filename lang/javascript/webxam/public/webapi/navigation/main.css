@@ -1,8 +1,6 @@
 @charset "UTF-8";
 
-#rendering-area {
-  background-color: beige;
-  border: 1px solid black;
-  width: 500px;
-  height: 400px;
+.dashborad {
+  width: 10rem;
+  height: 3rem;
 }
