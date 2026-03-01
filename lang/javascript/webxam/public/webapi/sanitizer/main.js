@@ -20,11 +20,14 @@ const funcs = {
     const userInput = document.querySelector(".basicMethod .userinput").value;
     if (sanitized) {
       const sanitizer = new Sanitizer();
-      // サニタイズされた要素が必要な場合はsanitizeやsanitizeForが有用である。
-      // sanitizeは引数にDocumentやDocumentFragmentを求めるので以下はエラーとなる。
-      //const element = sanitizer.sanitize(userInput);
-      const element = sanitizer.sanitizeFor('div', userInput);
-      output.replaceChildren(element);
+      
+      // 各属性を設定したimg要素を追加できるようにする。これをしないとsetHTMLしても何も起きない。
+      sanitizer.allowElement("img");
+      sanitizer.allowAttribute('src');
+      // イベントリスナー用の属性は許可しても反映されない。
+      sanitizer.allowAttribute('onclick');
+
+      output.setHTML(userInput, { sanitizer });
     } else {
       output.innerHTML = userInput;
     }
@@ -52,7 +55,7 @@ const funcs = {
       const sanitizer = new Sanitizer({
         allowAttributes: { 'class': ['p'] }
       });
-      output.replaceChildren(sanitizer.sanitizeFor('span', userInput));
+      output.setHTML(userInput, { sanitizer })
     } else {
       output.innerHTML = userInput;
     }
@@ -65,7 +68,7 @@ const funcs = {
       allowElements: ['sample-profile']
     });
     const element = '<sample-profile></sample-profile>';
-    output.setHTML(element, sanitizer);
+    output.setHTML(element, { sanitizer });
   }
 };
 

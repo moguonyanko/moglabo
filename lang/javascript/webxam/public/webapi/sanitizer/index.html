@@ -23,18 +23,18 @@
       <h2>Sanitizerの基本メソッド</h2>
       <div class="input">
         <p>NAME</p>
-        <textarea class="userinput">&lt;img src=x onerror=alert('XSS!')&gt;</textarea>
+        <textarea class="userinput">&lt;img src="../../image/hello.png" onclick="alert('XSS!');"&gt;</textarea>
         <label><input type="checkbox" class="sanitized" checked />サニタイズ</label>
         <button data-event-listener="basicSanitize">new Sanitizer()</button>
-        <button data-event-listener="sanitizeElement">sanitizeFor</button>
+        <button data-event-listener="sanitizeElement">setHTML</button>
       </div>
       <p>MY NAME</p>
+      <p>イベントリスナー用属性はallowAttributeしても追加されない。</p>
       <div class="output"></div>
     </section>
     <section class="sanitizeConfig">
       <h2>サニタイズの設定</h2>
       <div class="input">
-        <p>AGE</p>
         <textarea class="userinput">
           20&lt;script&gt;alert('XSS!')&lt;/script&gt;
           &lt;p class="sampleelement" onclick="alert('XSS!')"&gt;SAMPLE&lt;/p&gt;
@@ -43,6 +43,7 @@
         <button data-event-listener="sanitizeScript">run(Script)</button>
         <button data-event-listener="sanitizeAttribute">run(Attribute)</button>
       </div>
+      <p>AGE</p>
       <div class="output"></div>
     </section>
     <section class="sanitizeCustomElements">
@@ -60,6 +61,7 @@
     <ul>
       <li><a href="https://web.dev/sanitizer/">Safe DOM manipulation with the Sanitizer API</a></li>
       <li><a href="https://wicg.github.io/sanitizer-api/">HTML Sanitizer API</a></li>
+      <li><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTML_Sanitizer_API">HTML Sanitizer API</a></li>
     </ul>
   </footer>
 </body>
