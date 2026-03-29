@@ -208,13 +208,21 @@ const funcs = {
     ])
     console.log(`map2["Jiro"]=${map2["Jiro"]}, map2.get("Jiro")=${map2.get("Jiro")}`)
 
-    const result = concatMaps(map1, map2)
+    const map3 = new Map([
+      [0, "Java"],
+      [1, "Rust"],
+      [2, "Python"]
+    ])
+
+    const result = concatMaps(map1, map2, map3)
     console.log(`result=${result}`)
     console.log(`JSON.stringify(result)=${JSON.stringify(result)}`)
+    // Object.fromEntriesではキーが常に文字列にされる。すなわち元の情報が失われる。
     console.log(`Object.fromEntries(result)=${Object.fromEntries(result)}`)
+    console.log(`JSON.stringify([...result])=${JSON.stringify([...result])}`)
 
     const output = document.querySelector(('.iterator-concat-sample .output'))
-    output.textContent = JSON.stringify(Object.fromEntries(result))
+    output.textContent = JSON.stringify([...result])
   }
 }
 
