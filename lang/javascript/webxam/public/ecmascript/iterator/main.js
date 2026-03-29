@@ -119,6 +119,15 @@ async function iterateWithGenerator(file, callback) {
   }
 }
 
+const concatMaps = (...maps) => {
+  console.log(maps)
+  console.log(...maps)
+  // Iterator.concatはObjectつまり{}は受け取れない。
+  // Iteratableなオブジェクトを渡さなければならない。
+  // キーが衝突する要素は上書きされる。
+  return new Map(Iterator.concat(...maps))
+}
+
 const funcs = {
   filter: () => {
     const output = document.querySelector('.filter-sample .output')
@@ -183,6 +192,29 @@ const funcs = {
       output.innerHTML = ''
       output.appendChild(img)
     })
+  },
+  concatMaps: () => {
+    const map1 = {
+      *[Symbol.iterator]() {
+        yield ["Mike", 19]
+        yield ["Taro", 24]
+        yield ["Joe", 34]
+      }     
+    }
+    const map2 = new Map([
+      ["Jiro", 45],
+      ["Mike", 30],
+      ["Pico", 20]
+    ])
+    console.log(`map2["Jiro"]=${map2["Jiro"]}, map2.get("Jiro")=${map2.get("Jiro")}`)
+
+    const result = concatMaps(map1, map2)
+    console.log(`result=${result}`)
+    console.log(`JSON.stringify(result)=${JSON.stringify(result)}`)
+    console.log(`Object.fromEntries(result)=${Object.fromEntries(result)}`)
+
+    const output = document.querySelector(('.iterator-concat-sample .output'))
+    output.textContent = JSON.stringify(Object.fromEntries(result))
   }
 }
 
