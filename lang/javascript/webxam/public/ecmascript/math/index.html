@@ -38,12 +38,20 @@
       <p>変換後</p>
       X=<span class="result-x"></span>,Y=<span class="result-y"></span>
     </section>
+    <section class="example sumPrecise">
+      <h2>Math.sumPrecise</h2>
+      <p>ループで合計を計算するより精度が高く、中間結果における浮動小数点精度の損失を回避できる。</p>
+      <textarea data-event-input="sumPrecise">1e20, 0.1, -1e20</textarea>
+      <button data-event-listener="sumPrecise">sum</button>
+      <div class="output"></div>
+    </section>
   </main>
 
   <footer>
     <p>参考</p>
     <ul>
       <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math">Math(MDN)</a></li>
+      <li><a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Math/sumPrecise">Math.sumPrecise()</a></li>
     </ul>
   </footer>
 </body>

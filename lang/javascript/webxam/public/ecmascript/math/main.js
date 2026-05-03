@@ -186,8 +186,34 @@ const defineElements = () => {
   customElements.define('rotate-degrees', RotateDegrees, { extends: 'input' })
 };
 
+const listeners = {
+  sumPrecise: () => {
+    const inputValue = document.querySelector('*[data-event-input="sumPrecise"]').value
+    const params = inputValue.split(',').map(v => parseFloat(v.trim()))
+    const result = Math.sumPrecise(params)
+    const output = document.querySelector('.example.sumPrecise .output')
+    output.textContent = result
+  }
+}
+
+const addListenres = () => {
+  const main = document.querySelector('main')
+  main.addEventListener('click', event => {
+    const { eventListener } = event.target.dataset
+    if (typeof listeners[eventListener] === 'function') {
+      try {
+        event.target.setAttribute('disabled', 'disabled')
+        listeners[eventListener]()
+      } finally {
+        event.target.removeAttribute('disabled')
+      }
+    }
+  })
+}
+
 const init = () => {
   runTest();
+  addListenres()
   defineElements();
 };
 
