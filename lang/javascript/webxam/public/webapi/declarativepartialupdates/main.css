@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+.image-container {
+  min-width: 200px;
+  min-height: 100px;
+  background-color: whitesmoke;
+  border: 1px solid darkblue;
+}
+

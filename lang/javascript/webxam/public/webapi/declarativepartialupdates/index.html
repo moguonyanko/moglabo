@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Declarative Partial Updates</title>
+  <link rel="stylesheet" href="../../common.css" />
+  <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+  <header>
+    <a href="../../">home</a>
+    <h1>Declarative Partial Updates</h1>
+  </header>
+  <main>
+    <section>
+      <h2>処理命令を用いたコンテンツの置換</h2>
+
+      <p>置換できていれば画像が表示される。</p>
+
+      <div class="image-container">
+        <?start name="image-placeholder">
+        読み込み中...
+        <?end>
+      </div>
+
+      <template for="image-placeholder">
+        <img src="../../image/hello.png" width="100px" height="50px" />
+      </template>
+    </section>
+    <section>
+      <h2>JavaScriptAPIによる置換</h2>
+      <p>ChromeCanaryでも未実装か？</p>
+    </section>
+  </main>
+  <footer>
+    <h3>参考</h3>
+    <ul>
+      <li>
+        <a href="https://developer.chrome.com/blog/declarative-partial-updates?hl=ja">宣言型部分更新</a>
+      </li>
+      <li>
+        <a href="https://github.com/WICG/declarative-partial-updates/blob/main/patching-explainer.md">順不同ストリーミング API</a>
+      </li>
+    </ul>
+  </footer>
+</body>
+
+</html>
