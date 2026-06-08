@@ -21,7 +21,14 @@
   <main>
     <section class="example get-sample-lock">
       <h2>ロックの取得</h2>
-      <button data-event-listener="get-sample-lock">get lock</button>
+      <button data-event-listener="onGetSampleLock">get lock</button>
+      <form class="output">
+        <output name="result"></output>
+      </form>
+    </section>
+    <section class="example get-sample-lock-with-cancel">
+      <h2>ロックのキャンセル</h2>
+      <button data-event-listener="onGetSampleLockWithCancel">get lock</button>
       <form class="output">
         <output name="result"></output>
       </form>
