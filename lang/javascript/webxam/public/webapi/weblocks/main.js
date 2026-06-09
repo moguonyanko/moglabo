@@ -2,11 +2,24 @@
  * @fileoverview Web Locks APIを調査するためのスクリプトです。
  */
 
-// DOM
-
 const display = (baseClass, message) => {
   const output = document.querySelector(`.${baseClass} .output`)
   output.elements['result'].value += message + ' '
+}
+
+const dummyLongTimeFunc = ({ baseClass, waitMs = 1000, message }) => {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      display(baseClass, message)
+      resolve() // ここでロック解放
+    }, waitMs)
+  })
+}
+
+const getSelectedLockMode = () => {
+  const eles = document.querySelectorAll('.lock-mode-container input[name="lockMode"]')
+  const selectedEle = Array.from(eles).filter(ele => ele.checked)[0]
+  return selectedEle.value
 }
 
 const listeners = {
@@ -32,6 +45,31 @@ const listeners = {
     } catch (err) {
       display('get-sample-lock-with-cancel', err.message)
     }
+  },
+  onRaceCondition: async () => {
+    const lockName = 'race-condition-1'
+    const baseClass = 'race-condition-example'
+    const mode = getSelectedLockMode()
+
+    const lockPromise1 = navigator.locks.request(lockName,
+      { mode },
+      async lock => {
+        display(baseClass, `LOCK1: ${lock.name}`)
+        const waitMs = 1000
+        const message = 'DONE SOMETHING 1'
+        await dummyLongTimeFunc({ baseClass, waitMs, message })
+      })
+
+    const lockPromise2 = navigator.locks.request(lockName,
+      { mode },
+      async lock => {
+        display(baseClass, `LOCK2: ${lock.name}`)
+        display(baseClass, 'DONE SOMETHING 2')
+      })
+
+    // ロック取得処理を順番に行う（逐次処理）と、常に同じ結果になってしまう。
+    // 複数のロック取得を並行処理で行って、排他ロックと共有ロックの振る舞いの違いを確認しやすくする。
+    await Promise.all([lockPromise1, lockPromise2])
   }
 }
 

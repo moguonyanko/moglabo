@@ -33,6 +33,17 @@
         <output name="result"></output>
       </form>
     </section>
+    <section class="example race-condition-example">
+      <h2>ロック</h2>
+      <div class="lock-mode-container">
+        <label><input type="radio" name="lockMode" value="exclusive" checked />排他ロック</label>
+        <label><input type="radio" name="lockMode" value="shared" />共有ロック</label>
+      </div>
+      <button data-event-listener="onRaceCondition">run</button>
+      <form class="output">
+        <output name="result"></output>
+      </form>
+    </section>
   </main>
 
   <footer>
