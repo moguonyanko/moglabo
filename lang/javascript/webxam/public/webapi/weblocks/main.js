@@ -46,7 +46,7 @@ const listeners = {
       display('get-sample-lock-with-cancel', err.message)
     }
   },
-  onRaceCondition: async () => {
+  onCheckLockType: async () => {
     const lockName = 'race-condition-1'
     const baseClass = 'race-condition-example'
     const mode = getSelectedLockMode()

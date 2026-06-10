@@ -8,7 +8,8 @@
   <title>Web Locks API</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../../common.css" />
-  <script type="module" src="main.js" defer></script>
+  <link rel="stylesheet" href="main.css" />
+  <script type="module" src="main.js"></script>
 </head>
 
 <body>
@@ -36,10 +37,10 @@
     <section class="example race-condition-example">
       <h2>ロック</h2>
       <div class="lock-mode-container">
-        <label><input type="radio" name="lockMode" value="exclusive" checked />排他ロック</label>
-        <label><input type="radio" name="lockMode" value="shared" />共有ロック</label>
+        <label><input type="radio" name="lockMode" value="exclusive" checked />排他ロック（LOCK1の処理が終わらないと2が表示されない）</label>
+        <label><input type="radio" name="lockMode" value="shared" />共有ロック（LOCK1と2が同時に表示される）</label>
       </div>
-      <button data-event-listener="onRaceCondition">run</button>
+      <button data-event-listener="onCheckLockType">run</button>
       <form class="output">
         <output name="result"></output>
       </form>
