@@ -2,6 +2,22 @@
  * @fileoverview Web Locks APIを調査するためのスクリプトです。
  */
 
+const doIncrementByWorker = (array, limit) => {
+  const worker = new Worker('worker.js')
+  worker.postMessage({
+    array, limit
+  })
+
+  return new Promise(resolve => {
+    worker.onmessage = message => {
+      const { data } = message
+      resolve(data)
+    }
+  })
+}
+
+// DOM
+
 const display = (baseClass, message) => {
   const output = document.querySelector(`.${baseClass} .output`)
   output.elements['result'].value += message + ' '
@@ -16,8 +32,8 @@ const dummyLongTimeFunc = ({ baseClass, waitMs = 1000, message }) => {
   })
 }
 
-const getSelectedLockMode = () => {
-  const eles = document.querySelectorAll('.lock-mode-container input[name="lockMode"]')
+const getSelectedLockMode = baseClass => {
+  const eles = document.querySelectorAll(`.${baseClass} input[name="lockMode"]`)
   const selectedEle = Array.from(eles).filter(ele => ele.checked)[0]
   return selectedEle.value
 }
@@ -49,7 +65,7 @@ const listeners = {
   onCheckLockType: async () => {
     const lockName = 'race-condition-1'
     const baseClass = 'race-condition-example'
-    const mode = getSelectedLockMode()
+    const mode = getSelectedLockMode('lock-mode-container')
 
     const lockPromise1 = navigator.locks.request(lockName,
       { mode },
@@ -70,10 +86,32 @@ const listeners = {
     // ロック取得処理を順番に行う（逐次処理）と、常に同じ結果になってしまう。
     // 複数のロック取得を並行処理で行って、排他ロックと共有ロックの振る舞いの違いを確認しやすくする。
     await Promise.all([lockPromise1, lockPromise2])
+  },
+  onCheckRaceCondition: async () => {
+    const sharedArrayBuffer = new SharedArrayBuffer(4)
+    const intArray = new Int32Array(sharedArrayBuffer)
+    intArray[0] = 0
+    const limit = 10000
+
+    const promise1 = doIncrementByWorker(intArray, limit)
+    const promise2 = doIncrementByWorker(intArray, limit)
+
+    const arrays = await Promise.all([promise1, promise2])
+    // 合計すると倍になってしまう。
+    // const num = Math.sumPrecise(arrays.map(array => array[0]))
+
+    // arraysには2つのWorkerで編集された値が保存されている。
+    const num = arrays[0][0]
+
+    display('check-race-condition', num)
   }
 }
 
 const init = () => {
+  if (!crossOriginIsolated) {
+    console.warn('ウェブサイトがオリジン間分離状態でないのでSharedArrayBufferが使用できません')
+  }
+
   const main = document.querySelector('main')
   main.addEventListener('click', async event => {
     const { eventListener } = event.target.dataset
