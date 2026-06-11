@@ -104,6 +104,30 @@ const listeners = {
     const num = arrays[0][0]
 
     display('check-race-condition', num)
+  },
+  onChackRaceConditionWithLock: async () => {
+    const baseClass = 'check-race-condition'
+
+    const sharedArrayBuffer = new SharedArrayBuffer(4)
+    const intArray = new Int32Array(sharedArrayBuffer)
+    intArray[0] = 0
+    const limit = 10000
+
+    const lockName = 'myResource'
+    const mode = getSelectedLockMode('lock-mode-container-for-racecondition')
+
+    // Web Locks APIを使って競合を制御して正しい結果を得られるようにする。
+    // ただし共有ロック（shared）ではonCheckRaceConditionで確認できる
+    // ロックなしの結果と同じ不安定な結果となる。
+    const lockPromise1 = navigator.locks.request(lockName, { mode },
+      lock => doIncrementByWorker(intArray, limit))
+    const lockPromise2 = navigator.locks.request(lockName, { mode },
+      lock => doIncrementByWorker(intArray, limit))
+
+    const arrays = await Promise.all([lockPromise1, lockPromise2])
+    const num = arrays[0][0]
+
+    display('check-race-condition', num)
   }
 }
 

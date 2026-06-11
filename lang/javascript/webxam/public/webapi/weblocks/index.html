@@ -47,12 +47,14 @@
     </section>
     <section class="example check-race-condition">
       <h2>競合</h2>
-      <form class="lock-mode-container">
+      <button data-event-listener="onCheckRaceCondition">ロックせず競合させる</button>
+      <p>2つのWorkerで10000回ずつインクリメントするので20000が表示されるのが正しい。競合により期待した加算が行われず少ない値が表示されることがある。</p>
+      <form class="lock-mode-container-for-racecondition">
         <label><input type="radio" name="lockMode" value="exclusive" checked />排他ロック</label>
         <label><input type="radio" name="lockMode" value="shared" />共有ロック</label>
       </form>
-      <button data-event-listener="onCheckRaceCondition">ロックせず競合させる</button>
-      <p>2つのWorkerで10000回ずつインクリメントするので20000が表示されるのが正しい。競合により期待した加算が行われず少ない値が表示されることがある。</p>
+      <button data-event-listener="onChackRaceConditionWithLock">ロックして実行</button>
+      <p>排他ロックではなく共有ロックだと20000より小さい誤った値が表示されやすくなる。</p>
       <form class="output">
         <output name="result"></output>
       </form>
