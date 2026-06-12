@@ -6,13 +6,11 @@
 /* eslint-disable no-undef */
 
 const createSummrizer = async ({ downloadprogress }) => {
-  const available = (await self.ai.summarizer.capabilities()).available;
-
-  if (available === 'no') {
+  if (navigator.userActivation.isActive) {
     throw new Error(`The Summarizer API isn't usable.`)
   }
 
-  const summarizer = await ai.summarizer.create({
+  const summarizer = await Summarizer.create({
     monitor: m => {
       m.addEventListener('downloadprogress', downloadprogress)
     }
@@ -20,13 +18,13 @@ const createSummrizer = async ({ downloadprogress }) => {
   return summarizer
 }
 
-const enableApi = () => {
-  return 'ai' in self && 'summarizer' in self.ai
+const enableApi = async () => {
+  return await Summarizer.availability();
 }
 
-const checkEnableApi = () => {
+const checkEnableApi = async () => {
   const enableApiEle = document.querySelector('.enable-api')
-  const result = enableApi()
+  const result = await enableApi()
   enableApiEle.textContent = result
   if (result) {
     enableApiEle.classList.add('enable')
@@ -85,7 +83,7 @@ const initSampleSummrizer = async () => {
 }
 
 const init = async () => {
-  checkEnableApi()
+  await checkEnableApi()
   await initSampleSummrizer()
   const main = document.querySelector('main')
   main.addEventListener('click', async event => {
