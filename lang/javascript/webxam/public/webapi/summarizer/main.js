@@ -5,22 +5,68 @@
  */
 /* eslint-disable no-undef */
 
-const createSummrizer = async ({ downloadprogress }) => {
-  if (navigator.userActivation.isActive) {
-    throw new Error(`The Summarizer API isn't usable.`)
+const SUMMARIZER_LANG = 'ja-JP'
+
+const summarizerOptions = {
+  downloadprogress: e => {
+    console.log(e)
+    const { loaded, total } = e
+    console.log(`ダウンロード:${loaded} of ${total} bytes.`)
   }
+}
+
+const createSummrizer = async ({ downloadprogress } = {}) => {
+  // 不意にfalseになる。Summarizer APIの使用可否をチェックするには不適切である。
+  // if (navigator.userActivation.isActive) {
+  //   throw new Error(`The Summarizer API isn't usable.`)
+  // }
 
   const summarizer = await Summarizer.create({
-    monitor: m => {
-      m.addEventListener('downloadprogress', downloadprogress)
+    // expectedInputLanguagesで指定した以外の言語を入力値に使用しても動作する。
+    expectedInputLanguages: [SUMMARIZER_LANG],
+    outputLanguage: SUMMARIZER_LANG,
+    monitor: monitor => {
+      if (typeof downloadprogress === 'function') {
+        monitor.addEventListener('downloadprogress', downloadprogress)
+      }
     }
   })
   return summarizer
 }
 
-const enableApi = async () => {
-  return await Summarizer.availability();
+class MySummarizer {
+  // コンストラクタにasyncは指定できない。
+  // async constructor() {
+  //   this.summarizer = await createSummrizer()
+  // }
+
+  async #init() {
+    if (!this.summarizer) {
+      this.summarizer = await createSummrizer()
+    }
+  }
+
+  async summarize(text) {
+    await this.#init()
+    return await this.summarizer.summarize(text)
+  }
+
+  async summarizeStreaming(text) {
+    await this.#init()
+    return await this.summarizer.summarizeStreaming(text)
+  }
+
+  [Symbol.dispose]() {
+    this.summarizer?.destroy()
+    console.log(`${this.summarizer} is destroyed`)
+  }
 }
+
+const enableApi = async () => {
+  return typeof Summarizer === 'function' && await Summarizer.availability();
+}
+
+// DOM
 
 const checkEnableApi = async () => {
   const enableApiEle = document.querySelector('.enable-api')
@@ -33,15 +79,14 @@ const checkEnableApi = async () => {
   }
 }
 
-let summarizer
-
 const funcs = {
   summarize: async () => {
     const sampleText = document.querySelector('.summarize .sample-text').value
-    // TODO: 英語で要約されてしまう。英語しか対応されていない？
+    using summarizer = new MySummarizer()
+
     const summary = await summarizer.summarize(sampleText)
     const output = document.querySelector('.summarize .output')
-    output.innerHTML += `<p>${summary}</p>`
+    output.innerHTML = `<p>${summary}</p>`
   },
   summarizeStreaming: async () => {
     const sampleText = document.querySelector('.summarizeStreaming .sample-text').value
@@ -51,6 +96,7 @@ const funcs = {
     const output = document.querySelector('.summarizeStreaming .output')
     output.innerHTML = ''
     try {
+      using summarizer = new MySummarizer()
       const stream = await summarizer.summarizeStreaming(sampleText)
       let result = '';
       let previousLength = 0;
@@ -59,40 +105,44 @@ const funcs = {
         output.innerHTML += `${newContent}<br />`
         previousLength = segment.length
         result += newContent
-      }   
-      output.innerHTML = `<p>${result}</p>`  
+      }
+      output.innerHTML = `<p>${result}</p>`
     } catch (err) {
-      output.innerHTML = `<p>${err.message}</p>`  
+      output.innerHTML = `<p>${err.message}</p>`
     }
   }
 }
 
-const initSampleSummrizer = async () => {
+const initSummarizerTest = async () => {
   const output = document.querySelector('.summarizer-create .output')
 
+  let summarizer;
   try {
-    summarizer = await createSummrizer({
-      downloadprogress: e => {
-        console.log(e)
-        output.textContent = `ダウンロード:${e.loaded} of ${e.total} bytes.`
-      }
-    })
+    summarizer = await createSummrizer(summarizerOptions)
+    output.textContent = 'Summarizerを初期化できるブラウザです。'
   } catch (err) {
     output.textContent = err.message
+  } finally {
+    summarizer?.destroy()
   }
 }
 
 const init = async () => {
   await checkEnableApi()
-  await initSampleSummrizer()
+  await initSummarizerTest()
   const main = document.querySelector('main')
   main.addEventListener('click', async event => {
     const { eventFunction } = event.target.dataset
     if (typeof funcs[eventFunction] === 'function') {
       event.stopPropagation()
-      await funcs[eventFunction]()
+      try {
+        event.target.setAttribute('disabled', 'disabled')
+        await funcs[eventFunction]()
+      } finally {
+        event.target.removeAttribute('disabled')
+      }
     }
   })
 }
 
-init().then()
+await init()
