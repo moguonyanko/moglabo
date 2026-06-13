@@ -35,30 +35,29 @@ const createSummrizer = async ({ downloadprogress } = {}) => {
 }
 
 class MySummarizer {
-  // コンストラクタにasyncは指定できない。
-  // async constructor() {
-  //   this.summarizer = await createSummrizer()
-  // }
+  constructor(name) {
+    this.name = name
+  }
 
-  async #init() {
+  async init() {
     if (!this.summarizer) {
       this.summarizer = await createSummrizer()
     }
   }
 
   async summarize(text) {
-    await this.#init()
+    await this.init()
     return await this.summarizer.summarize(text)
   }
 
   async summarizeStreaming(text) {
-    await this.#init()
+    await this.init()
     return await this.summarizer.summarizeStreaming(text)
   }
 
   [Symbol.dispose]() {
     this.summarizer?.destroy()
-    console.log(`${this.summarizer} is destroyed`)
+    console.log(`${this.name} is destroyed`)
   }
 }
 
@@ -82,11 +81,11 @@ const checkEnableApi = async () => {
 const funcs = {
   summarize: async () => {
     const sampleText = document.querySelector('.summarize .sample-text').value
-    using summarizer = new MySummarizer()
+    using summarizer = new MySummarizer('サンプルサマライザー')
 
     const summary = await summarizer.summarize(sampleText)
     const output = document.querySelector('.summarize .output')
-    output.innerHTML = `<p>${summary}</p>`
+    output.textContent = summary
   },
   summarizeStreaming: async () => {
     const sampleText = document.querySelector('.summarizeStreaming .sample-text').value
@@ -94,21 +93,17 @@ const funcs = {
       return
     }
     const output = document.querySelector('.summarizeStreaming .output')
-    output.innerHTML = ''
+    output.textContent = ''
     try {
-      using summarizer = new MySummarizer()
+      using summarizer = new MySummarizer('ストリーミングサンプルサマライザー')
       const stream = await summarizer.summarizeStreaming(sampleText)
       let result = '';
       let previousLength = 0;
       for await (const segment of stream) {
-        const newContent = segment.slice(previousLength)
-        output.innerHTML += `${newContent}<br />`
-        previousLength = segment.length
-        result += newContent
+        output.textContent += segment
       }
-      output.innerHTML = `<p>${result}</p>`
     } catch (err) {
-      output.innerHTML = `<p>${err.message}</p>`
+      output.textContent = `<p>${err.message}</p>`
     }
   }
 }
@@ -118,13 +113,12 @@ const initSummarizerTest = async () => {
 
   let summarizer;
   try {
-    summarizer = await createSummrizer(summarizerOptions)
+    using summarizer = new MySummarizer('初期化テスト用サマライザー')
+    await summarizer.init()
     output.textContent = 'Summarizerを初期化できるブラウザです。'
   } catch (err) {
     output.textContent = err.message
-  } finally {
-    summarizer?.destroy()
-  }
+  } 
 }
 
 const init = async () => {
