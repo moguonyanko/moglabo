@@ -38,22 +38,43 @@ const funcs = {
     const result = await session.prompt(text)
     return result
   },
-  promptStreaming: async ({ text }) => {
-    const session = await LanguageModel.create({
-      systemPrompt,
-      ...languageOptions,
-      monitor
-    })
-    const stream = await session.promptStreaming(text)
-    const results = [] // 本当はyieldなどを使いたい。
-    for await (const chunk of stream) {
-      results.push(chunk)
-    }
-    return results.join('')
+  promptStreaming: async function* ({ text }) {
+  const session = await LanguageModel.create({
+    systemPrompt,
+    ...languageOptions,
+    monitor
+  })
+  const stream = await session.promptStreaming(text)
+  for await (const chunk of stream) {
+    yield chunk
   }
+}
 }
 
 // DOM
+
+const listeners = {
+  prompt: async (text, srcElement, output) => {
+    try {
+      srcElement.setAttribute('disabled', 'disabled')
+      const result = await funcs.prompt({ text })
+      output.textContent = result
+    } finally {
+      srcElement.removeAttribute('disabled')
+    }
+  },
+  promptStreaming: async (text, srcElement, output) => {
+    try {
+      output.textContent = ''
+      srcElement.setAttribute('disabled', 'disabled')
+      for await (const chunk of funcs.promptStreaming({ text })) {
+        output.textContent += chunk
+      }
+    } finally {
+      srcElement.removeAttribute('disabled')
+    }
+  }
+}
 
 class MyPrompt extends HTMLElement {
   constructor() {
@@ -70,14 +91,8 @@ class MyPrompt extends HTMLElement {
       if (event.target.id === 'doPrompt') {
         event.stopPropagation()
         const text = root.querySelector('.prompt').value
-        try {
-          event.target.setAttribute('disabled', 'disabled')
-          const result = await funcs[type]?.({ text })
-          const output = root.querySelector('.output')
-          output.textContent = result
-        } finally {
-          event.target.removeAttribute('disabled')
-        }
+        const output = root.querySelector('.output')
+        await listeners[type]?.(text, event.target, output)
       }
     })
   }
