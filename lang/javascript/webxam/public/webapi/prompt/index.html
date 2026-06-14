@@ -30,6 +30,7 @@
   <footer>
     <h3>参考</h3>
     <ul>
+      <li><a href="https://developer.chrome.com/docs/ai/prompt-api?hl=ja">Prompt API</a></li>
       <li><a href="https://developer.chrome.com/docs/ai/built-in?hl=ja">組み込みの AI </a></li>
       <li><a href="https://web.dev/articles/ai-chatbot-promptapi?hl=ja">Prompt API を使用してローカルおよびオフライン対応の chatbot
           を作成する</a></li>
@@ -42,11 +43,17 @@
       .output,
       .prompt {
         width: 100%;
-        height: 5em;
+        height: 5rem;
         border: solid 1px black;
+        overflow-y: scroll;
+      }
+
+      .output {
+        height: 10rem;
+        background-color: whitesmoke;
       }
     </style>
-    <textarea class="prompt">Please tell me about tail call optimization.</textarea>
+    <textarea class="prompt">末尾再帰最適化について初心者向けに説明してほしい。</textarea>
     <button id="doPrompt">run</button>
     <div class="output"></div>
   </template>

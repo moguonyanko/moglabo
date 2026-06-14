@@ -5,19 +5,44 @@
  * https://github.com/webmachinelearning/prompt-api
  */
 
-const systemPrompt = 'You are an excellent assistant. I will answer questions about work and study.'
+const systemPrompt = 'あなたは優秀な技術者です。仕事や勉強に関する質問に回答してください。'
+const DEFAULT_LANG = 'ja'
+
+const languageOptions = {
+  expectedInputs: [
+    {
+      type: "text", languages: [
+        DEFAULT_LANG /* system prompt */,
+        DEFAULT_LANG /* user prompt */
+      ]
+    }
+  ],
+  expectedOutputs: [
+    { type: "text", languages: [DEFAULT_LANG] }
+  ]
+}
+
+const monitor = m => {
+  m.addEventListener('downloadprogress', event => {
+    console.log(`Downloaded ${event.loaded * 100}%`)
+  })
+}
 
 const funcs = {
   prompt: async ({ text }) => {
-    const session = await self.ai.languageModel.create({
-      systemPrompt
+    const session = await LanguageModel.create({
+      systemPrompt,
+      ...languageOptions,
+      monitor
     })
     const result = await session.prompt(text)
     return result
   },
   promptStreaming: async ({ text }) => {
-    const session = await self.ai.languageModel.create({
-      systemPrompt
+    const session = await LanguageModel.create({
+      systemPrompt,
+      ...languageOptions,
+      monitor
     })
     const stream = await session.promptStreaming(text)
     const results = [] // 本当はyieldなどを使いたい。
@@ -45,9 +70,14 @@ class MyPrompt extends HTMLElement {
       if (event.target.id === 'doPrompt') {
         event.stopPropagation()
         const text = root.querySelector('.prompt').value
-        const result = await funcs[type]?.({ text })
-        const output = root.querySelector('.output')
-        output.textContent = result
+        try {
+          event.target.setAttribute('disabled', 'disabled')
+          const result = await funcs[type]?.({ text })
+          const output = root.querySelector('.output')
+          output.textContent = result
+        } finally {
+          event.target.removeAttribute('disabled')
+        }
       }
     })
   }
