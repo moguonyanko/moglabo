@@ -28,6 +28,13 @@ const monitor = m => {
   })
 }
 
+/**
+ * 現在のLanguageModelセッションにおけるトークン使用率を出力する。
+ */
+const displayContextWindow = session => {
+  console.log(`${session.contextUsage}/${session.contextWindow}`)
+}
+
 const funcs = {
   prompt: async ({ text }) => {
     const session = await LanguageModel.create({
@@ -36,19 +43,23 @@ const funcs = {
       monitor
     })
     const result = await session.prompt(text)
+    displayContextWindow(session)
     return result
   },
   promptStreaming: async function* ({ text }) {
-  const session = await LanguageModel.create({
-    systemPrompt,
-    ...languageOptions,
-    monitor
-  })
-  const stream = await session.promptStreaming(text)
-  for await (const chunk of stream) {
-    yield chunk
+    const session = await LanguageModel.create({
+      systemPrompt,
+      ...languageOptions,
+      monitor
+    })
+    const stream = await session.promptStreaming(text)
+    for await (const chunk of stream) {
+      yield chunk
+    }
+    // 全てのチャンクを返した後にトークン使用率を出力している。
+    // チャンクを返すごとに現在のトークン使用率を得ることはできないようである。
+    displayContextWindow(session)    
   }
-}
 }
 
 // DOM
