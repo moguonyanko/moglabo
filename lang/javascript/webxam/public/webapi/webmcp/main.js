@@ -1,12 +1,24 @@
 /**
  * @fileoverview WebMCPのAPIを調べるためのスクリプトです。
+ * 参考:
+ * https://developer.chrome.com/docs/ai/webmcp/imperative-api?hl=ja
  */
+
+const toolsUrls = [
+  'https://github.com/' // sample url
+]
 
 const onClicks = {
   getTools: async () => {
     const output = document.querySelector('.example.get-tools .output ')
-    const tools = await document.modelContext.getTools()
-    output.textContent = tools.length > 0 ? tools : 'no tools'
+    const sameOriginTools = await document.modelContext.getTools()
+
+    const crossOriginTools = await document.modelContext.getTools({
+      fromOrigins: toolsUrls
+    })
+
+    const tools = sameOriginTools.concat(crossOriginTools)
+    output.textContent = JSON.stringify(tools)
   }
 }
 
