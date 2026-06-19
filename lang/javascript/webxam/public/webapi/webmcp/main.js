@@ -6,7 +6,7 @@ const onClicks = {
   getTools: async () => {
     const output = document.querySelector('.example.get-tools .output ')
     const tools = await document.modelContext.getTools()
-    output.textContent = tools
+    output.textContent = tools.length > 0 ? tools : 'no tools'
   }
 }
 
