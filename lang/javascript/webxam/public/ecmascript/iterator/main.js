@@ -50,6 +50,16 @@ async function* streamToImageChunks(stream, chunkSize = 1024 * 5) {
   }
 }
 
+function* fibonacci() {
+  let [current, next] = [1, 1]
+
+  while (true) {
+    yield current; // ここのセミコロンは文法上必須。
+
+    [current, next] = [next, current + next]
+  }
+}
+
 /**
  * @deprecated チャンクを分けて読み込む。しかしこちらもブラウザが固まってエラーになってしまう。
  */
@@ -199,7 +209,7 @@ const funcs = {
         yield ["Mike", 19]
         yield ["Taro", 24]
         yield ["Joe", 34]
-      }     
+      }
     }
     const map2 = new Map([
       ["Jiro", 45],
@@ -223,6 +233,13 @@ const funcs = {
 
     const output = document.querySelector(('.iterator-concat-sample .output'))
     output.textContent = JSON.stringify([...result])
+  },
+  includes: () => {
+    // TODO: 入力値を受け取って動作させる。
+    const result = fibonacci().includes(8)
+
+    const output = document.querySelector('.iterator-includes .output')
+    output.textContent = result
   }
 }
 
