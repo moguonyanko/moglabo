@@ -51,7 +51,8 @@ async function* streamToImageChunks(stream, chunkSize = 1024 * 5) {
 }
 
 function* fibonacci() {
-  let [current, next] = [1, 1]
+  // 各値の末尾にnを付けてBigInt対応させようとするとブラウザが固まる。
+  let [current, next] = [1, 1] 
 
   while (true) {
     yield current; // ここのセミコロンは文法上必須。
@@ -235,11 +236,14 @@ const funcs = {
     output.textContent = JSON.stringify([...result])
   },
   includes: () => {
-    // TODO: 入力値を受け取って動作させる。
-    const result = fibonacci().includes(8)
-
+    const searchNumber = document.getElementById('search-number').value
+    // 数列の数を絞らないと計算結果が返ってこない。
+    const iter = fibonacci().take(100)
+    const result = iter.includes(parseInt(searchNumber))
     const output = document.querySelector('.iterator-includes .output')
-    output.textContent = result
+    output.innerHTML = `<p>${result}</p>`
+    // includesを呼び出すとイテレータは終了される。
+    output.innerHTML += `<p>${JSON.stringify(iter.next())}</p>`
   }
 }
 
