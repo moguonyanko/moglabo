@@ -55,7 +55,7 @@
         <h2>Iterator.prototype.includes()</h2>
         <p>フィボナッチ数列の最初の100個までに指定された数が存在するかを調べます。</p>
         <label for="search-number">探す数</label>
-        <input id="search-number" value="8" min="0" />
+        <input id="search-number" type="number" value="8" min="1" />
         <button data-event-target="includes">run</button>
         <div class="output" contenteditable="plaintext-only"></div>
       </section>
@@ -63,6 +63,14 @@
         <h2>Iterator.prototype.windows()</h2>
         <p>windows()を利用してフィボナッチ数列の移動平均を計算する。</p>
         <button data-event-target="getMovingAvaraged">取得</button>
+        <div class="output" contenteditable="plaintext-only"></div>
+      </section>
+      <section class="iterator-join">
+        <h2>Iterator.prototype.join()</h2>
+        <p>join()で文字列連結する。値を一つずつ取り出して結合するのでArrayの結合よりメモリ効率が良い。</p>
+        <label for="take-number">フィボナッチ数列から取り出す数</label>
+        <input id="take-number" type="number" value="10" min="1" />
+        <button data-event-target="joinValues">結合</button>
         <div class="output" contenteditable="plaintext-only"></div>
       </section>
     </section>

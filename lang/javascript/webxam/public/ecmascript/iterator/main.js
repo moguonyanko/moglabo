@@ -267,6 +267,12 @@ const funcs = {
     }
     const result = movingAveraged.next().value
     output.innerHTML += `${result}<br />`
+  },
+  joinValues: () => {
+    const takeNumber = document.getElementById('take-number').value
+    const output = document.querySelector('.iterator-join .output')
+    const result = fibonacci().take(parseInt(takeNumber)).join(',')
+    output.innerHTML += `${result}<br />`
   }
 }
 
