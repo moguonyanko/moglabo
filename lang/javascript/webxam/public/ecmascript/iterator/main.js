@@ -100,6 +100,20 @@ const throwError = detail => {
   window.dispatchEvent(evt)
 }
 
+let movingAveraged
+
+const initMovingAvaraged = () => {
+  try {
+    movingAveraged = fibonacci()
+      .windows(2) // 連続する2つの数の平均を取るので2つのスライディングウインドウを求める。
+      .map(slidingWindow => {
+        return (slidingWindow[0] + slidingWindow[1]) / 2
+      })
+  } catch (err) {
+    throwError(err.message)
+  }
+}
+
 const logChunk = chunk => {
   console.log(`'chunk':${new Date().toString()}`, chunk)
 }
@@ -244,6 +258,15 @@ const funcs = {
     output.innerHTML = `<p>${result}</p>`
     // includesを呼び出すとイテレータは終了される。
     output.innerHTML += `<p>${JSON.stringify(iter.next())}</p>`
+  },
+  getMovingAvaraged: () => {
+    const output = document.querySelector('.iterator-windows .output')
+    if (!movingAveraged) {
+      output.innerHTML = `移動平均計算用のイテレータが未定義です。`
+      return
+    }
+    const result = movingAveraged.next().value
+    output.innerHTML += `${result}<br />`
   }
 }
 
@@ -265,6 +288,7 @@ const addListener = () => {
 
 const main = () => {
   addListener()
+  initMovingAvaraged()
 }
 
 main()
